@@ -371,10 +371,10 @@ header {
 
 .logo_area {
     padding: 20px 0;
-    background: url(https://gestion.safebeach.es/assets/img/logo-safe-beach-blanco-120.png);
-    background-size: 100px;
+    background: url(../images/logos/logo_item.png);
+    background-size: 140px;
     background-repeat: no-repeat;
-    height: 100px;
+    height: 120px;
     margin-top: 14px;
 }
 
