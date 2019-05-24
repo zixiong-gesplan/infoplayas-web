@@ -380,6 +380,7 @@ header {
 
 .sticky .logo_area {
     padding: 20px 0;
+    /*TODO poner el logo de arriba parece que en color azul?*/
     background: url(https://gestion.safebeach.es/assets/img/logo-safe-beach-azul-60.png);
     background-size: 60px;
     background-repeat: no-repeat;
