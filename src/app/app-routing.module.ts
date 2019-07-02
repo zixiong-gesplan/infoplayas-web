@@ -4,10 +4,10 @@ import {AppComponent} from './app.component';
 import {ProfileComponent} from './profile/profile.component';
 import {AuthGuardService} from './services/auth-guard.service';
 
-const routes: Routes = [/*
+const routes: Routes = [
   {path: '', component: AppComponent},
   {path: 'tecnicos', component: ProfileComponent, canActivate: [AuthGuardService]},
-  { path: '**', redirectTo: '' }*/
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

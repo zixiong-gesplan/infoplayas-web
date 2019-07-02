@@ -290,41 +290,41 @@
                     <div class="col-md-6 col-sm-12 col-xs-12 wow fadeInUp" data-wow-delay="400ms">
                         <div class="company-contact-form">
                             <h2 class="font-style-1 text-color-grey no-margin text-capitalize"> write us</h2>
-                            <form class="contact-form-outer" onsubmit="return false;">
+                            <form class="contact-form-outer" [formGroup]="ContactForm"
+                                  (ngSubmit)="onSubmit(ContactForm)" >
                                 <div class="col-sm-12" id="result"></div>
                                 <div class="col-md-6">
                                     <div class="contact-form-textfield padding-bottom-30">
-                                        <input type="text" placeholder="First Name:" class="form-control " required
-                                               id="first_name" name="first_name">
+                                        <input type="text" placeholder="First Name:" class="form-control "
+                                               formControlName="first_name">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="contact-form-textfield padding-bottom-30">
-                                        <input type="text" placeholder="Last Name:" class="form-control " required
-                                               id="last_name" name="last_name">
+                                        <input type="text" placeholder="Last Name:" class="form-control "
+                                               formControlName="last_name">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="contact-form-textfield padding-bottom-30">
-                                        <input type="email" placeholder="Email:" class="form-control " required
-                                               id="email" name="email">
+                                        <input type="email" placeholder="Email:" class="form-control "
+                                               formControlName="email">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="contact-form-textfield padding-bottom-30">
-                                        <input type="tel" placeholder="Phone:" class="form-control " id="phone"
-                                               name="phone">
+                                        <input type="tel" placeholder="Phone:" class="form-control "
+                                               formControlName="phone">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="contact-form-textfield padding-bottom-30">
-                                        <textarea placeholder="Message" class="form-control " id="message"
-                                                  name="message"></textarea>
+                                        <textarea placeholder="Message" class="form-control "
+                                                  formControlName="message"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <button type="submit" class="button blue active text-center width-100"
-                                            id="submit_btn">Send Message
+                                    <button type="submit" class="button blue active text-center width-100">Send Message
                                     </button>
                                 </div>
                             </form>
