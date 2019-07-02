@@ -32,21 +32,19 @@
                     <form [formGroup]="RegistrationForm" (ngSubmit)="onRegisterSubmit(RegistrationForm)" class="findus">
                         <div class="form-row">
                             <div class="form-group col-xs-12">
-                                <label for="frmRegisterEmail">EMAIL / USERNAME</label>
+                                <label>EMAIL / USERNAME</label>
                                 <input type="email" maxlength="100" class="form-control"
-                                       formControlName="email" id="frmRegisterEmail">
+                                       formControlName="email">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-sm-6 col-xs-12">
-                                <label for="frmRegisterPassword">PASSWORD</label>
-                                <input type="password" class="form-control" formControlName="password"
-                                       id="frmRegisterPassword">
+                                <label>PASSWORD</label>
+                                <input type="password" class="form-control" formControlName="password">
                             </div>
                             <div class="form-group col-md-6 col-xs-12">
-                                <label for="frmRegisterPassword2">RE-ENTER PASSWORD</label>
-                                <input type="password" class="form-control" formControlName="password2"
-                                       id="frmRegisterPassword2">
+                                <label>RE-ENTER PASSWORD</label>
+                                <input type="password" class="form-control" formControlName="password2">
                             </div>
                         </div>
                         <div class="row no-padding">
@@ -73,16 +71,15 @@
                     <form [formGroup]="frmLogin" (ngSubmit)="onLoginSubmit(frmLogin)" class="findus">
                         <div class="form-row">
                             <div class="form-group col-xs-12">
-                                <label for="frmRegisterEmail">EMAIL / USERNAME</label>
+                                <label>EMAIL / USERNAME</label>
                                 <input type="email" maxlength="100" class="form-control"
-                                       formControlName="email" id="frmLoginEmail">
+                                       formControlName="email">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-xs-12">
-                                <label for="frmRegisterPassword">PASSWORD</label>
-                                <input type="password" class="form-control" formControlName="password"
-                                       id="frmLoginPassword">
+                                <label>PASSWORD</label>
+                                <input type="password" class="form-control" formControlName="password">
                             </div>
                         </div>
                         <div class="row no-padding">
