@@ -6,13 +6,15 @@ import {CatalogueComponent} from './catalogue/catalogue.component';
 import {LoginComponent} from './login/login.component';
 import {ProfileComponent} from './profile/profile.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         CatalogueComponent,
         LoginComponent,
-        ProfileComponent
+        ProfileComponent,
+        HomeComponent
     ],
     imports: [
         BrowserModule,
