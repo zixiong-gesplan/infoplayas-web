@@ -1383,8 +1383,8 @@ button.mfp-close, button.mfp-arrow{
 
 .wordpress, .joomla, .drupal, .css3{
     float: left;
-    text-align: center;
-    height: 100%;
+    text-align: left;
+    height: 550px;
     width: 25%;
     padding: 50px 45px;
 }
