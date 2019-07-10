@@ -7,6 +7,9 @@ import {ProfileComponent} from './profile/profile.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import {CatalogueComponent} from './profile/catalogue/catalogue.component';
+import { ClassificationComponent } from './profile/classification/classification.component';
+import { SecurityComponent } from './profile/security/security.component';
+import { ReportComponent } from './profile/report/report.component';
 
 @NgModule({
     declarations: [
@@ -14,7 +17,10 @@ import {CatalogueComponent} from './profile/catalogue/catalogue.component';
         LoginComponent,
         CatalogueComponent,
         ProfileComponent,
-        HomeComponent
+        HomeComponent,
+        ClassificationComponent,
+        SecurityComponent,
+        ReportComponent
     ],
     imports: [
         BrowserModule,

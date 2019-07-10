@@ -4,6 +4,9 @@ import {ProfileComponent} from './profile/profile.component';
 import {AuthGuardService} from './services/auth-guard.service';
 import {HomeComponent} from './home/home.component';
 import {CatalogueComponent} from './profile/catalogue/catalogue.component';
+import {ClassificationComponent} from './profile/classification/classification.component';
+import {SecurityComponent} from './profile/security/security.component';
+import {ReportComponent} from './profile/report/report.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -15,7 +18,16 @@ const routes: Routes = [
             {path: '', redirectTo: 'catalogo', pathMatch: 'full'},
             {path: 'tecnicos', redirectTo: 'catalogo', pathMatch: 'full'},
             {
-                path: 'catalogo', component: CatalogueComponent, canActivate: [AuthGuardService],
+                path: 'catalogo', component: CatalogueComponent, canActivate: [AuthGuardService]
+            },
+            {
+                path: 'clasificacion', component: ClassificationComponent, canActivate: [AuthGuardService]
+            },
+            {
+                path: 'seguridad', component: SecurityComponent, canActivate: [AuthGuardService]
+            },
+            {
+                path: 'informes', component: ReportComponent, canActivate: [AuthGuardService]
             }
         ]
     },
