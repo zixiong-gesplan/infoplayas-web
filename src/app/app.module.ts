@@ -10,6 +10,7 @@ import {CatalogueComponent} from './profile/catalogue/catalogue.component';
 import { ClassificationComponent } from './profile/classification/classification.component';
 import { SecurityComponent } from './profile/security/security.component';
 import { ReportComponent } from './profile/report/report.component';
+import { ContactUsComponent } from './profile/contact-us/contact-us.component';
 
 @NgModule({
     declarations: [
@@ -20,7 +21,8 @@ import { ReportComponent } from './profile/report/report.component';
         HomeComponent,
         ClassificationComponent,
         SecurityComponent,
-        ReportComponent
+        ReportComponent,
+        ContactUsComponent
     ],
     imports: [
         BrowserModule,

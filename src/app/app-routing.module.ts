@@ -7,6 +7,7 @@ import {CatalogueComponent} from './profile/catalogue/catalogue.component';
 import {ClassificationComponent} from './profile/classification/classification.component';
 import {SecurityComponent} from './profile/security/security.component';
 import {ReportComponent} from './profile/report/report.component';
+import {ContactUsComponent} from './profile/contact-us/contact-us.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -28,6 +29,9 @@ const routes: Routes = [
             },
             {
                 path: 'informes', component: ReportComponent, canActivate: [AuthGuardService]
+            },
+            {
+                path: 'contacto', component: ContactUsComponent, canActivate: [AuthGuardService]
             }
         ]
     },
