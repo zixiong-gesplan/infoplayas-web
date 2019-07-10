@@ -8,7 +8,10 @@ import {CatalogueComponent} from './profile/catalogue/catalogue.component';
 const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
     {path: 'home', component: HomeComponent},
-    {path: 'tecnicos', component: ProfileComponent, children: [
+    {
+        path: 'tecnicos',
+        component: ProfileComponent,
+        children: [
             {path: '', redirectTo: 'catalogo', pathMatch: 'full'},
             {path: 'tecnicos', redirectTo: 'catalogo', pathMatch: 'full'},
             {
