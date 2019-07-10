@@ -1,3 +1,132 @@
-<p>
-  profile works!
-</p>
+<!--Preloader-->
+<div class="loader center-block" id="loader-fade">
+    <svg width="100px" height="100px" viewBox="-3 -4 39 39">
+        <polygon fill="#ffffff" stroke="#00bcd4" stroke-width="1" points="16,0 32,32 0,32"></polygon>
+    </svg>
+</div>
+<!-- Preloader ends-->
+
+<div class="wrapper" id="wrapper">
+    <!-- Header Starts -->
+    <header class="top-menu">
+        <!-- Navigation Starts -->
+        <nav class="navbar background-transparent position-fixed fixed-white-background static-nav no-animation">
+            <div class="container">
+                <div class="row">
+                    <div class="navbar-header lg-no-padding-r-l">
+                        <a class="navbar-brand" href="javascript:void(0)">
+                            <img src="assets/images/logo.png" alt="logo" class="logo-default">
+                            <img src="assets/images/logo-3.png" alt="logo" class="logo-scrolled">
+                        </a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right navlinks-outer collapse navbar-collapse white-color  no-hvr">
+                        <li class="nav-tab">
+                            <a href="index-multi.html" class="font-style-1 nav-item">home</a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="features.html" class="font-style-1 nav-item">features</a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="team.html" class="font-style-1 nav-item">team</a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="gallery-detail.html" class="font-style-1 nav-item">portfolio</a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="pricing.html" class="font-style-1 nav-item">packages</a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="testimonial.html" class="font-style-1 nav-item">testimonials</a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="blog.html" class="font-style-1 nav-item">blog</a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="contact.html" class="font-style-1 nav-item">Contact Us</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Side-nav starts -->
+        <div class="navbar-toggle-visible right static-nav no-animation">
+            <!--side menu open button-->
+            <div id="menu_bars" class="right"><span></span> <span></span> <span></span></div>
+            <nav class="side-nav side-nav-right slide-nav">
+                <a class="sidenav-logo" href="index.html"><img src="assets/images/logo-3.png" alt="logo"></a>
+                <div class="side-nav-inner-setting">
+                    <ul class="side-nav-list font-style-1">
+
+                        <li class="nav-item active clearfix">
+                            <a href="index-multi.html"><span>01.</span> home</a>
+                        </li>
+                        <li class="nav-item clearfix">
+                            <a href="features.html"><span>02.</span> features</a>
+                        </li>
+                        <li class="nav-item clearfix">
+                            <a href="team.html"><span>03.</span> team</a>
+                        </li>
+                        <li class="nav-item clearfix">
+                            <a href="gallery-detail.html"><span>04.</span> portfolio</a>
+                        </li>
+                        <li class="nav-item clearfix">
+                            <a href="pricing.html"><span>05.</span> packages</a>
+                        </li>
+                        <li class="nav-item clearfix">
+                            <a href="testimonial.html"><span>06.</span> testimonial</a>
+                        </li>
+                        <li class="nav-item clearfix">
+                            <a href="blog.html"><span>07.</span> blog</a>
+                        </li>
+                        <li class="nav-item clearfix">
+                            <a href="contact.html"><span>08.</span> contact</a>
+                        </li>
+                    </ul>
+
+                    <div class="bottom-share">
+                        <ul class="social_icon">
+                            <li><a href="javascript:void(0)"><i class="facebook fa fa-facebook"></i></a></li>
+                            <li><a href="javascript:void(0)"><i class="twitter fa fa-twitter"></i></a></li>
+                            <li><a href="javascript:void(0)"><i class="google fa fa-google-plus"></i></a></li>
+                            <li><a href="javascript:void(0)"><i class="linkedin fa fa-linkedin"></i></a></li>
+                        </ul>
+                        <div class="nav-copyright">
+                            <p class="font-style-1 text-color-grey-646464 font-weight-300 paragraph-15 margintop10px bottom10 text-capitalize">
+                                © 2018 tricon agency </p>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Side-nav ends -->
+    </header>
+    <!-- Header Ends -->
+    <!-- Header Section End -->
+    <router-outlet></router-outlet>
+    <!-- Footer -->
+    <footer id="site-footer" class="padding_half footer-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <ul class="social-icons bottom25 wow" data-wow-delay="300ms">
+                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-facebook"></i> </a></li>
+                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-twitter"></i> </a></li>
+                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-whatsapp"></i> </a></li>
+                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-google"></i> </a></li>
+                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-pinterest-p"></i> </a></li>
+                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-instagram"></i> </a></li>
+                    </ul>
+                    <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
+                            class="copyrights">© 2019 Gesplan S.A.</span></p>
+                    <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
+                            class="copyrights">Área de Innovación <a href="javascript:void(0)">y Desarrollo</a> </span>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!--Footer ends-->
+</div>
+<!-- Wrapper ends -->
