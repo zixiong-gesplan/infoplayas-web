@@ -1376,15 +1376,15 @@ button.mfp-close, button.mfp-arrow{
 .information-icon {
     width: 100%;
     transform: translateY(-26px);
-    cursor:pointer;
+    cursor: initial;
     position: relative;
     z-index: 102;
 }
 
 .wordpress, .joomla, .drupal, .css3{
     float: left;
-    text-align: center;
-    height: 100%;
+    text-align: left;
+    height: 550px;
     width: 25%;
     padding: 50px 45px;
 }
@@ -1419,7 +1419,7 @@ button.mfp-close, button.mfp-arrow{
     transition-timing-function: ease-in-out;
 }
 .wordpress:hover i, .joomla:hover i, .drupal:hover i, .css3:hover i{
-    transform: scale(1.4);
+    /*transform: scale(1.4);*/
 }
 .wordpress h5, .joomla h5, .drupal h5, .css3 h5{
    margin: 20px 0 14px;
@@ -3702,7 +3702,7 @@ svg polygon {
         padding: 3px 16px 3px 16px;
     }
     .navbar-brand img {
-        width: 150px;
+        width: 223px;
         margin-top: -20px;
     }
     .navbar .navbar-nav>li>a {
