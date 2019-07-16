@@ -1,20 +1,31 @@
 import {Injectable} from '@angular/core';
 import {CanActivate} from '@angular/router/src/interfaces';
-import {AuthService} from './auth.service';
-import {Router} from '@angular/router';
+import {Auth} from '../models/auth';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthGuardService implements CanActivate {
-    constructor(public auth: AuthService, public router: Router) {
+    client_id = 'RNiCC2e9tgwl1mCV';
+    url = 'https://www.arcgis.com/sharing/rest/oauth2/authorize';
+    redirectUri = 'http://localhost:4200/login';
+    urlAuthorize: string = this.url + '?client_id=' + this.client_id + '&response_type=token&redirect_uri=' + this.redirectUri;
+
+    constructor() {
     }
 
     canActivate(): boolean {
-        if (!this.auth.isAuthenticated()) {
-            this.router.navigate(['/home']);
+        if (!this.isAuthenticated()) {
+            window.location.href = this.urlAuthorize;
             return false;
         }
         return true;
     }
+
+    public isAuthenticated(): boolean {
+        const currentUser: Auth = JSON.parse(sessionStorage.getItem('current_user'));
+        // TODO Check whether the token is expired and return
+        return !!currentUser;
+    }
+
 }

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MustMatch} from '../helpers/must-match.component';
+import {Auth} from '../models/auth';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
     selector: 'app-login',
@@ -8,35 +8,24 @@ import {MustMatch} from '../helpers/must-match.component';
     styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-    RegistrationForm: FormGroup;
-    frmLogin: FormGroup;
-
-// TODO hay que completar el servicio auth ya creado para comprobar si el usuario está logueado
-    constructor(private fb: FormBuilder) {
+    constructor(public route: ActivatedRoute, public router: Router) {
     }
 
     ngOnInit() {
-        // TODO formulario de login
-        this.frmLogin = this.fb.group({
-            email: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.pattern('[a-z]*')])),
-            password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)]))
-        });
-
-        // TODO formulario de registro
-        this.RegistrationForm = this.fb.group({
-            email: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.pattern('[a-z]*')])),
-            password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)])),
-            password2: new FormControl('', Validators.required)
-        }, {
-            validator: MustMatch('password', 'password2')
-        });
+        this.setCurrentUser();
     }
 
-    onRegisterSubmit(RegistrationForm: FormGroup) {
-        // TODO registro
-    }
-
-    onLoginSubmit(frmLogin: FormGroup) {
-        // TODO login ESRI
+    setCurrentUser() {
+        return this.route.fragment.subscribe(fragment => {
+            if (fragment) {
+                const current_user: Auth = {
+                    token: new URLSearchParams(fragment).get('access_token'),
+                    expires: Number(new URLSearchParams(fragment).get('expires_in')),
+                    username: new URLSearchParams(fragment).get('username')
+                };
+                sessionStorage.setItem('current_user', JSON.stringify(current_user));
+            }
+            this.router.navigate(['tecnicos']);
+        });
     }
 }

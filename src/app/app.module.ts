@@ -2,7 +2,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {LoginComponent} from './login/login.component';
 import {ProfileComponent} from './profile/profile.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HomeComponent } from './home/home.component';
@@ -11,6 +10,7 @@ import { ClassificationComponent } from './profile/classification/classification
 import { SecurityComponent } from './profile/security/security.component';
 import { ReportComponent } from './profile/report/report.component';
 import { ContactUsComponent } from './profile/contact-us/contact-us.component';
+import {LoginComponent} from './login/login.component';
 
 @NgModule({
     declarations: [
@@ -22,7 +22,7 @@ import { ContactUsComponent } from './profile/contact-us/contact-us.component';
         ClassificationComponent,
         SecurityComponent,
         ReportComponent,
-        ContactUsComponent
+        ContactUsComponent,
     ],
     imports: [
         BrowserModule,

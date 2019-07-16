@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-home',
@@ -10,7 +11,7 @@ export class HomeComponent implements OnInit {
     title = 'infoplayascanarias';
     ContactForm: FormGroup;
 
-    constructor(private fb: FormBuilder) {
+    constructor(private fb: FormBuilder, public router: Router) {
     }
 
     ngOnInit() {
@@ -26,9 +27,11 @@ export class HomeComponent implements OnInit {
         });
     }
 
-
     onSubmit(ContactForm: FormGroup) {
         // TODO formulario de contacto
     }
 
+    login() {
+        window.location.href = '/tecnicos';
+    }
 }

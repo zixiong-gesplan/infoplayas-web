@@ -8,10 +8,12 @@ import {ClassificationComponent} from './profile/classification/classification.c
 import {SecurityComponent} from './profile/security/security.component';
 import {ReportComponent} from './profile/report/report.component';
 import {ContactUsComponent} from './profile/contact-us/contact-us.component';
+import {LoginComponent} from './login/login.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
     {path: 'home', component: HomeComponent},
+    {path: 'login', component: LoginComponent},
     {
         path: 'tecnicos',
         component: ProfileComponent,
