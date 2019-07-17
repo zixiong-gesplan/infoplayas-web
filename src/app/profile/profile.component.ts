@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthGuardService} from '../services/auth-guard.service';
-import {audit} from 'rxjs/operators';
 import {Router} from '@angular/router';
 
 @Component({

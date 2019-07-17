@@ -4,6 +4,7 @@ export class Auth {
         public expires: number,
         public username: string,
         public persist: boolean,
+        public error: string,
     ) {
     }
 }

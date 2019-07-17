@@ -26,14 +26,23 @@ export class LoginComponent implements OnInit {
                     token: new URLSearchParams(fragment).get('access_token'),
                     expires: Number(new URLSearchParams(fragment).get('expires_in')),
                     username: new URLSearchParams(fragment).get('username'),
-                    persist: this.getBoolean(new URLSearchParams(fragment).get('persist'))
+                    persist: this.getBoolean(new URLSearchParams(fragment).get('persist')),
+                    error: new URLSearchParams(fragment).get('error')
                 };
+                if (current_user.error === 'access_denied') {
+                    this.router.navigate(['home']);
+                    return false;
+                }
                 // timestamp + expires token
                 const currentDate = new Date();
                 current_user.expires = current_user.persist ? this.DEFAULT_TIME_KEEP_SIGN_IN
                     + currentDate.getTime() + current_user.expires * 1000 :
                     currentDate.getTime() + current_user.expires * 1000;
-                sessionStorage.setItem('current_user', JSON.stringify(current_user));
+                if (current_user.persist) {
+                    localStorage.setItem('current_user', JSON.stringify(current_user));
+                } else {
+                    sessionStorage.setItem('current_user', JSON.stringify(current_user));
+                }
             }
             this.router.navigate(['tecnicos']);
         });

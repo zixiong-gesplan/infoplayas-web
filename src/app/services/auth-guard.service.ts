@@ -23,7 +23,9 @@ export class AuthGuardService implements CanActivate {
     }
 
     public isAuthenticated(): boolean {
-        const currentUser: Auth = JSON.parse(sessionStorage.getItem('current_user'));
+        const currentUser: Auth = JSON.parse(localStorage.getItem('current_user')) ?
+            JSON.parse(localStorage.getItem('current_user')) :
+            JSON.parse(sessionStorage.getItem('current_user'));
         const currentDate = new Date();
         if (currentUser && currentDate.getTime() >= Number(currentUser.expires)) {
             return false;
@@ -33,5 +35,6 @@ export class AuthGuardService implements CanActivate {
 
     public logOut() {
         sessionStorage.clear();
+        localStorage.clear();
     }
 }
