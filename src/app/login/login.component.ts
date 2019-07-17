@@ -8,6 +8,10 @@ import {ActivatedRoute, Router} from '@angular/router';
     styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+    /*Si el usuario ha solicitado mantenerse logueado se establece este valor por defecto,
+     en caso de cambiarlo en el portal poner ese valor*/
+    private readonly DEFAULT_TIME_KEEP_SIGN_IN: number = 1209600000;
+
     constructor(public route: ActivatedRoute, public router: Router) {
     }
 
@@ -21,14 +25,31 @@ export class LoginComponent implements OnInit {
                 const current_user: Auth = {
                     token: new URLSearchParams(fragment).get('access_token'),
                     expires: Number(new URLSearchParams(fragment).get('expires_in')),
-                    username: new URLSearchParams(fragment).get('username')
+                    username: new URLSearchParams(fragment).get('username'),
+                    persist: this.getBoolean(new URLSearchParams(fragment).get('persist'))
                 };
                 // timestamp + expires token
                 const currentDate = new Date();
-                current_user.expires = currentDate.getTime() + current_user.expires * 1000;
+                current_user.expires = current_user.persist ? this.DEFAULT_TIME_KEEP_SIGN_IN
+                    + currentDate.getTime() + current_user.expires * 1000 :
+                    currentDate.getTime() + current_user.expires * 1000;
                 sessionStorage.setItem('current_user', JSON.stringify(current_user));
             }
             this.router.navigate(['tecnicos']);
         });
+    }
+
+    getBoolean(value) {
+        switch (value) {
+            case true:
+            case 'true':
+            case 1:
+            case '1':
+            case 'on':
+            case 'yes':
+                return true;
+            default:
+                return false;
+        }
     }
 }
