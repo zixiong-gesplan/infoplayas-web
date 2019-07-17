@@ -31,4 +31,7 @@ export class AuthGuardService implements CanActivate {
         return !!currentUser;
     }
 
+    public logOut() {
+        sessionStorage.clear();
+    }
 }

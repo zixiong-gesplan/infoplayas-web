@@ -35,6 +35,9 @@
                         <li class="nav-tab">
                             <a [routerLink]="['contacto']" class="font-style-1 nav-item">contáctanos</a>
                         </li>
+                        <li class="nav-tab">
+                            <a (click)="userLogOut()" class="font-style-1 nav-item">log out</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -63,6 +66,9 @@
                         </li>
                         <li class="nav-item clearfix">
                             <a [routerLink]="['contacto']"><span>05.</span> contáctanos</a>
+                        </li>
+                        <li class="nav-item clearfix">
+                            <a (click)="userLogOut()"><span>06.</span> log out</a>
                         </li>
                     </ul>
 
