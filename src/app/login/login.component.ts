@@ -23,6 +23,9 @@ export class LoginComponent implements OnInit {
                     expires: Number(new URLSearchParams(fragment).get('expires_in')),
                     username: new URLSearchParams(fragment).get('username')
                 };
+                // timestamp + expires token
+                const currentDate = new Date();
+                current_user.expires = currentDate.getTime() + current_user.expires * 1000;
                 sessionStorage.setItem('current_user', JSON.stringify(current_user));
             }
             this.router.navigate(['tecnicos']);

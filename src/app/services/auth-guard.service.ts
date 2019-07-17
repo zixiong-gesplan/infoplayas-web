@@ -24,7 +24,10 @@ export class AuthGuardService implements CanActivate {
 
     public isAuthenticated(): boolean {
         const currentUser: Auth = JSON.parse(sessionStorage.getItem('current_user'));
-        // TODO Check whether the token is expired and return
+        const currentDate = new Date();
+        if (currentDate.getTime() >= Number(currentUser.expires)) {
+            return false;
+        }
         return !!currentUser;
     }
 
