@@ -36,7 +36,7 @@
                             <a [routerLink]="['contacto']" class="font-style-1 nav-item">contáctanos</a>
                         </li>
                         <li class="nav-tab">
-                            <a (click)="userLogOut()" class="font-style-1 nav-item">log out</a>
+                            <a [routerLink]="['/']" (click)="userLogOut()" class="font-style-1 nav-item">log out</a>
                         </li>
                     </ul>
                 </div>
@@ -68,7 +68,7 @@
                             <a [routerLink]="['contacto']"><span>05.</span> contáctanos</a>
                         </li>
                         <li class="nav-item clearfix">
-                            <a (click)="userLogOut()"><span>06.</span> log out</a>
+                            <a [routerLink]="['/']" (click)="userLogOut()"><span>06.</span> log out</a>
                         </li>
                     </ul>
 
