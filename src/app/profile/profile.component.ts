@@ -16,6 +16,6 @@ export class ProfileComponent implements OnInit {
 
   userLogOut() {
     this.auth.logOut();
-    window.location.href = '/';
+    this.router.navigate(['/']);
   }
 }

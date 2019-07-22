@@ -32,6 +32,6 @@ export class HomeComponent implements OnInit {
     }
 
     login() {
-        window.location.href = '/tecnicos';
+        this.router.navigate(['home']);
     }
 }
