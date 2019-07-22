@@ -1,0 +1,120 @@
+#mainContainer {
+  padding: 0;
+  margin: 0;
+  height: 70%;
+  width: 100%;
+  overflow: auto;
+}
+
+#viewDiv {
+  padding: 0;
+  margin: 0;
+  height: 500px;
+  width: 100%;
+  float: left;
+}
+
+#viewDiv2 {
+  padding: 0;
+  margin: 0;
+  height: 550px;
+  width: 100%;
+}
+
+.custom-widget {
+  border-radius: 2px;
+  width: 11em!important;
+  font-size: 0.75em;
+}
+
+.scroller {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+
+/*-------------------------------------------FORMS----------------------------------------------*/
+
+#formContainer {
+  float: right;
+  max-height: 100vh;
+  padding: 6px;
+}
+
+#form {
+  background: #fff;
+}
+
+textarea {
+  height: 70px;
+}
+
+
+/*------------------------------------OVERRIDE ESRI CSS-----------------------------------------*/
+
+.esri-scale-bar__label {
+  color: black!important;
+  font-weight: bolder!important;
+}
+
+.esri-legend__service {
+  padding-bottom: 0px!important;
+}
+
+.esri-button {
+  margin-bottom: 3px;
+}
+
+.resLink {
+  font-size:0;
+}
+
+
+/*-------------------------------WIDGET DE LISTADO DE PLAYAS-------------------------------------*/
+
+#listPlayas {
+  width: 15rem;
+  max-height: 300px;
+}
+
+.panel-side h3 {
+  padding: 0 20px;
+  margin: 20px 0;
+}
+
+.panel-side ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.panel-side li {
+  list-style: none;
+  padding: 10px 20px;
+}
+
+.panel-result {
+  cursor: pointer;
+  margin: 2px 0;
+  color: #1A6404;
+  background-color: #F8FFEA;
+}
+
+.panel-result:hover,
+.panel-result:focus {
+  color: white;
+  background-color: #1A6404;
+}
+
+.panel-result-noname {
+  cursor: pointer;
+  margin: 2px 0;
+  color: #8A1111;
+  background-color: #FFE8E8;
+}
+
+.panel-result-noname:hover,
+.panel-result-noname:focus {
+  background-color: #8A1111;
+  color: white;
+}
