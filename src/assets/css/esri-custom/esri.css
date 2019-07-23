@@ -1,7 +1,7 @@
 #mainContainer {
   padding: 0;
   margin: 0;
-  height: 70%;
+  height: 100%;
   width: 100%;
   overflow: auto;
 }
@@ -9,16 +9,9 @@
 #viewDiv {
   padding: 0;
   margin: 0;
-  height: 500px;
+  height: 575px;
   width: 100%;
   float: left;
-}
-
-#viewDiv2 {
-  padding: 0;
-  margin: 0;
-  height: 550px;
-  width: 100%;
 }
 
 .custom-widget {

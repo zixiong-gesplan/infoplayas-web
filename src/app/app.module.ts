@@ -11,6 +11,7 @@ import { SecurityComponent } from './profile/security/security.component';
 import { ReportComponent } from './profile/report/report.component';
 import { ContactUsComponent } from './profile/contact-us/contact-us.component';
 import {LoginComponent} from './login/login.component';
+import { MapEditorComponent } from './profile/map-editor/map-editor.component';
 
 @NgModule({
     declarations: [
@@ -23,6 +24,7 @@ import {LoginComponent} from './login/login.component';
         SecurityComponent,
         ReportComponent,
         ContactUsComponent,
+        MapEditorComponent,
     ],
     imports: [
         BrowserModule,

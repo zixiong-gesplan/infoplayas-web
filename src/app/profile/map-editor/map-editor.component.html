@@ -1,0 +1,21 @@
+<div id="listPlayas" class="panel-side scroller esri-widget esri-hidden">
+  <ul id="ulPlaya">
+    <li>Cargando&hellip;</li>
+  </ul>
+</div>
+<div id="mainContainer">
+  <div id="viewDiv"></div>
+  <div id="legendDiv" class="card custom-widget"></div>
+  <div id="info" class="container-fluid esri-widget custom-widget esri-hidden">
+    <img src="assets/images/logos/logo.png" class="card-img-top"/>
+    <div class="card-body">
+      <p id="txtSelecciona" class="card-text">Seleccione Playa/ZBM</p>
+    </div>
+  </div>
+  <div id="formContainer" class="esri-hidden scroller">
+    <div id="form" class="esri-component"></div>
+    <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
+    <input onclick="unselectFeature()" type="button" class="esri-button esri-button--secondary"
+           value="Cancelar"/>
+  </div>
+</div>
