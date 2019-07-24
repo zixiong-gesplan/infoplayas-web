@@ -163,7 +163,16 @@ header nav .row {
     padding: 9px 26px 9px 20px;
 }
 .navbar-brand {
-    padding: 5px 15px;
+	padding: 5px 15px;
+	
+}
+.navbar.fixed-menu .logo-default,
+.navbar  .logo-scrolled {
+    display: none;
+}
+.navbar.fixed-menu .logo-scrolled,
+.navbar .logo-default{
+	display: inline-block;
 }
 .navbar.top40px {
     top: 40px;
