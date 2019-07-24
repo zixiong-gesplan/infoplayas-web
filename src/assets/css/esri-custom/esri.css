@@ -111,3 +111,10 @@ textarea {
   background-color: #8A1111;
   color: white;
 }
+/*--------------------- para sustituir el uso de bootstrap 4 ya que la plantilla usa la version 3 -----*/
+
+.card-body {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1.25rem;
+}
