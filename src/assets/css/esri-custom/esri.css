@@ -9,7 +9,7 @@
 #viewDiv {
   padding: 0;
   margin: 0;
-  height: 575px;
+  height: 100%;
   width: 100%;
   float: left;
 }
@@ -30,7 +30,7 @@
 
 #formContainer {
   float: right;
-  max-height: 100vh;
+  max-height: 100%;
   padding: 6px;
 }
 
@@ -46,8 +46,11 @@ textarea {
 /*------------------------------------OVERRIDE ESRI CSS-----------------------------------------*/
 
 .esri-scale-bar__label {
-  color: black!important;
-  font-weight: bolder!important;
+  color: white!important;
+}
+
+.esri-scale-bar__line, .esri-scale-bar__line--top, .esri-scale-bar__line--top:before, .esri-scale-bar__line--top:after {
+  background-color: white!important;
 }
 
 .esri-legend__service {

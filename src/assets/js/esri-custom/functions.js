@@ -1,11 +1,12 @@
 // Query a specific feature from the server, highlight the clicked feature and display its attributes in the featureform.
 function selectFeature(view, objectId, featureLayer, form) {
-  featureLayer.queryFeatures({
+  return featureLayer.queryFeatures({
     objectIds: [objectId],
     outFields: ["*"],
     returnGeometry: true
   })
   .then(function(results) {
+    var beachId;
     if (results.features.length > 0) {
       editFeature = results.features[0];
       // display the attributes of selected feature in the form
@@ -18,9 +19,10 @@ function selectFeature(view, objectId, featureLayer, form) {
         };
         highlight = layerView.highlight(editFeature);
         resize(1);
-        nombrePlaya = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'nombre pendiente';
+        beachId = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'nombre pendiente';
       });
     }
+    return beachId;
   });
 };
 
@@ -48,7 +50,7 @@ function submitForm(featureLayer, form, fields, filter) {
     };
     if (confirmSubmit()){
       applyAttributeUpdates(edits, featureLayer, view, fields, filter);
-      unselectFeature();
+      return unselectFeature();
     };
   }
 };
@@ -78,8 +80,8 @@ function unselectFeature(view){
   if (highlight){
     resize(0);
     highlight.remove();
-    nombrePlaya = 'seleccione una playa';
   }
+  return unselectedMessage;
 };
 
 function checkNull(text){

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {loadModules} from 'esri-loader';
@@ -25,8 +25,8 @@ declare let editFeature: any;
 declare let listNode: any;
 declare let view: any;
 declare let features: any;
-// atributo de salida identificador de playa
-declare let nombrePlaya: any;
+declare let unselectedMessage: any;
+
 
 @Component({
     selector: 'app-map-editor',
@@ -34,6 +34,9 @@ declare let nombrePlaya: any;
     styleUrls: ['./map-editor.component.css']
 })
 export class MapEditorComponent implements OnInit {
+    @Output() beachId = new EventEmitter<string>();
+    private _zoom = 5;
+    private _mapHeight = '600px';
 
     constructor(private authService: AuthGuardService) {
     }
@@ -42,6 +45,26 @@ export class MapEditorComponent implements OnInit {
         this.setMap();
     }
 
+    sendMessage(name: string) {
+        this.beachId.emit(name);
+    }
+
+    @Input()
+    set zoom(zoom: number) {
+        this._zoom = zoom;
+    }
+
+    get zoom(): number {
+        return this._zoom;
+    }
+    @Input()
+    set mapHeight(mapHeight: string) {
+        this._mapHeight = mapHeight;
+    }
+
+    get mapHeight(): string {
+        return this._mapHeight;
+    }
 
     private setMap() {
         const options = {css: true, version: '4.11'};
@@ -91,9 +114,10 @@ export class MapEditorComponent implements OnInit {
                 view = new MapView({
                     container: 'viewDiv', // Reference to the scene div created in step 5
                     map: webmap, // Reference to the map object created before the scene
-                    zoom: 12
+                    zoom: this._zoom
                 });
 
+                var t = this;
                 let form, playasLayer, municipiosLayer;
                 //Create widgets
                 let scaleBar = createScaleBar(ScaleBar, view);
@@ -143,13 +167,14 @@ export class MapEditorComponent implements OnInit {
                     listNode.addEventListener('click', onListClickHandler);
 
                     loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas);
-
                     function onListClickHandler(event) {
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
                         const objectId = target.getAttribute('oid');
 
-                        selectFeature(view, objectId, playasLayer, form);
+                        selectFeature(view, objectId, playasLayer, form).then(function(beachId) {
+                            t.sendMessage(beachId);
+                        });
                         expandList.collapse();
 
                         const result = resultId && features && features[parseInt(resultId, 10)];
@@ -166,20 +191,27 @@ export class MapEditorComponent implements OnInit {
                         // If user selects a feature, select it.Find function is for only taking results from desired layer
                         const result = response.results.find(item => item.graphic.layer.id === playasLayerId);
                         if (result) {
-                            selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature);
+                            selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature)
+                                .then(function(beachId) {
+                                t.sendMessage(beachId);
+                            });
                         } else {
-                            unselectFeature();
+                            t.sendMessage(unselectFeature());
                         }
                     });
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas);
+                    t.sendMessage(submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas));
                 };
             })
             .catch(err => {
                 // handle any errors
                 console.error(err);
             });
+    }
+
+    getUnselectedMessage() {
+        return unselectedMessage;
     }
 }
