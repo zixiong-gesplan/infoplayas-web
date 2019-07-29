@@ -1,25 +1,21 @@
 <!--Preloader-->
 <div class="loader center-block" id="loader-fade">
-    <svg width="100px" height="100px" viewBox="-3 -4 39 39">
-        <polygon fill="#ffffff" stroke="#00bcd4" stroke-width="1" points="16,0 32,32 0,32"></polygon>
-    </svg>
+    <svg width="100px" height="100px" viewBox="-3 -4 39 39"><polygon fill="#ffffff" stroke="#8cbb28" stroke-width="1" points="16,0 32,32 0,32"></polygon></svg>
 </div>
 <!-- Preloader ends-->
-
 <div class="wrapper" id="wrapper">
     <!-- Header Starts -->
     <header class="top-menu">
-        <!-- Navigation Starts -->
-        <nav class="navbar background-transparent position-fixed fixed-white-background static-nav no-animation">
-            <div class="container">
+        <!-- Navigation bar starts -->
+        <nav class="navbar position-absolute sm-position-fixed top40px box-nav">
+            <div class="container sm-width-100 white-background">
                 <div class="row">
-                    <div class="navbar-header lg-no-padding-r-l">
-                        <a class="navbar-brand" href="javascript:void(0)">
-                            <a class="navbar-brand" href="javascript:void(0)">
-                                <img src="assets/images/logos/logo-1-4.png" alt="logo"> </a>
-                        </a>
+                    <div class="navbar-header green-background">
+                        <a class="navbar-brand md-float-right" href="javascript:void(0)">
+                            <img src="images/logo.png" alt="logo"> </a>
                     </div>
-                    <ul class="nav navbar-nav navbar-right navlinks-outer collapse navbar-collapse white-black  no-hvr">
+
+                    <ul class="nav navbar-nav navbar-right navlinks-outer collapse navbar-collapse">
                         <li class="nav-tab">
                             <a [routerLink]="['catalogo']" class="font-style-1 nav-item">catálogo</a>
                         </li>
@@ -42,32 +38,30 @@
                 </div>
             </div>
         </nav>
-
         <!-- Side-nav starts -->
-        <div class="navbar-toggle-visible right static-nav no-animation">
+        <div class="navbar-toggle-visible left">
             <!--side menu open button-->
-            <div id="menu_bars" class="right"><span></span> <span></span> <span></span></div>
-            <nav class="side-nav side-nav-right slide-nav">
-                <a class="sidenav-logo" href="index.html"><img src="assets/images/logos/logo-1-4.png" alt="logo"></a>
+            <div id="menu_bars" class="left"><span></span> <span></span> <span></span></div>
+            <nav class="side-nav side-nav-left slide-nav static-nav">
+                <a class="sidenav-logo" href="index.html"><img src="images/logo-5.png" alt="logo"></a>
                 <div class="side-nav-inner-setting">
                     <ul class="side-nav-list font-style-1">
-
                         <li class="nav-item active clearfix">
                             <a [routerLink]="['catalogo']"><span>01.</span> catálogo</a>
                         </li>
-                        <li class="nav-item clearfix">
+                        <li class="clearfix">
                             <a [routerLink]="['clasificacion']"><span>02.</span> protección</a>
                         </li>
-                        <li class="nav-item clearfix">
+                        <li class="clearfix">
                             <a [routerLink]="['seguridad']"><span>03.</span> seguridad</a>
                         </li>
-                        <li class="nav-item clearfix">
+                        <li class="clearfix">
                             <a [routerLink]="['informes']"><span>04.</span> informes</a>
                         </li>
-                        <li class="nav-item clearfix">
+                        <li class="clearfix">
                             <a [routerLink]="['contacto']"><span>05.</span> contáctanos</a>
                         </li>
-                        <li class="nav-item clearfix">
+                        <li class="clearfix">
                             <a [routerLink]="['/']" (click)="userLogOut()"><span>06.</span> log out</a>
                         </li>
                     </ul>
@@ -81,7 +75,7 @@
                         </ul>
                         <div class="nav-copyright">
                             <p class="font-style-1 text-color-grey-646464 font-weight-300 paragraph-15 margintop10px bottom10 text-capitalize">
-                                © 2018 tricon agency </p>
+                                © 2019 Gesplan S.A.</p>
                         </div>
                     </div>
                 </div>
@@ -108,7 +102,7 @@
                     <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
                             class="copyrights">© 2019 Gesplan S.A.</span></p>
                     <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
-                            class="copyrights">Ýrea de Innovación <a href="javascript:void(0)">y Desarrollo</a> </span>
+                            class="copyrights">Área de Innovación <a href="javascript:void(0)">y Desarrollo</a> </span>
                     </p>
 
                 </div>
