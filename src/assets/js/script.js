@@ -440,7 +440,7 @@ $(".stats").appear(function () {
             slideShadows: false
         },
     autoplay: {
-        delay: 2500,
+        delay: 7500,
         disableOnInteraction: false
 },
 keyboard: {
