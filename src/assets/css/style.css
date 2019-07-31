@@ -457,7 +457,7 @@ header nav .row {
 .sidenav-logo {
     position: relative;
     display: inline-block;
-    width: 150px;
+    width: 80px;
 }
 .sidenav-logo > img {
     width: 100%;
