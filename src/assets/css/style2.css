@@ -163,9 +163,11 @@ header nav .row {
     padding: 9px 26px 9px 20px;
 }
 .navbar-brand {
-	padding: 5px 15px;
+	display: inline-block;
+	position: relative;
 	
 }
+
 .navbar.fixed-menu .logo-default,
 .navbar  .logo-scrolled {
     display: none;
