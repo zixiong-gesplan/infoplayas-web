@@ -13,7 +13,7 @@ jQuery(window).on("load", function () {
 
 jQuery(function ($) {
     "use strict";
-    
+
     var $window = $(window);
     var windowsize = $(window).width();
     var $root = $("html, body");
@@ -226,7 +226,7 @@ $(".stats").appear(function () {
     $('#js-grid-mosaic-flat').cubeportfolio({
         filters: '#js-filters-mosaic-flat',
         layoutMode: 'mosaic',
-        defaultFilter: '*',
+        defaultFilter: 'none',
         animationType: 'fadeOutTop',
         gapHorizontal: 0,
         gapVertical: 0,

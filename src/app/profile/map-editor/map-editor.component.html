@@ -1,21 +1,76 @@
 <div id="listPlayas" class="panel-side scroller esri-widget esri-hidden">
-  <ul id="ulPlaya">
-    <li>Cargando&hellip;</li>
-  </ul>
+    <ul id="ulPlaya">
+        <li>Cargando&hellip;</li>
+    </ul>
 </div>
 <div id="mainContainer" [style.height]="_mapHeight">
-  <div id="viewDiv"></div>
-  <div id="legendDiv" class="card custom-widget"></div>
-  <div id="info" class="container-fluid esri-widget custom-widget esri-hidden">
-    <img src="assets/images/logos/logo.png" class="card-img-top"/>
-    <div class="card-body">
-      <p id="txtSelecciona" class="card-text">Seleccione Playa/ZBM</p>
+    <div id="viewDiv"></div>
+    <div id="legendDiv" class="card custom-widget"></div>
+    <div id="info" class="container-fluid esri-widget custom-widget esri-hidden">
+        <img src="assets/images/logos/logo.png" class="card-img-top"/>
+        <div class="card-body">
+            <p id="txtSelecciona" class="card-text">Seleccione Playa/ZBM</p>
+        </div>
     </div>
-  </div>
-  <div id="formContainer" class="esri-hidden scroller">
-    <div id="form" class="esri-component"></div>
-    <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
-    <input (click)="sendMessage(getUnselectedMessage())" onclick="unselectFeature()" type="button" class="esri-button esri-button--secondary"
-           value="Cancelar"/>
-  </div>
+    <div id="formContainer" class="esri-hidden scroller">
+        <div [hidden]="_selectForm !=='clasificacion'">
+            <form [formGroup]="formRisk" (ngSubmit)="onSubmit()">
+                <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
+                <div class="form-row">
+                    <div class="form-group">
+                        <p-toggleButton formControlName="corrientes_mareas" onLabel="Corrientes y mareas peligrosas"
+                                        offLabel="Sin corrientes y mareas peligrosas" onIcon="corrientesIcon"
+                                        offIcon="corrientesIcon"
+                                        [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <p-toggleButton formControlName="rompientes_olas" onLabel="Zona de rompientes y olas"
+                                        offLabel="Sin zona de rompientes y olas" onIcon="rompientesIcon"
+                                        offIcon="rompientesIcon"
+                                        [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <p-toggleButton formControlName="contaminacion" onLabel="Contaminación de las aguas"
+                                        offLabel="Sin contaminación de las aguas" onIcon="contaminacionIcon"
+                                        offIcon="contaminacionIcon"
+                                        [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <p-toggleButton formControlName="fauna_marina" onLabel="Peligros por fauna marina"
+                                        offLabel="Sin peligros por fauna marina" onIcon="faunaIcon"
+                                        offIcon="faunaIcon"
+                                        [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <p-toggleButton formControlName="desprendimientos" onLabel="Desprendimientos"
+                                        offLabel="Sin desprendimientos" onIcon="desprendimientosIcon"
+                                        offIcon="desprendimientosIcon"
+                                        [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <button class="esri-button" type="submit" [disabled]="!formRisk.valid" id="btnSubformSave">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div [hidden]="_selectForm ==='clasificacion'">
+            <div id="form" class="esri-component"></div>
+            <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
+        </div>
+        <input (click)="sendMessage('noid',getUnselectedMessage())" onclick="unselectFeature()" type="button"
+               class="esri-button esri-button--secondary"
+               value="Cancelar"/>
+    </div>
 </div>

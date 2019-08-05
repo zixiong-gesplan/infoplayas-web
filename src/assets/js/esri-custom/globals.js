@@ -1,10 +1,11 @@
 var view, highlight, editFeature, listNode, features;
 
 //mensaje playa no seleccionada
-var unselectedMessage = "seleccione una playa";
+var unselectedMessage = "seleccione";
 
 //Layer IDs
-var playasLayerId = "playas_catalogo_edicion_2734";
+var playasLayerId = "playas_catalogo_edicion_5477";
+var clasificationRisksLayerId = "playas_catalogo_edicion_7907";
 var municipiosLayerId = "enp_y_municipios_islas_canarias_4946";
 
 //Layer filters
@@ -12,7 +13,7 @@ var filterPlayas, filterMunicipios;
 
 //Forms definitions
 var forms = {
-  "playas_catalogo_edicion_2734": [
+  "playas_catalogo_edicion_5477": [
     {
       name: "nombre_municipio",
       label: "Nombre según el municipio",
@@ -43,6 +44,23 @@ var forms = {
       name: "nombre_mapama",
       label: "Nombre según MAPAMA",
       editable: false
+    }
+  ],
+  "playas_catalogo_edicion_7907": [
+    {
+      name: "id_dgse",
+      label: "ID DGSE",
+      description: "Descripción del identificador de playa."
+    },
+    {
+      name: "corrientes_mareas",
+      label: "Corrientes y mareas",
+      description: "Descripción de Corrientes y mareas",
+    },
+    {
+      name: "rompientes_olas",
+      label: "Rompientes y olas",
+      description: "Descripción de Rompientes y olas",
     }
   ]
 };

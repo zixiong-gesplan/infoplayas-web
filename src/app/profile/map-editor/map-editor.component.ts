@@ -2,6 +2,10 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {loadModules} from 'esri-loader';
+import {EsriRequestService} from '../../services/esri-request.service';
+import {Risk} from '../../models/risk';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {EsriBoolean} from '../../models/esri-boolean';
 
 // variables javascript esri maps
 declare const selectFeature: any;
@@ -18,6 +22,7 @@ declare const submitForm: any;
 declare let filterPlayas: any;
 declare let filterMunicipios: any;
 declare const playasLayerId: any;
+declare const clasificationRisksLayerId: any;
 declare const municipiosLayerId: any;
 declare const aytos: any;
 declare const forms: any;
@@ -35,18 +40,18 @@ declare let unselectedMessage: any;
 })
 export class MapEditorComponent implements OnInit {
     @Output() beachId = new EventEmitter<string>();
+    @Output() localName = new EventEmitter<string>();
+    selectedBeachRisk: Risk;
+    formRisk: FormGroup;
+    private featureResponse: Risk[];
+
+    constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
+    }
+
     private _zoom = 5;
-    private _mapHeight = '600px';
 
-    constructor(private authService: AuthGuardService) {
-    }
-
-    ngOnInit() {
-        this.setMap();
-    }
-
-    sendMessage(name: string) {
-        this.beachId.emit(name);
+    get zoom(): number {
+        return this._zoom;
     }
 
     @Input()
@@ -54,16 +59,90 @@ export class MapEditorComponent implements OnInit {
         this._zoom = zoom;
     }
 
-    get zoom(): number {
-        return this._zoom;
+    private _mapHeight = '600px';
+
+    get mapHeight(): string {
+        return this._mapHeight;
     }
+
     @Input()
     set mapHeight(mapHeight: string) {
         this._mapHeight = mapHeight;
     }
 
-    get mapHeight(): string {
-        return this._mapHeight;
+    private _selectForm = 'default';
+
+    get selectForm(): string {
+        return this._selectForm;
+    }
+
+    @Input()
+    set selectForm(selectForm: string) {
+        this._selectForm = selectForm;
+    }
+
+    ngOnInit() {
+        this.setMap();
+        this.formRisk = this.fb.group({
+            objectid: new FormControl(''),
+            corrientes_mareas: new FormControl(''),
+            rompientes_olas: new FormControl(''),
+            contaminacion: new FormControl(''),
+            fauna_marina: new FormControl(''),
+            desprendimientos: new FormControl('')
+        });
+    }
+
+    loadRelatedRecords() {
+        const currentUser: Auth = this.authService.getCurrentUser();
+        this.service.getEsriRelatedData('https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0/queryRelatedRecords',
+            '237', '0', '*', true, currentUser.token).subscribe(
+            (result: any) => {
+                if (result) {
+                    this.selectedBeachRisk = result.relatedRecordGroups[0].relatedRecords[0].attributes;
+                }
+            },
+            error => {
+                console.log(error.toString());
+            }).add(() => {
+            console.log('end of request');
+        });
+    }
+
+    sendMessage(id: string, name: string) {
+        this.beachId.emit(id);
+        this.localName.emit(name);
+    }
+
+    getUnselectedMessage() {
+        return unselectedMessage;
+    }
+
+    onSubmit() {
+        const currentUser: Auth = this.authService.getCurrentUser();
+        // TODO cambiar con reactive forms que el valor en vez de ser true o false sea 1 o 0 para evitar el siguiente bloque
+        const risk: Risk = this.formRisk.value;
+        for (let [key, value] of Object.entries(risk)) {
+            if (typeof value === 'boolean' || value === null) {
+                risk[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
+            }
+        }
+
+        const updateObj = new Array();
+        updateObj.push({attributes: risk});
+        this.service.updateEsriData('https://utility.arcgis.com/usrsvcs/servers/88157824485b48fb9a3dbecc205587f9/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/1/applyEdits',
+            updateObj, currentUser.token).subscribe(
+            (result: any) => {
+                if (result) {
+                    console.log(result);
+                }
+            },
+            error => {
+                console.log(error.toString());
+            }).add(() => {
+            console.log('end of request');
+            this.sendMessage('noid', unselectFeature());
+        });
     }
 
     private setMap() {
@@ -81,6 +160,9 @@ export class MapEditorComponent implements OnInit {
             'esri/widgets/Expand',
             'esri/widgets/Legend',
             'esri/widgets/Home',
+            'esri/tasks/QueryTask',
+            'esri/tasks/support/Query',
+            'esri/tasks/support/RelationshipQuery'
         ], options)
             .then(([
                        WebMap,
@@ -92,7 +174,10 @@ export class MapEditorComponent implements OnInit {
                        BasemapToggle,
                        Expand,
                        Legend,
-                       Home
+                       Home,
+                       QueryTask,
+                       Query,
+                       RelationshipQuery
                    ]) => {
 
                 // get session user
@@ -118,7 +203,7 @@ export class MapEditorComponent implements OnInit {
                 });
 
                 var t = this;
-                let form, playasLayer, municipiosLayer;
+                let form, playasLayer, municipiosLayer, clasificationRisksTable, queryTask;
                 //Create widgets
                 let scaleBar = createScaleBar(ScaleBar, view);
                 let basemapToggle = createBaseMapToggle(BasemapToggle, view, 'streets-vector');
@@ -130,6 +215,14 @@ export class MapEditorComponent implements OnInit {
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
+
+                    clasificationRisksTable = webmap.tables.filter(obj => {
+                        return obj.id === clasificationRisksLayerId;
+                    })[0];
+
+                    queryTask = new QueryTask({
+                        url: playasLayer.url + '/' + playasLayer.layerId + '/' + 'queryRelatedRecords'
+                    });
 
                     let user = IdentityManager.credentials[0].userId;
 
@@ -167,13 +260,24 @@ export class MapEditorComponent implements OnInit {
                     listNode.addEventListener('click', onListClickHandler);
 
                     loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas);
+
                     function onListClickHandler(event) {
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
                         const objectId = target.getAttribute('oid');
 
-                        selectFeature(view, objectId, playasLayer, form).then(function(beachId) {
-                            t.sendMessage(beachId);
+                        selectFeature(view, objectId, playasLayer, form).then(function (output) {
+                            t.sendMessage(output.beachId, output.localName);
+                            // cargamos los formularios de la tablas relacionadas
+                            let query = new RelationshipQuery();
+                            query.returnGeometry = false;
+                            query.outFields = ['*'];
+                            query.relationshipId = 0;
+                            query.objectIds = [output.beachId];
+                            queryTask.executeRelationshipQuery(query).then(function (results) {
+                                t.formRisk.reset();
+                                t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
+                            });
                         });
                         expandList.collapse();
 
@@ -192,26 +296,35 @@ export class MapEditorComponent implements OnInit {
                         const result = response.results.find(item => item.graphic.layer.id === playasLayerId);
                         if (result) {
                             selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature)
-                                .then(function(beachId) {
-                                t.sendMessage(beachId);
-                            });
+                                .then(function (output) {
+                                    t.sendMessage(output.beachId, output.localName);
+                                    // cargamos los formularios de la tablas relacionadas
+                                    let query = new RelationshipQuery();
+                                    query.returnGeometry = false;
+                                    query.outFields = ['*'];
+                                    query.relationshipId = 0;
+                                    query.objectIds = [output.beachId];
+                                    queryTask.executeRelationshipQuery(query).then(function (results) {
+                                        t.formRisk.reset();
+                                        t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
+                                    });
+                                });
                         } else {
-                            t.sendMessage(unselectFeature());
+                            t.sendMessage('noid', unselectFeature());
                         }
                     });
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    t.sendMessage(submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas));
+                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas));
+                };
+
+                $('#tabView')[0].onclick = function () {
                 };
             })
             .catch(err => {
                 // handle any errors
                 console.error(err);
             });
-    }
-
-    getUnselectedMessage() {
-        return unselectedMessage;
     }
 }

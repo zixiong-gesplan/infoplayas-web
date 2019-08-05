@@ -170,36 +170,148 @@
     <div class="container">
         <div class="col-md-6 portfolio paddingleft25px">
             <div class="information-written-data wow fadeIn">
-                <h2 class="border-color-blue-3 no-margin text-color-grey text-capitalize">portfolio <br> <span
-                        class="green-color font-style-1">creative</span> <span class="font-style-1">work</span></h2>
+                <h2
+                    class="border-color-blue-3 no-margin text-color-grey text-capitalize">
+                    {{(localName ? localName.replace('PLAYA DEL','').replace('PLAYA DE','').replace('PLAYA','') : 'seleccione') | titlecase}}
+                    <br> <span
+                    class="green-color font-style-1">playas</span> <span class="font-style-1">editor</span></h2>
             </div>
         </div>
         <div class="row">
             <div id="js-filters-mosaic-flat" class="col-lg-offset-7 cbp-l-filters-buttonCenter">
-                <div data-filter="*" class="cbp-filter-item-active cbp-filter-item text-capitalize">
-                    all
+                <div (click)="setForm('inventario')" data-filter=".none" class="cbp-filter-item text-capitalize">
+                    inventario
                     <div class="cbp-filter-counter"></div>
                 </div>
-                <div data-filter=".print" class="cbp-filter-item text-capitalize">
-                    art work
+                <div (click)="setForm('clasificacion')" data-filter=".flow" class="cbp-filter-item text-capitalize">
+                    afluencia
                     <div class="cbp-filter-counter"></div>
                 </div>
-                <div data-filter=".web-design" class="cbp-filter-item text-capitalize">
-                    web
+                <div (click)="setForm('riesgos')" data-filter=".risks" class="cbp-filter-item text-capitalize">
+                    riesgos
                     <div class="cbp-filter-counter"></div>
                 </div>
-                <div data-filter=".graphic" class="cbp-filter-item text-capitalize">
-                    logos
-                    <div class="cbp-filter-counter"></div>
-                </div>
-                <div data-filter=".motion" class="cbp-filter-item text-capitalize">
-                    print media
+                <div (click)="setForm('resultados')" data-filter=".result" class="cbp-filter-item text-capitalize">
+                    resultados
                     <div class="cbp-filter-counter"></div>
                 </div>
             </div>
-            <app-map-editor></app-map-editor>
+            <div id="js-grid-mosaic-flat" class="cbp cbp-l-grid-mosaic-flat">
+                <div class="cbp-item risks">
+                    <div class="cbp-caption prueba">
+                        <p-tabMenu id="tabView" styleClass="prueba" [model]="itemsRisks" [activeItem]="itemsRisks[0]">
+                            <ng-template pTemplate="item" let-item let-i="index">
+                                <div (click)="selectFormRisks(item,i)"
+                                     style="position: relative; text-align: center; min-width: 8em">
+                                    <div class="ui-menuitem-icon" [ngClass]="item.icon" *ngIf="item.icon"
+                                         style="font-size: 2em"></div>
+                                    <div class="ui-menuitem-text">
+                                        {{item.label}}
+                                    </div>
+                                    <a tabindex="0" class="ui-menuitem-icon" (click)="closeItemRisks($event, i)"
+                                       style="position: absolute; right: -1em; top: -.5em; padding: 0" *ngIf="i !== 0">
+                                        <span class="pi pi-times"></span>
+                                    </a>
+                                </div>
+                            </ng-template>
+                        </p-tabMenu>
+                    </div>
+                </div>
+                <div class="cbp-item flow">
+                    <div class="cbp-caption">
+                        <p-tabMenu [model]="itemsPeopleFlow" [activeItem]="itemsPeopleFlow[0]">
+                            <ng-template pTemplate="item" let-item let-i="index">
+                                <div (click)="selectFormPeopleFlow(item,i)"
+                                     style="position: relative; text-align: center; min-width: 8em">
+                                    <div class="ui-menuitem-icon" [ngClass]="item.icon" *ngIf="item.icon"
+                                         style="font-size: 2em"></div>
+                                    <div class="ui-menuitem-text">
+                                        {{item.label}}
+                                    </div>
+                                    <a tabindex="0" class="ui-menuitem-icon" (click)="closeItemPeopleFlow($event, i)"
+                                       style="position: absolute; right: -1em; top: -.5em; padding: 0" *ngIf="i !== 0">
+                                        <span class="pi pi-times"></span>
+                                    </a>
+                                </div>
+                            </ng-template>
+                        </p-tabMenu>
+                    </div>
+                </div>
+                <div class="cbp-item result">
+                    <div class="cbp-caption">
+                        <div class="cbp-caption-defaultWrap">
+                            <img src="assets/images/gallery3.jpg" alt="project">
+                        </div>
+                        <div class="cbp-caption-activeWrap">
+                            <div class="cbp-l-caption-alignCenter">
+                                <div class="cbp-l-caption-body">
+                                    <div class="plus">
+                                        <img src="assets/images/plus-sign.png" alt="sign">
+                                    </div>
+                                    <div class="cbp-l-caption-title">creative art work</div>
+                                    <br>
+                                    <a href="assets/images/gallery3.jpg"
+                                       class="cbp-lightbox portfolio-img-button btn  btn-rounded btn-large"
+                                       data-title="creative art work<br>by Tiberiu Neamu">View Large</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cbp-item result">
+                    <div class="cbp-caption">
+                        <div class="cbp-caption-defaultWrap">
+                            <img src="assets/images/gallery3.jpg" alt="project">
+                        </div>
+                        <div class="cbp-caption-activeWrap">
+                            <div class="cbp-l-caption-alignCenter">
+                                <div class="cbp-l-caption-body">
+                                    <div class="plus">
+                                        <img src="assets/images/plus-sign.png" alt="sign">
+                                    </div>
+                                    <div class="cbp-l-caption-title">creative art work</div>
+                                    <br>
+                                    <a href="assets/images/gallery3.jpg"
+                                       class="cbp-lightbox portfolio-img-button btn  btn-rounded btn-large"
+                                       data-title="creative art work<br>by Tiberiu Neamu">View Large</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cbp-item result">
+                    <div class="cbp-caption">
+                        <div class="cbp-caption-defaultWrap">
+                            <img src="assets/images/gallery3.jpg" alt="project">
+                        </div>
+                        <div class="cbp-caption-activeWrap">
+                            <div class="cbp-l-caption-alignCenter">
+                                <div class="cbp-l-caption-body">
+                                    <div class="plus">
+                                        <img src="assets/images/plus-sign.png" alt="sign">
+                                    </div>
+                                    <div class="cbp-l-caption-title">creative art work</div>
+                                    <br>
+                                    <a href="assets/images/gallery3.jpg"
+                                       class="cbp-lightbox portfolio-img-button btn  btn-rounded btn-large"
+                                       data-title="creative art work<br>by Tiberiu Neamu">View Large</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+        <div class="row paddingleft15px paddingright15px">
+            <app-map-editor
+                (beachId)="receiveBeachId($event)"
+                (localName)="receiveLocalName($event)"
+                [zoom]="mapZoomLevel"
+                [mapHeight]="mapHeightContainer"
+                [selectForm]="actualForm">
+            </app-map-editor>
+        </div>
+        <div class="row"></div>
+    </div></div>
 <!-- clasificacion Body End -->
 

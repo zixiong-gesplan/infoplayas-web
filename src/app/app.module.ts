@@ -12,6 +12,9 @@ import { ReportComponent } from './profile/report/report.component';
 import { ContactUsComponent } from './profile/contact-us/contact-us.component';
 import {LoginComponent} from './login/login.component';
 import { MapEditorComponent } from './profile/map-editor/map-editor.component';
+import {TabMenuModule, TabViewModule, ToggleButtonModule} from 'primeng/primeng';
+import {EsriRequestService} from './services/esri-request.service';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
     declarations: [
@@ -24,15 +27,19 @@ import { MapEditorComponent } from './profile/map-editor/map-editor.component';
         SecurityComponent,
         ReportComponent,
         ContactUsComponent,
-        MapEditorComponent,
+        MapEditorComponent
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
         ReactiveFormsModule,
-        FormsModule
+        FormsModule,
+        TabMenuModule,
+        TabViewModule,
+        HttpClientModule,
+        ToggleButtonModule,
     ],
-    providers: [],
+    providers: [EsriRequestService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

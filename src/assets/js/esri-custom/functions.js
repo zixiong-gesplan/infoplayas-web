@@ -6,7 +6,7 @@ function selectFeature(view, objectId, featureLayer, form) {
     returnGeometry: true
   })
   .then(function(results) {
-    var beachId;
+    var ouputData = {};
     if (results.features.length > 0) {
       editFeature = results.features[0];
       // display the attributes of selected feature in the form
@@ -19,10 +19,11 @@ function selectFeature(view, objectId, featureLayer, form) {
         };
         highlight = layerView.highlight(editFeature);
         resize(1);
-        beachId = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'nombre pendiente';
+        ouputData.beachId = editFeature.attributes.objectid_12;
+        ouputData.localName = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'pendiente';
       });
     }
-    return beachId;
+    return ouputData;
   });
 };
 

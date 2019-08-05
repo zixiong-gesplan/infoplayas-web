@@ -1,0 +1,42 @@
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+
+@Injectable()
+export class EsriRequestService {
+
+    constructor(private http: HttpClient) {
+    }
+
+    getEsriDataLayer(featureEndPoint: string, cWhere: string, outFields: string, geometry: boolean, token: string) {
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'application/X-www-form-urlencoded');
+
+        const params = new HttpParams().set('token', token).append('f', 'json')
+            .append('where', cWhere)
+            .append('outFields', outFields)
+            .append('returnGeometry', geometry ? 'true' : 'false')
+        return this.http.post(featureEndPoint, params, {headers: headers});
+    }
+
+    getEsriRelatedData(featureEndPoint: string, parentIds: string, relationId: string, outFields: string,
+                       geometry: boolean, token: string) {
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'application/X-www-form-urlencoded');
+
+        const params = new HttpParams().set('token', token).append('f', 'json')
+            .append('objectIds', parentIds)
+            .append('outFields', outFields)
+            .append('returnGeometry', geometry ? 'true' : 'false')
+            .append('relationshipId', relationId);
+        return this.http.post(featureEndPoint, params, {headers: headers});
+    }
+
+    updateEsriData(featureEndPoint: string, data: Object, token: string) {
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'application/X-www-form-urlencoded');
+
+        const params = new HttpParams().set('token', token).append('f', 'json')
+            .append('updates', JSON.stringify(data));
+        return this.http.post(featureEndPoint, params, {headers: headers});
+    }
+}
