@@ -1,6 +1,8 @@
 <!--Preloader-->
 <div class="loader center-block" id="loader-fade">
-    <svg width="100px" height="100px" viewBox="-3 -4 39 39"><polygon fill="#ffffff" stroke="#8cbb28" stroke-width="1" points="16,0 32,32 0,32"></polygon></svg>
+    <svg width="100px" height="100px" viewBox="-3 -4 39 39">
+        <polygon fill="#ffffff" stroke="#8cbb28" stroke-width="1" points="16,0 32,32 0,32"></polygon>
+    </svg>
 </div>
 <!-- Preloader ends-->
 <div class="wrapper" id="wrapper">
@@ -10,12 +12,10 @@
         <nav class="navbar position-absolute sm-position-fixed top40px box-nav">
             <div class="container sm-width-100 white-background">
                 <div class="row">
-                    <div class="navbar-header green-background">
-                        <a class="navbar-brand md-float-right" href="javascript:void(0)">
-                            <img src="images/logo.png" alt="logo"> </a>
-                    </div>
-
                     <ul class="nav navbar-nav navbar-right navlinks-outer collapse navbar-collapse">
+                        <li class="navbar-brand md-float-right" href="javascript:void(0)">
+                            <img src="assets/images/logos/logo_bueno2.png" alt="logo">
+                        </li>
                         <li class="nav-tab">
                             <a [routerLink]="['catalogo']" class="font-style-1 nav-item">catálogo</a>
                         </li>
@@ -43,28 +43,32 @@
             <!--side menu open button-->
             <div id="menu_bars" class="left"><span></span> <span></span> <span></span></div>
             <nav class="side-nav side-nav-left slide-nav static-nav">
-                <a class="sidenav-logo" href="index.html"><img src="images/logo-5.png" alt="logo"></a>
+                <a class="sidenav-logo" href="index.html"><img src="assets/images/logos/Gobierno-color-HORIZONTAL.jpg"
+                                                               alt="logo"></a>
                 <div class="side-nav-inner-setting">
                     <ul class="side-nav-list font-style-1">
                         <li class="nav-item active clearfix">
-                            <a [routerLink]="['catalogo']"><span>01.</span> catálogo</a>
+                            <a [routerLink]="['catalogo']"><span><i class="fa fa-map-o"></i></span> catálogo</a>
                         </li>
                         <li class="clearfix">
-                            <a [routerLink]="['clasificacion']"><span>02.</span> protección</a>
+                            <a [routerLink]="['clasificacion']"><span><i class="fa fa-shield"></i></span> protección</a>
                         </li>
                         <li class="clearfix">
-                            <a [routerLink]="['seguridad']"><span>03.</span> seguridad</a>
+                            <a [routerLink]="['seguridad']"><span><i class="fa fa-user-secret"></i></span> seguridad</a>
                         </li>
                         <li class="clearfix">
-                            <a [routerLink]="['informes']"><span>04.</span> informes</a>
+                            <a [routerLink]="['informes']"><span><i class="fa fa-sticky-note-o"></i></span> informes</a>
                         </li>
                         <li class="clearfix">
-                            <a [routerLink]="['contacto']"><span>05.</span> contáctanos</a>
+                            <a [routerLink]="['contacto']"><span><i class="fa fa-envelope-square"></i></span>
+                                contáctanos</a>
                         </li>
                         <li class="clearfix">
-                            <a [routerLink]="['/']" (click)="userLogOut()"><span>06.</span> log out</a>
+                            <a [routerLink]="['/']" (click)="userLogOut()"><span><i class="fa fa-sign-out"></i></span>
+                                log out</a>
                         </li>
                     </ul>
+                    .
 
                     <div class="bottom-share">
                         <ul class="social_icon">
@@ -100,11 +104,9 @@
                         <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-instagram"></i> </a></li>
                     </ul>
                     <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
-                            class="copyrights">© 2019 Gesplan S.A.</span></p>
+                        class="copyrights">© 2019 Gesplan S.A.</span></p>
                     <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
-                            class="copyrights">Área de Innovación <a href="javascript:void(0)">y Desarrollo</a> </span>
-                    </p>
-
+                        class="copyrights">Área de Innovación <a href="javascript:void(0)">y Desarrollo</a> </span></p>
                 </div>
             </div>
         </div>

@@ -1,123 +1,168 @@
 #mainContainer {
-  padding: 0;
-  margin: 0;
-  height: 100%;
-  width: 100%;
-  overflow: auto;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
 }
 
 #viewDiv {
-  padding: 0;
-  margin: 0;
-  height: 100%;
-  width: 100%;
-  float: left;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    float: left;
 }
 
 .custom-widget {
-  border-radius: 2px;
-  width: 11em!important;
-  font-size: 0.75em;
+    border-radius: 2px;
+    width: 11em!important;
+    font-size: 0.75em;
 }
 
 .scroller {
-  overflow-x: hidden;
-  overflow-y: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 
 /*-------------------------------------------FORMS----------------------------------------------*/
 
 #formContainer {
-  float: right;
-  max-height: 100%;
-  padding: 6px;
+    float: right;
+    max-height: 100%;
+    padding: 6px;
 }
 
 #form {
-  background: #fff;
+    background: #fff;
 }
 
 textarea {
-  height: 70px;
+    height: 70px;
 }
-
 
 /*------------------------------------OVERRIDE ESRI CSS-----------------------------------------*/
 
 .esri-scale-bar__label {
-  color: white!important;
+    color: white!important;
 }
 
 .esri-scale-bar__line, .esri-scale-bar__line--top, .esri-scale-bar__line--top:before, .esri-scale-bar__line--top:after {
-  background-color: white!important;
+    background-color: white!important;
 }
 
 .esri-legend__service {
-  padding-bottom: 0px!important;
+    padding-bottom: 0px!important;
 }
 
 .esri-button {
-  margin-bottom: 3px;
+    margin-bottom: 3px;
 }
 
 .resLink {
-  font-size:0;
+    font-size:0;
 }
 
 
 /*-------------------------------WIDGET DE LISTADO DE PLAYAS-------------------------------------*/
 
 #listPlayas {
-  width: 15rem;
-  max-height: 300px;
+    width: 15rem;
+    max-height: 300px;
 }
 
 .panel-side h3 {
-  padding: 0 20px;
-  margin: 20px 0;
+    padding: 0 20px;
+    margin: 20px 0;
 }
 
 .panel-side ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .panel-side li {
-  list-style: none;
-  padding: 10px 20px;
+    list-style: none;
+    padding: 10px 20px;
 }
 
 .panel-result {
-  cursor: pointer;
-  margin: 2px 0;
-  color: #1A6404;
-  background-color: #F8FFEA;
+    cursor: pointer;
+    margin: 2px 0;
+    color: #1A6404;
+    background-color: #F8FFEA;
 }
 
 .panel-result:hover,
 .panel-result:focus {
-  color: white;
-  background-color: #1A6404;
+    color: white;
+    background-color: #1A6404;
 }
 
 .panel-result-noname {
-  cursor: pointer;
-  margin: 2px 0;
-  color: #8A1111;
-  background-color: #FFE8E8;
+    cursor: pointer;
+    margin: 2px 0;
+    color: #8A1111;
+    background-color: #FFE8E8;
 }
 
 .panel-result-noname:hover,
 .panel-result-noname:focus {
-  background-color: #8A1111;
-  color: white;
+    background-color: #8A1111;
+    color: white;
 }
 /*--------------------- para sustituir el uso de bootstrap 4 ya que la plantilla usa la version 3 -----*/
 
 .card-body {
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
-  padding: 1.25rem;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+/*--------------------- botones para los formularios del mapa custom -----*/
+.corrientesIcon {
+    background: url("../../../assets/images/formrisk/a.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 4em!important;
+    width: 4em!important;
+    top: 15% !important;
+    position: relative;
+}
+.rompientesIcon {
+    background: url("../../../assets/images/formrisk/b.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 4em!important;
+    width: 4em!important;
+    top: 15% !important;
+    position: relative;
+}
+.contaminacionIcon {
+    background: url("../../../assets/images/formrisk/c.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 4em!important;
+    width: 4em!important;
+    top: 15% !important;
+    position: relative;
+}
+.faunaIcon {
+    background: url("../../../assets/images/formrisk/d.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 4em!important;
+    width: 4em!important;
+    top: 15% !important;
+    position: relative;
+}
+.desprendimientosIcon {
+    background: url("../../../assets/images/formrisk/e.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 4em!important;
+    width: 4em!important;
+    top: 15% !important;
+    position: relative;
 }
