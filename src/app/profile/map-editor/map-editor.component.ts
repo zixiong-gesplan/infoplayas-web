@@ -6,6 +6,9 @@ import {EsriRequestService} from '../../services/esri-request.service';
 import {Risk} from '../../models/risk';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {EsriBoolean} from '../../models/esri-boolean';
+declare var $:any;
+declare var jquery:any;
+
 
 // variables javascript esri maps
 declare const selectFeature: any;
