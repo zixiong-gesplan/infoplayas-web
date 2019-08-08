@@ -222,50 +222,50 @@ $(".stats").appear(function () {
 
 (function ($, window, document, undefined) {
 
-    // init cubeportfolio
-    $('#js-grid-mosaic-flat').cubeportfolio({
-        filters: '#js-filters-mosaic-flat',
-        layoutMode: 'mosaic',
-        defaultFilter: 'none',
-        animationType: 'fadeOutTop',
-        gapHorizontal: 0,
-        gapVertical: 0,
-        gridAdjustment: 'responsive',
-        caption: 'zoom',
-        displayType: 'fadeIn',
-        displayTypeSpeed: 100,
-        sortByDimension: true,
-            mediaQueries: [{
-                width: 1500,
-                cols: 3
-            }, {
-                width: 1100,
-                cols: 3
-            }, {
-                width: 768,
-                cols: 2
-            }, {
-                width: 480,
-                cols: 1
-            }, {
-                width: 320,
-                cols: 1
-            }],
-
-        // lightbox
-        lightboxDelegate: '.cbp-lightbox',
-        lightboxGallery: true,
-        lightboxTitleSrc: 'data-title',
-        lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
-
-        plugins: {
-            loadMore: {
-                element: '#js-loadMore-mosaic-flat',
-                action: 'click',
-                loadItems: 3
-            }
-        }
-    })
+    // // // init cubeportfolio
+    // $('#js-grid-mosaic-flat').cubeportfolio({
+    //     filters: '#js-filters-mosaic-flat',
+    //     layoutMode: 'mosaic',
+    //     defaultFilter: 'none',
+    //     animationType: 'fadeOutTop',
+    //     gapHorizontal: 0,
+    //     gapVertical: 0,
+    //     gridAdjustment: 'responsive',
+    //     caption: 'zoom',
+    //     displayType: 'fadeIn',
+    //     displayTypeSpeed: 100,
+    //     sortByDimension: true,
+    //         mediaQueries: [{
+    //             width: 1500,
+    //             cols: 3
+    //         }, {
+    //             width: 1100,
+    //             cols: 3
+    //         }, {
+    //             width: 768,
+    //             cols: 2
+    //         }, {
+    //             width: 480,
+    //             cols: 1
+    //         }, {
+    //             width: 320,
+    //             cols: 1
+    //         }],
+    //
+    //     // lightbox
+    //     lightboxDelegate: '.cbp-lightbox',
+    //     lightboxGallery: true,
+    //     lightboxTitleSrc: 'data-title',
+    //     lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
+    //
+    //     plugins: {
+    //         loadMore: {
+    //             element: '#js-loadMore-mosaic-flat',
+    //             action: 'click',
+    //             loadItems: 3
+    //         }
+    //     }
+    // })
     //Project Filter
     $("#projects").cubeportfolio({
         layoutMode: 'grid',
@@ -421,40 +421,6 @@ $(".stats").appear(function () {
 
 
 })(jQuery, window, document);
-
-    /* ===================================
-       Swiper Slider
-       ====================================== */
-    var swiperThreeSlides = new Swiper('.swiper-three-slides', {
-        centeredSlides:true,
-        allowTouchMove: true,
-
-        slidesPerView: 3,
-        preventClicks: false,
-        loop:true,
-        pagination: {
-            el: '.swiper-pagination-bullets',
-            clickable: true
-},
-        cubeEffect: {
-            slideShadows: false
-        },
-    autoplay: {
-        delay: 7500,
-        disableOnInteraction: false
-},
-keyboard: {
-    enabled: true
-},
-breakpoints: {
-    991: {
-        slidesPerView: 2
-    },
-    767: {
-        slidesPerView: 1
-    }
-}
-});
 
     // Blog Listing Image Slider
     new Swiper(".blog-listing-image-slider", {
@@ -1149,4 +1115,3 @@ breakpoints: {
 
 
 });
-

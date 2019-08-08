@@ -338,7 +338,7 @@
         },
     };
     a(document).ready(function () {
-        b.initialize()
+         b.initialize()
     });
     a(window).on("resize", function () {
         b.hoverDropdown();
