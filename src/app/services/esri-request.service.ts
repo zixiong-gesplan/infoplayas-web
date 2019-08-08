@@ -31,12 +31,12 @@ export class EsriRequestService {
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 
-    updateEsriData(featureEndPoint: string, data: Object, token: string) {
+    applyEditsRelatedData(featureEndPoint: string, data: Object, mode: string, token: string) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
 
         const params = new HttpParams().set('token', token).append('f', 'json')
-            .append('updates', JSON.stringify(data));
+            .append(mode, JSON.stringify(data));
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 }

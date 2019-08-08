@@ -78,4 +78,3 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-// Para poder utilizar la notacion jquery en el api javascript de Esri

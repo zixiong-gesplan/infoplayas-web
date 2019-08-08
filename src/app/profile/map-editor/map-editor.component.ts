@@ -6,8 +6,9 @@ import {EsriRequestService} from '../../services/esri-request.service';
 import {Risk} from '../../models/risk';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {EsriBoolean} from '../../models/esri-boolean';
-declare var $:any;
-declare var jquery:any;
+
+declare var $: any;
+declare var jquery: any;
 
 
 // variables javascript esri maps
@@ -47,6 +48,7 @@ export class MapEditorComponent implements OnInit {
     selectedBeachRisk: Risk;
     formRisk: FormGroup;
     private featureResponse: Risk[];
+    private onEdit: boolean;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
     }
@@ -92,7 +94,8 @@ export class MapEditorComponent implements OnInit {
             rompientes_olas: new FormControl(''),
             contaminacion: new FormControl(''),
             fauna_marina: new FormControl(''),
-            desprendimientos: new FormControl('')
+            desprendimientos: new FormControl(''),
+            id_dgse: new FormControl('')
         });
     }
 
@@ -133,8 +136,16 @@ export class MapEditorComponent implements OnInit {
 
         const updateObj = new Array();
         updateObj.push({attributes: risk});
-        this.service.updateEsriData('https://utility.arcgis.com/usrsvcs/servers/88157824485b48fb9a3dbecc205587f9/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/1/applyEdits',
-            updateObj, currentUser.token).subscribe(
+        if (this.onEdit) {
+            this.editData(updateObj, currentUser, 'updates');
+        } else {
+            this.editData(updateObj, currentUser, 'adds');
+        }
+    }
+
+    private editData(updateObj, currentUser, mode) {
+        this.service.applyEditsRelatedData('https://utility.arcgis.com/usrsvcs/servers/88157824485b48fb9a3dbecc205587f9/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/1/applyEdits',
+            updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
                     console.log(result);
@@ -279,7 +290,13 @@ export class MapEditorComponent implements OnInit {
                             query.objectIds = [output.beachId];
                             queryTask.executeRelationshipQuery(query).then(function (results) {
                                 t.formRisk.reset();
-                                t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
+                                if (Object.entries(results).length === 0 && results.constructor === Object) {
+                                    t.formRisk.patchValue({id_dgse: output.id_dgse});
+                                    t.onEdit = false;
+                                } else {
+                                    t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
+                                    t.onEdit = true;
+                                }
                             });
                         });
                         expandList.collapse();
@@ -309,7 +326,13 @@ export class MapEditorComponent implements OnInit {
                                     query.objectIds = [output.beachId];
                                     queryTask.executeRelationshipQuery(query).then(function (results) {
                                         t.formRisk.reset();
-                                        t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
+                                        if (Object.entries(results).length === 0 && results.constructor === Object) {
+                                            t.formRisk.patchValue({id_dgse: output.id_dgse});
+                                            t.onEdit = false;
+                                        } else {
+                                            t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
+                                            t.onEdit = true;
+                                        }
                                     });
                                 });
                         } else {
