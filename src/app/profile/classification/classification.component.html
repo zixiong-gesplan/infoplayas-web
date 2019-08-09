@@ -196,10 +196,10 @@
                     <div class="cbp-filter-counter"></div>
                 </div>
             </div>
-            <div id="js-grid-mosaic-flat" class="cbp cbp-l-grid-mosaic-flat">
-                <div class="cbp-item risks">
-                    <div class="cbp-caption prueba">
-                        <p-tabMenu id="tabView" styleClass="prueba" [model]="itemsRisks" [activeItem]="itemsRisks[0]">
+            <div id="js-grid-mosaic-flat" class="cbp cbp-l-grid-mosaic-flat" >
+                <div class="cbp-item risks" >
+                    <div class="cbp-caption">
+                        <p-tabMenu id="tabView" [model]="itemsRisks" [activeItem]="itemsRisks[0]">
                             <ng-template pTemplate="item" let-item let-i="index">
                                 <div (click)="selectFormRisks(item,i)"
                                      style="position: relative; text-align: center; min-width: 8em">
@@ -208,30 +208,30 @@
                                     <div class="ui-menuitem-text">
                                         {{item.label}}
                                     </div>
-                                    <a tabindex="0" class="ui-menuitem-icon" (click)="closeItemRisks($event, i)"
+                                    <!-- <a tabindex="0" class="ui-menuitem-icon" (click)="closeItemRisks($event, i)"
                                        style="position: absolute; right: -1em; top: -.5em; padding: 0" *ngIf="i !== 0">
                                         <span class="pi pi-times"></span>
-                                    </a>
+                                    </a> -->
                                 </div>
                             </ng-template>
                         </p-tabMenu>
                     </div>
                 </div>
                 <div class="cbp-item flow">
-                    <div class="cbp-caption">
+                    <div class="cbp-caption" >
                         <p-tabMenu [model]="itemsPeopleFlow" [activeItem]="itemsPeopleFlow[0]">
                             <ng-template pTemplate="item" let-item let-i="index">
                                 <div (click)="selectFormPeopleFlow(item,i)"
-                                     style="position: relative; text-align: center; min-width: 8em">
+                                     style="position: relative; text-align: center; min-width: 8em;">
                                     <div class="ui-menuitem-icon" [ngClass]="item.icon" *ngIf="item.icon"
-                                         style="font-size: 2em"></div>
+                                         style="font-size: 2em;"></div>
                                     <div class="ui-menuitem-text">
                                         {{item.label}}
                                     </div>
-                                    <a tabindex="0" class="ui-menuitem-icon" (click)="closeItemPeopleFlow($event, i)"
-                                       style="position: absolute; right: -1em; top: -.5em; padding: 0" *ngIf="i !== 0">
+                                    <!-- <a tabindex="0" class="ui-menuitem-icon" (click)="closeItemPeopleFlow($event, i)"
+                                       style="position: absolute; right: -1em; top: -.5em; padding: 0;" *ngIf="i !== 0">
                                         <span class="pi pi-times"></span>
-                                    </a>
+                                    </a> -->
                                 </div>
                             </ng-template>
                         </p-tabMenu>
@@ -311,6 +311,7 @@
                 [selectForm]="actualForm">
             </app-map-editor>
         </div>
+        
         <div class="row"></div>
     </div></div>
 <!-- clasificacion Body End -->
