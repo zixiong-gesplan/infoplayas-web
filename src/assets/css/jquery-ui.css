@@ -898,7 +898,8 @@ body .ui-tooltip {
 	font-size: 1em;
 }
 .ui-widget.ui-widget-content {
-	border: 1px solid #c5c5c5;
+	/* valor inicial a 1, se modifica para adaptarlo a plantilla, componente clasificacion */
+	border: 0px solid #c5c5c5;
 }
 .ui-widget-content {
 	border: 1px solid #dddddd;
