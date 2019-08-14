@@ -232,7 +232,6 @@ export class MapEditorComponent implements OnInit {
                     //Filter by changing runtime params
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
-                    console.log(playasLayer);
 
                     municipiosLayer.queryFeatures({
                         outFields: ['*'],
