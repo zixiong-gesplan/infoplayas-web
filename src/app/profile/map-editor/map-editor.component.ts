@@ -54,9 +54,9 @@ export class MapEditorComponent implements OnInit {
     formRisk: FormGroup;
     private featureResponse: Risk[];
     private onEdit: boolean;
-    private _zoom = 5;
-    private _mapHeight = '600px';
-    private _selectForm = 'default';
+    _zoom = 5;
+    _mapHeight = '600px';
+    _selectForm = 'default';
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
     }
