@@ -6,7 +6,7 @@ import {EsriRequestService} from '../../services/esri-request.service';
 import {Risk} from '../../models/risk';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {EsriBoolean} from '../../models/esri-boolean';
-
+import {environment} from '../../../environments/environment';
 declare var $: any;
 declare var jquery: any;
 
@@ -43,47 +43,33 @@ declare let unselectedMessage: any;
     styleUrls: ['./map-editor.component.css']
 })
 export class MapEditorComponent implements OnInit {
+  //decoradores entrada salida
     @Output() beachId = new EventEmitter<string>();
     @Output() localName = new EventEmitter<string>();
+    @Input() set mapHeight(mapHeight: string) { this._mapHeight = mapHeight; }
+    @Input() set zoom(zoom: number) { this._zoom = zoom; }
+    @Input() set selectForm(selectForm: string) { this._selectForm = selectForm;}
+
     selectedBeachRisk: Risk;
     formRisk: FormGroup;
     private featureResponse: Risk[];
     private onEdit: boolean;
+    private _zoom = 5;
+    private _mapHeight = '600px';
+    private _selectForm = 'default';
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
     }
 
-    private _zoom = 5;
-
     get zoom(): number {
         return this._zoom;
     }
-
-    @Input()
-    set zoom(zoom: number) {
-        this._zoom = zoom;
-    }
-
-    private _mapHeight = '600px';
-
     get mapHeight(): string {
         return this._mapHeight;
     }
 
-    @Input()
-    set mapHeight(mapHeight: string) {
-        this._mapHeight = mapHeight;
-    }
-
-    private _selectForm = 'default';
-
     get selectForm(): string {
         return this._selectForm;
-    }
-
-    @Input()
-    set selectForm(selectForm: string) {
-        this._selectForm = selectForm;
     }
 
     ngOnInit() {
@@ -101,7 +87,7 @@ export class MapEditorComponent implements OnInit {
 
     loadRelatedRecords() {
         const currentUser: Auth = this.authService.getCurrentUser();
-        this.service.getEsriRelatedData('https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0/queryRelatedRecords',
+        this.service.getEsriRelatedData(environment.EsriRelatedData,
             '237', '0', '*', true, currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
@@ -144,7 +130,7 @@ export class MapEditorComponent implements OnInit {
     }
 
     private editData(updateObj, currentUser, mode) {
-        this.service.applyEditsRelatedData('https://utility.arcgis.com/usrsvcs/servers/88157824485b48fb9a3dbecc205587f9/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/1/applyEdits',
+        this.service.applyEditsRelatedData(environment.EditsRelatedData,
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
@@ -198,7 +184,7 @@ export class MapEditorComponent implements OnInit {
                 const currentUser: Auth = this.authService.getCurrentUser();
                 IdentityManager.registerToken({
                     expires: currentUser.expires,
-                    server: 'http://www.arcgis.com/sharing/rest',
+                    server: environment.urlserver,
                     ssl: false,
                     token: currentUser.token,
                     userId: currentUser.username
@@ -206,7 +192,7 @@ export class MapEditorComponent implements OnInit {
                 // then we load a web map from an id
                 const webmap = new WebMap({
                     portalItem: {
-                        id: '4df033868833441798c532394806601c'
+                        id: environment.idportal
                     }
                 });
                 // and we show that map in a container w/ id #viewDiv
@@ -246,6 +232,7 @@ export class MapEditorComponent implements OnInit {
                     //Filter by changing runtime params
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
+                    console.log(playasLayer);
 
                     municipiosLayer.queryFeatures({
                         outFields: ['*'],

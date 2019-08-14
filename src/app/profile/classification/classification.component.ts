@@ -50,8 +50,6 @@ export class ClassificationComponent implements OnInit {
     }
 
     initCubPortfolio(){
-
-
         $('#js-grid-mosaic-flat').cubeportfolio({
           filters: '#js-filters-mosaic-flat',
           layoutMode: 'mosaic',

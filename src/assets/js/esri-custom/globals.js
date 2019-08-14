@@ -45,22 +45,5 @@ var forms = {
       label: "Nombre según MAPAMA",
       editable: false
     }
-  ],
-  "playas_catalogo_edicion_7907": [
-    {
-      name: "id_dgse",
-      label: "ID DGSE",
-      description: "Descripción del identificador de playa."
-    },
-    {
-      name: "corrientes_mareas",
-      label: "Corrientes y mareas",
-      description: "Descripción de Corrientes y mareas",
-    },
-    {
-      name: "rompientes_olas",
-      label: "Rompientes y olas",
-      description: "Descripción de Rompientes y olas",
-    }
   ]
 };
