@@ -1,7 +1,7 @@
 var view, highlight, editFeature, listNode, features;
 
 //mensaje playa no seleccionada
-var unselectedMessage = "seleccione";
+var unselectedMessage = "seleccione playa";
 
 //Layer IDs
 var playasLayerId = "playas_catalogo_edicion_5477";
