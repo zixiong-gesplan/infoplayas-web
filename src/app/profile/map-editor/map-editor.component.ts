@@ -54,9 +54,9 @@ export class MapEditorComponent implements OnInit {
     formRisk: FormGroup;
     private featureResponse: Risk[];
     private onEdit: boolean;
-    _zoom = 5;
-    _mapHeight = '600px';
-    _selectForm = 'default';
+    private _zoom = 5;
+    private _mapHeight = '600px';
+    private _selectForm = 'default';
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
     }
@@ -182,6 +182,7 @@ export class MapEditorComponent implements OnInit {
 
                 // get session user
                 const currentUser: Auth = this.authService.getCurrentUser();
+
                 IdentityManager.registerToken({
                     expires: currentUser.expires,
                     server: environment.urlserver,
@@ -201,8 +202,8 @@ export class MapEditorComponent implements OnInit {
                     map: webmap, // Reference to the map object created before the scene
                     zoom: this._zoom
                 });
+                console.log(view);
 
-                var t = this;
                 let form, playasLayer, municipiosLayer, clasificationRisksTable, queryTask;
                 //Create widgets
                 let scaleBar = createScaleBar(ScaleBar, view);
@@ -232,6 +233,7 @@ export class MapEditorComponent implements OnInit {
                     //Filter by changing runtime params
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
+                    console.log(playasLayer);
 
                     municipiosLayer.queryFeatures({
                         outFields: ['*'],
@@ -257,17 +259,17 @@ export class MapEditorComponent implements OnInit {
 
                     const listID = 'ulPlaya';
                     listNode = $('#ulPlaya')[0];
-                    listNode.addEventListener('click', onListClickHandler);
+                    listNode.addEventListener('click', this.onListClickHandler);
 
                     loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas);
 
-                    function onListClickHandler(event) {
+                    this.onListClickHandler((event) => {
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
                         const objectId = target.getAttribute('oid');
 
                         selectFeature(view, objectId, playasLayer, form).then(function (output) {
-                            t.sendMessage(output.beachId, output.localName);
+                            this.sendMessage(output.beachId, output.localName);
                             // cargamos los formularios de la tablas relacionadas
                             let query = new RelationshipQuery();
                             query.returnGeometry = false;
@@ -275,13 +277,13 @@ export class MapEditorComponent implements OnInit {
                             query.relationshipId = 0;
                             query.objectIds = [output.beachId];
                             queryTask.executeRelationshipQuery(query).then(function (results) {
-                                t.formRisk.reset();
+                                this.formRisk.reset();
                                 if (Object.entries(results).length === 0 && results.constructor === Object) {
-                                    t.formRisk.patchValue({id_dgse: output.id_dgse});
-                                    t.onEdit = false;
+                                    this.formRisk.patchValue({id_dgse: output.id_dgse});
+                                    this.onEdit = false;
                                 } else {
-                                    t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
-                                    t.onEdit = true;
+                                    this.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
+                                    this.onEdit = true;
                                 }
                             });
                         });
@@ -293,7 +295,7 @@ export class MapEditorComponent implements OnInit {
                             view.goTo(result.geometry.extent.expand(2));
                         } catch (error) {
                         }
-                    }
+                    })
                 });
                 view.on('click', function (event) {
                     // Listen for when the user clicks on the view
@@ -303,7 +305,7 @@ export class MapEditorComponent implements OnInit {
                         if (result) {
                             selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature)
                                 .then(function (output) {
-                                    t.sendMessage(output.beachId, output.localName);
+                                    this.sendMessage(output.beachId, output.localName);
                                     // cargamos los formularios de la tablas relacionadas
                                     let query = new RelationshipQuery();
                                     query.returnGeometry = false;
@@ -311,24 +313,24 @@ export class MapEditorComponent implements OnInit {
                                     query.relationshipId = 0;
                                     query.objectIds = [output.beachId];
                                     queryTask.executeRelationshipQuery(query).then(function (results) {
-                                        t.formRisk.reset();
+                                        this.formRisk.reset();
                                         if (Object.entries(results).length === 0 && results.constructor === Object) {
-                                            t.formRisk.patchValue({id_dgse: output.id_dgse});
-                                            t.onEdit = false;
+                                            this.formRisk.patchValue({id_dgse: output.id_dgse});
+                                            this.onEdit = false;
                                         } else {
-                                            t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
-                                            t.onEdit = true;
+                                            this.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
+                                            this.onEdit = true;
                                         }
                                     });
                                 });
                         } else {
-                            t.sendMessage('noid', unselectFeature());
+                            this.sendMessage('noid', unselectFeature());
                         }
                     });
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas));
+                    this.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas));
                 };
 
                 $('#tabView')[0].onclick = function () {

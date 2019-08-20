@@ -21,7 +21,7 @@ function selectFeature(view, objectId, featureLayer, form) {
         resize(1);
         ouputData.beachId = editFeature.attributes.objectid_12;
         ouputData.id_dgse = editFeature.attributes.id_dgse;
-        ouputData.localName = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'pendiente';
+        ouputData.localName = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'Nombre por definir';
       });
     }
     return ouputData;
