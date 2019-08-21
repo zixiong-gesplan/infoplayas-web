@@ -23,12 +23,9 @@ declare const createForm: any;
 declare const loadList: any;
 declare const submitForm: any;
 
-declare let filterPlayas: any;
-declare let filterMunicipios: any;
 declare const playasLayerId: any;
 declare const clasificationRisksLayerId: any;
 declare const municipiosLayerId: any;
-declare const aytos: any;
 declare const forms: any;
 declare let editFeature: any;
 declare let listNode: any;
@@ -54,6 +51,7 @@ export class MapEditorComponent implements OnInit {
     formRisk: FormGroup;
     private featureResponse: Risk[];
     private onEdit: boolean;
+    private filterMunicipio: string;
     _zoom = 5;
     _mapHeight = '600px';
     _selectForm = 'default';
@@ -227,17 +225,15 @@ export class MapEditorComponent implements OnInit {
 
                     let user = IdentityManager.credentials[0].userId;
 
-                    filterPlayas = 'municipio = \'' + aytos[user].municipio_minus + '\'';
-                    filterMunicipios = 'municipio = \'' + aytos[user].municipio_mayus + '\'';
-                    console.log(filterMunicipios);
+                    t.filterMunicipio = "LOWER(municipio)=LOWER('"+ user.substring(5,user.length) +"')";
 
                     //Filter by changing runtime params
-                    playasLayer.definitionExpression = filterPlayas;
-                    municipiosLayer.definitionExpression = filterMunicipios;
+                    playasLayer.definitionExpression = t.filterMunicipio;
+                    municipiosLayer.definitionExpression = t.filterMunicipio;
 
                     municipiosLayer.queryFeatures({
                         outFields: ['*'],
-                        where: filterMunicipios,
+                        where: t.filterMunicipio,
                         geometry: view.initialExtent,
                         returnGeometry: true
                     }).then(function (results) {
@@ -261,7 +257,7 @@ export class MapEditorComponent implements OnInit {
                     listNode = $('#ulPlaya')[0];
                     listNode.addEventListener('click', onListClickHandler);
 
-                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas);
+                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], t.filterMunicipio);
 
                     function onListClickHandler(event) {
                         const target = event.target;
@@ -330,7 +326,7 @@ export class MapEditorComponent implements OnInit {
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas));
+                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], t.filterMunicipio));
                 };
 
                 $('#tabView')[0].onclick = function () {
