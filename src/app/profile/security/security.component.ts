@@ -1,7 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import {AuthGuardService} from '../../services/auth-guard.service';
+import {Auth} from '../../models/auth';
+import {EsriRequestService} from '../../services/esri-request.service';
+import {environment} from '../../../environments/environment';
+import {Risk} from '../../models/risk';
+declare var $:any;
+declare var jQuery:any;
+
 @Component({
   selector: 'app-security',
   templateUrl: './security.component.html',
+  styleUrls: ['./security.component.css'],
   styles: [`
         /* Column Priorities */
         @media only all {
@@ -71,18 +80,40 @@ import { Component, OnInit } from '@angular/core';
     `]
     })
 export class SecurityComponent implements OnInit {
-  cols: any[];
-  data: any[];
-  constructor() { }
+
+  currentUser: Auth;
+  selectedBeachRisk: Risk;
+  filtermunicipio;
+  datosPlaya:any = [];
+  nomMunicipio;
+
+  constructor(private authService: AuthGuardService, private service: EsriRequestService) { }
 
   ngOnInit() {
 
-    this.cols = [
-           { field: 'alto', header: 'Grado de protección Alto' },
-           { field: 'Moderado', header: 'Grado de protección Moderado' },
-           { field: 'bajo', header: 'Grado de protección Bajo' },
-
-       ];
+    this.loadRelatedRecords();
   }
 
+  private contenido(){
+   $('#myModal').modal('show');
+  }
+  loadRelatedRecords() {
+    this.currentUser = this.authService.getCurrentUser();
+    this.filtermunicipio = "LOWER(municipio)=LOWER('"+ this.currentUser.username.substring(5,this.currentUser.username.length) +"')";
+    this.nomMunicipio = this.currentUser.username.substring(5,this.currentUser.username.length);
+
+      this.service.getEsriDataLayer('https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0/query',
+          this.filtermunicipio, '*', false, this.currentUser.token).subscribe(
+          (result: any) => {
+              if (result) {
+                  this.datosPlaya = result;
+                  console.log(this.datosPlaya.features);
+              }
+          },
+          error => {
+              console.log(error.toString());
+          }).add(() => {
+          console.log('end of request');
+      });
+  }
 }

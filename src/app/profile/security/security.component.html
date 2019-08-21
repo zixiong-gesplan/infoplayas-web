@@ -11,32 +11,78 @@
 <!--security Details Starts-->
 <section id="shop" class="paddingtopbottom100px">
   <div class="container">
-    <h3 class="first">Playas del municipio de: <span class="font-weight-bold">Tias(modo ejemplo)</span></h3>
-    <p-table [columns]="cols" [value]="cars" [responsive]="true">
-      <ng-template pTemplate="caption">
-        Playa del hombre muerto, de risa...
+    <h3 class="first">Playas del municipio de: <span style="font-weight:bold">{{nomMunicipio | titlecase}}</span></h3>
+    <p-table *ngFor=" let item of datosPlaya.features">
+      <ng-template pTemplate="header" >
+          <tr>
+              <th colspan="3" class="centrar" style="font-size: 1.2em; color: red;">IDGSE: {{item.attributes.id_dgse}} - {{!item.attributes.nombre_municipio ? 'Nombre sin asignar' : item.attributes.nombre_municipio}}</th>
+          </tr>
+          <tr>
+              <th class="centrar">Grado de protección Alto <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="contenido()"></i><br><span style="font-size: 0.7em;">(horario servicio salvamento)</span></th>
+              <th class="centrar">Grado de protección Moderado <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="contenido()"></i> <br><span style="font-size: 0.7em;">(horario servicio salvamento)</span></th>
+              <th class="centrar">Grado de protección Bajo <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="contenido()"></i> <br><span style="font-size: 0.7em;">(horario servicio salvamento)</span></th>
+          </tr>
+          <tr>
+              <th class="centrar"><input class="centrar" type="number" name="horaini" value="00" min="00" max="24" aria-required="true" aria-invalid="false"/> : <input class="centrar" type="number" name="horafin" value="00" min="00" max="59" aria-required="true" aria-invalid="false"/></th>
+              <th class="centrar"><input class="centrar" type="number" name="horaini" value="00" min="00" max="24" aria-required="true" aria-invalid="false"/> : <input class="centrar" type="number" name="horafin" value="00" min="00" max="59" aria-required="true" aria-invalid="false"/></th>
+              <th class="centrar"><input class="centrar" type="number" name="horaini" value="00" min="00" max="24" aria-required="true" aria-invalid="false"/> : <input class="centrar" type="number" name="horafin" value="00" min="00" max="59" aria-required="true" aria-invalid="false"/></th>
+          </tr>
+          <hr>
       </ng-template>
-
-      <ng-template pTemplate="header" let-columns >
-        <tr>
-          <th *ngFor="let col of columns"  style="text-align:center">
-            {{col.header}}
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-rowData let-columns="columns">
-        <tr>
-          <td *ngFor="let col of columns">
-            <span class="ui-column-title ">{{col.header}}</span>
-            {{rowData[col.field]}}
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="summary">
-        There are {{cars?.length}} cars
-      </ng-template>
-    </p-table>
+  </p-table>
 
   </div>
 </section>
 <!--security Details End-->
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Servicios de la playa: Playa del hombre muerto</h4>
+      </div>
+      <div class="modal-body">
+        <br>
+        <br>
+        <div class="input-group">
+          <span class="input-group-addon" id="sizing-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon" id="sizing-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon" id="sizing-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon" id="sizing-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon" id="sizing-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon" id="sizing-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon" id="sizing-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon" id="sizing-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

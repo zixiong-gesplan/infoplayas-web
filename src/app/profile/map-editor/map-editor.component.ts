@@ -92,6 +92,7 @@ export class MapEditorComponent implements OnInit {
             (result: any) => {
                 if (result) {
                     this.selectedBeachRisk = result.relatedRecordGroups[0].relatedRecords[0].attributes;
+                    console.log(this.selectedBeachRisk);
                 }
             },
             error => {
@@ -229,6 +230,7 @@ export class MapEditorComponent implements OnInit {
 
                     filterPlayas = 'municipio = \'' + aytos[user].municipio_minus + '\'';
                     filterMunicipios = 'municipio = \'' + aytos[user].municipio_mayus + '\'';
+                    console.log(filterMunicipios);
 
                     //Filter by changing runtime params
                     playasLayer.definitionExpression = filterPlayas;
