@@ -3,7 +3,7 @@
         <li>Cargando&hellip;</li>
     </ul>
 </div>
-<div id="mainContainer" [style.height]="_mapHeight">
+<div id="mainContainer" [style.height]="mapHeight">
     <div id="viewDiv"></div>
     <div id="legendDiv" class="card custom-widget"></div>
     <div id="info" class="container-fluid esri-widget custom-widget esri-hidden">
@@ -13,7 +13,7 @@
         </div>
     </div>
     <div id="formContainer" class="esri-hidden scroller">
-        <div [hidden]="_selectForm !=='clasificacion'">
+        <div [hidden]="selectForm !=='clasificacion'">
             <form [formGroup]="formRisk" (ngSubmit)="onSubmit()">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
@@ -65,7 +65,7 @@
                 </div>
             </form>
         </div>
-        <div [hidden]="_selectForm ==='clasificacion'">
+        <div [hidden]="selectForm ==='clasificacion'">
             <div id="form" class="esri-component"></div>
             <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
         </div>

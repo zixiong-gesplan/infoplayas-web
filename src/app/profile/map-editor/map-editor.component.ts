@@ -43,31 +43,17 @@ export class MapEditorComponent implements OnInit {
   //decoradores entrada salida
     @Output() beachId = new EventEmitter<string>();
     @Output() localName = new EventEmitter<string>();
-    @Input() set mapHeight(mapHeight: string) { this._mapHeight = mapHeight; }
-    @Input() set zoom(zoom: number) { this._zoom = zoom; }
-    @Input() set selectForm(selectForm: string) { this._selectForm = selectForm;}
+    @Input() mapHeight: string;
+    @Input() zoom: number;
+    @Input() selectForm: string;
 
     selectedBeachRisk: Risk;
     formRisk: FormGroup;
     private featureResponse: Risk[];
     private onEdit: boolean;
     private filterMunicipio: string;
-    _zoom = 5;
-    _mapHeight = '600px';
-    _selectForm = 'default';
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
-    }
-
-    get zoom(): number {
-        return this._zoom;
-    }
-    get mapHeight(): string {
-        return this._mapHeight;
-    }
-
-    get selectForm(): string {
-        return this._selectForm;
     }
 
     ngOnInit() {
@@ -198,7 +184,7 @@ export class MapEditorComponent implements OnInit {
                 view = new MapView({
                     container: 'viewDiv', // Reference to the scene div created in step 5
                     map: webmap, // Reference to the map object created before the scene
-                    zoom: this._zoom
+                    zoom: this.zoom
                 });
 
                 var t = this;
