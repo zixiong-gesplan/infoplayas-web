@@ -3,7 +3,7 @@ import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {loadModules} from 'esri-loader';
 import {EsriRequestService} from '../../services/esri-request.service';
-import {Risk} from '../../models/risk';
+import {Danger} from '../../models/danger';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {EsriBoolean} from '../../models/esri-boolean';
 import {environment} from '../../../environments/environment';
@@ -24,7 +24,7 @@ declare const loadList: any;
 declare const submitForm: any;
 
 declare const playasLayerId: any;
-declare const clasificationRisksLayerId: any;
+declare const clasificationDangerLayerId: any;
 declare const municipiosLayerId: any;
 declare const forms: any;
 declare let editFeature: any;
@@ -40,16 +40,16 @@ declare let unselectedMessage: any;
     styleUrls: ['./map-editor.component.css']
 })
 export class MapEditorComponent implements OnInit {
-  //decoradores entrada salida
+  // decoradores entrada salida
     @Output() beachId = new EventEmitter<string>();
     @Output() localName = new EventEmitter<string>();
     @Input() mapHeight: string;
     @Input() zoom: number;
     @Input() selectForm: string;
 
-    selectedBeachRisk: Risk;
-    formRisk: FormGroup;
-    private featureResponse: Risk[];
+    selectedBeachDanger: Danger;
+    formDanger: FormGroup;
+    private featureResponse: Danger[];
     private onEdit: boolean;
     private filterMunicipio: string;
 
@@ -58,7 +58,7 @@ export class MapEditorComponent implements OnInit {
 
     ngOnInit() {
         this.setMap();
-        this.formRisk = this.fb.group({
+        this.formDanger = this.fb.group({
             objectid: new FormControl(''),
             corrientes_mareas: new FormControl(''),
             rompientes_olas: new FormControl(''),
@@ -75,8 +75,8 @@ export class MapEditorComponent implements OnInit {
             '237', '0', '*', true, currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
-                    this.selectedBeachRisk = result.relatedRecordGroups[0].relatedRecords[0].attributes;
-                    console.log(this.selectedBeachRisk);
+                    this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
+                    console.log(this.selectedBeachDanger);
                 }
             },
             error => {
@@ -98,15 +98,15 @@ export class MapEditorComponent implements OnInit {
     onSubmit() {
         const currentUser: Auth = this.authService.getCurrentUser();
         // TODO cambiar con reactive forms que el valor en vez de ser true o false sea 1 o 0 para evitar el siguiente bloque
-        const risk: Risk = this.formRisk.value;
-        for (let [key, value] of Object.entries(risk)) {
+        const danger: Danger = this.formDanger.value;
+        for (let [key, value] of Object.entries(danger)) {
             if (typeof value === 'boolean' || value === null) {
-                risk[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
+                danger[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
             }
         }
 
         const updateObj = new Array();
-        updateObj.push({attributes: risk});
+        updateObj.push({attributes: danger});
         if (this.onEdit) {
             this.editData(updateObj, currentUser, 'updates');
         } else {
@@ -188,8 +188,8 @@ export class MapEditorComponent implements OnInit {
                 });
 
                 var t = this;
-                let form, playasLayer, municipiosLayer, clasificationRisksTable, queryTask;
-                //Create widgets
+                let form, playasLayer, municipiosLayer, clasificationDangerTable, queryTask;
+                // Create widgets
                 let scaleBar = createScaleBar(ScaleBar, view);
                 let basemapToggle = createBaseMapToggle(BasemapToggle, view, 'streets-vector');
                 let legend = createLegend(Legend, view, 'legendDiv');
@@ -201,8 +201,8 @@ export class MapEditorComponent implements OnInit {
                     playasLayer = webmap.findLayerById(playasLayerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
 
-                    clasificationRisksTable = webmap.tables.filter(obj => {
-                        return obj.id === clasificationRisksLayerId;
+                    clasificationDangerTable = webmap.tables.filter(obj => {
+                        return obj.id === clasificationDangerLayerId;
                     })[0];
 
                     queryTask = new QueryTask({
@@ -213,7 +213,7 @@ export class MapEditorComponent implements OnInit {
 
                     t.filterMunicipio = "LOWER(municipio)=LOWER('"+ user.substring(5,user.length) +"')";
 
-                    //Filter by changing runtime params
+                    // Filter by changing runtime params
                     playasLayer.definitionExpression = t.filterMunicipio;
                     municipiosLayer.definitionExpression = t.filterMunicipio;
 
@@ -226,15 +226,15 @@ export class MapEditorComponent implements OnInit {
                         let latitude = results.features[0].geometry.centroid.latitude;
                         let longitude = results.features[0].geometry.centroid.longitude;
                         view.center = [longitude, latitude];
-                        //Default Home value is current extent
+                        // Default Home value is current extent
                         let home = createHomeButton(Home, view);
                         form = createForm(FeatureForm, 'form', playasLayer, forms[playasLayerId]);
-                        //Add widgets to the view
+                        // Add widgets to the view
                         view.ui.add([home, expandList], 'top-left');
                         view.ui.add(scaleBar, 'bottom-left');
                         view.ui.add(['info', legend], 'top-right');
 
-                        //Some elements are hidden my default. We show them when the view is loaded
+                        // Some elements are hidden my default. We show them when the view is loaded
                         $('#info')[0].classList.remove('esri-hidden');
                         $('#listPlayas')[0].classList.remove('esri-hidden');
                     });
@@ -252,22 +252,7 @@ export class MapEditorComponent implements OnInit {
 
                         selectFeature(view, objectId, playasLayer, form).then(function (output) {
                             t.sendMessage(output.beachId, output.localName);
-                            // cargamos los formularios de la tablas relacionadas
-                            let query = new RelationshipQuery();
-                            query.returnGeometry = false;
-                            query.outFields = ['*'];
-                            query.relationshipId = 0;
-                            query.objectIds = [output.beachId];
-                            queryTask.executeRelationshipQuery(query).then(function (results) {
-                                t.formRisk.reset();
-                                if (Object.entries(results).length === 0 && results.constructor === Object) {
-                                    t.formRisk.patchValue({id_dgse: output.id_dgse});
-                                    t.onEdit = false;
-                                } else {
-                                    t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
-                                    t.onEdit = true;
-                                }
-                            });
+                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                         });
                         expandList.collapse();
 
@@ -288,22 +273,7 @@ export class MapEditorComponent implements OnInit {
                             selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature)
                                 .then(function (output) {
                                     t.sendMessage(output.beachId, output.localName);
-                                    // cargamos los formularios de la tablas relacionadas
-                                    let query = new RelationshipQuery();
-                                    query.returnGeometry = false;
-                                    query.outFields = ['*'];
-                                    query.relationshipId = 0;
-                                    query.objectIds = [output.beachId];
-                                    queryTask.executeRelationshipQuery(query).then(function (results) {
-                                        t.formRisk.reset();
-                                        if (Object.entries(results).length === 0 && results.constructor === Object) {
-                                            t.formRisk.patchValue({id_dgse: output.id_dgse});
-                                            t.onEdit = false;
-                                        } else {
-                                            t.formRisk.patchValue(results[query.objectIds[0]].features[0].attributes);
-                                            t.onEdit = true;
-                                        }
-                                    });
+                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                 });
                         } else {
                             t.sendMessage('noid', unselectFeature());
@@ -322,5 +292,24 @@ export class MapEditorComponent implements OnInit {
                 // handle any errors
                 console.error(err);
             });
+    }
+
+        // cargamos los formularios de la tablas relacionadas
+    private execRelatedQuery(queryTask, RelationshipQuery, output, relationshipId, frm: FormGroup) {
+        let query = new RelationshipQuery();
+        query.returnGeometry = false;
+        query.outFields = ['*'];
+        query.relationshipId = relationshipId;
+        query.objectIds = [output.beachId];
+        queryTask.executeRelationshipQuery(query).then((results: any) => {
+            frm.reset();
+            if (Object.entries(results).length === 0 && results.constructor === Object) {
+                frm.patchValue({id_dgse: output.id_dgse});
+                this.onEdit = false;
+            } else {
+                frm.patchValue(results[query.objectIds[0]].features[0].attributes);
+                this.onEdit = true;
+            }
+        });
     }
 }

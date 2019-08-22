@@ -14,7 +14,7 @@
     </div>
     <div id="formContainer" class="esri-hidden scroller">
         <div [hidden]="selectForm !=='clasificacion'">
-            <form [formGroup]="formRisk" (ngSubmit)="onSubmit()">
+            <form [formGroup]="formDanger" (ngSubmit)="onSubmit()">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
@@ -58,7 +58,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <button class="esri-button" type="submit" [disabled]="!formRisk.valid" id="btnSubformSave">
+                        <button class="esri-button" type="submit" [disabled]="!formDanger.valid" id="btnSubformSave">
                             Guardar
                         </button>
                     </div>

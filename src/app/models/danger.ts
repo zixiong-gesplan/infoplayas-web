@@ -1,6 +1,6 @@
 import {EsriBoolean} from './esri-boolean';
 
-export interface Risk {
+export interface Danger {
     objectid?: number;
     id_dgse?: string;
     corrientes_mareas?: EsriBoolean;

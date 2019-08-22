@@ -3,7 +3,7 @@ import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
-import {Risk} from '../../models/risk';
+import {Danger} from '../../models/danger';
 declare var $:any;
 declare var jQuery:any;
 
@@ -82,7 +82,7 @@ declare var jQuery:any;
 export class SecurityComponent implements OnInit {
 
   currentUser: Auth;
-  selectedBeachRisk: Risk;
+  selectedBeachRisk: Danger;
   filtermunicipio;
   datosPlaya:any = [];
   nomMunicipio;
