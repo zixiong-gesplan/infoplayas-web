@@ -13,6 +13,7 @@
         </div>
     </div>
     <div id="formContainer" class="esri-hidden scroller">
+        <!--        formulario de peligrosidad-->
         <div [hidden]="selectForm !=='clasificacion'">
             <form [formGroup]="formDanger" (ngSubmit)="onSubmit()">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
@@ -58,14 +59,53 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <button class="esri-button" type="submit" [disabled]="!formDanger.valid" id="btnSubformSave">
+                        <button class="esri-button" type="submit" [disabled]="!formDanger.valid">
                             Guardar
                         </button>
                     </div>
                 </div>
             </form>
         </div>
-        <div [hidden]="selectForm ==='clasificacion'">
+        <!--        formulario de incidencias y usos-->
+        <div [hidden]="selectForm !=='incidencias'">
+            <form [formGroup]="formIncidents" (ngSubmit)="onSubmit()">
+                <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Número de incidentes graves</label>
+                        <input class="form-control" pInputText type="number" formControlName="incidentes_graves"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Número de incidentes muy graves</label>
+                        <input class="form-control" pInputText type="number" formControlName="incidentes_mgraves"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Valor de peligrosidad</label>
+                        <input class="form-control" pInputText type="number" formControlName="val_peligrosidad"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea [rows]="4" [cols]="80" class="form-control" pInputTextarea
+                                  type="textarea" formControlName="observaciones"
+                                  placeholder="Requerido - Min(4) - permite texto largo"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <button class="esri-button" type="submit" [disabled]="!formIncidents.valid">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div [hidden]="selectForm !=='inventario'">
             <div id="form" class="esri-component"></div>
             <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
         </div>

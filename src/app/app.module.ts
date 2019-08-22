@@ -12,7 +12,7 @@ import { ReportComponent } from './profile/report/report.component';
 import { ContactUsComponent } from './profile/contact-us/contact-us.component';
 import {LoginComponent} from './login/login.component';
 import { MapEditorComponent } from './profile/map-editor/map-editor.component';
-import {TabMenuModule, TabViewModule, ToggleButtonModule} from 'primeng/primeng';
+import {InputTextareaModule, InputTextModule, TabMenuModule, TabViewModule, ToggleButtonModule} from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
 import {EsriRequestService} from './services/esri-request.service';
 import {HttpClientModule} from '@angular/common/http';
@@ -40,6 +40,8 @@ import {HttpClientModule} from '@angular/common/http';
         TableModule,
         HttpClientModule,
         ToggleButtonModule,
+        InputTextareaModule,
+        InputTextModule,
     ],
     providers: [EsriRequestService],
     bootstrap: [AppComponent]

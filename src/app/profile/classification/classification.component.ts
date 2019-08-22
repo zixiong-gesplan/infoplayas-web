@@ -30,7 +30,7 @@ export class ClassificationComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.listOfLayersProtection = ['todo', 'todo', 'todo'];
+        this.listOfLayersProtection = ['inventario', 'inventario', 'incidencias'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
             {label: 'Entorno', icon: 'fa fa-fw fa-thermometer'},

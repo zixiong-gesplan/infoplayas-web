@@ -49,6 +49,7 @@ export class MapEditorComponent implements OnInit {
 
     selectedBeachDanger: Danger;
     formDanger: FormGroup;
+    formIncidents: FormGroup;
     private featureResponse: Danger[];
     private onEdit: boolean;
     private filterMunicipio: string;
@@ -65,6 +66,14 @@ export class MapEditorComponent implements OnInit {
             contaminacion: new FormControl(''),
             fauna_marina: new FormControl(''),
             desprendimientos: new FormControl(''),
+            id_dgse: new FormControl('')
+        });
+        this.formIncidents = this.fb.group({
+            objectid: new FormControl(''),
+            incidentes_graves: new FormControl(''),
+            incidentes_mgraves: new FormControl(''),
+            val_peligrosidad: new FormControl(''),
+            observaciones: new FormControl(''),
             id_dgse: new FormControl('')
         });
     }
@@ -253,6 +262,7 @@ export class MapEditorComponent implements OnInit {
                         selectFeature(view, objectId, playasLayer, form).then(function (output) {
                             t.sendMessage(output.beachId, output.localName);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
+                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
                         });
                         expandList.collapse();
 
@@ -274,6 +284,7 @@ export class MapEditorComponent implements OnInit {
                                 .then(function (output) {
                                     t.sendMessage(output.beachId, output.localName);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
+                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
                                 });
                         } else {
                             t.sendMessage('noid', unselectFeature());
