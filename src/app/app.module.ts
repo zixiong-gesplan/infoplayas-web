@@ -16,7 +16,8 @@ import {TabMenuModule, TabViewModule, ToggleButtonModule} from 'primeng/primeng'
 import {TableModule} from 'primeng/table';
 import {EsriRequestService} from './services/esri-request.service';
 import {HttpClientModule} from '@angular/common/http';
-
+import {CalendarModule} from 'primeng/calendar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
     declarations: [
         AppComponent,
@@ -40,6 +41,8 @@ import {HttpClientModule} from '@angular/common/http';
         TableModule,
         HttpClientModule,
         ToggleButtonModule,
+        CalendarModule,
+        BrowserAnimationsModule
     ],
     providers: [EsriRequestService],
     bootstrap: [AppComponent]

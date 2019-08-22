@@ -86,6 +86,7 @@ export class SecurityComponent implements OnInit {
   filtermunicipio;
   datosPlaya:any = [];
   nomMunicipio;
+  value: Date;
 
   constructor(private authService: AuthGuardService, private service: EsriRequestService) { }
 
