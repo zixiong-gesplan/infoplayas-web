@@ -86,13 +86,20 @@ export class SecurityComponent implements OnInit {
   filtermunicipio;
   datosPlaya:any = [];
   nomMunicipio;
-  value: Date;
+  altoini: Date;
+  prohibida:boolean = true;
 
   constructor(private authService: AuthGuardService, private service: EsriRequestService) { }
 
   ngOnInit() {
 
     this.loadRelatedRecords();
+  }
+
+  private horario(id_dgse,mc){
+    this.altoini = mc.inputFieldValue;
+    console.log(this.altoini);
+
   }
 
   private contenido(){
