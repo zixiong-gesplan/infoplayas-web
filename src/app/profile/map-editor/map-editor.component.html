@@ -15,7 +15,7 @@
     <div id="formContainer" class="esri-hidden scroller">
         <!--        formulario de peligrosidad-->
         <div [hidden]="selectForm !=='clasificacion'">
-            <form class="esri-pad" [formGroup]="formDanger" (ngSubmit)="onSubmit()">
+            <form class="esri-pad" [formGroup]="formDanger" (ngSubmit)="onSubmitDanger()">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
@@ -62,30 +62,37 @@
                         <button class="esri-button" type="submit" [disabled]="!formDanger.valid">
                             Guardar
                         </button>
+                        <button (click)="sendMessage('noid',getUnselectedMessage())" onclick="unselectFeature()"
+                                class="esri-button esri-button--secondary">
+                            Cancelar
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
         <!--        formulario de incidencias y usos-->
         <div [hidden]="selectForm !=='incidencias'">
-            <form class="esri-pad" [formGroup]="formIncidents" (ngSubmit)="onSubmit()">
+            <form class="esri-pad" [formGroup]="formIncidents" (ngSubmit)="onSubmitIncidents()">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
                         <label class="esri-font">Número de incidentes graves</label>
-                        <input class="esri-feature-form__input" pInputText type="number" formControlName="incidentes_graves"/>
+                        <input class="esri-feature-form__input" pInputText type="number"
+                               formControlName="incidentes_graves"/>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="esri-font">Número de incidentes muy graves</label>
-                        <input class="esri-feature-form__input" pInputText type="number" formControlName="incidentes_mgraves"/>
+                        <input class="esri-feature-form__input" pInputText type="number"
+                               formControlName="incidentes_mgraves"/>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="esri-font">Valor de peligrosidad</label>
-                        <input class="esri-feature-form__input" pInputText type="number" formControlName="val_peligrosidad"/>
+                        <input class="esri-feature-form__input" pInputText type="number"
+                               formControlName="val_peligrosidad"/>
                     </div>
                 </div>
                 <div class="form-row">
@@ -101,6 +108,10 @@
                         <button class="esri-button" type="submit" [disabled]="!formIncidents.valid">
                             Guardar
                         </button>
+                        <button (click)="sendMessage('noid',getUnselectedMessage())" onclick="unselectFeature()"
+                                class="esri-button esri-button--secondary">
+                            Cancelar
+                        </button>
                     </div>
                 </div>
             </form>
@@ -108,9 +119,9 @@
         <div [hidden]="selectForm !=='inventario'">
             <div id="form" class="esri-component"></div>
             <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
+            <input (click)="sendMessage('noid',getUnselectedMessage())" onclick="unselectFeature()" type="button"
+                   class="esri-button esri-button--secondary"
+                   value="Cancelar"/>
         </div>
-        <input (click)="sendMessage('noid',getUnselectedMessage())" onclick="unselectFeature()" type="button"
-               class="esri-button esri-button--secondary"
-               value="Cancelar"/>
     </div>
 </div>

@@ -7,6 +7,8 @@ import {Danger} from '../../models/danger';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {EsriBoolean} from '../../models/esri-boolean';
 import {environment} from '../../../environments/environment';
+import {Incidents} from '../../models/incidents';
+
 declare var $: any;
 declare var jquery: any;
 
@@ -40,7 +42,7 @@ declare let unselectedMessage: any;
     styleUrls: ['./map-editor.component.css']
 })
 export class MapEditorComponent implements OnInit {
-  // decoradores entrada salida
+    // decoradores entrada salida
     @Output() beachId = new EventEmitter<string>();
     @Output() localName = new EventEmitter<string>();
     @Input() mapHeight: string;
@@ -51,13 +53,15 @@ export class MapEditorComponent implements OnInit {
     formDanger: FormGroup;
     formIncidents: FormGroup;
     private featureResponse: Danger[];
-    private onEdit: boolean;
     private filterMunicipio: string;
+    private currentUser: Auth;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
     }
 
     ngOnInit() {
+        // get session or local storage user
+        this.currentUser = this.authService.getCurrentUser();
         this.setMap();
         this.formDanger = this.fb.group({
             objectid: new FormControl(''),
@@ -66,7 +70,8 @@ export class MapEditorComponent implements OnInit {
             contaminacion: new FormControl(''),
             fauna_marina: new FormControl(''),
             desprendimientos: new FormControl(''),
-            id_dgse: new FormControl('')
+            id_dgse: new FormControl(''),
+            on_edit: new FormControl('')
         });
         this.formIncidents = this.fb.group({
             objectid: new FormControl(''),
@@ -74,14 +79,14 @@ export class MapEditorComponent implements OnInit {
             incidentes_mgraves: new FormControl(''),
             val_peligrosidad: new FormControl(''),
             observaciones: new FormControl(''),
-            id_dgse: new FormControl('')
+            id_dgse: new FormControl(''),
+            on_edit: new FormControl('')
         });
     }
 
     loadRelatedRecords() {
-        const currentUser: Auth = this.authService.getCurrentUser();
-        this.service.getEsriRelatedData(environment.EsriRelatedData,
-            '237', '0', '*', true, currentUser.token).subscribe(
+        this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
+            '237', '0', '*', true, this.currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
                     this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
@@ -102,41 +107,6 @@ export class MapEditorComponent implements OnInit {
 
     getUnselectedMessage() {
         return unselectedMessage;
-    }
-
-    onSubmit() {
-        const currentUser: Auth = this.authService.getCurrentUser();
-        // TODO cambiar con reactive forms que el valor en vez de ser true o false sea 1 o 0 para evitar el siguiente bloque
-        const danger: Danger = this.formDanger.value;
-        for (let [key, value] of Object.entries(danger)) {
-            if (typeof value === 'boolean' || value === null) {
-                danger[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
-            }
-        }
-
-        const updateObj = new Array();
-        updateObj.push({attributes: danger});
-        if (this.onEdit) {
-            this.editData(updateObj, currentUser, 'updates');
-        } else {
-            this.editData(updateObj, currentUser, 'adds');
-        }
-    }
-
-    private editData(updateObj, currentUser, mode) {
-        this.service.applyEditsRelatedData(environment.EditsRelatedData,
-            updateObj, mode, currentUser.token).subscribe(
-            (result: any) => {
-                if (result) {
-                    console.log(result);
-                }
-            },
-            error => {
-                console.log(error.toString());
-            }).add(() => {
-            console.log('end of request');
-            this.sendMessage('noid', unselectFeature());
-        });
     }
 
     private setMap() {
@@ -174,14 +144,12 @@ export class MapEditorComponent implements OnInit {
                        RelationshipQuery
                    ]) => {
 
-                // get session user
-                const currentUser: Auth = this.authService.getCurrentUser();
                 IdentityManager.registerToken({
-                    expires: currentUser.expires,
+                    expires: this.currentUser.expires,
                     server: environment.urlserver,
                     ssl: false,
-                    token: currentUser.token,
-                    userId: currentUser.username
+                    token: this.currentUser.token,
+                    userId: this.currentUser.username
                 });
                 // then we load a web map from an id
                 const webmap = new WebMap({
@@ -220,7 +188,7 @@ export class MapEditorComponent implements OnInit {
 
                     let user = IdentityManager.credentials[0].userId;
 
-                    t.filterMunicipio = "LOWER(municipio)=LOWER('"+ user.substring(5,user.length) +"')";
+                    t.filterMunicipio = 'LOWER(municipio)=LOWER(\'' + user.substring(5, user.length) + '\')';
 
                     // Filter by changing runtime params
                     playasLayer.definitionExpression = t.filterMunicipio;
@@ -305,7 +273,7 @@ export class MapEditorComponent implements OnInit {
             });
     }
 
-        // cargamos los formularios de la tablas relacionadas
+    // cargamos los formularios de la tablas relacionadas
     private execRelatedQuery(queryTask, RelationshipQuery, output, relationshipId, frm: FormGroup) {
         let query = new RelationshipQuery();
         query.returnGeometry = false;
@@ -316,11 +284,57 @@ export class MapEditorComponent implements OnInit {
             frm.reset();
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 frm.patchValue({id_dgse: output.id_dgse});
-                this.onEdit = false;
+                frm.patchValue({on_edit: false});
             } else {
                 frm.patchValue(results[query.objectIds[0]].features[0].attributes);
-                this.onEdit = true;
+                frm.patchValue({on_edit: true});
             }
         });
     }
+
+    onSubmitIncidents() {
+        const incidents: Incidents = this.formIncidents.value;
+        const updateObj = new Array();
+        updateObj.push({attributes: incidents});
+        if (this.formIncidents.get('on_edit').value) {
+            this.editData(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/2/applyEdits');
+        } else {
+            this.editData(updateObj, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/2/applyEdits');
+        }
+    }
+
+    onSubmitDanger() {
+        // TODO cambiar con reactive forms que el valor en vez de ser true o false sea 1 o 0 para evitar el siguiente bloque
+        const danger: Danger = this.formDanger.value;
+        for (let [key, value] of Object.entries(danger)) {
+            if (typeof value === 'boolean' || value === null) {
+                danger[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
+            }
+        }
+
+        const updateObj = new Array();
+        updateObj.push({attributes: danger});
+        if (this.formDanger.get('on_edit').value) {
+            this.editData(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/1/applyEdits');
+        } else {
+            this.editData(updateObj, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/1/applyEdits');
+        }
+    }
+
+    private editData(updateObj, currentUser, mode, endpoint) {
+        this.service.applyEditsRelatedData(endpoint,
+            updateObj, mode, currentUser.token).subscribe(
+            (result: any) => {
+                if (result) {
+                    console.log(result);
+                }
+            },
+            error => {
+                console.log(error.toString());
+            }).add(() => {
+            console.log('end of request');
+            this.sendMessage('noid', unselectFeature());
+        });
+    }
+
 }
