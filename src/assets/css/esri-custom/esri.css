@@ -166,3 +166,10 @@ textarea {
     top: 15% !important;
     position: relative;
 }
+ /*para igualar el tipo de letra y el margen con los formualarios nativos de esri*/
+.esri-font{
+    font-family: "Avenir Next W00","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.esri-pad{
+    padding: 12px 6px;
+}
