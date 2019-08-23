@@ -18,6 +18,7 @@ import {EsriRequestService} from './services/esri-request.service';
 import {HttpClientModule} from '@angular/common/http';
 import {CalendarModule} from 'primeng/calendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { WelcomeComponent } from './profile/welcome/welcome.component';
 
 @NgModule({
     declarations: [
@@ -30,7 +31,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         SecurityComponent,
         ReportComponent,
         ContactUsComponent,
-        MapEditorComponent
+        MapEditorComponent,
+        WelcomeComponent
     ],
     imports: [
         BrowserModule,

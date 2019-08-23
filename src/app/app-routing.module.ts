@@ -9,6 +9,7 @@ import {SecurityComponent} from './profile/security/security.component';
 import {ReportComponent} from './profile/report/report.component';
 import {ContactUsComponent} from './profile/contact-us/contact-us.component';
 import {LoginComponent} from './login/login.component';
+import {WelcomeComponent} from './profile/welcome/welcome.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -18,8 +19,11 @@ const routes: Routes = [
         path: 'tecnicos',
         component: ProfileComponent,
         children: [
-            {path: '', redirectTo: 'catalogo', pathMatch: 'full'},
-            {path: 'tecnicos', redirectTo: 'catalogo', pathMatch: 'full'},
+            {path: '', redirectTo: 'bienvenida', pathMatch: 'full'},
+            {path: 'tecnicos', redirectTo: 'bienvenida', pathMatch: 'full'},
+            {
+                path: 'bienvenida', component: WelcomeComponent, canActivate: [AuthGuardService]
+            },
             {
                 path: 'catalogo', component: CatalogueComponent, canActivate: [AuthGuardService]
             },
