@@ -18,6 +18,8 @@ import {EsriRequestService} from './services/esri-request.service';
 import {HttpClientModule} from '@angular/common/http';
 import {CalendarModule} from 'primeng/calendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -42,7 +44,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         HttpClientModule,
         ToggleButtonModule,
         CalendarModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        Ng4LoadingSpinnerModule.forRoot(),
+
     ],
     providers: [EsriRequestService],
     bootstrap: [AppComponent]

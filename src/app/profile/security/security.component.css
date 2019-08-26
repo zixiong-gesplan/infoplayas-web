@@ -1,13 +1,14 @@
 .centrar{
   text-align: center !important;
+
 }
 .modal-dialog {
   position:absolute;
-  top:50% !important;
+  top:30% !important;
   transform: translate(0, -50%) !important;
   -ms-transform: translate(0, -50%) !important;
   -webkit-transform: translate(0, -50%) !important;
   margin:auto 25%;
-  width:50%;
-  height:70%;
+  width:40%;
+  height:50%;
 }

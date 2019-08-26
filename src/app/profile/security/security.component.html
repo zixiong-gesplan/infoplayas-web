@@ -1,4 +1,4 @@
-<!-- security Header -->
+<ng4-loading-spinner></ng4-loading-spinner>
 <section class="blog-header blog-page-padding-top" data-parallax="scroll" data-image-src="assets/images/play.jpg">
   <div class="container">
     <div class="padding-top-30 padding-bottom-70">
@@ -12,28 +12,28 @@
 <section id="shop" class="paddingtopbottom100px">
   <div class="container">
     <h3 class="first">Playas del municipio de: <span style="font-weight:bold">{{nomMunicipio | titlecase}}</span></h3>
-    <p-table *ngFor=" let item of datosPlaya.features">
+    <p-table *ngFor=" let playa of datosPlaya.features">
       <ng-template pTemplate="header" >
           <tr>
-              <th colspan="3" class="centrar" style="font-size: 1.2em; color: red;">IDGSE: {{item.attributes.id_dgse}} - {{!item.attributes.nombre_municipio ? 'Nombre sin asignar' : item.attributes.nombre_municipio}} - {{item.attributes.clasificacion}}
-                <i *ngIf="item.attributes.clasificacion==='PROHIBIDA'" class="fa fa-ban" aria-hidden="true"></i>
-                <i *ngIf="item.attributes.clasificacion==='PELIGROSA'" class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                <i *ngIf="item.attributes.clasificacion==='LIBRE'" class="fa fa-flag-o" aria-hidden="true"></i>
+              <th colspan="3" class="centrar"><span style="color:#8CBB28">IDGSE: {{playa.attributes.id_dgse}} - {{!playa.attributes.nombre_municipio ? 'Nombre sin asignar' : playa.attributes.nombre_municipio}} </span> <span class="font-style-1  blue-color">{{playa.attributes.clasificacion}} </span>
+                <i style="color:#F96054" *ngIf="playa.attributes.clasificacion==='USO PROHIBIDO'" class="fa fa-ban" aria-hidden="true" title="Playa de USO PROHIBIDO"></i>
+                <i style="color:#FA924A" *ngIf="playa.attributes.clasificacion==='PELIGROSA'" class="fa fa-exclamation-circle" aria-hidden="true" title="Playa Peligrosa"></i>
+                <i style="color:#54A777" *ngIf="playa.attributes.clasificacion==='LIBRE'" class="fa fa-check" aria-hidden="true" title="Playa Libre"></i>
 
               </th>
           </tr>
           <tr>
-              <th class="centrar">Grado de protección Alto <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="contenido(item)"></i><br><span style="font-size: 0.7em;">(horario servicio salvamento)</span></th>
-              <th class="centrar">Grado de protección Moderado <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="contenido(item)"></i> <br><span style="font-size: 0.7em;">(horario servicio salvamento)</span></th>
-              <th class="centrar">Grado de protección Bajo <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="contenido(item)"></i> <br><span style="font-size: 0.7em;">(horario servicio salvamento)</span></th>
+              <th class="centrar">Grado de protección Alto <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'alto')" title="Añadir medios humano y medios materiales"></i><br><span style="font-size: 0.7em;">(horario servicio salvamento)</span></th>
+              <th class="centrar">Grado de protección Moderado <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'moderado')" title="Añadir medios humano y medios materiales"></i> <br><span style="font-size: 0.7em;">(horario servicio salvamento)</span></th>
+              <th class="centrar">Grado de protección Bajo <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa, 'bajo')" title="Añadir medios humano y medios materiales"></i> <br><span style="font-size: 0.7em;">(horario servicio salvamento)</span></th>
           </tr>
           <tr>
               <td class="centrar">
                 <p-table>
                   <ng-template pTemplate="header" >
                     <tr>
-                      <th class="centrar"><p-calendar #myCalender [(ngModel)]="altoini" [timeOnly]="true" placeholder="hora inicio" id="item.attributes.id_dgse" (click)="horario(item.attributes.id_dgse, myCalender)" [disabled]="item.attributes.clasificacion==='PROHIBIDA'"></p-calendar></th>
-                      <th class="centrar"><p-calendar [(ngModel)]="altofin" [timeOnly]="true" placeholder="hora fin" id="item.attributes.id_dgse" [disabled]="item.attributes.clasificacion==='PROHIBIDA'"></p-calendar></th>
+                      <th class="centrar"><p-calendar #myCalender [(ngModel)]="altoini" [timeOnly]="true" placeholder="hora inicio" id="playa.attributes.id_dgse" (click)="horario(playa.attributes.id_dgse, myCalender)" [disabled]="playa.attributes.clasificacion==='USO PROHIBIDO'"></p-calendar></th>
+                      <th class="centrar"><p-calendar [(ngModel)]="altofin" [timeOnly]="true" placeholder="hora fin" id="playa.attributes.id_dgse" [disabled]="playa.attributes.clasificacion==='USO PROHIBIDO'"></p-calendar></th>
                     </tr>
                     </ng-template >
                 </p-table>
@@ -42,8 +42,8 @@
                 <p-table>
                   <ng-template pTemplate="header" >
                     <tr>
-                      <th class="centrar"><p-calendar [(ngModel)]="moderadoini" [timeOnly]="true" placeholder="hora inicio" id="item.attributes.id_dgse" [disabled]="item.attributes.clasificacion==='PROHIBIDA'"></p-calendar></th>
-                      <th class="centrar"><p-calendar [(ngModel)]="moderadofin" [timeOnly]="true" placeholder="hora fin" id="item.attributes.id_dgse" [disabled]="item.attributes.clasificacion==='PROHIBIDA'"></p-calendar></th>
+                      <th class="centrar"><p-calendar [(ngModel)]="moderadoini" [timeOnly]="true" placeholder="hora inicio" id="playa.attributes.id_dgse" [disabled]="playa.attributes.clasificacion==='USO PROHIBIDO'"></p-calendar></th>
+                      <th class="centrar"><p-calendar [(ngModel)]="moderadofin" [timeOnly]="true" placeholder="hora fin" id="playa.attributes.id_dgse" [disabled]="playa.attributes.clasificacion==='USO PROHIBIDO'"></p-calendar></th>
                     </tr>
                   </ng-template >
                 </p-table>
@@ -52,8 +52,8 @@
                 <p-table>
                   <ng-template pTemplate="header" >
                     <tr>
-                      <th class="centrar"><p-calendar [(ngModel)]="bajoini" [timeOnly]="true" placeholder="hora inicio" id="item.attributes.id_dgse" [disabled]="item.attributes.clasificacion==='PROHIBIDA'"></p-calendar></th>
-                      <th class="centrar"><p-calendar [(ngModel)]="bajofin" [timeOnly]="true" placeholder="hora fin" id="item.attributes.id_dgse" [disabled]="item.attributes.clasificacion==='PROHIBIDA'"></p-calendar></th>
+                      <th class="centrar"><p-calendar [(ngModel)]="bajoini" [timeOnly]="true" placeholder="hora inicio" id="playa.attributes.id_dgse" [disabled]="playa.attributes.clasificacion==='USO PROHIBIDO'"></p-calendar></th>
+                      <th class="centrar"><p-calendar [(ngModel)]="bajofin" [timeOnly]="true" placeholder="hora fin" id="playa.attributes.id_dgse" [disabled]="playa.attributes.clasificacion==='USO PROHIBIDO'"></p-calendar></th>
                     </tr>
                     </ng-template >
                 </p-table>
@@ -73,12 +73,44 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Modal title</h4>
+        <h4 class="modal-title text-center" style="color:#8CBB28">{{nombre_playa}} <br> <span style="font-size:0.7em; color: black">Grado de protección: </span> <span style="color:#8CBB28">{{grado_proteccion}}</span> </h4>
       </div>
       <div class="modal-body">
-        <form class="findus">
+        <form [hidden]="!visible" class="findus">
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Postal Code / Zip" required>
+            <h4 class="modal-title" style="font-weight: bold !important">Medios Humanos</h4><br>
+             <label for="jefatura">Jefatura de playa o turno</label>
+            <input type="number" style="max-width:400px; height:30px !important;" id="jefatura" class="form-control" value="0" placeholder="Jefatura de playa o turno" required>
+          </div>
+          <div class="form-group">
+            <label for="socorristasilla">Socorrista en torre o silla de vigilancia</label>
+            <input type="number" style="max-width:400px; height:30px !important;" id="socorristasilla" class="form-control" value="0" placeholder="Socorrista en torre o silla de vigilancia" required>
+          </div>
+          <div class="form-group">
+            <label for="socorristaactividades">Socorrista de actividades acuáticas y vigilancia a pie de agua</label>
+            <input type="number" style="max-width:400px; height:30px !important;" id="socorristasilla" class="form-control" value="0" placeholder="Socorrista de actividades acuáticas y vigilancia a pie de agua" required>
+          </div>
+          <div class="form-group">
+            <label for="socorristaacuaticas">Socorrista actividades acuáticas</label>
+            <input type="number" style="max-width:400px; height:30px !important;" id="socorristaacuaticas" class="form-control" value="0" placeholder="Socorrista actividades acuáticas" required>
+          </div>
+          <div class="form-group">
+            <label for="socorristavigiliancia">Socorrista vigilancia a pie de agua</label>
+            <input type="number" style="max-width:400px; height:30px !important;" id="socorristavigiliancia" class="form-control" value="0" placeholder="Socorrista vigilancia a pie de agua" required>
+          </div>
+          <div class="form-group">
+            <label for="socorristaembarcacion">Socorrista embarcación</label>
+            <input type="number" style="max-width:400px; height:30px !important;" id="socorristaembarcacion" class="form-control" value="0" placeholder="Socorrista embarcación" required>
+          </div>
+          <div class="form-group">
+            <label for="socorristaper">Socorrista embarcación con PER</label>
+            <input type="number" style="max-width:400px; height:30px !important;" id="socorristaper" class="form-control" value="0" placeholder="Socorrista embarcación con PER" required>
+          </div>
+          </form>
+          <form class="findus">
+          <h4 class="modal-title" style="font-weight: bold !important">Medios Materiales</h4><br>
+          <div class="form-group">
+            <input type="text" id="numero" class="form-control" value="0" placeholder="" required>
           </div>
           <div class="form-group">
             <input type="text" class="form-control" placeholder="Postal Code / Zip" required>
@@ -86,17 +118,7 @@
           <div class="form-group">
             <input type="text" class="form-control" placeholder="Postal Code / Zip" required>
           </div>
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Postal Code / Zip" required>
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Postal Code / Zip" required>
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Postal Code / Zip" required>
-          </div>
-
-        </form>
+          </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary">Guardar</button>
