@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ElementRef} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {EsriRequestService} from '../../services/esri-request.service';
@@ -90,36 +90,58 @@ export class SecurityComponent implements OnInit {
   altoini: Date;
   nombre_playa;
   grado_proteccion;
-  visible:boolean;
+  clasificacion;
+  medio;
+  pasiva:boolean;
+  iddgse;
+  peligrosa:boolean;
 
 
-  constructor(private authService: AuthGuardService, private service: EsriRequestService, private spinnerService: Ng4LoadingSpinnerService) { }
+  constructor(private authService: AuthGuardService,
+              private service: EsriRequestService,
+              private spinnerService: Ng4LoadingSpinnerService,
+              private elementRef: ElementRef) { }
 
   ngOnInit() {
     this.loadRelatedRecords();
-    $("a.my-tool-tip").tooltip();
+    this.default();
+
   }
 
   private horario(id_dgse,mc){
     this.altoini = mc.inputFieldValue;
-    console.log(this.altoini);
-
   }
 
   private anhadir_medios(playa,grado){
-   $('#myModal').modal('show');
-   this.nombre_playa = playa.attributes.nombre_municipio;
-   this.grado_proteccion = grado;
-   this.mostrar_form(playa);
+    $('#myModal').modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+    $('#myModal').modal('show');
+    this.nombre_playa = playa.attributes.nombre_municipio;
+    this.grado_proteccion = grado;
+    this.iddgse = playa.attributes.id_dgse;
+    this.clasificacion = playa.attributes.clasificacion;
+    this.mostrar_pasiva_grado_bajo(grado);
+    console.log(playa.attributes.clasificacion);
+    if(playa.attributes.clasificacion==='USO PROHIBIDO'){
+      this.peligrosa = true;
 
+    }
   }
 
-  private mostrar_form(playa){
-    this.visible = true;
-     if(playa.attributes.clasificacion==='USO PROHIBIDO'){
-       this.visible = false;
-     }
-     return this.visible;
+  private mostrar_pasiva_grado_bajo(grado){
+      if(grado==='bajo'){
+        this.pasiva = true;
+      }
+  }
+
+  default(){
+    this.pasiva = false;
+    this.peligrosa = false;
+  }
+
+  private calculadora(medio){
+    $('#calculadoraModal').modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+    $('#calculadoraModal').modal('show');
+    this.medio = medio;
   }
 
   loadRelatedRecords() {

@@ -2,13 +2,73 @@
   text-align: center !important;
 
 }
-.modal-dialog {
+.tamanhofont{
+  font-size: 0.6em !important;
+  text-align: center !important;
+}
+.tamanhofontcal{
+  font-size: 0.4em !important;
+  text-align: center !important;
+}
+.pointer{
+  cursor: pointer !important;
+}
+.inputCustom{
+  height: 30px !important;
+  width: 100% !important;
+}
+.inputCustomCal{
+  height: 30px !important;
+  width: 50% !important;
+
+
+}
+
+.modal-dialog-main {
   position:absolute;
-  top:30% !important;
+  top:25% !important;
   transform: translate(0, -50%) !important;
   -ms-transform: translate(0, -50%) !important;
   -webkit-transform: translate(0, -50%) !important;
-  margin:auto 25%;
-  width:40%;
+  margin:auto 5%;
+  width:90%;
   height:50%;
+}
+
+.modal-dialog-calculadora {
+
+  top:10% !important;
+  width:50% !important;
+
+}
+
+@media (max-width: 641px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.1em !important;
+  }
+
+}
+@media (max-width: 750px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.3em !important;
+  }
+
+}
+
+@media (max-width: 709px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.2em !important;
+  }
+
+}
+
+@media (max-width: 1200px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.5em !important;
+  }
+
 }
