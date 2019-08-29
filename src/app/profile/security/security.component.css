@@ -16,12 +16,16 @@
 .inputCustom{
   height: 30px !important;
   width: 100% !important;
+  font-size: 0.6em !important;
 }
 .inputCustomCal{
   height: 30px !important;
   width: 50% !important;
 
 
+}
+.botonCentrado{
+  text-align:center;
 }
 
 .modal-dialog-main {
@@ -35,11 +39,12 @@
   height:50%;
 }
 
+.modal {
+  overflow: auto !important;
+}
 .modal-dialog-calculadora {
 
-  top:10% !important;
-  width:50% !important;
-
+  width:82% !important;
 }
 
 @media (max-width: 641px) {

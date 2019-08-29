@@ -96,7 +96,6 @@ export class SecurityComponent implements OnInit {
   iddgse;
   peligrosa:boolean;
 
-
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
               private spinnerService: Ng4LoadingSpinnerService,
@@ -139,8 +138,8 @@ export class SecurityComponent implements OnInit {
   }
 
   private calculadora(medio){
-    $('#calculadoraModal').modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
-    $('#calculadoraModal').modal('show');
+    $('#calculadora'+medio).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+    $('#calculadora'+medio).modal('show');
     this.medio = medio;
   }
 
