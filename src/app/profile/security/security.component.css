@@ -1,35 +1,79 @@
 .centrar{
   text-align: center !important;
+
 }
-.modal-dialog {
+.tamanhofont{
+  font-size: 0.6em !important;
+  text-align: center !important;
+}
+.tamanhofontcal{
+  font-size: 0.4em !important;
+  text-align: center !important;
+}
+.pointer{
+  cursor: pointer !important;
+}
+.inputCustom{
+  height: 30px !important;
+  width: 100% !important;
+  font-size: 0.6em !important;
+}
+.inputCustomCal{
+  height: 30px !important;
+  width: 50% !important;
+
+
+}
+.botonCentrado{
+  text-align:center;
+}
+
+.modal-dialog-main {
   position:absolute;
-  top:50% !important;
+  top:25% !important;
   transform: translate(0, -50%) !important;
   -ms-transform: translate(0, -50%) !important;
   -webkit-transform: translate(0, -50%) !important;
-  margin:auto 25%;
-  width:50%;
-  height:70%;
+  margin:auto 5%;
+  width:90%;
+  height:50%;
 }
-.modal-content {
-  min-height:100%;
-  position:absolute;
-  top:0;
-  bottom:0;
-  left:0;
-  right:0;
+
+.modal {
+  overflow: auto !important;
 }
-.modal-body {
-  position:absolute;
-  top:45px; /** height of header **/
-  bottom:45px;  /** height of footer **/
-  left:0;
-  right:0;
-  overflow-y:auto;
+.modal-dialog-calculadora {
+
+  width:82% !important;
 }
-.modal-footer {
-  position:absolute;
-  bottom:0;
-  left:0;
-  right:0;
+
+@media (max-width: 641px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.1em !important;
+  }
+
+}
+@media (max-width: 750px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.3em !important;
+  }
+
+}
+
+@media (max-width: 709px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.2em !important;
+  }
+
+}
+
+@media (max-width: 1200px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.5em !important;
+  }
+
 }

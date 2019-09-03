@@ -13,6 +13,7 @@ export class EsriRequestService {
 
         const params = new HttpParams().set('token', token).append('f', 'json')
             .append('where', cWhere)
+            .append('orderByFields', 'clasificacion')//ordenamos por el campo clasificacion
             .append('outFields', outFields)
             .append('returnGeometry', geometry ? 'true' : 'false')
         return this.http.post(featureEndPoint, params, {headers: headers});

@@ -19,6 +19,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {CalendarModule} from 'primeng/calendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WelcomeComponent } from './profile/welcome/welcome.component';
+import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 
 @NgModule({
     declarations: [
@@ -47,7 +48,9 @@ import { WelcomeComponent } from './profile/welcome/welcome.component';
         InputTextareaModule,
         InputTextModule,
         CalendarModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        Ng4LoadingSpinnerModule.forRoot(),
+
     ],
     providers: [EsriRequestService],
     bootstrap: [AppComponent]
