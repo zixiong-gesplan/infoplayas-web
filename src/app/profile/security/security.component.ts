@@ -7,6 +7,7 @@ import {Danger} from '../../models/danger';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 declare var $:any;
 declare var jQuery:any;
+declare const aytos: any;
 
 @Component({
   selector: 'app-security',
@@ -146,8 +147,8 @@ export class SecurityComponent implements OnInit {
   loadRelatedRecords() {
     this.spinnerService.show();
     this.currentUser = this.authService.getCurrentUser();
-    this.filtermunicipio = "LOWER(municipio)=LOWER('"+ this.currentUser.username.substring(5,this.currentUser.username.length) +"')";
-    this.nomMunicipio = this.currentUser.username.substring(5,this.currentUser.username.length);
+    this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
+    this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
 
       this.service.getEsriDataLayer('https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0/query',
           this.filtermunicipio, '*', false, this.currentUser.token).subscribe(

@@ -25,9 +25,12 @@ declare const createForm: any;
 declare const loadList: any;
 declare const submitForm: any;
 
+declare let filterPlayas: any;
+declare let filterMunicipios: any;
 declare const playasLayerId: any;
 declare const clasificationDangerLayerId: any;
 declare const municipiosLayerId: any;
+declare const aytos: any;
 declare const forms: any;
 declare let editFeature: any;
 declare let listNode: any;
@@ -53,7 +56,6 @@ export class MapEditorComponent implements OnInit {
     formDanger: FormGroup;
     formIncidents: FormGroup;
     private featureResponse: Danger[];
-    private filterMunicipio: string;
     private currentUser: Auth;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
@@ -188,15 +190,15 @@ export class MapEditorComponent implements OnInit {
 
                     let user = IdentityManager.credentials[0].userId;
 
-                    t.filterMunicipio = 'LOWER(municipio)=LOWER(\'' + user.substring(5, user.length) + '\')';
-
                     // Filter by changing runtime params
-                    playasLayer.definitionExpression = t.filterMunicipio;
-                    municipiosLayer.definitionExpression = t.filterMunicipio;
+                    filterPlayas = 'municipio = \'' + aytos[user].municipio_minus + '\'';
+                    filterMunicipios = 'municipio = \'' + aytos[user].municipio_mayus + '\'';
+                    playasLayer.definitionExpression = filterPlayas;
+                    municipiosLayer.definitionExpression = filterMunicipios;
 
                     municipiosLayer.queryFeatures({
                         outFields: ['*'],
-                        where: t.filterMunicipio,
+                        where: filterMunicipios,
                         geometry: view.initialExtent,
                         returnGeometry: true
                     }).then(function (results) {
@@ -220,7 +222,7 @@ export class MapEditorComponent implements OnInit {
                     listNode = $('#ulPlaya')[0];
                     listNode.addEventListener('click', onListClickHandler);
 
-                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], t.filterMunicipio);
+                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas);
 
                     function onListClickHandler(event) {
                         const target = event.target;
@@ -261,7 +263,7 @@ export class MapEditorComponent implements OnInit {
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], t.filterMunicipio));
+                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas));
                 };
 
                 $('#tabView')[0].onclick = function () {

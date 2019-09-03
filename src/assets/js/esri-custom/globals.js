@@ -8,6 +8,9 @@ var playasLayerId = "playas_catalogo_edicion_5477";
 var clasificationDangerLayerId = "playas_catalogo_edicion_7907";
 var municipiosLayerId = "enp_y_municipios_islas_canarias_4946";
 
+//Layer filters
+var filterPlayas, filterMunicipios;
+
 //Forms definitions
 var forms = {
   "playas_catalogo_edicion_5477": [
