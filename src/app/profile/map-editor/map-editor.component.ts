@@ -5,9 +5,7 @@ import {loadModules} from 'esri-loader';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {Danger} from '../../models/danger';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {EsriBoolean} from '../../models/esri-boolean';
 import {environment} from '../../../environments/environment';
-import {Incidents} from '../../models/incidents';
 
 declare var $: any;
 declare var jquery: any;
@@ -79,13 +77,15 @@ export class MapEditorComponent implements OnInit {
             objectid: new FormControl(''),
             incidentes_graves: new FormControl(''),
             incidentes_mgraves: new FormControl(''),
-            val_peligrosidad: new FormControl({value: '', disabled: true}),
             actividades_deportivas: new FormControl(''),
             balizamiento: new FormControl(''),
             actividades_acotadas: new FormControl(''),
             observaciones: new FormControl(''),
             id_dgse: new FormControl(''),
-            on_edit: new FormControl('')
+            // campos auxiliares o calculados que no pertenecen al modelo
+            val_peligrosidad: new FormControl({value: '', disabled: true}),
+            on_edit: new FormControl(''),
+            chksports: new FormControl('')
         });
     }
 
@@ -114,33 +114,11 @@ export class MapEditorComponent implements OnInit {
         return unselectedMessage;
     }
 
-    onSubmitIncidents() {
-        const incidents: Incidents = this.formIncidents.value;
+    onSubmit(fg: FormGroup, relid: string) {
         const updateObj = new Array();
-        updateObj.push({attributes: incidents});
-        if (this.formIncidents.get('on_edit').value) {
-            this.editData(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/2/applyEdits');
-        } else {
-            this.editData(updateObj, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/2/applyEdits');
-        }
-    }
-
-    onSubmitDanger() {
-        // TODO cambiar con reactive forms que el valor en vez de ser true o false sea 1 o 0 para evitar el siguiente bloque
-        const danger: Danger = this.formDanger.value;
-        for (let [key, value] of Object.entries(danger)) {
-            if (typeof value === 'boolean' || value === null) {
-                danger[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
-            }
-        }
-
-        const updateObj = new Array();
-        updateObj.push({attributes: danger});
-        if (this.formDanger.get('on_edit').value) {
-            this.editData(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/1/applyEdits');
-        } else {
-            this.editData(updateObj, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/1/applyEdits');
-        }
+        updateObj.push({attributes: fg.value});
+        const mode = fg.get('on_edit').value ? 'updates' : 'adds';
+        this.editData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + relid + '/applyEdits');
     }
 
     private setMap() {
@@ -343,9 +321,20 @@ export class MapEditorComponent implements OnInit {
     }
 
     calculateDangerLever() {
-        let dangerLevel = this.formIncidents.get('actividades_deportivas').value ? 5 : 0;
-        dangerLevel -= this.formIncidents.get('balizamiento').value ? 4 : 0;
-        dangerLevel -= this.formIncidents.get('actividades_acotadas').value ? 2 : 0;
+        let dangerLevel = this.formIncidents.get('chksports').value ? 5 : 0;
+        dangerLevel -= this.formIncidents.get('balizamiento').value === 1 ? 4 : 0;
+        dangerLevel -= this.formIncidents.get('actividades_acotadas').value === 1 ? 2 : 0;
         return dangerLevel > 0 ? dangerLevel : 0;
+    }
+
+    handleDangerChange(e, formFieldName: string) {
+        const isChecked = e.checked ? 1 : 0;
+        this.formDanger.get(formFieldName).setValue(isChecked);
+    }
+
+    handleIncidentsChange(e, formFieldName: string) {
+        const vEvent = e.checked === undefined ? e : e.checked;
+        const isChecked = vEvent ? 1 : 0;
+        this.formIncidents.get(formFieldName).setValue(isChecked);
     }
 }
