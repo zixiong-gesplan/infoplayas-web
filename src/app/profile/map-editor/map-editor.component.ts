@@ -79,7 +79,10 @@ export class MapEditorComponent implements OnInit {
             objectid: new FormControl(''),
             incidentes_graves: new FormControl(''),
             incidentes_mgraves: new FormControl(''),
-            val_peligrosidad: new FormControl(''),
+            val_peligrosidad: new FormControl({value: '', disabled: true}),
+            actividades_deportivas: new FormControl(''),
+            balizamiento: new FormControl(''),
+            actividades_acotadas: new FormControl(''),
             observaciones: new FormControl(''),
             id_dgse: new FormControl(''),
             on_edit: new FormControl('')
@@ -109,6 +112,35 @@ export class MapEditorComponent implements OnInit {
 
     getUnselectedMessage() {
         return unselectedMessage;
+    }
+
+    onSubmitIncidents() {
+        const incidents: Incidents = this.formIncidents.value;
+        const updateObj = new Array();
+        updateObj.push({attributes: incidents});
+        if (this.formIncidents.get('on_edit').value) {
+            this.editData(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/2/applyEdits');
+        } else {
+            this.editData(updateObj, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/2/applyEdits');
+        }
+    }
+
+    onSubmitDanger() {
+        // TODO cambiar con reactive forms que el valor en vez de ser true o false sea 1 o 0 para evitar el siguiente bloque
+        const danger: Danger = this.formDanger.value;
+        for (let [key, value] of Object.entries(danger)) {
+            if (typeof value === 'boolean' || value === null) {
+                danger[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
+            }
+        }
+
+        const updateObj = new Array();
+        updateObj.push({attributes: danger});
+        if (this.formDanger.get('on_edit').value) {
+            this.editData(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/1/applyEdits');
+        } else {
+            this.editData(updateObj, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/1/applyEdits');
+        }
     }
 
     private setMap() {
@@ -294,35 +326,6 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
-    onSubmitIncidents() {
-        const incidents: Incidents = this.formIncidents.value;
-        const updateObj = new Array();
-        updateObj.push({attributes: incidents});
-        if (this.formIncidents.get('on_edit').value) {
-            this.editData(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/2/applyEdits');
-        } else {
-            this.editData(updateObj, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/2/applyEdits');
-        }
-    }
-
-    onSubmitDanger() {
-        // TODO cambiar con reactive forms que el valor en vez de ser true o false sea 1 o 0 para evitar el siguiente bloque
-        const danger: Danger = this.formDanger.value;
-        for (let [key, value] of Object.entries(danger)) {
-            if (typeof value === 'boolean' || value === null) {
-                danger[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
-            }
-        }
-
-        const updateObj = new Array();
-        updateObj.push({attributes: danger});
-        if (this.formDanger.get('on_edit').value) {
-            this.editData(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/1/applyEdits');
-        } else {
-            this.editData(updateObj, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/1/applyEdits');
-        }
-    }
-
     private editData(updateObj, currentUser, mode, endpoint) {
         this.service.applyEditsRelatedData(endpoint,
             updateObj, mode, currentUser.token).subscribe(
@@ -339,4 +342,10 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
+    calculateDangerLever() {
+        let dangerLevel = this.formIncidents.get('actividades_deportivas').value ? 5 : 0;
+        dangerLevel -= this.formIncidents.get('balizamiento').value ? 4 : 0;
+        dangerLevel -= this.formIncidents.get('actividades_acotadas').value ? 2 : 0;
+        return dangerLevel > 0 ? dangerLevel : 0;
+    }
 }

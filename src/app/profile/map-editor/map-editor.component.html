@@ -91,10 +91,31 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="esri-font">Valor de peligrosidad</label>
-                        <input class="esri-feature-form__input" pInputText type="number"
-                               formControlName="val_peligrosidad"/>
+                        <div class="ui-inputgroup esri-feature-form__input">
+                            <span [pTooltip]="formIncidents.get('actividades_deportivas').value ? 'Coexisten actividades deportivas, náuticas y de baño' : 'No existen actividades deportivas'" class="ui-inputgroup-addon"><p-checkbox
+                                formControlName="actividades_deportivas" binary="true"
+                                (click)="formIncidents.get('actividades_deportivas').value ? op1.show($event) : op1.hide()"></p-checkbox></span>
+                            <input style="width: 100%;" pInputText type="number"
+                                   [value]="calculateDangerLever()" disabled="true">
+                        </div>
                     </div>
                 </div>
+                <!--                panel de peligrosidad-->
+                <p-overlayPanel #op1>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <p-toggleButton formControlName="balizamiento" onLabel="Balizamiento"
+                                            offLabel="Sin balizamiento"></p-toggleButton>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <p-toggleButton formControlName="actividades_acotadas"
+                                            onLabel="Sectores deportivos señalizados"
+                                            offLabel="Sin señalización"></p-toggleButton>
+                        </div>
+                    </div>
+                </p-overlayPanel>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="esri-font">Observaciones</label>

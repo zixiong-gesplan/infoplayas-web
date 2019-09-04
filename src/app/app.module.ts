@@ -12,7 +12,15 @@ import { ReportComponent } from './profile/report/report.component';
 import { ContactUsComponent } from './profile/contact-us/contact-us.component';
 import {LoginComponent} from './login/login.component';
 import { MapEditorComponent } from './profile/map-editor/map-editor.component';
-import {InputTextareaModule, InputTextModule, TabMenuModule, TabViewModule, ToggleButtonModule} from 'primeng/primeng';
+import {
+    CheckboxModule,
+    InputTextareaModule,
+    InputTextModule, OverlayPanelModule,
+    TabMenuModule,
+    TabViewModule,
+    ToggleButtonModule,
+    TooltipModule
+} from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
 import {EsriRequestService} from './services/esri-request.service';
 import {HttpClientModule} from '@angular/common/http';
@@ -50,6 +58,9 @@ import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
         CalendarModule,
         BrowserAnimationsModule,
         Ng4LoadingSpinnerModule.forRoot(),
+        CheckboxModule,
+        TooltipModule,
+        OverlayPanelModule,
 
     ],
     providers: [EsriRequestService],
