@@ -27,7 +27,6 @@ declare const submitForm: any;
 declare let filterPlayas: any;
 declare let filterMunicipios: any;
 declare const playasLayerId: any;
-declare const clasificationDangerLayerId: any;
 declare const municipiosLayerId: any;
 declare const aytos: any;
 declare const forms: any;
@@ -177,7 +176,7 @@ export class MapEditorComponent implements OnInit {
                 });
 
                 var t = this;
-                let form, playasLayer, municipiosLayer, clasificationDangerTable, queryTask;
+                let form, playasLayer, municipiosLayer, queryTask;
                 // Create widgets
                 let scaleBar = createScaleBar(ScaleBar, view);
                 let basemapToggle = createBaseMapToggle(BasemapToggle, view, 'streets-vector');
@@ -189,10 +188,6 @@ export class MapEditorComponent implements OnInit {
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
-
-                    clasificationDangerTable = webmap.tables.filter(obj => {
-                        return obj.id === clasificationDangerLayerId;
-                    })[0];
 
                     queryTask = new QueryTask({
                         url: playasLayer.url + '/' + playasLayer.layerId + '/' + 'queryRelatedRecords'
@@ -241,6 +236,7 @@ export class MapEditorComponent implements OnInit {
 
                         selectFeature(view, objectId, playasLayer, form).then(function (output) {
                             t.sendMessage(output.beachId, output.localName);
+                            // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
                         });
