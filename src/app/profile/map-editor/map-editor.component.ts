@@ -272,7 +272,11 @@ export class MapEditorComponent implements OnInit {
                     t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas));
                 };
 
-                $('#tabView')[0].onclick = function () {
+                $('#js-filters-mosaic-flat')[0].onclick = function (event) {
+                    let filter = 'municipio = \'' + aytos[IdentityManager.credentials[0].userId].municipio_minus + '\'';
+                    filter = event.target.dataset.filter === '.protection' ? filter + ' AND clasificacion = \'LIBRE\'' : filter;
+                    playasLayer.definitionExpression = filter;
+                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter);
                 };
             })
             .catch(err => {
