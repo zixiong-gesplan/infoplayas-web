@@ -168,12 +168,12 @@
 <!-- clasificacion Body -->
 <div id="portfolio" class="paddingtopbottom50px">
     <div class="container">
-        <div class="col-md-6 portfolio paddingleft25px">
+        <div class="col-md-6 portfolio-wide paddingleft25px">
             <div class="information-written-data wow fadeIn">
                 <h2
                     class="border-color-blue-3 no-margin text-color-grey ">
                     {{(localName ? localName : 'seleccione playa') }}
-                    <br> <span
+                    <br> <span [hidden]="localName && localName.length > 20"
                     class="green-color font-style-1">Editor</span></h2>
             </div>
         </div>

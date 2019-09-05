@@ -1974,6 +1974,9 @@ blockquote.ultra-light{
     max-width: 400px;
     margin: 0 auto;
 }
+.portfolio-wide {
+    margin: 0 auto;
+}
 .cbp-l-filters-buttonCenter {
     margin-top: 70px;
     margin-bottom: 10px;
