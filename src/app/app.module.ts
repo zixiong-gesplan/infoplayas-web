@@ -13,7 +13,7 @@ import { ContactUsComponent } from './profile/contact-us/contact-us.component';
 import {LoginComponent} from './login/login.component';
 import { MapEditorComponent } from './profile/map-editor/map-editor.component';
 import {
-    CheckboxModule,
+    CheckboxModule, DropdownModule,
     InputTextareaModule,
     InputTextModule, OverlayPanelModule,
     TabMenuModule,
@@ -61,6 +61,7 @@ import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
         CheckboxModule,
         TooltipModule,
         OverlayPanelModule,
+        DropdownModule,
 
     ],
     providers: [EsriRequestService],

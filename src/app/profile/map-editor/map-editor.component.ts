@@ -7,6 +7,7 @@ import {Danger} from '../../models/danger';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {environment} from '../../../environments/environment';
 import {EsriBoolean} from '../../models/esri-boolean';
+import {SelectItem} from 'primeng/api';
 
 declare var $: any;
 declare var jquery: any;
@@ -55,8 +56,14 @@ export class MapEditorComponent implements OnInit {
     formIncidents: FormGroup;
     private featureResponse: Danger[];
     private currentUser: Auth;
+    noDangerOptions: SelectItem[];
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
+        this.noDangerOptions = [
+            {label: 'Selecciona nivel de peligrosidad', value: null},
+            {label: 'Playas libres para el baño', value: 'LIBRE'},
+            {label: 'Peligrosa o susceptible de producir daño', value: 'PELIGROSA'},
+        ];
     }
 
     ngOnInit() {
@@ -71,7 +78,9 @@ export class MapEditorComponent implements OnInit {
             fauna_marina: new FormControl(''),
             desprendimientos: new FormControl(''),
             id_dgse: new FormControl(''),
-            on_edit: new FormControl('')
+            on_edit: new FormControl(''),
+            // para actualizar el atributo de clasificacion de la capa principal de playas
+            dangerLevel: new FormControl(''),
         });
         this.formIncidents = this.fb.group({
             objectid: new FormControl(''),
@@ -118,6 +127,10 @@ export class MapEditorComponent implements OnInit {
         updateObj.push({attributes: fg.value});
         const mode = fg.get('on_edit').value ? 'updates' : 'adds';
         this.editData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + relid + '/applyEdits');
+    }
+
+    private executePostData() {
+
     }
 
     private setMap() {
@@ -316,6 +329,7 @@ export class MapEditorComponent implements OnInit {
             (result: any) => {
                 if (result) {
                     console.log(result);
+                    this.executePostData();
                 }
             },
             error => {
@@ -331,5 +345,10 @@ export class MapEditorComponent implements OnInit {
         dangerLevel -= this.formIncidents.get('balizamiento').value ? 4 : 0;
         dangerLevel -= this.formIncidents.get('actividades_acotadas').value ? 2 : 0;
         return dangerLevel > 0 ? dangerLevel : 0;
+    }
+
+    resetDanger(event) {
+        this.formDanger.reset();
+        this.formDanger.get('dangerLevel').setValue(event.value);
     }
 }
