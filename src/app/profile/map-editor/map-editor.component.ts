@@ -274,7 +274,7 @@ export class MapEditorComponent implements OnInit {
 
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
                     let filter = 'municipio = \'' + aytos[IdentityManager.credentials[0].userId].municipio_minus + '\'';
-                    filter = event.target.dataset.filter === '.protection' ? filter + ' AND clasificacion = \'LIBRE\'' : filter;
+                    filter = event.target.dataset.filter === '.protection' ? filter + ' AND clasificacion <> \'USO PROHIBIDO\'' : filter;
                     playasLayer.definitionExpression = filter;
                     loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter);
                 };
