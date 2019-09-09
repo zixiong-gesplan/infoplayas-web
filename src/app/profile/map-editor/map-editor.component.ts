@@ -4,7 +4,7 @@ import {Auth} from '../../models/auth';
 import {loadModules} from 'esri-loader';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {Danger} from '../../models/danger';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {environment} from '../../../environments/environment';
 import {EsriBoolean} from '../../models/esri-boolean';
 import {SelectItem} from 'primeng/api';
@@ -54,9 +54,12 @@ export class MapEditorComponent implements OnInit {
     selectedBeachDanger: Danger;
     formDanger: FormGroup;
     formIncidents: FormGroup;
+    formDangerClasification: FormGroup;
+    noDangerOptions: SelectItem[];
     private featureResponse: Danger[];
     private currentUser: Auth;
-    noDangerOptions: SelectItem[];
+    private nextButton: boolean;
+    private viewFormDangerClasification: boolean;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
         this.noDangerOptions = [
@@ -95,6 +98,24 @@ export class MapEditorComponent implements OnInit {
             val_peligrosidad: new FormControl({value: '', disabled: true}),
             on_edit: new FormControl('')
         });
+        this.formDangerClasification = this.fb.group({
+            id_dgse: new FormControl(''),
+            // para actualizar el atributo de clasificacion de la capa principal de playas
+            dangerLevel: new FormControl('', Validators.required),
+        });
+        this.onChanges(this.formDanger);
+    }
+
+// comprueba si se ha seleccionado algun elemento de peligro, que significara que la playa es de USO PROHIBIDO
+    onChanges(form: FormGroup): void {
+        form.valueChanges.subscribe(val => {
+            this.nextButton = true;
+            for (let [key, value] of Object.entries(val)) {
+                if (typeof value === 'boolean' && value && key !== 'on_edit' || value === -1) {
+                    this.nextButton = false;
+                }
+            }
+        });
     }
 
     loadRelatedRecords() {
@@ -129,8 +150,19 @@ export class MapEditorComponent implements OnInit {
         this.editData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + relid + '/applyEdits');
     }
 
-    private executePostData() {
+    calculateDangerLever() {
+        let dangerLevel = this.formIncidents.get('actividades_deportivas').value ? 5 : 0;
+        dangerLevel -= this.formIncidents.get('balizamiento').value ? 4 : 0;
+        dangerLevel -= this.formIncidents.get('actividades_acotadas').value ? 2 : 0;
+        return dangerLevel > 0 ? dangerLevel : 0;
+    }
 
+    onSubmitPr() {
+        console.log('cambio el valor de clasificacion en la capa playas');
+    }
+
+    private executePostData() {
+        this.viewFormDangerClasification = true;
     }
 
     private setMap() {
@@ -329,26 +361,18 @@ export class MapEditorComponent implements OnInit {
             (result: any) => {
                 if (result) {
                     console.log(result);
-                    this.executePostData();
+                    if (this.nextButton) {
+                        this.executePostData();
+                    }
                 }
             },
             error => {
                 console.log(error.toString());
             }).add(() => {
-            console.log('end of request');
-            this.sendMessage('noid', unselectFeature());
+            if (!this.nextButton) {
+                console.log('end of request');
+                this.sendMessage('noid', unselectFeature());
+            }
         });
-    }
-
-    calculateDangerLever() {
-        let dangerLevel = this.formIncidents.get('actividades_deportivas').value ? 5 : 0;
-        dangerLevel -= this.formIncidents.get('balizamiento').value ? 4 : 0;
-        dangerLevel -= this.formIncidents.get('actividades_acotadas').value ? 2 : 0;
-        return dangerLevel > 0 ? dangerLevel : 0;
-    }
-
-    resetDanger(event) {
-        this.formDanger.reset();
-        this.formDanger.get('dangerLevel').setValue(event.value);
     }
 }
