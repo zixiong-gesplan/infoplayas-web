@@ -14,7 +14,7 @@
     </div>
     <div id="formContainer" class="esri-hidden scroller">
         <!--        formulario de peligrosidad-->
-        <div [hidden]="selectForm !=='clasificacion' || viewFormDangerClasification">
+        <div [hidden]="selectForm !=='clasificacion'">
             <form class="esri-pad" [formGroup]="formDanger" (ngSubmit)="onSubmit(formDanger, '1')">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
@@ -59,40 +59,16 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <button class="esri-button" type="submit"
-                                [disabled]="!formDanger.valid">
-                            <span *ngIf="nextButton; else save">
-                                Siguiente >>
-                            </span>
-                            <ng-template #save>
-                                Guardar
-                            </ng-template>
-                        </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage())" onclick="unselectFeature()"
-                               type="button"
-                               class="esri-button esri-button--secondary"
-                               value="Cancelar"/>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <!--        formulario de clasificacion de playa, si no existen peligros seleccionados-->
-        <div [hidden]="!viewFormDangerClasification || selectForm !=='clasificacion'">
-            <form class="esri-pad" [formGroup]="formDangerClasification" (ngSubmit)="onSubmitPr()">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="esri-font">No ha indicado peligros graves, clasifique Libre o peligrosa:</label>
-                        <p-dropdown class="esri-feature-form__input" [options]="noDangerOptions"
-                                    [style]="{'width':'100%'}"
+                        <p-dropdown *ngIf="viewNoDanger" [options]="noDangerOptions" [style]="{'width':'100%'}"
                                     formControlName="dangerLevel"></p-dropdown>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <button class="esri-button" type="submit" [disabled]="!formDangerClasification.valid">
+                        <button class="esri-button" type="submit" [disabled]="!formDanger.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage()); viewFormDangerClasification = false;"
+                        <input (click)="sendMessage('noid',getUnselectedMessage())"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -164,7 +140,8 @@
                         <button class="esri-button" type="submit" [disabled]="!formIncidents.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage())" onclick="unselectFeature()"
+                        <input (click)="sendMessage('noid',getUnselectedMessage())"
+                               onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
                                value="Cancelar"/>

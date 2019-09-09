@@ -32,7 +32,7 @@ export class EsriRequestService {
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 
-    applyEditsRelatedData(featureEndPoint: string, data: Object, mode: string, token: string) {
+    updateEsriData(featureEndPoint: string, data: Object, mode: string, token: string) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
 

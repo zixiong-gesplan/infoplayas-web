@@ -4,7 +4,7 @@ import {Auth} from '../../models/auth';
 import {loadModules} from 'esri-loader';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {Danger} from '../../models/danger';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {environment} from '../../../environments/environment';
 import {EsriBoolean} from '../../models/esri-boolean';
 import {SelectItem} from 'primeng/api';
@@ -54,12 +54,10 @@ export class MapEditorComponent implements OnInit {
     selectedBeachDanger: Danger;
     formDanger: FormGroup;
     formIncidents: FormGroup;
-    formDangerClasification: FormGroup;
-    noDangerOptions: SelectItem[];
     private featureResponse: Danger[];
     private currentUser: Auth;
-    private nextButton: boolean;
-    private viewFormDangerClasification: boolean;
+    noDangerOptions: SelectItem[];
+    viewNoDanger: boolean;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder) {
         this.noDangerOptions = [
@@ -84,6 +82,7 @@ export class MapEditorComponent implements OnInit {
             on_edit: new FormControl(''),
             // para actualizar el atributo de clasificacion de la capa principal de playas
             dangerLevel: new FormControl(''),
+            beachId: new FormControl('')
         });
         this.formIncidents = this.fb.group({
             objectid: new FormControl(''),
@@ -98,24 +97,7 @@ export class MapEditorComponent implements OnInit {
             val_peligrosidad: new FormControl({value: '', disabled: true}),
             on_edit: new FormControl('')
         });
-        this.formDangerClasification = this.fb.group({
-            id_dgse: new FormControl(''),
-            // para actualizar el atributo de clasificacion de la capa principal de playas
-            dangerLevel: new FormControl('', Validators.required),
-        });
         this.onChanges(this.formDanger);
-    }
-
-// comprueba si se ha seleccionado algun elemento de peligro, que significara que la playa es de USO PROHIBIDO
-    onChanges(form: FormGroup): void {
-        form.valueChanges.subscribe(val => {
-            this.nextButton = true;
-            for (let [key, value] of Object.entries(val)) {
-                if (typeof value === 'boolean' && value && key !== 'on_edit' || value === -1) {
-                    this.nextButton = false;
-                }
-            }
-        });
     }
 
     loadRelatedRecords() {
@@ -145,24 +127,25 @@ export class MapEditorComponent implements OnInit {
 
     onSubmit(fg: FormGroup, relid: string) {
         const updateObj = new Array();
+        console.log(fg.value);
         updateObj.push({attributes: fg.value});
         const mode = fg.get('on_edit').value ? 'updates' : 'adds';
-        this.editData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + relid + '/applyEdits');
+        const postExecuteTask = fg.contains('desprendimientos') && this.viewNoDanger ? 'no_prohibido' : fg.contains('desprendimientos')
+            ? 'prohibido' : 'none';
+        this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + relid
+            + '/applyEdits', postExecuteTask);
     }
 
-    calculateDangerLever() {
-        let dangerLevel = this.formIncidents.get('actividades_deportivas').value ? 5 : 0;
-        dangerLevel -= this.formIncidents.get('balizamiento').value ? 4 : 0;
-        dangerLevel -= this.formIncidents.get('actividades_acotadas').value ? 2 : 0;
-        return dangerLevel > 0 ? dangerLevel : 0;
-    }
-
-    onSubmitPr() {
-        console.log('cambio el valor de clasificacion en la capa playas');
-    }
-
-    private executePostData() {
-        this.viewFormDangerClasification = true;
+    private executePostData(prohibido: boolean) {
+        const updateObj = new Array();
+        updateObj.push({
+            attributes: {
+                objectid_12: this.formDanger.get('beachId').value,
+                clasificacion: prohibido ? 'USO PROHIBIDO' : this.formDanger.get('dangerLevel').value
+            }
+        });
+        console.log(this.formDanger.value);
+        this.editDataLayer(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_url + '/applyEdits');
     }
 
     private setMap() {
@@ -281,6 +264,7 @@ export class MapEditorComponent implements OnInit {
 
                         selectFeature(view, objectId, playasLayer, form).then(function (output) {
                             t.sendMessage(output.beachId, output.localName);
+                            t.formDanger.get('beachId').setValue(output.beachId);
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
@@ -304,6 +288,9 @@ export class MapEditorComponent implements OnInit {
                             selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature)
                                 .then(function (output) {
                                     t.sendMessage(output.beachId, output.localName);
+                                    t.formDanger.get('beachId').setValue(output.beachId);
+                                    console.log(t.formDanger.value);
+                                    // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
                                 });
@@ -349,30 +336,71 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
-    private editData(updateObj, currentUser, mode, endpoint) {
+    private editRelatedData(updateObj, currentUser, mode, endpoint, postExecute) {
         // cambiamos los valores true/false de los formularios por 1/0 que acepta Esri
         for (let [key, value] of Object.entries(updateObj)) {
             if (typeof value === 'boolean') {
                 updateObj[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
             }
         }
-        this.service.applyEditsRelatedData(endpoint,
+        this.service.updateEsriData(endpoint,
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
                     console.log(result);
-                    if (this.nextButton) {
-                        this.executePostData();
+                    switch (postExecute) {
+                        case 'no_prohibido':
+                            this.executePostData(false);
+                            break;
+                        case 'prohibido':
+                            this.executePostData(true);
+                            break;
                     }
                 }
             },
             error => {
                 console.log(error.toString());
             }).add(() => {
-            if (!this.nextButton) {
+            if (postExecute === 'none') {
                 console.log('end of request');
                 this.sendMessage('noid', unselectFeature());
             }
+        });
+    }
+
+    calculateDangerLever() {
+        let dangerLevel = this.formIncidents.get('actividades_deportivas').value ? 5 : 0;
+        dangerLevel -= this.formIncidents.get('balizamiento').value ? 4 : 0;
+        dangerLevel -= this.formIncidents.get('actividades_acotadas').value ? 2 : 0;
+        return dangerLevel > 0 ? dangerLevel : 0;
+    }
+
+// comprueba si se ha seleccionado algun elemento de peligro, que significara que la playa es de USO PROHIBIDO
+    onChanges(form: FormGroup): void {
+        form.valueChanges.subscribe(val => {
+            this.viewNoDanger = true;
+            for (let [key, value] of Object.entries(val)) {
+                if (typeof value === 'boolean' && value && key !== 'on_edit' || value === -1) {
+                    this.viewNoDanger = false;
+                    break;
+                }
+            }
+        });
+    }
+
+    private editDataLayer(updateObj, currentUser, mode, endpoint) {
+        this.service.updateEsriData(endpoint,
+            updateObj, mode, currentUser.token).subscribe(
+            (result: any) => {
+                if (result) {
+                    console.log(result);
+                }
+            },
+            error => {
+                console.log(error.toString());
+            }).add(() => {
+            console.log('end of request');
+            this.sendMessage('noid', unselectFeature());
         });
     }
 }
