@@ -378,7 +378,6 @@ $(".stats").appear(function () {
             $this.find(".cbp-wrapper").find(".cbp-item:not(.cbp-item-off)").each(function (index) {
                 $(this).removeClass("even");
 
-                console.log()
                 var val = index + 1;
                 if ($(this).css('left') !== "0px") {
                     $(this).addClass("even");

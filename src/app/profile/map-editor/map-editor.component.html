@@ -1,3 +1,4 @@
+<ng4-loading-spinner [timeout]="10000" [threshold]="800"></ng4-loading-spinner>
 <div id="listPlayas" class="panel-side scroller esri-widget esri-hidden">
     <ul id="ulPlaya">
         <li>Cargando&hellip;</li>
@@ -59,8 +60,9 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <p-dropdown *ngIf="viewNoDanger" [options]="noDangerOptions" [style]="{'width':'100%'}"
-                                    formControlName="dangerLevel"></p-dropdown>
+                        <label [hidden]="viewNoDanger" class="esri-font" style="color: red">Clasificada USO PROHIBIDO</label>
+                        <p-dropdown [hidden]="!viewNoDanger" [options]="noDangerOptions" [style]="{'width':'100%'}"
+                                    formControlName="dangerLevel" [required]="viewNoDanger"></p-dropdown>
                     </div>
                 </div>
                 <div class="form-row">
@@ -99,7 +101,8 @@
                     <div class="form-group">
                         <p-checkbox label="Actividad deportiva"
                                     formControlName="actividades_deportivas" binary="true"
-                                    (click)="formIncidents.get('actividades_deportivas').value ? op1.show($event) : op1.hide()"
+                                    (mouseenter)="formIncidents.get('actividades_deportivas').value ? op1.show($event) : op1.hide()"
+                                    (click)="openSecurityMeasures($event,op1)"
                                     [pTooltip]="formIncidents.get('actividades_deportivas').value ? 'Coexisten actividades deportivas, náuticas y de baño' : 'No existen actividades deportivas'">
                         </p-checkbox>
                     </div>

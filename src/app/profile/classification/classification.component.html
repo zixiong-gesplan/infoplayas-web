@@ -1,6 +1,6 @@
 <!-- clasificacion Header -->
 <section class="blog-header blog-page-padding-top" data-parallax="scroll"
-         data-image-src="assets/images/play.jpg">
+         style="background-image: url('assets/images/play.jpg'); background-size: cover; background-position: center center;">
     <div class="container">
         <div class="padding-top-30 padding-bottom-70">
             <h2 class="font-size-72px top20 bottom10 text-color-white text-center text-capitalize">clasificación y grado
@@ -74,7 +74,7 @@
         <div class="col-md-4 testimonial">
             <div class="information-written-data">
                 <h2 class="border-color-blue-5 text-color-grey paddingleft10px text-capitalize margin-top0"><span
-                        class="green-color"> glosario</span> <br> tecnicismos</h2>
+                    class="green-color"> glosario</span> <br> tecnicismos</h2>
                 <!-- Swiper -->
             </div>
         </div>
@@ -174,31 +174,38 @@
                     class="border-color-blue-3 no-margin text-color-grey ">
                     {{(localName ? localName : 'seleccione playa') }}
                     <br> <span [hidden]="localName && localName.length > 20"
-                    class="green-color font-style-1">Editor</span></h2>
+                               class="green-color font-style-1">Editor</span></h2>
             </div>
         </div>
+        <p-overlayPanel #op2>
+            <label>Zonas: {{numberOfBeachs}}</label>
+        </p-overlayPanel>
         <div class="row">
             <div id="js-filters-mosaic-flat" class="col-lg-offset-6 cbp-l-filters-buttonCenter">
-                <div (click)="setForm('inventario')" data-filter=".none" class="cbp-filter-item text-capitalize">
+                <div (mouseout)="op2.hide()" (click)="setForm('inventario');op2.show($event)" data-filter=".none"
+                     class="cbp-filter-item text-capitalize">
                     inventario
-                    <div class="cbp-filter-counter"></div>
+                    <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
-                <div (click)="setForm('clasificacion')" data-filter=".none" class="cbp-filter-item text-capitalize">
+                <div (mouseout)="op2.hide()" (click)="setForm('clasificacion');op2.show($event)" data-filter=".none"
+                     class="cbp-filter-item text-capitalize">
                     clasificación
-                    <div class="cbp-filter-counter"></div>
+                    <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
-<!--                TODO hay que poner el por defecto que sería afluencia-->
-                <div (click)="setForm('incidencias')" data-filter=".protection" class="cbp-filter-item text-capitalize">
+                <!--                TODO hay que poner el por defecto que sería afluencia-->
+                <div (click)="setForm('incidencias');op2.show($event)" data-filter=".protection"
+                     class="cbp-filter-item text-capitalize">
                     protección
-                    <div class="cbp-filter-counter"></div>
+                    <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
-                <div (click)="setForm('resultados')" data-filter=".result" class="cbp-filter-item text-capitalize">
+                <div (click)="setForm('resultados');op2.show($event)" data-filter=".result"
+                     class="cbp-filter-item text-capitalize">
                     resultados
-                    <div class="cbp-filter-counter"></div>
+                    <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
             </div>
-            <div id="js-grid-mosaic-flat" class="cbp cbp-l-grid-mosaic-flat" >
-                <div class="cbp-item protection" >
+            <div id="js-grid-mosaic-flat" class="cbp cbp-l-grid-mosaic-flat">
+                <div class="cbp-item protection">
                     <div class="cbp-caption">
                         <p-tabMenu [model]="itemsProtection" [activeItem]="itemsProtection[2]">
                             <ng-template pTemplate="item" let-item let-i="index">
@@ -287,6 +294,7 @@
             <app-map-editor
                 (beachId)="receiveBeachId($event)"
                 (localName)="receiveLocalName($event)"
+                (nZones)="receiveNzones($event)"
                 [zoom]="mapZoomLevel"
                 [mapHeight]="mapHeightContainer"
                 [selectForm]="actualForm">
@@ -294,5 +302,6 @@
         </div>
 
         <div class="row"></div>
-    </div></div>
+    </div>
+</div>
 <!-- clasificacion Body End -->

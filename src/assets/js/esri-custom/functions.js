@@ -22,6 +22,7 @@ function selectFeature(view, objectId, featureLayer, form) {
         ouputData.beachId = editFeature.attributes.objectid_12;
         ouputData.id_dgse = editFeature.attributes.id_dgse;
         ouputData.localName = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'Nombre por definir';
+        ouputData.clasificacion = editFeature.attributes.clasificacion;
       });
     }
     return ouputData;
@@ -122,7 +123,7 @@ function resize(status){
 
 //Load a feature list
 function loadList(view, featureLayer, fields, filter) {
-  featureLayer.queryFeatures({
+  return featureLayer.queryFeatures({
     outFields: fields,
     where: filter,
     geometry: view.initialExtent,
@@ -131,7 +132,6 @@ function loadList(view, featureLayer, fields, filter) {
   .then(function(results) {
     features = results.features;
     const fragment = document.createDocumentFragment();
-
     features.forEach(function(result, index) {
       const attributes = result.attributes;
       var name = attributes.nombre_municipio;
@@ -156,6 +156,7 @@ function loadList(view, featureLayer, fields, filter) {
     // Empty the current list
     listNode.innerHTML = "";
     listNode.appendChild(fragment);
+    return results.features.length;
   })
   .catch(function(error) {
     console.error("query failed: ", error);

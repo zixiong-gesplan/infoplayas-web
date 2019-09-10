@@ -1,23 +1,24 @@
-import {Component, OnInit, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
+
 declare var Swiper: any;
-declare var $:any;
-declare var jQuery:any;
+declare var $: any;
+declare var jQuery: any;
 
 @Component({
     selector: 'app-classification',
     templateUrl: './classification.component.html',
     styleUrls: ['./classification.component.css']
 })
-export class ClassificationComponent implements OnInit {
+export class ClassificationComponent implements OnInit, AfterViewInit {
     itemsProtection: MenuItem[];
     beachName: string;
+    numberOfBeachs: number;
     mapZoomLevel: number;
     mapHeightContainer: string;
     listOfLayersProtection: string[];
     actualForm = 'inventario';
     localName: string;
-    mySwiper: any;
 
     constructor() {
 
@@ -26,7 +27,6 @@ export class ClassificationComponent implements OnInit {
     ngAfterViewInit() {
         this.initSwiper();
         this.initCubPortfolio();
-
     }
 
     ngOnInit() {
@@ -87,7 +87,7 @@ export class ClassificationComponent implements OnInit {
     }
 
     initSwiper() {
-        var swiperThreeSlides = new Swiper('.swiper-three-slides', {
+        const swiperThreeSlides = new Swiper('.swiper-three-slides', {
             centeredSlides: true,
             allowTouchMove: true,
 
@@ -121,6 +121,10 @@ export class ClassificationComponent implements OnInit {
 
     receiveBeachId($event: string) {
         this.beachName = $event;
+    }
+
+    receiveNzones($event: number) {
+        this.numberOfBeachs = $event;
     }
 
     receiveLocalName($event: string) {
