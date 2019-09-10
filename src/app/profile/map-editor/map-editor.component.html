@@ -20,24 +20,23 @@
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
-                        <p-toggleButton formControlName="corrientes_mareas" onLabel="Corrientes y mareas peligrosas"
-                                        offLabel="Sin corrientes y mareas peligrosas" onIcon="corrientesIcon"
-                                        offIcon="corrientesIcon"
-                                        [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
+                        <label class="esri-font">Características de esta zona de baño que representen un <b>GRAVE
+                            PELIGRO</b> para la vida humana:</label>
+                        <br>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <p-toggleButton formControlName="rompientes_olas" onLabel="Zona de rompientes y olas"
-                                        offLabel="Sin zona de rompientes y olas" onIcon="rompientesIcon"
-                                        offIcon="rompientesIcon"
+                        <p-toggleButton formControlName="desprendimientos" onLabel="Desprendimientos"
+                                        offLabel="Desprendimientos" onIcon="desprendimientosIcon"
+                                        offIcon="desprendimientosIcon"
                                         [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <p-toggleButton formControlName="contaminacion" onLabel="Contaminación de las aguas"
-                                        offLabel="Sin contaminación de las aguas" onIcon="contaminacionIcon"
+                                        offLabel="Contaminación de las aguas" onIcon="contaminacionIcon"
                                         offIcon="contaminacionIcon"
                                         [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
                     </div>
@@ -45,24 +44,35 @@
                 <div class="form-row">
                     <div class="form-group">
                         <p-toggleButton formControlName="fauna_marina" onLabel="Peligros por fauna marina"
-                                        offLabel="Sin peligros por fauna marina" onIcon="faunaIcon"
+                                        offLabel="Peligros por fauna marina" onIcon="faunaIcon"
                                         offIcon="faunaIcon"
                                         [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <p-toggleButton formControlName="desprendimientos" onLabel="Desprendimientos"
-                                        offLabel="Sin desprendimientos" onIcon="desprendimientosIcon"
-                                        offIcon="desprendimientosIcon"
+                        <p-toggleButton formControlName="corrientes_mareas" onLabel="Corrientes y mareas peligrosas"
+                                        offLabel="Corrientes y mareas peligrosas" onIcon="corrientesIcon"
+                                        offIcon="corrientesIcon"
                                         [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label [hidden]="viewNoDanger" class="esri-font" style="color: red">Clasificada USO PROHIBIDO</label>
-                        <p-dropdown [hidden]="!viewNoDanger" [options]="noDangerOptions" [style]="{'width':'100%'}"
-                                    formControlName="dangerLevel" [required]="viewNoDanger"></p-dropdown>
+                        <p-toggleButton formControlName="rompientes_olas" onLabel="Zona de rompientes y olas"
+                                        offLabel="Zona de rompientes y olas" onIcon="rompientesIcon"
+                                        offIcon="rompientesIcon"
+                                        [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label [hidden]="viewNoDanger" class="esri-font" style="color: red; font-weight : bolder">Clasificada
+                            USO PROHIBIDO</label>
+                        <!--                        <p-dropdown [hidden]="!viewNoDanger" [options]="noDangerOptions" [style]="{'width':'100%'}"-->
+                        <!--                                    formControlName="dangerLevel" [required]="viewNoDanger"></p-dropdown>-->
+                        <label pTooltip="Valoración definitiva al final del proceso de introducción de datos" [hidden]="!viewNoDanger" class="esri-font"
+                               style="color: darkorange; font-weight : bolder">Clasificación provisional LIBRE O PELIGROSA</label>
                     </div>
                 </div>
                 <div class="form-row">

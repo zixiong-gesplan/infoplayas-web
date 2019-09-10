@@ -85,9 +85,7 @@ export class MapEditorComponent implements OnInit {
             fauna_marina: new FormControl(''),
             desprendimientos: new FormControl(''),
             id_dgse: new FormControl(''),
-            on_edit: new FormControl(''),
-            // para actualizar el atributo de clasificacion de la capa principal de playas
-            dangerLevel: new FormControl('')
+            on_edit: new FormControl('')
         });
         this.formIncidents = this.fb.group({
             objectid: new FormControl(''),
@@ -165,7 +163,7 @@ export class MapEditorComponent implements OnInit {
         updateObj.push({
             attributes: {
                 objectid_12: this.selectedId,
-                clasificacion: prohibido ? 'USO PROHIBIDO' : this.formDanger.get('dangerLevel').value
+                clasificacion: prohibido ? 'USO PROHIBIDO' : 'LIBRE-PELIGROSA'
             }
         });
         this.editDataLayer(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_url + '/applyEdits');
@@ -331,7 +329,7 @@ export class MapEditorComponent implements OnInit {
 
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
                     let filter = 'municipio = \'' + aytos[IdentityManager.credentials[0].userId].municipio_minus + '\'';
-                    filter = event.target.dataset.filter === '.protection' ? filter + ' AND clasificacion <> \'USO PROHIBIDO\'' : filter;
+                    filter = event.target.dataset.filter === '.protection' ? filter + ' AND clasificacion IS NOT NULL AND clasificacion <> \'USO PROHIBIDO\'' : filter;
                     playasLayer.definitionExpression = filter;
                     t.spinnerService.show();
                     loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter) .then(function (nBeachs) {
@@ -361,10 +359,6 @@ export class MapEditorComponent implements OnInit {
             } else {
                 frm.patchValue(results[query.objectIds[0]].features[0].attributes);
                 frm.patchValue({on_edit: true});
-                if (frm.contains('desprendimientos')
-                    && output.clasificacion !== 'USO PROHIBIDO') {
-                    frm.patchValue({dangerLevel: output.clasificacion});
-                }
             }
         });
     }
