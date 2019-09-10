@@ -182,23 +182,23 @@
         </p-overlayPanel>
         <div class="row">
             <div id="js-filters-mosaic-flat" class="col-lg-offset-6 cbp-l-filters-buttonCenter">
-                <div (mouseout)="op2.hide()" (click)="setForm('inventario');op2.show($event)" data-filter=".none"
+                <div pTooltip="Inventario de playas y otras zonas de baño" tooltipPosition="top" (mouseout)="op2.hide()" (click)="setForm('inventario');op2.show($event)" data-filter=".none"
                      class="cbp-filter-item text-capitalize">
                     inventario
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
-                <div (mouseout)="op2.hide()" (click)="setForm('clasificacion');op2.show($event)" data-filter=".none"
+                <div pTooltip="Clasificación de las playas de USO PROHIBIDO o provisionalmente en LIBRES/PELIGROSAS" tooltipPosition="top" (mouseout)="op2.hide()" (click)="setForm('clasificacion');op2.show($event)" data-filter=".none"
                      class="cbp-filter-item text-capitalize">
                     clasificación
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
                 <!--                TODO hay que poner el por defecto que sería afluencia-->
-                <div (click)="setForm('incidencias');op2.show($event)" data-filter=".protection"
+                <div pTooltip="Determinación del grado de protección en función del uso y condiciones del entorno" tooltipPosition="top" (click)="setForm('incidencias');op2.show($event)" data-filter=".protection"
                      class="cbp-filter-item text-capitalize">
                     protección
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
-                <div (click)="setForm('resultados');op2.show($event)" data-filter=".result"
+                <div pTooltip="Presentación de resultados de la clasificación y grado de protección" tooltipPosition="top" (click)="setForm('resultados');op2.show($event)" data-filter=".result"
                      class="cbp-filter-item text-capitalize">
                     resultados
                     <!--                    <div class="cbp-filter-counter"></div>-->
