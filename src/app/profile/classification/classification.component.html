@@ -74,7 +74,7 @@
         <div class="col-md-4 testimonial">
             <div class="information-written-data">
                 <h2 class="border-color-blue-5 text-color-grey paddingleft10px text-capitalize margin-top0"><span
-                    class="green-color"> glosario</span> <br> tecnicismos</h2>
+                        class="green-color"> glosario</span> <br> tecnicismos</h2>
                 <!-- Swiper -->
             </div>
         </div>
@@ -171,7 +171,7 @@
         <div class="col-md-6 portfolio-wide paddingleft25px">
             <div class="information-written-data wow fadeIn">
                 <h2
-                    class="border-color-blue-3 no-margin text-color-grey ">
+                        class="border-color-blue-3 no-margin text-color-grey ">
                     {{(localName ? localName : 'seleccione playa') }}
                     <br> <span [hidden]="localName && localName.length > 20"
                                class="green-color font-style-1">Editor</span></h2>
@@ -182,23 +182,28 @@
         </p-overlayPanel>
         <div class="row">
             <div id="js-filters-mosaic-flat" class="col-lg-offset-6 cbp-l-filters-buttonCenter">
-                <div pTooltip="Inventario de playas y otras zonas de baño" tooltipPosition="top" (mouseout)="op2.hide()" (click)="setForm('inventario');op2.show($event)" data-filter=".none"
+                <div pTooltip="Inventario de playas y otras zonas de baño" tooltipPosition="top" (mouseout)="op2.hide()"
+                     (click)="setForm('inventario');op2.show($event)" data-filter=".none"
                      class="cbp-filter-item text-capitalize">
                     inventario
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
-                <div pTooltip="Clasificación de las playas de USO PROHIBIDO o provisionalmente en LIBRES/PELIGROSAS" tooltipPosition="top" (mouseout)="op2.hide()" (click)="setForm('clasificacion');op2.show($event)" data-filter=".none"
+                <div pTooltip="Clasificación de las playas de USO PROHIBIDO o provisionalmente en LIBRES/PELIGROSAS"
+                     tooltipPosition="top" (mouseout)="op2.hide()" (click)="setForm('clasificacion');op2.show($event)"
+                     data-filter=".none"
                      class="cbp-filter-item text-capitalize">
                     clasificación
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
                 <!--                TODO hay que poner el por defecto que sería afluencia-->
-                <div pTooltip="Determinación del grado de protección en función del uso y condiciones del entorno" tooltipPosition="top" (click)="setForm('incidencias');op2.show($event)" data-filter=".protection"
+                <div pTooltip="Determinación del grado de protección en función del uso y condiciones del entorno"
+                     tooltipPosition="top" (click)="setForm('incidencias');op2.show($event)" data-filter=".protection"
                      class="cbp-filter-item text-capitalize">
                     protección
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
-                <div pTooltip="Presentación de resultados de la clasificación y grado de protección" tooltipPosition="top" (click)="setForm('resultados');op2.show($event)" data-filter=".result"
+                <div pTooltip="Presentación de resultados de la clasificación y grado de protección"
+                     tooltipPosition="top" (click)="setForm('resultados');op2.show($event)" data-filter=".result"
                      class="cbp-filter-item text-capitalize">
                     resultados
                     <!--                    <div class="cbp-filter-counter"></div>-->
@@ -292,12 +297,12 @@
         </div>
         <div class="row paddingleft15px paddingright15px">
             <app-map-editor
-                (beachId)="receiveBeachId($event)"
-                (localName)="receiveLocalName($event)"
-                (nZones)="receiveNzones($event)"
-                [zoom]="mapZoomLevel"
-                [mapHeight]="mapHeightContainer"
-                [selectForm]="actualForm">
+                    (beachId)="receiveBeachId($event)"
+                    (localName)="receiveLocalName($event)"
+                    (nZones)="receiveNzones($event)"
+                    [zoom]="mapZoomLevel"
+                    [mapHeight]="mapHeightContainer"
+                    [selectForm]="actualForm">
             </app-map-editor>
         </div>
 
