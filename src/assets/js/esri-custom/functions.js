@@ -6,7 +6,7 @@ function selectFeature(view, objectId, featureLayer, form) {
     returnGeometry: true
   })
   .then(function(results) {
-    var ouputData = {};
+    var outPutData = {};
     if (results.features.length > 0) {
       editFeature = results.features[0];
       // display the attributes of selected feature in the form
@@ -19,13 +19,16 @@ function selectFeature(view, objectId, featureLayer, form) {
         };
         highlight = layerView.highlight(editFeature);
         resize(1);
-        ouputData.beachId = editFeature.attributes.objectid_12;
-        ouputData.id_dgse = editFeature.attributes.id_dgse;
-        ouputData.localName = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'Nombre por definir';
-        ouputData.clasificacion = editFeature.attributes.clasificacion;
+        outPutData.beachId = editFeature.attributes.objectid_12;
+        outPutData.id_dgse = editFeature.attributes.id_dgse;
+        outPutData.localName = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'Nombre por definir';
+        // extensiones del feature para componentes externos
+        outPutData.coordX = editFeature.geometry.centroid.x;
+        outPutData.coordY = editFeature.geometry.centroid.y;
+        outPutData.wkid = editFeature.geometry.centroid.spatialReference.wkid;
       });
     }
-    return ouputData;
+    return outPutData;
   });
 };
 

@@ -8,8 +8,9 @@
     <div id="viewDiv"></div>
     <div id="legendDiv" class="card custom-widget"></div>
     <a id="infobutton" data-fancybox
-       data-type="iframe" data-src="https://gesplangis.es/arcgis/apps/webappviewer/index.html?id=d570f2faba45491d9d0927fc29f97dc2&amp;zoom=true&amp;scale=true&amp;search=true&amp;searchextent=true&amp;basemap_gallery=true&amp;disable_scroll=true;"
-       href="javascript:void(0)"><i class="fa fa-info-circle fa-2x text-color-white"></i> </a>
+       data-type="iframe" [href]="setUrlInfoMap()">
+        <i class="fa fa-info-circle fa-2x text-color-white"></i>
+    </a>
     <div id="info" class="container-fluid esri-widget custom-widget esri-hidden">
         <img src="assets/images/logos/logo.png" class="card-img-top"/>
         <div class="card-body">
@@ -74,8 +75,10 @@
                             USO PROHIBIDO</label>
                         <!--                        <p-dropdown [hidden]="!viewNoDanger" [options]="noDangerOptions" [style]="{'width':'100%'}"-->
                         <!--                                    formControlName="dangerLevel" [required]="viewNoDanger"></p-dropdown>-->
-                        <label pTooltip="Valoración definitiva al final del proceso de introducción de datos" [hidden]="!viewNoDanger" class="esri-font"
-                               style="color: darkorange; font-weight : bolder">Clasificación provisional LIBRE O PELIGROSA</label>
+                        <label pTooltip="Valoración definitiva al final del proceso de introducción de datos"
+                               [hidden]="!viewNoDanger" class="esri-font"
+                               style="color: darkorange; font-weight : bolder">Clasificación provisional LIBRE O
+                            PELIGROSA</label>
                     </div>
                 </div>
                 <div class="form-row">

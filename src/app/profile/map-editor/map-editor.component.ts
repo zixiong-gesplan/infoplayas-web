@@ -53,15 +53,21 @@ export class MapEditorComponent implements OnInit {
     @Input() mapHeight: string;
     @Input() zoom: number;
     @Input() selectForm: string;
+    @Input() urlInfoMap: string;
 
-    selectedBeachDanger: Danger;
+    private currentUser: Auth;
     formDanger: FormGroup;
     formIncidents: FormGroup;
     noDangerOptions: SelectItem[];
     viewNoDanger: boolean;
     selectedId: string;
-    private featureResponse: Danger[];
-    private currentUser: Auth;
+    selectLongitude: number;
+    selectLatitude: number;
+    coordX: number;
+    coordY: number;
+    wkid: number;
+    centroidOption: boolean;
+    selectedBeachDanger: Danger;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService) {
@@ -125,6 +131,7 @@ export class MapEditorComponent implements OnInit {
     }
 
     getUnselectedMessage() {
+        this.centroidOption = false;
         return unselectedMessage;
     }
 
@@ -256,8 +263,12 @@ export class MapEditorComponent implements OnInit {
                         geometry: view.initialExtent,
                         returnGeometry: true
                     }).then(function (results) {
-                        let latitude = results.features[0].geometry.centroid.latitude;
-                        let longitude = results.features[0].geometry.centroid.longitude;
+                        const latitude = results.features[0].geometry.centroid.latitude;
+                        const longitude = results.features[0].geometry.centroid.longitude;
+                        // guardamos los datos de geometria del municipio para componentes externos
+                        t.selectLatitude = latitude;
+                        t.selectLongitude = longitude;
+                        t.centroidOption = false;
                         view.center = [longitude, latitude];
                         // Default Home value is current extent
                         let home = createHomeButton(Home, view);
@@ -293,6 +304,11 @@ export class MapEditorComponent implements OnInit {
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
+                            // guardamos los datos de geometria de la playa para componentes externos
+                            t.coordX = output.coordX;
+                            t.coordY = output.coordY;
+                            t.wkid = output.wkid;
+                            t.centroidOption = true;
                         });
                         expandList.collapse();
 
@@ -300,6 +316,7 @@ export class MapEditorComponent implements OnInit {
 
                         try {
                             view.goTo(result.geometry.extent.expand(2));
+
                         } catch (error) {
                         }
                     }
@@ -317,9 +334,15 @@ export class MapEditorComponent implements OnInit {
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
+                                    // guardamos los datos de geometria de la playa para componentes externos
+                                    t.coordX = output.coordX;
+                                    t.coordY = output.coordY;
+                                    t.wkid = output.wkid;
+                                    t.centroidOption = true;
                                 });
                         } else {
                             t.sendMessage('noid', unselectFeature());
+                            t.centroidOption = false;
                         }
                     });
                 });
@@ -333,7 +356,7 @@ export class MapEditorComponent implements OnInit {
                     filter = event.target.dataset.filter === '.protection' ? filter + ' AND clasificacion IS NOT NULL AND clasificacion <> \'USO PROHIBIDO\'' : filter;
                     playasLayer.definitionExpression = filter;
                     t.spinnerService.show();
-                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter) .then(function (nBeachs) {
+                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter).then(function (nBeachs) {
                         t.nZones.emit(nBeachs);
                         t.spinnerService.hide();
                     });
@@ -414,5 +437,10 @@ export class MapEditorComponent implements OnInit {
 
     openSecurityMeasures($event: MouseEvent, overlayPanel: OverlayPanel) {
         overlayPanel.toggle(event);
+    }
+
+    setUrlInfoMap() {
+        return this.centroidOption ? this.urlInfoMap + '&zoom=18&center=' + this.coordX + ',' + this.coordY + ',' + this.wkid :
+            this.urlInfoMap + '&zoom=' + this.zoom + '&center=' + this.selectLongitude + ',' + this.selectLatitude;
     }
 }
