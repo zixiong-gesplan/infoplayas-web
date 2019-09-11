@@ -266,6 +266,7 @@ export class MapEditorComponent implements OnInit {
                         view.ui.add([home, expandList], 'top-left');
                         view.ui.add(scaleBar, 'bottom-left');
                         view.ui.add(['info', legend], 'top-right');
+                        view.ui.add(['infobutton'], 'bottom-right');
 
                         // Some elements are hidden my default. We show them when the view is loaded
                         $('#info')[0].classList.remove('esri-hidden');
