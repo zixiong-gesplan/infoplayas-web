@@ -170,7 +170,7 @@ export class MapEditorComponent implements OnInit {
         updateObj.push({
             attributes: {
                 objectid_12: this.selectedId,
-                clasificacion: prohibido ? 'USO PROHIBIDO' : 'LIBRE-PELIGROSA'
+                clasificacion: prohibido ? 'USO PROHIBIDO' : '-'
             }
         });
         this.editDataLayer(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_url + '/applyEdits');
