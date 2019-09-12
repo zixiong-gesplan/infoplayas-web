@@ -101,6 +101,11 @@
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
+                        <label class="esri-font" style="font-weight: bolder">Histórico de Incidencias registradas.</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
                         <label class="esri-font">Número de incidentes graves</label>
                         <input class="esri-feature-form__input" pInputText type="number"
                                formControlName="incidentes_graves"/>
@@ -111,6 +116,19 @@
                         <label class="esri-font">Número de incidentes muy graves</label>
                         <input class="esri-feature-form__input" pInputText type="number"
                                formControlName="incidentes_mgraves"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font">Observaciones</label>
+                        <textarea [rows]="4" [cols]="80" class="esri-feature-form__input" pInputTextarea
+                                  type="textarea" formControlName="incidentes_observaciones"
+                                  placeholder="Requerido - Min(4) - permite texto largo"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font" style="font-weight: bolder">Actividades deportivas y de recreo que se realizan y existencia de balizamiento.</label>
                     </div>
                 </div>
                 <div class="form-row">
@@ -150,7 +168,7 @@
                     <div class="form-group">
                         <label class="esri-font">Observaciones</label>
                         <textarea [rows]="4" [cols]="80" class="esri-feature-form__input" pInputTextarea
-                                  type="textarea" formControlName="observaciones"
+                                  type="textarea" formControlName="deportes_observaciones"
                                   placeholder="Requerido - Min(4) - permite texto largo"></textarea>
                     </div>
                 </div>

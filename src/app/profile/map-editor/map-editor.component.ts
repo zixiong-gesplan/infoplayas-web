@@ -101,7 +101,8 @@ export class MapEditorComponent implements OnInit {
             actividades_deportivas: new FormControl(''),
             balizamiento: new FormControl(''),
             actividades_acotadas: new FormControl(''),
-            observaciones: new FormControl(''),
+            incidentes_observaciones: new FormControl(''),
+            deportes_observaciones: new FormControl(''),
             id_dgse: new FormControl(''),
             // campos auxiliares o calculados que no pertenecen al modelo
             val_peligrosidad: new FormControl({value: '', disabled: true}),
