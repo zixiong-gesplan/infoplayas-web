@@ -50,6 +50,7 @@ export class MapEditorComponent implements OnInit {
     @Output() beachId = new EventEmitter<string>();
     @Output() localName = new EventEmitter<string>();
     @Output() nZones = new EventEmitter<number>();
+    @Output() clasification = new EventEmitter<string>();
     @Input() mapHeight: string;
     @Input() zoom: number;
     @Input() selectForm: string;
@@ -125,9 +126,10 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
-    sendMessage(id: string, name: string) {
+    sendMessage(id: string, name: string, clasification: string) {
         this.beachId.emit(id);
         this.localName.emit(name);
+        this.clasification.emit(clasification);
     }
 
     getUnselectedMessage() {
@@ -231,16 +233,17 @@ export class MapEditorComponent implements OnInit {
                     zoom: this.zoom
                 });
 
-                var t = this;
+                const t = this;
                 let form, playasLayer, municipiosLayer, queryTask;
                 // Create widgets
-                let scaleBar = createScaleBar(ScaleBar, view);
-                let basemapToggle = createBaseMapToggle(BasemapToggle, view, 'streets-vector');
-                let legend = createLegend(Legend, view, 'legendDiv');
-                let expandList = createExpand(Expand, view, document.getElementById('listPlayas'), 'esri-icon-layer-list', 'Listado de playas');
+                const scaleBar = createScaleBar(ScaleBar, view);
+                const basemapToggle = createBaseMapToggle(BasemapToggle, view, 'streets-vector');
+                const legend = createLegend(Legend, view, 'legendDiv');
+                const expandList = createExpand(Expand, view, document.getElementById('listPlayas')
+                    , 'esri-icon-layer-list', 'Listado de playas');
 
                 view.when(function () {
-                    view.popup.autoOpenEnabled = false; //disable popups
+                    view.popup.autoOpenEnabled = false; // disable popups
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
@@ -249,7 +252,7 @@ export class MapEditorComponent implements OnInit {
                         url: playasLayer.url + '/' + playasLayer.layerId + '/' + 'queryRelatedRecords'
                     });
 
-                    let user = IdentityManager.credentials[0].userId;
+                    const user = IdentityManager.credentials[0].userId;
 
                     // Filter by changing runtime params
                     filterPlayas = 'municipio = \'' + aytos[user].municipio_minus + '\'';
@@ -271,7 +274,7 @@ export class MapEditorComponent implements OnInit {
                         t.centroidOption = false;
                         view.center = [longitude, latitude];
                         // Default Home value is current extent
-                        let home = createHomeButton(Home, view);
+                        const home = createHomeButton(Home, view);
                         form = createForm(FeatureForm, 'form', playasLayer, forms[playasLayerId]);
                         // Add widgets to the view
                         view.ui.add([home, expandList], 'top-left');
@@ -299,7 +302,7 @@ export class MapEditorComponent implements OnInit {
                         const objectId = target.getAttribute('oid');
 
                         selectFeature(view, objectId, playasLayer, form).then(function (output) {
-                            t.sendMessage(output.beachId, output.localName);
+                            t.sendMessage(output.beachId, output.localName, output.clasificacion);
                             t.selectedId = output.beachId;
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
@@ -329,7 +332,7 @@ export class MapEditorComponent implements OnInit {
                         if (result) {
                             selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature)
                                 .then(function (output) {
-                                    t.sendMessage(output.beachId, output.localName);
+                                    t.sendMessage(output.beachId, output.localName, output.clasificacion);
                                     t.selectedId = output.beachId;
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
@@ -341,19 +344,20 @@ export class MapEditorComponent implements OnInit {
                                     t.centroidOption = true;
                                 });
                         } else {
-                            t.sendMessage('noid', unselectFeature());
+                            t.sendMessage('noid', unselectFeature(), '-');
                             t.centroidOption = false;
                         }
                     });
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas));
+                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas), '-');
                 };
 
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
                     let filter = 'municipio = \'' + aytos[IdentityManager.credentials[0].userId].municipio_minus + '\'';
-                    filter = event.target.dataset.filter === '.protection' ? filter + ' AND clasificacion IS NOT NULL AND clasificacion <> \'USO PROHIBIDO\'' : filter;
+                    filter = event.target.dataset.filter === '.protection' ? filter +
+                        ' AND clasificacion IS NOT NULL AND clasificacion <> \'USO PROHIBIDO\'' : filter;
                     playasLayer.definitionExpression = filter;
                     t.spinnerService.show();
                     loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter).then(function (nBeachs) {
@@ -370,7 +374,7 @@ export class MapEditorComponent implements OnInit {
 
     // cargamos los formularios de la tablas relacionadas
     private execRelatedQuery(queryTask, RelationshipQuery, output, relationshipId, frm: FormGroup) {
-        let query = new RelationshipQuery();
+        const query = new RelationshipQuery();
         query.returnGeometry = false;
         query.outFields = ['*'];
         query.relationshipId = relationshipId;
@@ -414,7 +418,7 @@ export class MapEditorComponent implements OnInit {
             }).add(() => {
             if (postExecute === 'none') {
                 console.log('end of request');
-                this.sendMessage('noid', unselectFeature());
+                this.sendMessage('noid', unselectFeature(), '-');
             }
         });
     }
@@ -431,7 +435,7 @@ export class MapEditorComponent implements OnInit {
                 console.log(error.toString());
             }).add(() => {
             console.log('end of request');
-            this.sendMessage('noid', unselectFeature());
+            this.sendMessage('noid', unselectFeature(), '-');
         });
     }
 

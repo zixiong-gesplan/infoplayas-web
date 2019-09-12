@@ -196,7 +196,7 @@
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
                 <!--                TODO hay que poner el por defecto que sería afluencia-->
-                <div pTooltip="Determinación del grado de protección en función del uso y condiciones del entorno"
+                <div *ngIf="localClasification && localClasification !== 'USO PROHIBIDO'" pTooltip="Determinación del grado de protección en función del uso y condiciones del entorno"
                      tooltipPosition="top" (click)="setForm('incidencias');op2.show($event)" data-filter=".protection"
                      class="cbp-filter-item text-capitalize">
                     protección
@@ -300,6 +300,7 @@
                     (beachId)="receiveBeachId($event)"
                     (localName)="receiveLocalName($event)"
                     (nZones)="receiveNzones($event)"
+                    (clasification)="receiveClasification($event)"
                     [zoom]="mapZoomLevel"
                     [mapHeight]="mapHeightContainer"
                     [selectForm]="actualForm"

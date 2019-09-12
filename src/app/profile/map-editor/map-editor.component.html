@@ -86,7 +86,7 @@
                         <button class="esri-button" type="submit" [disabled]="!formDanger.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage())"
+                        <input (click)="sendMessage('noid',getUnselectedMessage(), '-')"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -159,7 +159,7 @@
                         <button class="esri-button" type="submit" [disabled]="!formIncidents.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage())"
+                        <input (click)="sendMessage('noid',getUnselectedMessage(), '-')"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -171,7 +171,7 @@
         <div [hidden]="selectForm !=='inventario'">
             <div id="form" class="esri-component"></div>
             <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
-            <input (click)="sendMessage('noid',getUnselectedMessage())" onclick="unselectFeature()" type="button"
+            <input (click)="sendMessage('noid',getUnselectedMessage(), '-')" onclick="unselectFeature()" type="button"
                    class="esri-button esri-button--secondary"
                    value="Cancelar"/>
         </div>

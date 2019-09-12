@@ -19,6 +19,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     listOfLayersProtection: string[];
     actualForm = 'inventario';
     localName: string;
+    localClasification: string;
 
     constructor() {
 
@@ -38,6 +39,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         ];
         this.mapHeightContainer = '78vh';
         this.mapZoomLevel = 12;
+        this.localClasification = '-';
     }
 
     initCubPortfolio() {
@@ -131,6 +133,10 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         this.localName = $event;
     }
 
+    receiveClasification($event: string) {
+        this.localClasification = $event;
+    }
+
     selectFormProtection(item, i) {
         this.actualForm = this.listOfLayersProtection[i];
     }
@@ -138,4 +144,5 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     setForm(opFilter: string) {
         this.actualForm = opFilter;
     }
+
 }
