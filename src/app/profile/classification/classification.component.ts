@@ -20,6 +20,9 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     actualForm = 'inventario';
     localName: string;
     localClasification: string;
+    /* TODO este valor es para activar la clase cbp-filter-item-active del filtro para salvar el bug del js del filter con el uso del ngif
+        en los elementos del filtro */
+    opActiveItemCbp: string;
 
     constructor() {
 
@@ -142,6 +145,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     setForm(opFilter: string) {
+        this.opActiveItemCbp = opFilter;
         this.actualForm = opFilter;
     }
 
