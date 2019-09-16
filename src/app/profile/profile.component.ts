@@ -36,13 +36,14 @@ export class ProfileComponent implements OnInit {
         const nextYear = new Date(new Date().getFullYear() + 1, 1, 1);
         const pop: Municipality = {
             user: current_user.username,
-            expires: Number(nextYear)
+            expires: Number(nextYear),
+            ayuntamiento: aytos[current_user.username].municipio_mayus
         };
         this.service.getPopulation(aytos[pop.user].istac_code, year).subscribe(
             (result: any) => {
                 if (result) {
                     if (result.observation.length > 0) {
-                        pop.population = result.observation[0];
+                        pop.population = Number(result.observation[0]);
                         this.setBeds(pop);
                     } else {
                         // en caso de que no haya informacion del año anterior retrocedemos otro
@@ -65,7 +66,7 @@ export class ProfileComponent implements OnInit {
         this.service.getBeds(aytos[pop.user].istac_code, new Date().getFullYear() - 1).subscribe(
             (result: any) => {
                 if (result) {
-                    pop.beds = result.observation.length > 0 ? result.observation[0] : Math.trunc(5 * 0.001 * pop.population);
+                    pop.beds = result.observation.length > 0 ? Number(result.observation[0]) : Math.trunc(5 * 0.001 * pop.population);
                     this.setOccupation(pop);
                 }
             },
@@ -83,7 +84,7 @@ export class ProfileComponent implements OnInit {
         this.service.getOccupation(aytos[pop.user].istac_code, new Date().getFullYear() - 1).subscribe(
             (result: any) => {
                 if (result) {
-                    pop.occupation = result.observation.length > 0 ? result.observation[0] : 65;
+                    pop.occupation = result.observation.length > 0 ? Number(result.observation[0]) : 65;
                     localStorage.setItem('municipality', JSON.stringify(pop));
                 }
             },

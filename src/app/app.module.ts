@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ProfileComponent} from './profile/profile.component';
@@ -28,6 +28,10 @@ import {CalendarModule} from 'primeng/calendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WelcomeComponent } from './profile/welcome/welcome.component';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import {registerLocaleData} from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+
+registerLocaleData(localeEs, 'es');
 
 @NgModule({
     declarations: [
@@ -64,7 +68,10 @@ import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
         DropdownModule,
 
     ],
-    providers: [EsriRequestService],
+    providers: [EsriRequestService, {
+        provide: LOCALE_ID,
+        useValue: 'es'
+    }],
     bootstrap: [AppComponent]
 })
 export class AppModule {

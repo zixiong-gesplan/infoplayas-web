@@ -1,9 +1,12 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
+import {$e} from 'codelyzer/angular/styles/chars';
+import {Municipality} from '../../models/municipality';
 
 declare var Swiper: any;
 declare var $: any;
-declare var jQuery: any;
+declare var jquery: any;
+declare const aytos: any;
 
 @Component({
     selector: 'app-classification',
@@ -20,9 +23,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     actualForm = 'inventario';
     localName: string;
     localClasification: string;
-    /* TODO este valor es para activar la clase cbp-filter-item-active del filtro para salvar el bug del js del filter con el uso del ngif
-        en los elementos del filtro */
-    opActiveItemCbp: string;
+    cargaPoblacional: number;
+    municipio: Municipality;
 
     constructor() {
 
@@ -34,6 +36,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+        this.municipio = JSON.parse(localStorage.getItem('municipality'));
+        this.cargaPoblacional =  Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
         this.listOfLayersProtection = ['inventario', 'inventario', 'incidencias'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
@@ -138,6 +142,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
 
     receiveClasification($event: string) {
         this.localClasification = $event;
+        if ($event === 'USO PROHIBIDO') {
+            $('#protectionFilterMenu').hide();
+        } else {
+            $('#protectionFilterMenu').show();
+        }
     }
 
     selectFormProtection(item, i) {
@@ -145,8 +154,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     setForm(opFilter: string) {
-        this.opActiveItemCbp = opFilter;
         this.actualForm = opFilter;
     }
 
+    getDangerPopulationLevel() {
+        // TODO devolver el cálculo de la tabla
+        return 5;
+    }
 }

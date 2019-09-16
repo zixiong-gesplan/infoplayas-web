@@ -4,4 +4,5 @@ export interface Municipality {
     expires?: number;
     beds?: number;
     occupation?: number;
+    ayuntamiento?: string;
 }

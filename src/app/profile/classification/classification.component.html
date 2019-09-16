@@ -184,32 +184,28 @@
             <div id="js-filters-mosaic-flat" class="col-lg-offset-6 cbp-l-filters-buttonCenter">
                 <div pTooltip="Inventario de playas y otras zonas de baño" tooltipPosition="top" (mouseout)="op2.hide()"
                      (click)="setForm('inventario');op2.show($event)" data-filter=".none"
-                     [class]="opActiveItemCbp === 'inventario' ? 'cbp-filter-item text-capitalize cbp-filter-item-active' :
-                      'cbp-filter-item text-capitalize'">
+                     class="cbp-filter-item text-capitalize">
                     inventario
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
                 <div pTooltip="Clasificación de las playas de USO PROHIBIDO o provisionalmente en LIBRES/PELIGROSAS"
                      tooltipPosition="top" (mouseout)="op2.hide()" (click)="setForm('clasificacion');op2.show($event)"
                      data-filter=".none"
-                     [class]="opActiveItemCbp === 'clasificacion' ? 'cbp-filter-item text-capitalize cbp-filter-item-active' :
-                      'cbp-filter-item text-capitalize'">
+                     class="cbp-filter-item text-capitalize">
                     clasificación
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
                 <!--                TODO hay que poner el por defecto que sería afluencia-->
-                <div *ngIf="localClasification && localClasification !== 'USO PROHIBIDO'"
+                <div id="protectionFilterMenu"
                      pTooltip="Determinación del grado de protección en función del uso y condiciones del entorno"
                      tooltipPosition="top" (click)="setForm('incidencias');op2.show($event)" data-filter=".protection"
-                     [class]="opActiveItemCbp === 'incidencias' ? 'cbp-filter-item text-capitalize cbp-filter-item-active' :
-                      'cbp-filter-item text-capitalize'">
+                     class="cbp-filter-item text-capitalize">
                     protección
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
                 <div pTooltip="Presentación de resultados de la clasificación y grado de protección"
                      tooltipPosition="top" (click)="setForm('resultados');op2.show($event)" data-filter=".result"
-                     [class]="opActiveItemCbp === 'resultados' ? 'cbp-filter-item text-capitalize cbp-filter-item-active' :
-                      'cbp-filter-item text-capitalize'">
+                     class="cbp-filter-item text-capitalize">
                     resultados
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
@@ -311,6 +307,140 @@
                     [selectForm]="actualForm"
                     [urlInfoMap]="'https://gesplangis.es/arcgis/apps/webappviewer/index.html?id=d570f2faba45491d9d0927fc29f97dc2'">
             </app-map-editor>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion1" href="#collapse1"
+                                               aria-expanded="false" class="collapsed">carga poblacional
+                        de {{municipio.ayuntamiento}} {{cargaPoblacional | number:'':'es-ES'}}</a></h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                    <div class="panel-body">
+                        <div class="col-md-12 cart_table">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th class="darkcolor">Población residente</th>
+                                        <th class="darkcolor">Plazas ofertadas</th>
+                                        <th class="darkcolor">Ocupación</th>
+                                        <th class="darkcolor">Población turística</th>
+                                        <th class="darkcolor">Total</th>
+                                        <th class="darkcolor">Valor de Peligrosidad</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{municipio.population | number:'1.0-0'}}</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{municipio.beds | number:'1.0-0'}}</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{municipio.occupation | number:'1.2-2':'es-ES'}}
+                                                %</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{municipio.beds * municipio.occupation * 0.01 | number:'1.0-0'}}</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{cargaPoblacional | number:'1.0-0'}}</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{getDangerPopulationLevel()}}</h6>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="apply_coupon clearfix">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 coupon">
+                                        <p><b>Plazas ofertadas:</b> plazas hoteleras y extrahoteleras
+                                            (apartamentos) ofertadas por el municipio. En caso de que el ISTAC incluya
+                                            los datos del
+                                            municipio consultado en las plazas del resto de la isla, se computarán para
+                                            éste las plazas a razon del 5 por mil de la población del municipio. Es una
+                                            media observada al dividir el total de la población de estos municipios
+                                            entre sus plazas ofertadas.
+                                            Esta ponderación no afecta al cálculo total del valor de
+                                            peligrosidad por carga poblacional al ser municipios con poca población
+                                            turistica
+                                            respecto del total y a los rangos considerados en la escala.</p>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 coupon">
+                                        <p><b>Ocupación:</b> tasa de ocupación por plazas se define como la relación
+                                            expresada en porcentaje entre el total de las pernoctaciones en un año y el
+                                            producto de las plazas hoteleras y extrahoteleras,
+                                            excluyendo las camas supletorias, por el número de días de un año.
+                                            Para los municipios de poco peso turistico se aplicara el 65 % de tasa de
+                                            ocupacion debido al escaso impacto de la poblacion turistica en el computo
+                                            total y las escalas en el valor de peligrosidad.</p>
+                                    </div>
+                                </div>
+                                <div class="row padding-top-10">
+                                    <div class="col-md-2 col-sm-2 col-xs-2">
+                                        <img class="img-responsive" src="assets\images\logos\istac.jpg">
+                                    </div>
+                                    <div class="col-md-10 col-sm-10 col-xs-10">
+                                        <p style="padding-top: 20px;"><b>Los datos se obtienen en tiempo real</b> mediante la consulta al Catálogo de API de
+                                        eDatos del <a target="_blank" href="http://www.gobiernodecanarias.org/istac/api/">Instituto
+                                            Canario de Estadística.</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8 cart_table padding-top-10">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th class="darkcolor">Población residente</th>
+                                        <th class="darkcolor">Plazas ofertadas</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey">Más de 100.000 habitantes</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey">5</h6>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey">Entre más de 20.000 y 100.000
+                                                habitantes</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey">3</h6>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey">Entre 5.000 y 20.000
+                                                habitantes</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey">1</h6>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey">Menos de 5000 habitantes</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey">0</h6>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="row"></div>
