@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {CanActivate} from '@angular/router/src/interfaces';
 import {Auth} from '../models/auth';
+import {Municipality} from '../models/municipality';
 
 @Injectable({
     providedIn: 'root'
@@ -31,14 +32,30 @@ export class AuthGuardService implements CanActivate {
         return !!currentUser;
     }
 
+    public isMunicipalityStore(current_user: Auth): boolean {
+        const pop: Municipality = this.getPopulation();
+        const currentDate = new Date();
+        if (pop && current_user.username !== pop.user) {
+            return false;
+        }
+        if (pop && currentDate.getTime() >= Number(pop.expires)) {
+            return false;
+        }
+        return !!pop;
+    }
+
     getCurrentUser(): Auth {
         return JSON.parse(localStorage.getItem('current_user')) ?
             JSON.parse(localStorage.getItem('current_user')) :
             JSON.parse(sessionStorage.getItem('current_user'));
     }
 
+    getPopulation(): Municipality {
+        return JSON.parse(localStorage.getItem('municipality'));
+    }
+
     public logOut() {
         sessionStorage.clear();
-        localStorage.clear();
+        localStorage.removeItem('current_user');
     }
 }
