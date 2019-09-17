@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
-import {$e} from 'codelyzer/angular/styles/chars';
 import {Municipality} from '../../models/municipality';
 
 declare var Swiper: any;
@@ -25,9 +24,9 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     localClasification: string;
     cargaPoblacional: number;
     municipio: Municipality;
+    DangerPopulationLevel: number;
 
     constructor() {
-
     }
 
     ngAfterViewInit() {
@@ -37,7 +36,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.municipio = JSON.parse(localStorage.getItem('municipality'));
-        this.cargaPoblacional =  Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
+        this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
+        this.DangerPopulationLevel = this.getDangerPopulationLevel();
         this.listOfLayersProtection = ['inventario', 'inventario', 'incidencias'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
@@ -158,7 +158,12 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     getDangerPopulationLevel() {
-        // TODO devolver el cálculo de la tabla
-        return 5;
+        const dangerPopulationLimits: number[] = [0, 5000, 20000, 100000];
+        let n = 0;
+        while (this.cargaPoblacional > dangerPopulationLimits[n]) {
+            n += 1;
+        }
+        const lisValues: number [] = [0, 1, 3, 5];
+        return n > 0 ? lisValues[n - 1] : 0;
     }
 }
