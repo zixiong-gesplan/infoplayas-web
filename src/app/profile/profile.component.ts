@@ -14,16 +14,17 @@ declare const aytos: any;
     styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+    private current_user: Auth;
 
     constructor(private service: RequestService, private authService: AuthGuardService, private spinnerService: Ng4LoadingSpinnerService,
                 public router: Router) {
     }
 
     ngOnInit() {
-        const current_user: Auth = this.authService.getCurrentUser();
-        if (!this.authService.isMunicipalityStore(current_user)) {
+        this.current_user = this.authService.getCurrentUser();
+        if (!this.authService.isMunicipalityStore(this.current_user)) {
             this.spinnerService.show();
-            this.setIstacData(current_user, new Date().getFullYear() - 1);
+            this.getLastYearIstacData();
         }
     }
 
@@ -32,23 +33,55 @@ export class ProfileComponent implements OnInit {
         window.location.href = '/';
     }
 
-    setIstacData(current_user: Auth, year: number) {
-        const nextYear = new Date(new Date().getFullYear() + 1, 1, 1);
-        const pop: Municipality = {
-            user: current_user.username,
-            expires: Number(nextYear),
-            ayuntamiento: aytos[current_user.username].municipio_mayus
-        };
-        this.service.getPopulation(aytos[pop.user].istac_code, year).subscribe(
+    getLastYearIstacData() {
+        const representation = 'MEASURE[ABSOLUTE]';
+        this.service.getIstacData('POBLACION/data', representation).subscribe(
             (result: any) => {
                 if (result) {
-                    if (result.observation.length > 0) {
-                        pop.population = Number(result.observation[0]);
-                        this.setBeds(pop);
-                    } else {
-                        // en caso de que no haya informacion del año anterior retrocedemos otro
-                        this.setIstacData(current_user, new Date().getFullYear() - 2);
+                    const index = Object.keys(result.dimension.TIME.representation.index).length - 1;
+                    this.getLastYearIstacData2(Number(Object.keys(result.dimension.TIME.representation.index)[index]));
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
+    }
+
+    getLastYearIstacData2(popYear: number) {
+        const representation = 'MEASURE[ABSOLUTE]';
+        this.service.getIstacData('ALOJATUR_PLAZAS_OCUPACION/data', representation).subscribe(
+            (result: any) => {
+                if (result) {
+                    const index = Object.keys(result.dimension.TIME.representation.index).length - 1;
+                    const tmpyear = Number(Object.keys(result.dimension.TIME.representation.index)[index]);
+                    const lastYear = tmpyear < popYear ? tmpyear : popYear;
+                    const mun: Municipality = this.authService.getMunicipality();
+                    if (mun && lastYear > Number(mun.year)) {
+                        this.setIstacData(lastYear);
+                    } else if (mun && this.current_user.username !== mun.user) {
+                        this.setIstacData(lastYear);
+                    } else if (!mun) {
+                        this.setIstacData(lastYear);
                     }
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
+    }
+
+    setIstacData(year: number) {
+        const mun: Municipality = {
+            user: this.current_user.username,
+            year: year,
+            ayuntamiento: aytos[this.current_user.username].municipio_mayus
+        };
+        const representation = 'GEOGRAPHICAL[' + aytos[mun.user].istac_code + '],MEASURE[ABSOLUTE],TIME[' + year + ']';
+        this.service.getIstacData('POBLACION/data', representation).subscribe(
+            (result: any) => {
+                if (result) {
+                    mun.population = Number(result.observation[0]);
+                    this.setBeds(mun, year, representation);
                 }
             },
             error => {
@@ -62,12 +95,12 @@ export class ProfileComponent implements OnInit {
     de la población de ese resto de municipios de la isla en tenerife. Usaremos el mismo valor para el mismo caso de otras islas ya que a esos
      valores de municipios con poco peso turistico el valor aportado por la población turistica es despreciable respecto a los rangos del valor de
      peligrosidad por carga poblacional */
-    private setBeds(pop: Municipality) {
-        this.service.getBeds(aytos[pop.user].istac_code, new Date().getFullYear() - 1).subscribe(
+    private setBeds(pop: Municipality, year: number, representation: string) {
+        this.service.getIstacData('ALOJATUR_PLAZAS_OFERTADAS/data', representation).subscribe(
             (result: any) => {
                 if (result) {
                     pop.beds = result.observation.length > 0 ? Number(result.observation[0]) : Math.trunc(5 * 0.001 * pop.population);
-                    this.setOccupation(pop);
+                    this.setOccupation(pop, year, representation);
                 }
             },
             error => {
@@ -80,8 +113,8 @@ export class ProfileComponent implements OnInit {
     determinado y el producto de las plazas hoteleras y extrahoteleras, excluyendo las camas supletorias, por el número de días que ese mes tiene.
       Para los municipios de poco peso turistico se aplicara el 65 % de tasa de ocupacion debido al escaso impacto de la poblacion turistica
       en el computo total y las escalas en el valor de peligrosidad*/
-    private setOccupation(pop: Municipality) {
-        this.service.getOccupation(aytos[pop.user].istac_code, new Date().getFullYear() - 1).subscribe(
+    private setOccupation(pop: Municipality, year: number, representation: string) {
+        this.service.getIstacData('ALOJATUR_PLAZAS_OCUPACION/data', representation).subscribe(
             (result: any) => {
                 if (result) {
                     pop.occupation = result.observation.length > 0 ? Number(result.observation[0]) : 65;

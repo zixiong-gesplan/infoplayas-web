@@ -10,18 +10,10 @@ export class RequestService {
     constructor(private http: HttpClient) {
     }
 
-    getPopulation(code: string, year: number) {
-        const params = new HttpParams().set('representation', 'GEOGRAPHICAL[' + code + '],MEASURE[ABSOLUTE]' + ',TIME[' + year + ']');
-        return this.http.get(environment.istac_poblacion, {params: params});
-    }
-
-    getBeds(code: string, year: number) {
-        const params = new HttpParams().set('representation', 'GEOGRAPHICAL[' + code + '],MEASURE[ABSOLUTE]' + ',TIME[' + year + ']');
-        return this.http.get(environment.istac_plazas, {params: params});
-    }
-
-    getOccupation(code: string, year: number) {
-        const params = new HttpParams().set('representation', 'GEOGRAPHICAL[' + code + '],MEASURE[ABSOLUTE]' + ',TIME[' + year + ']');
-        return this.http.get(environment.istac_ocupacion, {params: params});
+    getIstacData(indicator: string, representation: string) {
+        const params = new HttpParams().set('representation', representation)
+            .append('granularity', 'GEOGRAPHICAL[MUNICIPALITIES],TIME[YEARLY]')
+            .append('fields', '-observationsMetadata');
+        return this.http.get(environment.istac + indicator, {params: params});
     }
 }

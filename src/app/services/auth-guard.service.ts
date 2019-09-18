@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {CanActivate} from '@angular/router/src/interfaces';
 import {Auth} from '../models/auth';
 import {Municipality} from '../models/municipality';
+import {RequestService} from './request.service';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthGuardService implements CanActivate {
     redirectUri = 'http://localhost:4200/login';
     urlAuthorize: string = this.url + '?client_id=' + this.client_id + '&response_type=token&redirect_uri=' + this.redirectUri;
 
-    constructor() {
+    constructor(private service: RequestService) {
     }
 
     canActivate(): boolean {
@@ -33,15 +34,16 @@ export class AuthGuardService implements CanActivate {
     }
 
     public isMunicipalityStore(current_user: Auth): boolean {
-        const pop: Municipality = this.getPopulation();
+        const mun: Municipality = this.getMunicipality();
         const currentDate = new Date();
-        if (pop && current_user.username !== pop.user) {
+        if (mun && current_user.username !== mun.user) {
             return false;
         }
-        if (pop && currentDate.getTime() >= Number(pop.expires)) {
+        if (mun && currentDate.getFullYear() - 1 > Number(mun.year)) {
             return false;
+        } else {
+            return !!mun;
         }
-        return !!pop;
     }
 
     getCurrentUser(): Auth {
@@ -50,7 +52,7 @@ export class AuthGuardService implements CanActivate {
             JSON.parse(sessionStorage.getItem('current_user'));
     }
 
-    getPopulation(): Municipality {
+    getMunicipality(): Municipality {
         return JSON.parse(localStorage.getItem('municipality'));
     }
 
