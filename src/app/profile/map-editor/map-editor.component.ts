@@ -358,7 +358,8 @@ export class MapEditorComponent implements OnInit {
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
                     let filter = 'municipio = \'' + aytos[IdentityManager.credentials[0].userId].municipio_minus + '\'';
                     filter = event.target.dataset.filter === '.protection' ? filter +
-                        ' AND clasificacion IS NOT NULL AND clasificacion <> \'USO PROHIBIDO\'' : filter;
+                        ' AND clasificacion IS NOT NULL AND clasificacion <> \'USO PROHIBIDO\' AND nombre_municipio <> \'\' AND nombre_municipio IS NOT NULL'
+                        : event.target.dataset.filter === '.clasification' ? filter + ' AND nombre_municipio <> \'\' AND nombre_municipio IS NOT NULL' : filter;
                     playasLayer.definitionExpression = filter;
                     t.spinnerService.show();
                     loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter).then(function (nBeachs) {

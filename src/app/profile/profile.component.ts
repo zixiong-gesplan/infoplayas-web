@@ -44,7 +44,17 @@ export class ProfileComponent implements OnInit {
             },
             error => {
                 console.log(error.toString());
+                this.blockEditProteccionData();
             });
+    }
+
+    /* En caso de error de los servicios del ISTAC ajeno a la pagina, comprobamos que hay datos en la localStorage, sino bloqueamos edicion
+     en los sitios donde se use el valor de peligrosidad por carga poblacional */
+    blockEditProteccionData() {
+        const mun: Municipality = this.authService.getMunicipality();
+        if (!mun) {
+            // TODO bloqueamos
+        }
     }
 
     getLastYearIstacData2(popYear: number) {
@@ -67,6 +77,7 @@ export class ProfileComponent implements OnInit {
             },
             error => {
                 console.log(error.toString());
+                this.blockEditProteccionData();
             });
     }
 
@@ -86,14 +97,15 @@ export class ProfileComponent implements OnInit {
             },
             error => {
                 console.log(error.toString());
+                this.blockEditProteccionData();
                 this.spinnerService.hide();
             });
     }
 
     /* plazas hoteleras y extrahoteleras (apartamentos) ofertadas por municipio. En caso de que el ISTAC incluya al municipio consultado
-    en las plazas del resto de la isla, la cantidad para el valor de peligrosidad se calculará a razon del 5 por mil que es la media ponderada
-    de la población de ese resto de municipios de la isla en tenerife. Usaremos el mismo valor para el mismo caso de otras islas ya que a esos
-     valores de municipios con poco peso turistico el valor aportado por la población turistica es despreciable respecto a los rangos del valor de
+    en las plazas del resto de la isla, la cantidad para el valor de peligrosidad se calculará a razon del 5 por mil que es la media
+    ponderada de la población de ese resto de municipios de la isla en tenerife. Usaremos el mismo valor para el mismo caso de otras islas
+    ya que a esos valores de municipios con poco peso turistico el valor aportado por la población turistica es despreciable respecto a los rangos del valor de
      peligrosidad por carga poblacional */
     private setBeds(pop: Municipality, year: number, representation: string) {
         this.service.getIstacData('ALOJATUR_PLAZAS_OFERTADAS/data', representation).subscribe(
@@ -105,14 +117,15 @@ export class ProfileComponent implements OnInit {
             },
             error => {
                 console.log(error);
+                this.blockEditProteccionData();
                 this.spinnerService.hide();
             });
     }
 
     /* Tasa de ocupación por plazas: se define como la relación expresada en porcentaje entre el total de las pernoctaciones en un mes
-    determinado y el producto de las plazas hoteleras y extrahoteleras, excluyendo las camas supletorias, por el número de días que ese mes tiene.
-      Para los municipios de poco peso turistico se aplicara el 65 % de tasa de ocupacion debido al escaso impacto de la poblacion turistica
-      en el computo total y las escalas en el valor de peligrosidad*/
+    determinado y el producto de las plazas hoteleras y extrahoteleras, excluyendo las camas supletorias, por el número de días que ese mes
+    tiene. Para los municipios de poco peso turistico se aplicara el 65 % de tasa de ocupacion debido al escaso impacto de la poblacion
+    turistica en el computo total y las escalas en el valor de peligrosidad */
     private setOccupation(pop: Municipality, year: number, representation: string) {
         this.service.getIstacData('ALOJATUR_PLAZAS_OCUPACION/data', representation).subscribe(
             (result: any) => {
@@ -125,6 +138,7 @@ export class ProfileComponent implements OnInit {
                 console.log(error);
             }).add(() => {
             this.spinnerService.hide();
+            this.blockEditProteccionData();
             console.log('end of request');
         });
     }

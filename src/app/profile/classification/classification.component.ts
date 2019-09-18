@@ -138,11 +138,16 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
 
     receiveLocalName($event: string) {
         this.localName = $event;
+        if ($event.toUpperCase() === 'NOMBRE POR DEFINIR') {
+            $('#clasificationFilterMenu').hide();
+        } else {
+            $('#clasificationFilterMenu').show();
+        }
     }
 
     receiveClasification($event: string) {
         this.localClasification = $event;
-        if ($event === 'USO PROHIBIDO') {
+        if ($event === 'USO PROHIBIDO' || this.localName.toUpperCase() === 'NOMBRE POR DEFINIR') {
             $('#protectionFilterMenu').hide();
         } else {
             $('#protectionFilterMenu').show();
