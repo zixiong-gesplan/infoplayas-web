@@ -6,7 +6,6 @@ import {EsriRequestService} from '../../services/esri-request.service';
 import {Danger} from '../../models/danger';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {environment} from '../../../environments/environment';
-import {EsriBoolean} from '../../models/esri-boolean';
 import {SelectItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
