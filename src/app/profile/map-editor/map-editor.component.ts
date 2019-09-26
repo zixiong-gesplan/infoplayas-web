@@ -138,8 +138,17 @@ export class MapEditorComponent implements OnInit {
     }
 
     onSubmit(fg: FormGroup, relid: string) {
+        // cambiamos el valor true de los formularios por 1 que tenemos como ese valor en Esri
+        const convertEsriBool = new Array();
+        convertEsriBool.push(fg.value);
+        for (let [key, value] of Object.entries(convertEsriBool[0])) {
+            if (value === true || value === -1) {
+                convertEsriBool[0][key] = 1;
+            }
+        }
         const updateObj = new Array();
-        updateObj.push({attributes: fg.value});
+        updateObj.push({attributes: convertEsriBool[0]});
+        console.log(updateObj);
         const mode = fg.get('on_edit').value ? 'updates' : 'adds';
         const postExecuteTask = fg.contains('desprendimientos') && this.viewNoDanger ? 'no_prohibido' : fg.contains('desprendimientos')
             ? 'prohibido' : 'none';
@@ -393,12 +402,6 @@ export class MapEditorComponent implements OnInit {
     }
 
     private editRelatedData(updateObj, currentUser, mode, endpoint, postExecute) {
-        // cambiamos los valores true/false de los formularios por 1/0 que acepta Esri
-        for (let [key, value] of Object.entries(updateObj)) {
-            if (typeof value === 'boolean') {
-                updateObj[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
-            }
-        }
         this.service.updateEsriData(endpoint,
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
