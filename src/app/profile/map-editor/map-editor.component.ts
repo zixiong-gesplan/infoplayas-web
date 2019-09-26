@@ -393,6 +393,12 @@ export class MapEditorComponent implements OnInit {
     }
 
     private editRelatedData(updateObj, currentUser, mode, endpoint, postExecute) {
+        // cambiamos los valores true/false de los formularios por 1/0 que acepta Esri
+        for (let [key, value] of Object.entries(updateObj)) {
+            if (typeof value === 'boolean') {
+                updateObj[key] = value ? EsriBoolean.Yes : EsriBoolean.No;
+            }
+        }
         this.service.updateEsriData(endpoint,
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
