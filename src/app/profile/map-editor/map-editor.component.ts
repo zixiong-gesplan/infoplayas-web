@@ -148,7 +148,6 @@ export class MapEditorComponent implements OnInit {
         }
         const updateObj = new Array();
         updateObj.push({attributes: convertEsriBool[0]});
-        console.log(updateObj);
         const mode = fg.get('on_edit').value ? 'updates' : 'adds';
         const postExecuteTask = fg.contains('desprendimientos') && this.viewNoDanger ? 'no_prohibido' : fg.contains('desprendimientos')
             ? 'prohibido' : 'none';
@@ -167,13 +166,15 @@ export class MapEditorComponent implements OnInit {
     onChanges(form: FormGroup): void {
         form.valueChanges.subscribe(val => {
             this.viewNoDanger = true;
-            for (let [key, value] of Object.entries(val)) {
-                if (typeof value === 'boolean' && value && key !== 'on_edit' || value === -1) {
+            const controlsArr = ['corrientes_mareas', 'rompientes_olas', 'contaminacion', 'fauna_marina', 'desprendimientos'];
+            for (const entry of controlsArr) {
+                if (form.get(entry).value) {
                     this.viewNoDanger = false;
                     break;
                 }
             }
         });
+
     }
 
     private executePostData(prohibido: boolean) {
