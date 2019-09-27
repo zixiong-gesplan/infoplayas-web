@@ -120,6 +120,10 @@ textarea {
     flex: 1 1 auto;
     padding: 1.25rem;
 }
+/*para quitar el boton de compartir en el fancybox*/
+.fancybox-button--share{
+    display: none;
+}
 /*--------------------- botones para los formularios del mapa custom -----*/
 .corrientesIcon {
     background: url("../../../assets/images/formrisk/a.png");

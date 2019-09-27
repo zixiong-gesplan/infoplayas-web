@@ -229,10 +229,9 @@
                     clasificación
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
-                <!--                TODO hay que poner el por defecto que sería afluencia-->
                 <div id="protectionFilterMenu"
                      pTooltip="Determinación del grado de protección en función del uso y condiciones del entorno"
-                     tooltipPosition="top" (click)="setForm('incidencias');op2.show($event)" data-filter=".protection"
+                     tooltipPosition="top" (click)="setForm('protection');op2.show($event)" data-filter=".protection"
                      class="cbp-filter-item text-capitalize">
                     protección
                     <!--                    <div class="cbp-filter-counter"></div>-->
@@ -247,7 +246,7 @@
             <div id="js-grid-mosaic-flat" class="cbp cbp-l-grid-mosaic-flat">
                 <div class="cbp-item protection">
                     <div class="cbp-caption">
-                        <p-tabMenu [model]="itemsProtection" [activeItem]="itemsProtection[2]">
+                        <p-tabMenu [model]="itemsProtection" [activeItem]="itemsProtection[0]">
                             <ng-template pTemplate="item" let-item let-i="index">
                                 <div (click)="selectFormProtection(item,i)"
                                      style="position: relative; text-align: center; ">

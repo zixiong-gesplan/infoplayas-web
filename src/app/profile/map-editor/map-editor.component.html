@@ -133,6 +133,14 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
+                        <label class="esri-font">Valor de peligrosidad</label>
+                        <input class="esri-feature-form__input" pInputText type="number"
+                               [value]="formIncidents.get('incidentes_mgraves').value > 0 ? 5 :
+                               formIncidents.get('incidentes_graves').value > 0 ? 3 : 0" disabled="true">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
                         <label class="esri-font" style="font-weight: bolder">Actividades deportivas y de recreo que se
                             realizan y existencia de balizamiento.</label>
                     </div>
@@ -145,13 +153,6 @@
                                     (click)="openSecurityMeasures($event,op1)"
                                     [pTooltip]="formIncidents.get('actividades_deportivas').value ? 'Coexisten actividades deportivas, náuticas y de baño' : 'No existen actividades deportivas'">
                         </p-checkbox>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="esri-font">Valor de peligrosidad</label>
-                        <input class="esri-feature-form__input" pInputText type="number"
-                               [value]="calculateDangerLever()" disabled="true">
                     </div>
                 </div>
                 <!--                panel de peligrosidad-->
@@ -180,7 +181,163 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
+                        <label class="esri-font">Valor de peligrosidad</label>
+                        <input class="esri-feature-form__input" pInputText type="number"
+                               [value]="calculateDangerLever()" disabled="true">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
                         <button class="esri-button" type="submit" [disabled]="!formIncidents.valid">
+                            Guardar
+                        </button>
+                        <input (click)="sendMessage('noid',getUnselectedMessage(), '-')"
+                               onclick="unselectFeature()"
+                               type="button"
+                               class="esri-button esri-button--secondary"
+                               value="Cancelar"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--        formulario de afluencia-->
+        <div [hidden]="selectForm !=='afluencia'">
+            <form class="esri-pad" [formGroup]="formFlow" (ngSubmit)="onSubmit(formFlow, '4')">
+                <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font" style="font-weight: bolder">Períodos de Afluencia Alta</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <p-calendar appendTo="body" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
+                                    formControlName="datesA" selectionMode="multiple" [readonlyInput]="true"
+                                    [locale]="es" dateFormat="dd/mm"></p-calendar>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font" style="font-weight: bolder">Períodos de Afluencia Media</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <p-calendar appendTo="body" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
+                                    formControlName="datesM" selectionMode="multiple" [readonlyInput]="true"
+                                    [locale]="es" dateFormat="dd/mm/yy"></p-calendar>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font" style="font-weight: bolder">Períodos de Afluencia Baja</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <p-calendar appendTo="body" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
+                                    formControlName="datesB" selectionMode="multiple" [readonlyInput]="true"
+                                    [locale]="es" dateFormat="dd/mm/yy"></p-calendar>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <button [class]="!formFlow.valid ? 'esri-button esri-button--disabled' : 'esri-button'"
+                                type="submit" [disabled]="!formFlow.valid">
+                            Guardar
+                        </button>
+                        <input (click)="sendMessage('noid',getUnselectedMessage(), '-')"
+                               onclick="unselectFeature()"
+                               type="button"
+                               class="esri-button esri-button--secondary"
+                               value="Cancelar"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--        formulario de entorno fisico y condiciones del mar-->
+        <div [hidden]="selectForm !=='entorno'">
+            <form class="esri-pad" [formGroup]="formEnvironment" (ngSubmit)="onSubmit(formEnvironment, '3')">
+                <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font" style="font-weight: bolder">Condiciones habituales del mar.</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label style="padding-bottom: 5px;" class="esri-font">Peligrosidad</label>
+                        <p-dropdown class="esri-feature-form__input" [options]="wavesOptions"
+                                    formControlName="peligrosidad_mar" [style]="{'width':'100%'}"></p-dropdown>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font">Valor de peligrosidad</label>
+                        <input placeholder="Seleccione arriba estado de la mar" class="esri-feature-form__input"
+                               pInputText type="number"
+                               [value]="formEnvironment.get('peligrosidad_mar').value" disabled="true">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font" style="font-weight: bolder">Características físicas y entorno.</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <p-toggleButton formControlName="peligros_anadidos" onLabel="SI existen peligros añadidos"
+                                        offLabel="NO existen peligros añadidos"
+                                        onIcon="fa fa-exclamation-triangle fa-3x"
+                                        offIcon="fa fa-leaf fa-3x"
+                                        [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
+                    </div>
+                </div>
+                <div [hidden]="!formEnvironment.get('peligros_anadidos').value" class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font">Indicar peligros</label>
+                        <textarea [rows]="4" [cols]="80"
+                                  class="esri-feature-form__input" pInputTextarea
+                                  type="textarea" formControlName="observaciones"
+                                  placeholder="Requerido - Min(4) - permite texto largo"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label style="padding-bottom: 5px;" class="esri-font">Vía de acceso y evacuación</label>
+                        <p-dropdown class="esri-feature-form__input" [options]="accessOptions"
+                                    formControlName="accesos" [style]="{'width':'100%'}"></p-dropdown>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <p-radioButton class="esri-font" name="grupocobertura" value=1
+                                               label="Con cobertura telefónica"
+                                               formControlName="cobertura_telefonica"></p-radioButton>
+                            </div>
+                            <div class="ui-g-12">
+                                <p-radioButton class="esri-font" name="grupocobertura" value=0
+                                               label="Sin cobertura telefónica"
+                                               formControlName="cobertura_telefonica"></p-radioButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="esri-font">Valor de peligrosidad</label>
+                        <input class="esri-feature-form__input" pInputText type="number"
+                               [value]="formEnvironment.get('peligros_anadidos').value ?
+                               formEnvironment.get('accesos').value === 'SDIF' ? 1 :
+                               formEnvironment.get('accesos').value === 'AVHC' ? 3 : 5 : 0" disabled="true">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <button [class]="!formEnvironment.valid ? 'esri-button esri-button--disabled' : 'esri-button'"
+                                type="submit" [disabled]="!formEnvironment.valid">
                             Guardar
                         </button>
                         <input (click)="sendMessage('noid',getUnselectedMessage(), '-')"

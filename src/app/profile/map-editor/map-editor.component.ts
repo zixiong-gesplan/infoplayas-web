@@ -4,7 +4,7 @@ import {Auth} from '../../models/auth';
 import {loadModules} from 'esri-loader';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {Danger} from '../../models/danger';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {environment} from '../../../environments/environment';
 import {SelectItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
@@ -54,11 +54,13 @@ export class MapEditorComponent implements OnInit {
     @Input() zoom: number;
     @Input() selectForm: string;
     @Input() urlInfoMap: string;
-
-    private currentUser: Auth;
     formDanger: FormGroup;
     formIncidents: FormGroup;
+    formEnvironment: FormGroup;
+    formFlow: FormGroup;
     noDangerOptions: SelectItem[];
+    wavesOptions: SelectItem[];
+    accessOptions: SelectItem[];
     viewNoDanger: boolean;
     selectedId: string;
     selectLongitude: number;
@@ -68,6 +70,9 @@ export class MapEditorComponent implements OnInit {
     wkid: number;
     centroidOption: boolean;
     selectedBeachDanger: Danger;
+    dates: Date[];
+    es: any;
+    private currentUser: Auth;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService) {
@@ -75,6 +80,18 @@ export class MapEditorComponent implements OnInit {
             {label: 'Selecciona nivel de peligrosidad', value: null},
             {label: 'Playas libres para el baño', value: 'LIBRE'},
             {label: 'Peligrosa o susceptible de producir daño', value: 'PELIGROSA'},
+        ];
+        this.wavesOptions = [
+            {label: 'Selecciona estado de la mar', value: null},
+            {label: 'Mar en calma o cuando las condiciones de las corrientes no pueden afectar a los bañistas', value: 0},
+            {label: 'Existen olas de altura de 0.5 metros que pueden afectar a los bañistas', value: 3},
+            {label: 'Existen habitualmente olas de altura superior a 1 metro o corrientes fuertes', value: 5}
+        ];
+        this.accessOptions = [
+            {label: 'Selecciona modo de acceso', value: null},
+            {label: 'Sin dificultades de acceso', value: 'SDIF'},
+            {label: 'Sólo accesible con vehículos todo terreno o a pie', value: 'AVHC'},
+            {label: 'Sólo accesible con medios aéreos o marítimos', value: 'AVAM'}
         ];
     }
 
@@ -107,7 +124,40 @@ export class MapEditorComponent implements OnInit {
             val_peligrosidad: new FormControl({value: '', disabled: true}),
             on_edit: new FormControl('')
         });
-        this.onChanges(this.formDanger);
+        this.formEnvironment = this.fb.group({
+            objectid: new FormControl(''),
+            peligrosidad_mar: new FormControl('', Validators.required),
+            peligros_anadidos: new FormControl(''),
+            cobertura_telefonica: new FormControl(''),
+            accesos: new FormControl(''),
+            observaciones: new FormControl(''),
+            id_dgse: new FormControl(''),
+            // campos auxiliares o calculados que no pertenecen al modelo
+            val_peligrosidad: new FormControl({value: '', disabled: true}),
+            on_edit: new FormControl('')
+        });
+        this.formFlow = this.fb.group({
+            objectid: new FormControl(''),
+            // TODO resto de campos
+            datesA: new FormControl('', Validators.required),
+            datesM: new FormControl('', Validators.required),
+            datesB: new FormControl('', Validators.required),
+            id_dgse: new FormControl(''),
+            on_edit: new FormControl('')
+        });
+        this.onChanges();
+        // establecemos valores en espanol para el calendario
+        this.es = {
+            firstDayOfWeek: 1,
+            dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+            dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+            monthNames: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre',
+                'diciembre'],
+            monthNamesShort: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+            today: 'Hoy',
+            clear: 'Borrar'
+        };
     }
 
     loadRelatedRecords() {
@@ -137,7 +187,7 @@ export class MapEditorComponent implements OnInit {
         return unselectedMessage;
     }
 
-    onSubmit(fg: FormGroup, relid: string) {
+    onSubmit(fg: FormGroup, tableId: string) {
         // cambiamos el valor true de los formularios por 1 que tenemos como ese valor en Esri
         const convertEsriBool = new Array();
         convertEsriBool.push(fg.value);
@@ -151,7 +201,7 @@ export class MapEditorComponent implements OnInit {
         const mode = fg.get('on_edit').value ? 'updates' : 'adds';
         const postExecuteTask = fg.contains('desprendimientos') && this.viewNoDanger ? 'no_prohibido' : fg.contains('desprendimientos')
             ? 'prohibido' : 'none';
-        this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + relid
+        this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + tableId
             + '/applyEdits', postExecuteTask);
     }
 
@@ -162,19 +212,36 @@ export class MapEditorComponent implements OnInit {
         return dangerLevel > 0 ? dangerLevel : 0;
     }
 
-// comprueba si se ha seleccionado algun elemento de peligro, que significara que la playa es de USO PROHIBIDO
-    onChanges(form: FormGroup): void {
-        form.valueChanges.subscribe(val => {
+    onChanges(): void {
+        // comprueba si se ha seleccionado algun elemento de peligro, que significara que la playa es de USO PROHIBIDO
+        this.formDanger.valueChanges.subscribe(val => {
             this.viewNoDanger = true;
             const controlsArr = ['corrientes_mareas', 'rompientes_olas', 'contaminacion', 'fauna_marina', 'desprendimientos'];
             for (const entry of controlsArr) {
-                if (form.get(entry).value) {
+                if (this.formDanger.get(entry).value) {
                     this.viewNoDanger = false;
                     break;
                 }
             }
         });
+        // cambios en validaciones en tiempo de ejecucion
+        this.formEnvironment.get('peligros_anadidos').valueChanges.subscribe(value => {
+            if (value) {
+                this.formEnvironment.get('accesos').setValidators([Validators.required]);
+            } else {
+                this.formEnvironment.get('accesos').setValidators(null);
+            }
+            this.formEnvironment.get('accesos').updateValueAndValidity();
+        });
+    }
 
+    openSecurityMeasures($event: MouseEvent, overlayPanel: OverlayPanel) {
+        overlayPanel.toggle(event);
+    }
+
+    setUrlInfoMap() {
+        return this.centroidOption ? this.urlInfoMap + '&zoom=18&center=' + this.coordX + ',' + this.coordY + ',' + this.wkid :
+            this.urlInfoMap + '&zoom=' + this.zoom + '&center=' + this.selectLongitude + ',' + this.selectLatitude;
     }
 
     private executePostData(prohibido: boolean) {
@@ -317,6 +384,7 @@ export class MapEditorComponent implements OnInit {
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
+                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 2, t.formEnvironment);
                             // guardamos los datos de geometria de la playa para componentes externos
                             t.coordX = output.coordX;
                             t.coordY = output.coordY;
@@ -347,6 +415,7 @@ export class MapEditorComponent implements OnInit {
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
+                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 2, t.formEnvironment);
                                     // guardamos los datos de geometria de la playa para componentes externos
                                     t.coordX = output.coordX;
                                     t.coordY = output.coordY;
@@ -442,14 +511,5 @@ export class MapEditorComponent implements OnInit {
             console.log('end of request');
             this.sendMessage('noid', unselectFeature(), '-');
         });
-    }
-
-    openSecurityMeasures($event: MouseEvent, overlayPanel: OverlayPanel) {
-        overlayPanel.toggle(event);
-    }
-
-    setUrlInfoMap() {
-        return this.centroidOption ? this.urlInfoMap + '&zoom=18&center=' + this.coordX + ',' + this.coordY + ',' + this.wkid :
-            this.urlInfoMap + '&zoom=' + this.zoom + '&center=' + this.selectLongitude + ',' + this.selectLatitude;
     }
 }

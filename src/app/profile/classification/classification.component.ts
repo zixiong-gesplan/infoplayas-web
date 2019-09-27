@@ -19,6 +19,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     mapZoomLevel: number;
     mapHeightContainer: string;
     listOfLayersProtection: string[];
+    selectedLayerProtection: number;
     actualForm = 'inventario';
     localName: string;
     localClasification: string;
@@ -38,7 +39,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         this.municipio = JSON.parse(localStorage.getItem('municipality'));
         this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
         this.DangerPopulationLevel = this.getDangerPopulationLevel();
-        this.listOfLayersProtection = ['inventario', 'inventario', 'incidencias'];
+        this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
             {label: 'Entorno', icon: 'fa fa-fw fa-thermometer'},
@@ -156,10 +157,12 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
 
     selectFormProtection(item, i) {
         this.actualForm = this.listOfLayersProtection[i];
+        this.selectedLayerProtection = i;
     }
 
     setForm(opFilter: string) {
-        this.actualForm = opFilter;
+        this.actualForm = opFilter === 'protection' ? this.selectedLayerProtection > 0 ?
+            this.listOfLayersProtection[this.selectedLayerProtection] : this.listOfLayersProtection[0] : opFilter;
     }
 
     getDangerPopulationLevel() {

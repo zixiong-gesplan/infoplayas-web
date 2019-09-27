@@ -15,7 +15,7 @@ import { MapEditorComponent } from './profile/map-editor/map-editor.component';
 import {
     CheckboxModule, DropdownModule,
     InputTextareaModule,
-    InputTextModule, OverlayPanelModule,
+    InputTextModule, OverlayPanelModule, RadioButtonModule,
     TabMenuModule,
     TabViewModule,
     ToggleButtonModule,
@@ -66,6 +66,7 @@ registerLocaleData(localeEs, 'es');
         TooltipModule,
         OverlayPanelModule,
         DropdownModule,
+        RadioButtonModule,
 
     ],
     providers: [EsriRequestService, {
