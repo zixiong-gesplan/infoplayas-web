@@ -249,7 +249,7 @@ export class MapEditorComponent implements OnInit {
         updateObj.push({
             attributes: {
                 objectid_12: this.selectedId,
-                clasificacion: prohibido ? 'USO PROHIBIDO' : '-'
+                clasificacion: prohibido ? 'USO PROHIBIDO' : 'PENDIENTE'
             }
         });
         this.editDataLayer(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_url + '/applyEdits');
@@ -423,14 +423,14 @@ export class MapEditorComponent implements OnInit {
                                     t.centroidOption = true;
                                 });
                         } else {
-                            t.sendMessage('noid', unselectFeature(), '-');
+                            t.sendMessage('noid', unselectFeature(), 'PENDIENTE');
                             t.centroidOption = false;
                         }
                     });
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas), '-');
+                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas), 'PENDIENTE');
                 };
 
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
@@ -492,7 +492,7 @@ export class MapEditorComponent implements OnInit {
             }).add(() => {
             if (postExecute === 'none') {
                 console.log('end of request');
-                this.sendMessage('noid', unselectFeature(), '-');
+                this.sendMessage('noid', unselectFeature(), 'PENDIENTE');
             }
         });
     }
@@ -509,7 +509,7 @@ export class MapEditorComponent implements OnInit {
                 console.log(error.toString());
             }).add(() => {
             console.log('end of request');
-            this.sendMessage('noid', unselectFeature(), '-');
+            this.sendMessage('noid', unselectFeature(), 'PENDIENTE');
         });
     }
 }
