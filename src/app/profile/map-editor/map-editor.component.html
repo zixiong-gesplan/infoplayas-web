@@ -206,40 +206,30 @@
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="esri-font" style="font-weight: bolder">Períodos de Afluencia Alta</label>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
+                        <label style="padding-bottom: 5px;" class="esri-font">Añada períodos de Afluencia</label>
                         <p-calendar appendTo="body" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
-                                    formControlName="datesA" selectionMode="multiple" [readonlyInput]="true"
-                                    [locale]="es" dateFormat="dd/mm" [minDate]="minDate" [maxDate]="maxDate">
-
+                                    formControlName="dates" selectionMode="range" [readonlyInput]="true"
+                                    [locale]="es" dateFormat="dd/mm" [numberOfMonths]="2" [minDate]="minDate"
+                                    [maxDate]="maxDate">
+                            <p-footer>
+                                <div class="col-md-6">
+                                    <button [class]="!formFlow.get('flowLevel').value ? 'esri-button esri-button--disabled' : 'esri-button'"
+                                            (click)="addPeriod()" [disabled]="!formFlow.get('flowLevel').value">
+                                        Añadir
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <p-selectButton
+                                            [options]="FlowOptions" formControlName="flowLevel" class="orange-button">
+                                    </p-selectButton>
+                                </div>
+                            </p-footer>
                         </p-calendar>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="esri-font" style="font-weight: bolder">Períodos de Afluencia Media</label>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <p-calendar appendTo="body" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
-                                    formControlName="datesM" selectionMode="multiple" [readonlyInput]="true"
-                                    [locale]="es" dateFormat="dd/mm/yy"></p-calendar>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="esri-font" style="font-weight: bolder">Períodos de Afluencia Baja</label>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <p-calendar appendTo="body" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
-                                    formControlName="datesB" selectionMode="multiple" [readonlyInput]="true"
-                                    [locale]="es" dateFormat="dd/mm/yy"></p-calendar>
+                        <label class="esri-font" style="font-weight: bolder">Tabla de Períodos de Afluencia añadidos</label>
                     </div>
                 </div>
                 <div class="form-row">

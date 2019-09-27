@@ -61,6 +61,7 @@ export class MapEditorComponent implements OnInit {
     noDangerOptions: SelectItem[];
     wavesOptions: SelectItem[];
     accessOptions: SelectItem[];
+    FlowOptions: SelectItem[];
     viewNoDanger: boolean;
     selectedId: string;
     selectLongitude: number;
@@ -94,6 +95,11 @@ export class MapEditorComponent implements OnInit {
             {label: 'Sin dificultades de acceso', value: 'SDIF'},
             {label: 'Sólo accesible con vehículos todo terreno o a pie', value: 'AVHC'},
             {label: 'Sólo accesible con medios aéreos o marítimos', value: 'AVAM'}
+        ];
+        this.FlowOptions = [
+            {label: 'Alta', value: 'A', icon: 'fa fa-fw fa-level-up'},
+            {label: 'Media', value: 'M', icon: 'fa fa-fw fa-arrows-h'},
+            {label: 'Baja', value: 'B', icon: 'fa fa-fw fa-level-down'}
         ];
     }
 
@@ -141,9 +147,8 @@ export class MapEditorComponent implements OnInit {
         this.formFlow = this.fb.group({
             objectid: new FormControl(''),
             // TODO resto de campos
-            datesA: new FormControl('', Validators.required),
-            datesM: new FormControl('', Validators.required),
-            datesB: new FormControl('', Validators.required),
+            dates: new FormControl('', Validators.required),
+            flowLevel: new FormControl('', Validators.required),
             id_dgse: new FormControl(''),
             on_edit: new FormControl('')
         });
@@ -161,19 +166,8 @@ export class MapEditorComponent implements OnInit {
             clear: 'Borrar'
         };
         // fechas maxima y minima para los calendarios de afluencias
-        let today = new Date();
-        let month = today.getMonth();
-        let year = today.getFullYear();
-        let prevMonth = (month === 0) ? 11 : month - 1;
-        let prevYear = (prevMonth === 11) ? year - 1 : year;
-        let nextMonth = (month === 11) ? 0 : month + 1;
-        let nextYear = (nextMonth === 0) ? year + 1 : year;
-        this.minDate = new Date();
-        this.minDate.setMonth(prevMonth);
-        this.minDate.setFullYear(prevYear);
-        this.maxDate = new Date();
-        this.maxDate.setMonth(nextMonth);
-        this.maxDate.setFullYear(nextYear);
+        this.minDate = new Date(new Date().getFullYear(), 0, 1);
+        this.maxDate = new Date(new Date().getFullYear() + 1 , 0, 0);
     }
 
     loadRelatedRecords() {
@@ -527,5 +521,9 @@ export class MapEditorComponent implements OnInit {
             console.log('end of request');
             this.sendMessage('noid', unselectFeature(), 'PENDIENTE');
         });
+    }
+
+    addPeriod() {
+        alert('TODO');
     }
 }
