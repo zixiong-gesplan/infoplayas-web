@@ -213,7 +213,9 @@
                     <div class="form-group">
                         <p-calendar appendTo="body" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
                                     formControlName="datesA" selectionMode="multiple" [readonlyInput]="true"
-                                    [locale]="es" dateFormat="dd/mm"></p-calendar>
+                                    [locale]="es" dateFormat="dd/mm" [minDate]="minDate" [maxDate]="maxDate">
+
+                        </p-calendar>
                     </div>
                 </div>
                 <div class="form-row">
