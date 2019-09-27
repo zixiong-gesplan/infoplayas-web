@@ -138,7 +138,7 @@ export class SecurityComponent implements OnInit {
     this.peligrosa = false;
   }
 
-  private calculadora(medio){
+  public calculadora(medio){
     $('#calculadora'+medio).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
     $('#calculadora'+medio).modal('show');
     this.medio = medio;
