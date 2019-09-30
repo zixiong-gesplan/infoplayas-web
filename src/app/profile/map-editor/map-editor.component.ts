@@ -9,6 +9,7 @@ import {SelectItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Attribute} from '../../models/attribute';
+import {Flow} from '../../models/flow';
 
 declare var $: any;
 declare var jquery: any;
@@ -76,6 +77,7 @@ export class MapEditorComponent implements OnInit {
     maxDate: Date;
     invalidDates: Array<Date>;
     periods: Attribute[];
+    colsFlow: any;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService) {
@@ -164,6 +166,11 @@ export class MapEditorComponent implements OnInit {
             today: 'Hoy',
             clear: 'Borrar'
         };
+        this.colsFlow = [
+            { subfield: 'fecha_inicio', header: 'Inicio', width: '29%', orderBy: 'attributes.fecha_inicio' },
+            { subfield: 'fecha_fin', header: 'Fin' , width: '29%', orderBy: 'attributes.fecha_fin' },
+            { subfield: 'nivel', header: 'Nivel' , width: '29%' , type: 'text', orderBy: 'attributes.nivel'}
+        ];
         this.initCalendarDates();
     }
 
@@ -565,6 +572,15 @@ export class MapEditorComponent implements OnInit {
             this.invalidDates.push(iniDate);
             this.formFlow.get('dates').setValue(iniDate);
         }
-        console.log(this.periods);
+    }
+
+    onSubmitFlows() {
+        // TODO una extension del metodo onSubmit para el formulario formFlow
+        alert('TODO');
+    }
+
+    onRowDelete(rowData) {
+        const table = [...this.periods];
+        this.periods = table.filter(s => s !== rowData);
     }
 }
