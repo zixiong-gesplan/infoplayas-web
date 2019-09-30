@@ -103,8 +103,9 @@ export class SecurityComponent implements OnInit {
               private elementRef: ElementRef) { }
 
   ngOnInit() {
-    this.loadRelatedRecords();
+    this.loadRecords();
     this.default();
+    this.loadRelatedRecords();
 
   }
 
@@ -144,7 +145,7 @@ export class SecurityComponent implements OnInit {
     this.medio = medio;
   }
 
-  loadRelatedRecords() {
+  loadRecords() {
     this.spinnerService.show();
     this.currentUser = this.authService.getCurrentUser();
     this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
@@ -155,6 +156,7 @@ export class SecurityComponent implements OnInit {
           (result: any) => {
               if (result) {
                   this.datosPlaya = result;
+                  console.log('capa principal');
                   console.log(result);
                   this.spinnerService.hide();
               }
@@ -164,5 +166,22 @@ export class SecurityComponent implements OnInit {
           }).add(() => {
           console.log('end of request');
       });
+  }
+
+  loadRelatedRecords() {
+    this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
+        '237', '4', '*', false, this.currentUser.token).subscribe(
+        (result: any) => {
+          if (result) {
+            // this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
+            console.log('tabla relacionada');
+            console.log(result);
+          }
+        },
+        error => {
+          console.log(error.toString());
+        }).add(() => {
+      console.log('end of request');
+    });
   }
 }
