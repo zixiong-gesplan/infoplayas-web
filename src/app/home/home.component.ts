@@ -15,7 +15,6 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        // TODO formulario de login
         this.ContactForm = this.fb.group({
             email: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6),
                 Validators.pattern('[a-z]*')])),

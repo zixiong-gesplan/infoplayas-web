@@ -3,12 +3,12 @@ import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {loadModules} from 'esri-loader';
 import {EsriRequestService} from '../../services/esri-request.service';
-import {Danger} from '../../models/danger';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {environment} from '../../../environments/environment';
 import {SelectItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
+import {Attribute} from '../../models/attribute';
 
 declare var $: any;
 declare var jquery: any;
@@ -70,12 +70,12 @@ export class MapEditorComponent implements OnInit {
     coordY: number;
     wkid: number;
     centroidOption: boolean;
-    selectedBeachDanger: Danger;
-    dates: Date[];
     es: any;
     private currentUser: Auth;
     minDate: Date;
     maxDate: Date;
+    invalidDates: Array<Date>;
+    periods: Attribute[];
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService) {
@@ -104,7 +104,6 @@ export class MapEditorComponent implements OnInit {
     }
 
     ngOnInit() {
-        // get session or local storage user
         this.spinnerService.show();
         this.currentUser = this.authService.getCurrentUser();
         this.setMap();
@@ -147,8 +146,8 @@ export class MapEditorComponent implements OnInit {
         this.formFlow = this.fb.group({
             objectid: new FormControl(''),
             // TODO resto de campos
-            dates: new FormControl('', Validators.required),
-            flowLevel: new FormControl('', Validators.required),
+            dates: new FormControl(''),
+            flowLevel: new FormControl(''),
             id_dgse: new FormControl(''),
             on_edit: new FormControl('')
         });
@@ -165,9 +164,18 @@ export class MapEditorComponent implements OnInit {
             today: 'Hoy',
             clear: 'Borrar'
         };
-        // fechas maxima y minima para los calendarios de afluencias
-        this.minDate = new Date(new Date().getFullYear(), 0, 1);
-        this.maxDate = new Date(new Date().getFullYear() + 1 , 0, 0);
+        this.initCalendarDates();
+    }
+
+    // fechas maxima y minima para los calendarios de afluencias y carga lista de periodos
+    initCalendarDates() {
+        // TODO cargar listado de afluencias por nivel desde bbdd
+        this.periods = [];
+        const today = new Date();
+        this.minDate = new Date(today.getFullYear(), 0, 1);
+        this.maxDate = new Date(today.getFullYear() + 1 , 0, 0);
+        this.invalidDates = [];
+        this.formFlow.reset();
     }
 
     loadRelatedRecords() {
@@ -175,8 +183,8 @@ export class MapEditorComponent implements OnInit {
             '237', '0', '*', true, this.currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
-                    this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
-                    console.log(this.selectedBeachDanger);
+                    // this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
+                    // console.log(this.selectedBeachDanger);
                 }
             },
             error => {
@@ -395,6 +403,8 @@ export class MapEditorComponent implements OnInit {
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 2, t.formEnvironment);
+                            // borramos las fechas auxiliares en la afluencia
+                            t.initCalendarDates();
                             // guardamos los datos de geometria de la playa para componentes externos
                             t.coordX = output.coordX;
                             t.coordY = output.coordY;
@@ -426,6 +436,8 @@ export class MapEditorComponent implements OnInit {
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 2, t.formEnvironment);
+                                    // borramos las fechas auxiliares en la afluencia
+                                    t.initCalendarDates();
                                     // guardamos los datos de geometria de la playa para componentes externos
                                     t.coordX = output.coordX;
                                     t.coordY = output.coordY;
@@ -523,7 +535,36 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
-    addPeriod() {
-        alert('TODO');
+    addPeriod(calendar) {
+        // incluimos los periodos en la lista
+        this.periods.push({
+            attributes: {
+            id_dgse: this.formFlow.get('id_dgse').value,
+            fecha_inicio: this.formFlow.get('dates').value[0],
+            fecha_fin: this.formFlow.get('dates').value[1] ? this.formFlow.get('dates').value[1] : this.formFlow.get('dates').value[0],
+            nivel: this.formFlow.get('flowLevel').value
+            }
+        });
+        // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
+        const iniDate = new Date(this.formFlow.get('dates').value[0]);
+        if (this.formFlow.get('dates').value[1]) {
+            const lastDate = new Date(this.formFlow.get('dates').value[1]);
+            const days = (lastDate.getTime() - iniDate.getTime() ) / (1000 * 3600 * 24);
+            console.log(lastDate);
+            for (let i = 0; i < days + 1; i++) {
+                const nextDay = new Date(iniDate);
+                nextDay.setDate(iniDate.getDate() + i);
+                if (nextDay > lastDate) {
+                    break;
+                }
+                this.invalidDates.push(nextDay);
+            }
+            lastDate.setDate(lastDate.getDate() + 1);
+            this.formFlow.get('dates').setValue(lastDate);
+        } else {
+            this.invalidDates.push(iniDate);
+            this.formFlow.get('dates').setValue(iniDate);
+        }
+        console.log(this.periods);
     }
 }

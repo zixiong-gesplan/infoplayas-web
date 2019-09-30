@@ -3,7 +3,6 @@ import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
-import {Danger} from '../../models/danger';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 declare var $:any;
 declare var jQuery:any;
@@ -84,7 +83,6 @@ declare const aytos: any;
 export class SecurityComponent implements OnInit {
 
   currentUser: Auth;
-  selectedBeachRisk: Danger;
   filtermunicipio;
   datosPlaya:any = [];
   nomMunicipio;

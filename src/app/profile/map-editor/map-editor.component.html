@@ -207,20 +207,24 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label style="padding-bottom: 5px;" class="esri-font">Añada períodos de Afluencia</label>
-                        <p-calendar appendTo="body" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
+                        <p-calendar #flowCalendar appendTo="body" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
                                     formControlName="dates" selectionMode="range" [readonlyInput]="true"
-                                    [locale]="es" dateFormat="dd/mm" [numberOfMonths]="2" [minDate]="minDate"
-                                    [maxDate]="maxDate">
+                                    [locale]="es" dateFormat="dd/mm" [minDate]="minDate"
+                                    [maxDate]="maxDate" [disabledDates]="invalidDates"
+                                    showOtherMonths="false"
+                                    placeholder="Indique el nivel de afluencia para cada período"
+                                    [defaultDate]="minDate">
                             <p-footer>
-                                <div class="col-md-6">
-                                    <button [class]="!formFlow.get('flowLevel').value ? 'esri-button esri-button--disabled' : 'esri-button'"
-                                            (click)="addPeriod()" [disabled]="!formFlow.get('flowLevel').value">
-                                        Añadir
-                                    </button>
+                                <div class="col-md-3">
+                                    <p-button label="Añadir "
+                                              icon="pi pi-plus-circle"
+                                              (onClick)="addPeriod(flowCalendar)"
+                                              [disabled]="!formFlow.get('flowLevel').value || !formFlow.get('dates').value || !this.formFlow.get('dates').value[0]">
+                                    </p-button>
                                 </div>
-                                <div class="col-md-6">
+                                <div style="padding-top: 5px" class="col-md-9">
                                     <p-selectButton
-                                            [options]="FlowOptions" formControlName="flowLevel" class="orange-button">
+                                        [options]="FlowOptions" formControlName="flowLevel">
                                     </p-selectButton>
                                 </div>
                             </p-footer>
@@ -229,7 +233,8 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="esri-font" style="font-weight: bolder">Tabla de Períodos de Afluencia añadidos</label>
+                        <label class="esri-font" style="font-weight: bolder">Tabla de Períodos de Afluencia
+                            añadidos</label>
                     </div>
                 </div>
                 <div class="form-row">
