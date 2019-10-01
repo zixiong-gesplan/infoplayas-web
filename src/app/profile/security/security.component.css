@@ -29,8 +29,8 @@
 }
 
 .modal-dialog-main {
-  position:absolute;
-  top:25% !important;
+
+  top:40% !important;
   transform: translate(0, -50%) !important;
   -ms-transform: translate(0, -50%) !important;
   -webkit-transform: translate(0, -50%) !important;

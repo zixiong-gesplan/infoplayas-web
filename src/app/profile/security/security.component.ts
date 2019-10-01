@@ -87,6 +87,7 @@ export class SecurityComponent implements OnInit {
   selectedBeachRisk: Danger;
   filtermunicipio;
   datosPlaya:any = [];
+  datosPlayaRelacionada:any = [];
   nomMunicipio;
   altoini: Date;
   nombre_playa;
@@ -96,6 +97,8 @@ export class SecurityComponent implements OnInit {
   pasiva:boolean;
   iddgse;
   peligrosa:boolean;
+  activarGP:boolean = true;
+
 
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
@@ -105,7 +108,7 @@ export class SecurityComponent implements OnInit {
   ngOnInit() {
     this.loadRecords();
     this.default();
-    this.loadRelatedRecords();
+
 
   }
 
@@ -113,18 +116,16 @@ export class SecurityComponent implements OnInit {
     this.altoini = mc.inputFieldValue;
   }
 
-  private anhadir_medios(playa,grado){
-    $('#myModal').modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
-    $('#myModal').modal('show');
+  private anhadir_medios(playa,option){
+
+    let modaloption = option;
+    $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+    $('#' + modaloption).modal('show');
     this.nombre_playa = playa.attributes.nombre_municipio;
-    this.grado_proteccion = grado;
     this.iddgse = playa.attributes.id_dgse;
     this.clasificacion = playa.attributes.clasificacion;
-    this.mostrar_pasiva_grado_bajo(grado);
-    console.log(playa.attributes.clasificacion);
     if(playa.attributes.clasificacion==='USO PROHIBIDO'){
       this.peligrosa = true;
-
     }
   }
 
@@ -155,27 +156,27 @@ export class SecurityComponent implements OnInit {
           this.filtermunicipio, '*', false, this.currentUser.token).subscribe(
           (result: any) => {
               if (result) {
-                  this.datosPlaya = result;
-                  console.log('capa principal');
-                  console.log(result);
-                  this.spinnerService.hide();
+                   this.datosPlaya =  result;
+                   console.log(this.datosPlaya);
               }
           },
           error => {
               console.log(error.toString());
           }).add(() => {
           console.log('end of request');
+          this.spinnerService.hide();
       });
   }
 
-  loadRelatedRecords() {
+  loadRelatedRecords(object_id) {
     this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
-        '237', '4', '*', false, this.currentUser.token).subscribe(
+        object_id, '4', '*', false, this.currentUser.token).subscribe(
         (result: any) => {
           if (result) {
             // this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
+            this.datosPlayaRelacionada = result;
             console.log('tabla relacionada');
-            console.log(result);
+            console.log(this.datosPlayaRelacionada);
           }
         },
         error => {
@@ -184,4 +185,5 @@ export class SecurityComponent implements OnInit {
       console.log('end of request');
     });
   }
+
 }
