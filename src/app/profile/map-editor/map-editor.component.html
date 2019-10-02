@@ -207,27 +207,32 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label style="padding-bottom: 5px;" class="esri-font">Añada períodos de Afluencia</label>
-                        <p-calendar #flowCalendar appendTo="body" [style]="{'width':'100%'}"
-                                    [inputStyle]="{'width':'100%'}"
-                                    formControlName="dates" selectionMode="range" [readonlyInput]="true"
-                                    [locale]="es" dateFormat="dd/mm" [minDate]="minDate"
+                        <p-calendar appendTo="body" formControlName="dates" selectionMode="range"
+                                    [readonlyInput]="true" [locale]="es" dateFormat="dd/mm" [minDate]="minDate"
                                     [maxDate]="maxDate" [disabledDates]="invalidDates"
                                     showOtherMonths="false"
                                     placeholder="Indique el nivel de afluencia para cada período"
-                                    [defaultDate]="minDate">
+                                    [defaultDate]="minDate" [numberOfMonths]="2"
+                                    [showIcon]="true">
                             <p-footer>
-                                <div class="col-md-3">
+                                <div class="col-md-1">
                                     <p-button label="Añadir "
                                               icon="pi pi-plus-circle"
-                                              (onClick)="addPeriod(flowCalendar)"
-                                              [disabled]="!formFlow.get('flowLevel').value || !formFlow.get('dates').value || !this.formFlow.get('dates').value[0]">
+                                              (onClick)="addPeriod()"
+                                              [disabled]="!formFlow.get('flowLevelDefault').value || !formFlow.get('dates').value || !this.formFlow.get('dates').value[0]">
                                     </p-button>
                                 </div>
-                                <div style="padding-top: 5px" class="col-md-9">
+                                <div style="margin-left: 3%;" class="col-md-4">
                                     <p-selectButton
-                                            [options]="FlowOptions" formControlName="flowLevel">
+                                            [options]="FlowOptions" formControlName="flowLevelDefault">
                                     </p-selectButton>
+                                    <label class="esri-font">Misma afluencia en todo el período</label>
                                 </div>
+                                    <p-selectButton
+                                            [options]="FlowOptions" formControlName="flowLevelWeekend">
+                                    </p-selectButton>
+                                <br>
+                                    <label class="esri-font">Misma afluencia en todo el período</label>
                             </p-footer>
                         </p-calendar>
                     </div>
@@ -265,7 +270,10 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-rowData let-columns="columns">
                                 <tr>
-                                    <td *ngFor="let col of columns" [ngSwitch]="col.type">
+                                    <td [ngClass]="{'my-class': rowData.attributes.incluir_dias == 'TD',
+                                        'my-class2':rowData.attributes.incluir_dias == 'FS',
+                                        'my-class2':rowData.attributes.incluir_dias == 'LB' }"
+                                        *ngFor="let col of columns" [ngSwitch]="col.type">
                                         <div *ngSwitchCase="'text'">
                                             {{rowData['attributes'][col.subfield]}}
                                         </div>
@@ -274,7 +282,7 @@
                                         </div>
                                     </td>
                                     <td style="text-align:center">
-                                        <button type="button"
+                                        <button style="height: 25px" type="button"
                                                 (click)="onRowDelete(rowData)">
                                             <i class="fa fa-times"></i>
                                         </button>
@@ -383,7 +391,8 @@
         <div [hidden]="selectForm !=='inventario'">
             <div id="form" class="esri-component"></div>
             <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
-            <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')" onclick="unselectFeature()" type="button"
+            <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')" onclick="unselectFeature()"
+                   type="button"
                    class="esri-button esri-button--secondary"
                    value="Cancelar"/>
         </div>

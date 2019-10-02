@@ -149,7 +149,8 @@ export class MapEditorComponent implements OnInit {
             objectid: new FormControl(''),
             // TODO resto de campos
             dates: new FormControl(''),
-            flowLevel: new FormControl(''),
+            flowLevelDefault: new FormControl(''),
+            flowLevelWeekend: new FormControl(''),
             id_dgse: new FormControl(''),
             on_edit: new FormControl('')
         });
@@ -167,9 +168,9 @@ export class MapEditorComponent implements OnInit {
             clear: 'Borrar'
         };
         this.colsFlow = [
-            { subfield: 'fecha_inicio', header: 'Inicio', width: '29%', orderBy: 'attributes.fecha_inicio' },
-            { subfield: 'fecha_fin', header: 'Fin' , width: '29%', orderBy: 'attributes.fecha_fin' },
-            { subfield: 'nivel', header: 'Nivel' , width: '29%' , type: 'text', orderBy: 'attributes.nivel'}
+            {subfield: 'fecha_inicio', header: 'Inicio', width: '29%', orderBy: 'attributes.fecha_inicio'},
+            {subfield: 'fecha_fin', header: 'Fin', width: '29%', orderBy: 'attributes.fecha_fin'},
+            {subfield: 'nivel', header: 'Nivel', width: '29%', type: 'text', orderBy: 'attributes.nivel'}
         ];
         this.initCalendarDates();
     }
@@ -180,7 +181,7 @@ export class MapEditorComponent implements OnInit {
         this.periods = [];
         const today = new Date();
         this.minDate = new Date(today.getFullYear(), 0, 1);
-        this.maxDate = new Date(today.getFullYear() + 1 , 0, 0);
+        this.maxDate = new Date(today.getFullYear() + 1, 0, 0);
         this.invalidDates = [];
         this.formFlow.reset();
     }
@@ -542,22 +543,24 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
-    addPeriod(calendar) {
+    addPeriod() {
         // incluimos los periodos en la lista
         this.periods.push({
             attributes: {
-            id_dgse: this.formFlow.get('id_dgse').value,
-            fecha_inicio: this.formFlow.get('dates').value[0],
-            fecha_fin: this.formFlow.get('dates').value[1] ? this.formFlow.get('dates').value[1] : this.formFlow.get('dates').value[0],
-            nivel: this.formFlow.get('flowLevel').value
+                id_dgse: this.formFlow.get('id_dgse').value,
+                fecha_inicio: this.formFlow.get('dates').value[0],
+                fecha_fin: this.formFlow.get('dates').value[1] ? this.formFlow.get('dates').value[1] : this.formFlow.get('dates').value[0],
+                nivel: this.formFlow.get('flowLevel').value,
+                incluir_dias: this.formFlow.get('datesIncludeType').value && this.formFlow.get('dates').value[1]
+                    ? this.formFlow.get('datesIncludeType').value : 'TD'
             }
         });
+        console.log(this.periods);
         // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
         const iniDate = new Date(this.formFlow.get('dates').value[0]);
         if (this.formFlow.get('dates').value[1]) {
             const lastDate = new Date(this.formFlow.get('dates').value[1]);
-            const days = (lastDate.getTime() - iniDate.getTime() ) / (1000 * 3600 * 24);
-            console.log(lastDate);
+            const days = (lastDate.getTime() - iniDate.getTime()) / (1000 * 3600 * 24);
             for (let i = 0; i < days + 1; i++) {
                 const nextDay = new Date(iniDate);
                 nextDay.setDate(iniDate.getDate() + i);
@@ -582,5 +585,6 @@ export class MapEditorComponent implements OnInit {
     onRowDelete(rowData) {
         const table = [...this.periods];
         this.periods = table.filter(s => s !== rowData);
+        console.log(rowData.attributes.fecha_fin);
     }
 }

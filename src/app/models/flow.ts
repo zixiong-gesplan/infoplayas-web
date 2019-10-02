@@ -5,4 +5,5 @@ export interface Flow {
     fecha_inicio?: Date;
     fecha_fin?: Date;
     nivel?: string;
+    incluir_dias?: string;
 }
