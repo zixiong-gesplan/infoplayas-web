@@ -1,7 +1,9 @@
-.my-class2 {
-    background-color: red;
+/*para las filas de la tabla de periodos de afluencias*/
+.includeDatesFS {
+    background-color: darkorange !important;
+    color: #ffffff !important;
 }
-
-.my-class {
-    background-color: green;
+.includeDatesLB {
+    background-color: darkblue !important;
+    color: #ffffff !important;
 }

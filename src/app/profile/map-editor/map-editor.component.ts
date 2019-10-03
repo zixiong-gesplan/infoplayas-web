@@ -9,7 +9,6 @@ import {SelectItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Attribute} from '../../models/attribute';
-import {Flow} from '../../models/flow';
 
 declare var $: any;
 declare var jquery: any;
@@ -544,18 +543,28 @@ export class MapEditorComponent implements OnInit {
     }
 
     addPeriod() {
+        // comprobamos que no se solapa el periodo introducido con alguno anterior
+        const tableA = [...this.periods];
+        if (this.multipleDateRangeOverlaps(tableA) && this.formFlow.get('dates').value[1]) {
+            this.formFlow.get('flowLevelWeekend').setValue(null);
+            // TODO implementar mensaje al usuario
+            alert('No puede introducir un período que solape otro anterior!');
+            return false;
+        }
         // incluimos los periodos en la lista
-        this.periods.push({
-            attributes: {
-                id_dgse: this.formFlow.get('id_dgse').value,
-                fecha_inicio: this.formFlow.get('dates').value[0],
-                fecha_fin: this.formFlow.get('dates').value[1] ? this.formFlow.get('dates').value[1] : this.formFlow.get('dates').value[0],
-                nivel: this.formFlow.get('flowLevel').value,
-                incluir_dias: this.formFlow.get('datesIncludeType').value && this.formFlow.get('dates').value[1]
-                    ? this.formFlow.get('datesIncludeType').value : 'TD'
-            }
+        const datesIncludeType = this.formFlow.get('flowLevelWeekend').value && this.formFlow.get('dates').value[1] &&
+        this.formFlow.get('flowLevelWeekend').value !== this.formFlow.get('flowLevelDefault').value ? ['LB', 'FS'] : ['TD'];
+        datesIncludeType.forEach(value => {
+            this.periods.push({
+                attributes: {
+                    id_dgse: this.formFlow.get('id_dgse').value,
+                    fecha_inicio: this.formFlow.get('dates').value[0],
+                    fecha_fin: this.formFlow.get('dates').value[1] ? this.formFlow.get('dates').value[1] : this.formFlow.get('dates').value[0],
+                    nivel: value === 'FS' ? this.formFlow.get('flowLevelWeekend').value : this.formFlow.get('flowLevelDefault').value,
+                    incluir_dias: value
+                }
+            });
         });
-        console.log(this.periods);
         // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
         const iniDate = new Date(this.formFlow.get('dates').value[0]);
         if (this.formFlow.get('dates').value[1]) {
@@ -575,6 +584,34 @@ export class MapEditorComponent implements OnInit {
             this.invalidDates.push(iniDate);
             this.formFlow.get('dates').setValue(iniDate);
         }
+        this.formFlow.get('flowLevelWeekend').setValue(null);
+    }
+
+    multipleDateRangeOverlaps(arr: Attribute[]): boolean {
+        for (let i = 0; i < arr.length; i ++) {
+                if (
+                    this.dateRangeOverlaps(
+                        this.formFlow.get('dates').value[0], this.formFlow.get('dates').value[1],
+                        arr[i].attributes.fecha_inicio, arr[i].attributes.fecha_fin
+                    )
+                ) {
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    dateRangeOverlaps(a_start, a_end, b_start, b_end): boolean {
+        if (a_start <= b_start && b_start <= a_end) {
+            return true;
+        } // b starts in a
+        if (a_start <= b_end && b_end <= a_end) {
+            return true;
+        } // b ends in a
+        if (b_start < a_start && a_end < b_end) {
+            return true;
+        } // a in b
+        return false;
     }
 
     onSubmitFlows() {
@@ -583,8 +620,28 @@ export class MapEditorComponent implements OnInit {
     }
 
     onRowDelete(rowData) {
-        const table = [...this.periods];
-        this.periods = table.filter(s => s !== rowData);
-        console.log(rowData.attributes.fecha_fin);
+        // eliminamos la pareja del registro si es uno de fin de semana o laborable, sino borramos solo el registro seleccionado
+        if (rowData.attributes.incluir_dias !== 'TD') {
+            const tableA = [...this.periods];
+            const pairIndex = tableA[tableA.indexOf(rowData) + 1].attributes.fecha_inicio === rowData.attributes.fecha_inicio ?
+                tableA.indexOf(rowData) + 1 : tableA.indexOf(rowData) - 1;
+            this.periods = tableA.filter(s => tableA.indexOf(s) !== pairIndex);
+        }
+        const tableB = [...this.periods];
+        this.periods = tableB.filter(s => s !== rowData);
+        // eliminamos los dias de los periodos en invalidDates
+        const tableC = [...this.invalidDates];
+        const iniDate = rowData.attributes.fecha_inicio;
+        if (rowData.attributes.fecha_fin) {
+            const lastDate = rowData.attributes.fecha_fin;
+            const days = (lastDate.getTime() - iniDate.getTime()) / (1000 * 3600 * 24);
+            const index = tableC.indexOf(tableC.find(x => x.getTime() === iniDate.getTime()));
+            tableC.splice(index, days + 1);
+            this.invalidDates = tableC;
+        } else {
+            const index = tableC.indexOf(tableC.find(x => x === iniDate));
+            tableC.splice(index, 1);
+            this.invalidDates = tableC;
+        }
     }
 }

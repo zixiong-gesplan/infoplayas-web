@@ -215,32 +215,33 @@
                                     [defaultDate]="minDate" [numberOfMonths]="2"
                                     [showIcon]="true">
                             <p-footer>
-                                <div class="col-md-1">
+                                <div class="form-row">
                                     <p-button label="Añadir "
                                               icon="pi pi-plus-circle"
                                               (onClick)="addPeriod()"
                                               [disabled]="!formFlow.get('flowLevelDefault').value || !formFlow.get('dates').value || !this.formFlow.get('dates').value[0]">
                                     </p-button>
-                                </div>
-                                <div style="margin-left: 3%;" class="col-md-4">
-                                    <p-selectButton
-                                            [options]="FlowOptions" formControlName="flowLevelDefault">
+                                    <span style="margin-left: 2%"></span>
+                                    <p-selectButton [options]="FlowOptions" formControlName="flowLevelDefault">
                                     </p-selectButton>
-                                    <label class="esri-font">Misma afluencia en todo el período</label>
-                                </div>
-                                    <p-selectButton
-                                            [options]="FlowOptions" formControlName="flowLevelWeekend">
+                                    <span style="margin-left: 10%"></span>
+                                    <p-selectButton [options]="FlowOptions" formControlName="flowLevelWeekend">
                                     </p-selectButton>
-                                <br>
-                                    <label class="esri-font">Misma afluencia en todo el período</label>
+                                </div>
+                                <div class="form-row">
+                                    <label *ngIf="formFlow.get('flowLevelWeekend').value" style="margin-left: 15%;font-weight: bolder;min-width: 34%; color: #1d78cb" class="esri-font">Afluencia días laborables</label>
+                                    <label *ngIf="!formFlow.get('flowLevelWeekend').value" style="margin-left: 15%;font-weight: bolder;min-width: 34%;" class="esri-font">Misma afluencia en todo el período</label>
+                                    <label style="margin-left: 10%;font-weight: bolder" class="esri-font">Afluencia distinta en el fin de semana</label>
+                                </div>
                             </p-footer>
                         </p-calendar>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <button [class]="!formFlow.valid || periods.length === 0 ? 'esri-button esri-button--disabled' : 'esri-button'"
-                                type="submit" [disabled]="!formFlow.valid || periods.length === 0">
+                        <button
+                            [class]="!formFlow.valid || periods.length === 0 ? 'esri-button esri-button--disabled' : 'esri-button'"
+                            type="submit" [disabled]="!formFlow.valid || periods.length === 0">
                             Guardar
                         </button>
                         <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')"
@@ -270,11 +271,10 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-rowData let-columns="columns">
                                 <tr>
-                                    <td [ngClass]="{'my-class': rowData.attributes.incluir_dias == 'TD',
-                                        'my-class2':rowData.attributes.incluir_dias == 'FS',
-                                        'my-class2':rowData.attributes.incluir_dias == 'LB' }"
-                                        *ngFor="let col of columns" [ngSwitch]="col.type">
-                                        <div *ngSwitchCase="'text'">
+                                    <td *ngFor="let col of columns" [ngSwitch]="col.type">
+                                        <div [ngClass]="{null: rowData.attributes.incluir_dias === 'TD',
+                                        'includeDatesFS':rowData.attributes.incluir_dias === 'FS',
+                                        'includeDatesLB':rowData.attributes.incluir_dias === 'LB' }" *ngSwitchCase="'text'">
                                             {{rowData['attributes'][col.subfield]}}
                                         </div>
                                         <div *ngSwitchDefault>
