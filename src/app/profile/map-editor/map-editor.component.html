@@ -1,4 +1,5 @@
 <ng4-loading-spinner [timeout]="10000" [threshold]="800"></ng4-loading-spinner>
+<p-toast [style]="{marginTop: '20%'}" position="top-center"></p-toast>
 <div id="listPlayas" class="panel-side scroller esri-widget esri-hidden">
     <ul id="ulPlaya">
         <li>Cargando&hellip;</li>
@@ -203,7 +204,12 @@
         <!--        formulario de afluencia-->
         <div [hidden]="selectForm !=='afluencia'">
             <form class="esri-pad" [formGroup]="formFlow" (ngSubmit)="onSubmitFlows()">
-                <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
+                <p-confirmDialog #cd header="Confirmation" icon="pi pi-exclamation-triangle">
+                    <p-footer>
+                        <button type="button" pButton icon="pi pi-check" label="Si" (click)="cd.accept()"></button>
+                        <button type="button" pButton icon="pi pi-times" label="No" (click)="cd.reject()"></button>
+                    </p-footer>
+                </p-confirmDialog>
                 <div class="form-row">
                     <div class="form-group">
                         <label style="padding-bottom: 5px;" class="esri-font">Añada períodos de Afluencia</label>
@@ -229,9 +235,14 @@
                                     </p-selectButton>
                                 </div>
                                 <div class="form-row">
-                                    <label *ngIf="formFlow.get('flowLevelWeekend').value" style="margin-left: 15%;font-weight: bolder;min-width: 34%; color: #1d78cb" class="esri-font">Afluencia días laborables</label>
-                                    <label *ngIf="!formFlow.get('flowLevelWeekend').value" style="margin-left: 15%;font-weight: bolder;min-width: 34%;" class="esri-font">Misma afluencia en todo el período</label>
-                                    <label style="margin-left: 10%;font-weight: bolder" class="esri-font">Afluencia distinta en el fin de semana</label>
+                                    <label *ngIf="formFlow.get('flowLevelWeekend').value"
+                                           style="margin-left: 15%;font-weight: bolder;min-width: 34%; color: #1d78cb"
+                                           class="esri-font">Afluencia días laborables</label>
+                                    <label *ngIf="!formFlow.get('flowLevelWeekend').value"
+                                           style="margin-left: 15%;font-weight: bolder;min-width: 34%;"
+                                           class="esri-font">Misma afluencia en todo el período</label>
+                                    <label style="margin-left: 10%;font-weight: bolder" class="esri-font">Afluencia
+                                        distinta en el fin de semana</label>
                                 </div>
                             </p-footer>
                         </p-calendar>
@@ -239,9 +250,22 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
+                        <label style="padding-bottom: 5px;" class="esri-font">Leyenda de la tabla de períodos donde la afluencia difiere dentro de cada período. Sin color indica sin cambios:</label>
+                        <div class="ui-g">
+                            <div style="background-color: darkorange; color: #ffffff !important; width: 50%" class="ui-g-6">
+                                <span>Fin de semana</span>
+                            </div>
+                            <div style="background-color: darkblue; color: #ffffff !important; width: 50%" class="ui-g-6">
+                                <span>Entre semana</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
                         <button
-                            [class]="!formFlow.valid || periods.length === 0 ? 'esri-button esri-button--disabled' : 'esri-button'"
-                            type="submit" [disabled]="!formFlow.valid || periods.length === 0">
+                                [class]="!formFlow.valid || periods.length === 0 ? 'esri-button esri-button--disabled' : 'esri-button'"
+                                type="submit" [disabled]="!formFlow.valid || periods.length === 0">
                             Guardar
                         </button>
                         <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')"
@@ -274,7 +298,8 @@
                                     <td *ngFor="let col of columns" [ngSwitch]="col.type">
                                         <div [ngClass]="{null: rowData.attributes.incluir_dias === 'TD',
                                         'includeDatesFS':rowData.attributes.incluir_dias === 'FS',
-                                        'includeDatesLB':rowData.attributes.incluir_dias === 'LB' }" *ngSwitchCase="'text'">
+                                        'includeDatesLB':rowData.attributes.incluir_dias === 'LB' }"
+                                             *ngSwitchCase="'text'">
                                             {{rowData['attributes'][col.subfield]}}
                                         </div>
                                         <div *ngSwitchDefault>

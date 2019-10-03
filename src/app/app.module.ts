@@ -13,9 +13,9 @@ import { ContactUsComponent } from './profile/contact-us/contact-us.component';
 import {LoginComponent} from './login/login.component';
 import { MapEditorComponent } from './profile/map-editor/map-editor.component';
 import {
-    CheckboxModule, DropdownModule,
+    CheckboxModule, ConfirmationService, ConfirmDialogModule, DropdownModule,
     InputTextareaModule,
-    InputTextModule, OverlayPanelModule, RadioButtonModule, SelectButtonModule,
+    InputTextModule, MessageService, OverlayPanelModule, RadioButtonModule, SelectButtonModule,
     TabMenuModule,
     TabViewModule,
     ToggleButtonModule,
@@ -30,6 +30,7 @@ import { WelcomeComponent } from './profile/welcome/welcome.component';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 import {registerLocaleData} from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import {ToastModule} from 'primeng/toast';
 
 registerLocaleData(localeEs, 'es');
 
@@ -68,9 +69,11 @@ registerLocaleData(localeEs, 'es');
         DropdownModule,
         RadioButtonModule,
         SelectButtonModule,
+        ToastModule,
+        ConfirmDialogModule,
 
     ],
-    providers: [EsriRequestService, {
+    providers: [EsriRequestService, MessageService, ConfirmationService, {
         provide: LOCALE_ID,
         useValue: 'es'
     }],

@@ -5,7 +5,7 @@ import {loadModules} from 'esri-loader';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {environment} from '../../../environments/environment';
-import {SelectItem} from 'primeng/api';
+import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Attribute} from '../../models/attribute';
@@ -79,7 +79,8 @@ export class MapEditorComponent implements OnInit {
     colsFlow: any;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
-                private spinnerService: Ng4LoadingSpinnerService) {
+                private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
+                private confirmationService: ConfirmationService) {
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
             {label: 'Playas libres para el baño', value: 'LIBRE'},
@@ -547,8 +548,11 @@ export class MapEditorComponent implements OnInit {
         const tableA = [...this.periods];
         if (this.multipleDateRangeOverlaps(tableA) && this.formFlow.get('dates').value[1]) {
             this.formFlow.get('flowLevelWeekend').setValue(null);
-            // TODO implementar mensaje al usuario
-            alert('No puede introducir un período que solape otro anterior!');
+            this.messageService.add({
+                severity: 'error',
+                summary: 'NO se ha guardado el período',
+                detail: 'No puede introducir un período que solape otro anterior'
+            });
             return false;
         }
         // incluimos los periodos en la lista
@@ -614,9 +618,49 @@ export class MapEditorComponent implements OnInit {
         return false;
     }
 
+    days_of_a_year(year) {
+        return this.isLeapYear(year) ? 366 : 365;
+    }
+
+    isLeapYear(year) {
+        return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
+    }
+
     onSubmitFlows() {
-        // TODO una extension del metodo onSubmit para el formulario formFlow
-        alert('TODO');
+        // chequeamos y advertimos al usuario si hay alguna fecha del año en curso por rellenar.
+        if (this.invalidDates.length < this.days_of_a_year(new Date().getFullYear())) {
+            this.confirmNotEnoughDays();
+        } else {
+            this.savePeriodsOndb();
+        }
+    }
+
+    savePeriodsOndb() {
+        // TODO actualizar/crear los períodos
+        alert('guardamos o actualizamos los registros');
+    }
+
+    confirmNotEnoughDays () {
+        this.confirmationService.confirm({
+            message: '¿Está segur@ que quiere guardar los períodos?',
+            header: 'Confirmación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'No se completa el período anual',
+                    detail: 'Tenga en cuenta que el dimensionamiento de seguridad no reflejará todo el año en curso.'
+                });
+                this.savePeriodsOndb();
+            },
+            reject: () => {
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'No se han guardado los períodos',
+                    detail: 'Complete todo el año en curso y vuelva a guardar.'
+                });
+            }
+        });
     }
 
     onRowDelete(rowData) {
