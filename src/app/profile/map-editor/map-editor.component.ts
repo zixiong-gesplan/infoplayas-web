@@ -76,6 +76,7 @@ export class MapEditorComponent implements OnInit {
     maxDate: Date;
     invalidDates: Array<Date>;
     periods: Attribute[];
+    deletePeriods: number[];
     colsFlow: any;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
@@ -147,12 +148,10 @@ export class MapEditorComponent implements OnInit {
         });
         this.formFlow = this.fb.group({
             objectid: new FormControl(''),
-            // TODO resto de campos
             dates: new FormControl(''),
             flowLevelDefault: new FormControl(''),
             flowLevelWeekend: new FormControl(''),
-            id_dgse: new FormControl(''),
-            on_edit: new FormControl('')
+            id_dgse: new FormControl('')
         });
         this.onChanges();
         // establecemos valores en espanol para el calendario
@@ -177,13 +176,12 @@ export class MapEditorComponent implements OnInit {
 
     // fechas maxima y minima para los calendarios de afluencias y carga lista de periodos
     initCalendarDates() {
-        // TODO cargar listado de afluencias por nivel desde bbdd
         this.periods = [];
+        this.deletePeriods = [];
         const today = new Date();
         this.minDate = new Date(today.getFullYear(), 0, 1);
         this.maxDate = new Date(today.getFullYear() + 1, 0, 0);
         this.invalidDates = [];
-        this.formFlow.reset();
     }
 
     loadRelatedRecords() {
@@ -411,8 +409,7 @@ export class MapEditorComponent implements OnInit {
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 2, t.formEnvironment);
-                            // borramos las fechas auxiliares en la afluencia
-                            t.initCalendarDates();
+                            t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 3);
                             // guardamos los datos de geometria de la playa para componentes externos
                             t.coordX = output.coordX;
                             t.coordY = output.coordY;
@@ -444,8 +441,7 @@ export class MapEditorComponent implements OnInit {
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 2, t.formEnvironment);
-                                    // borramos las fechas auxiliares en la afluencia
-                                    t.initCalendarDates();
+                                    t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 3);
                                     // guardamos los datos de geometria de la playa para componentes externos
                                     t.coordX = output.coordX;
                                     t.coordY = output.coordY;
@@ -501,6 +497,32 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
+    // cargamos el formulario de afluencia relacion 1-M
+    private execRelatedFlowQuery(queryTask, RelationshipQuery, output, relationshipId) {
+        // borramos las fechas auxiliares en la afluencia
+        this.initCalendarDates();
+        const query = new RelationshipQuery();
+        query.returnGeometry = false;
+        query.outFields = ['*'];
+        query.relationshipId = relationshipId;
+        query.objectIds = [output.beachId];
+        queryTask.executeRelationshipQuery(query).then((results: any) => {
+            this.formFlow.reset();
+            if (Object.entries(results).length === 0 && results.constructor === Object) {
+                this.formFlow.patchValue({id_dgse: output.id_dgse});
+            } else {
+                this.formFlow.patchValue({id_dgse: output.id_dgse});
+                this.periods = results[query.objectIds[0]].features;
+                this.periods.forEach(value => {
+                    value.attributes.fecha_fin = new Date(value.attributes.fecha_fin);
+                    value.attributes.fecha_inicio = new Date(value.attributes.fecha_inicio);
+                });
+                // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
+                this.iterateInvalidDates();
+            }
+        });
+    }
+
     private editRelatedData(updateObj, currentUser, mode, endpoint, postExecute) {
         this.service.updateEsriData(endpoint,
             updateObj, mode, currentUser.token).subscribe(
@@ -522,6 +544,23 @@ export class MapEditorComponent implements OnInit {
             }).add(() => {
             if (postExecute === 'none') {
                 console.log('end of request');
+                this.sendMessage('noid', unselectFeature(), 'PENDIENTE');
+            }
+        });
+    }
+
+    private removeRelatedData(objectIds, currentUser, endpoint, unselect) {
+        this.service.deleteEsriData(endpoint, currentUser.token, objectIds).subscribe(
+            (result: any) => {
+                if (result) {
+                    console.log(result);
+                }
+            },
+            error => {
+                console.log(error.toString());
+            }).add(() => {
+            console.log('end of request');
+            if (unselect) {
                 this.sendMessage('noid', unselectFeature(), 'PENDIENTE');
             }
         });
@@ -636,14 +675,30 @@ export class MapEditorComponent implements OnInit {
     }
 
     savePeriodsOndb() {
-        // TODO actualizar/crear los períodos
-        alert('guardamos o actualizamos los registros');
+        // casteamos la fecha a formato valido de bbdd postgre
+        this.periods = [...this.periods.filter(s => !s.attributes.objectid)];
+        const addvalues = JSON.parse(JSON.stringify(this.periods));
+        addvalues.forEach(value => {
+            value.attributes.fecha_fin = this.toDateFormat(value.attributes.fecha_fin);
+            value.attributes.fecha_inicio = this.toDateFormat(value.attributes.fecha_inicio);
+        });
+        let unselect = true;
+        if (this.periods.length > 0) {
+            this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
+                + '/applyEdits', 'none');
+            unselect = false;
+        }
+        // borramos los periodos si los hay
+        if (this.deletePeriods.length > 0) {
+            this.removeRelatedData(this.deletePeriods, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
+                + '/deleteFeatures', unselect);
+        }
     }
 
     confirmNotEnoughDays () {
         this.confirmationService.confirm({
             message: '¿Está segur@ que quiere guardar los períodos?',
-            header: 'Confirmación',
+            header: 'Año en curo INCOMPLETO',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.messageService.add({
@@ -667,12 +722,15 @@ export class MapEditorComponent implements OnInit {
         // eliminamos la pareja del registro si es uno de fin de semana o laborable, sino borramos solo el registro seleccionado
         if (rowData.attributes.incluir_dias !== 'TD') {
             const tableA = [...this.periods];
-            const pairIndex = tableA[tableA.indexOf(rowData) + 1].attributes.fecha_inicio === rowData.attributes.fecha_inicio ?
+            const pairIndex = tableA[tableA.indexOf(rowData) + 1] &&
+            tableA[tableA.indexOf(rowData) + 1].attributes.fecha_inicio === rowData.attributes.fecha_inicio ?
                 tableA.indexOf(rowData) + 1 : tableA.indexOf(rowData) - 1;
+            this.deletePeriods.push(this.periods[pairIndex].attributes.objectid);
             this.periods = tableA.filter(s => tableA.indexOf(s) !== pairIndex);
         }
         const tableB = [...this.periods];
         this.periods = tableB.filter(s => s !== rowData);
+        this.deletePeriods.push(rowData.attributes.objectid);
         // eliminamos los dias de los periodos en invalidDates
         const tableC = [...this.invalidDates];
         const iniDate = rowData.attributes.fecha_inicio;
@@ -687,5 +745,35 @@ export class MapEditorComponent implements OnInit {
             tableC.splice(index, 1);
             this.invalidDates = tableC;
         }
+    }
+
+    toDateFormat(dateStr: string): string {
+        const date = new Date(dateStr);
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        return yyyy + '-' + mm + '-' + dd;
+    }
+
+    private iterateInvalidDates() {
+        // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
+        const table = [...this.periods].filter(s => s.attributes.incluir_dias !== 'FS');
+        table.forEach(value => {
+            const iniDate = value.attributes.fecha_inicio;
+            if (value.attributes.fecha_fin) {
+                const lastDate = value.attributes.fecha_fin;
+                const days = (lastDate.getTime() - iniDate.getTime()) / (1000 * 3600 * 24);
+                for (let i = 0; i < days + 1; i++) {
+                    const nextDay = new Date(iniDate);
+                    nextDay.setDate(iniDate.getDate() + i);
+                    if (nextDay > lastDate) {
+                        break;
+                    }
+                    this.invalidDates.push(nextDay);
+                }
+            } else {
+                this.invalidDates.push(iniDate);
+            }
+        });
     }
 }

@@ -40,4 +40,13 @@ export class EsriRequestService {
             .append(mode, JSON.stringify(data));
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
+
+    deleteEsriData(featureEndPoint: string, token: string, objectIds: number[]) {
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'application/X-www-form-urlencoded');
+
+        const params = new HttpParams().set('token', token).append('f', 'json')
+            .append('objectIds', objectIds.join(','));
+        return this.http.post(featureEndPoint, params, {headers: headers});
+    }
 }
