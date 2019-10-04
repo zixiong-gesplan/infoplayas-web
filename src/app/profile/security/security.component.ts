@@ -4,6 +4,7 @@ import {Auth} from '../../models/auth';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 declare var $:any;
 declare var jQuery:any;
 declare const aytos: any;
@@ -85,6 +86,7 @@ export class SecurityComponent implements OnInit {
   currentUser: Auth;
   filtermunicipio;
   datosPlaya:any = [];
+  datosPlayaRelacionada:any = [];
   nomMunicipio;
   altoini: Date;
   nombre_playa;
@@ -94,34 +96,55 @@ export class SecurityComponent implements OnInit {
   pasiva:boolean;
   iddgse;
   peligrosa:boolean;
+  activarGP:boolean = true;
+  formUnitarios: FormGroup;
+
 
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
               private spinnerService: Ng4LoadingSpinnerService,
-              private elementRef: ElementRef) { }
+              private elementRef: ElementRef,
+              private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.loadRelatedRecords();
+    this.loadRecords();
     this.default();
-
+    this.formUnitarios = new FormGroup({
+      jefe_turno: new FormControl(),
+      socorrista: new FormControl(),
+      socorrista_embarcacion: new FormControl(),
+      socorrista_embarcacion_per: new FormControl(),
+      banderas: new FormControl(),
+      mastiles: new FormControl(),
+      carteles: new FormControl(),
+      banderas_comp: new FormControl(),
+      aros_salvavidas: new FormControl(),
+      carretes: new FormControl(),
+      m_cuerda: new FormControl(),
+      boyas_amarillas: new FormControl(),
+      boyas_verdes: new FormControl(),
+      boyas_rojas: new FormControl(),
+      señales: new FormControl()
+    })
   }
 
+  public preciosUnitarios(){
+
+    console.log(this.formUnitarios.value);
+  }
   private horario(id_dgse,mc){
     this.altoini = mc.inputFieldValue;
   }
 
-  private anhadir_medios(playa,grado){
-    $('#myModal').modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
-    $('#myModal').modal('show');
+  private anhadir_medios(playa,option){
+    this.loadRelatedRecords(playa.attributes.objectid_12,option);
+
+
     this.nombre_playa = playa.attributes.nombre_municipio;
-    this.grado_proteccion = grado;
     this.iddgse = playa.attributes.id_dgse;
     this.clasificacion = playa.attributes.clasificacion;
-    this.mostrar_pasiva_grado_bajo(grado);
-    console.log(playa.attributes.clasificacion);
     if(playa.attributes.clasificacion==='USO PROHIBIDO'){
       this.peligrosa = true;
-
     }
   }
 
@@ -137,12 +160,14 @@ export class SecurityComponent implements OnInit {
   }
 
   public calculadora(medio){
-    $('#calculadora'+medio).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
-    $('#calculadora'+medio).modal('show');
-    this.medio = medio;
+      this.spinnerService.show();
+      $('#calculadora'+medio).modal('show');
+      $('#calculadora'+medio).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+      this.spinnerService.hide();
+      this.medio = medio;
   }
 
-  loadRelatedRecords() {
+  loadRecords() {
     this.spinnerService.show();
     this.currentUser = this.authService.getCurrentUser();
     this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
@@ -152,15 +177,43 @@ export class SecurityComponent implements OnInit {
           this.filtermunicipio, '*', false, this.currentUser.token).subscribe(
           (result: any) => {
               if (result) {
-                  this.datosPlaya = result;
-                  console.log(result);
-                  this.spinnerService.hide();
+                   this.datosPlaya =  result;
+                   //console.log(this.datosPlaya);
               }
           },
           error => {
               console.log(error.toString());
           }).add(() => {
           console.log('end of request');
+          this.spinnerService.hide();
       });
   }
+
+  loadRelatedRecords(object_id,option) {
+    this.spinnerService.show();
+    let modaloption = option;
+    this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
+        object_id, '4', '*', false, this.currentUser.token).subscribe(
+        (result: any) => {
+          if (result) {
+            // this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
+            this.datosPlayaRelacionada = result;
+            console.log('tabla relacionada');
+            console.log(this.datosPlayaRelacionada);
+            $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+            $('#' + modaloption).modal('show');
+            this.spinnerService.hide();
+          }
+        },
+        error => {
+          console.log(error.toString());
+        }).add(() => {
+      console.log('end of request');
+    });
+  }
+  configuracion(nomMunicipio){
+    $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+    $('#configuracion' ).modal('show');
+  }
+
 }
