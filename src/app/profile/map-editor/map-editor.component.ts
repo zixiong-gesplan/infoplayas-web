@@ -360,6 +360,7 @@ export class MapEditorComponent implements OnInit {
                     filterMunicipios = 'municipio = \'' + aytos[user].municipio_mayus + '\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
+                    console.log(filterMunicipios);
 
                     municipiosLayer.queryFeatures({
                         outFields: ['*'],

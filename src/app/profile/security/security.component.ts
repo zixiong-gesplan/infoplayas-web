@@ -98,6 +98,7 @@ export class SecurityComponent implements OnInit {
   peligrosa:boolean;
   activarGP:boolean = true;
   formUnitarios: FormGroup;
+  codMun;
 
 
   constructor(private authService: AuthGuardService,
@@ -109,7 +110,6 @@ export class SecurityComponent implements OnInit {
   ngOnInit() {
     this.loadRecords();
     this.default();
-
     this.formUnitarios = new FormGroup({
       jefe_turno: new FormControl(),
       socorrista: new FormControl(),
@@ -172,11 +172,12 @@ export class SecurityComponent implements OnInit {
     this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
     this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
       this.service.getEsriDataLayer('https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0/query',
-          this.filtermunicipio, '*', false, this.currentUser.token).subscribe(
+          this.filtermunicipio, '*', false, this.currentUser.token,'clasificacion').subscribe(
           (result: any) => {
               if (result) {
                    this.datosPlaya =  result;
-                   //console.log(this.datosPlaya);
+                   console.log(this.datosPlaya);
+                   this.codMunicipio();
               }
           },
           error => {
@@ -196,8 +197,8 @@ export class SecurityComponent implements OnInit {
           if (result) {
             // this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
             this.datosPlayaRelacionada = result;
-            console.log('tabla relacionada');
-            console.log(this.datosPlayaRelacionada);
+            // console.log('tabla relacionada');
+            // console.log(this.datosPlayaRelacionada);
             $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
             $('#' + modaloption).modal('show');
             this.spinnerService.hide();
@@ -211,24 +212,30 @@ export class SecurityComponent implements OnInit {
   }
 
 
-configuracion(nomMunicipio){
+configuracion(n){
+    this.loadUnitPrice();
     $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
     $('#configuracion' ).modal('show');
   }
 
-loadUnitPrice(nomMunicipio){
-    this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
-         '10', '*', false, this.currentUser.token).subscribe(
-        (result: any) => {
+  codMunicipio(){
+    return this.datosPlaya.features[0].attributes.id_dgse.substring(0,3);
+  }
+
+loadUnitPrice(){
+  this.codMun = this.codMunicipio();
+  this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url+ '/10/query',
+    'id_ayuntamiento =\'this.codMun\'', '*', false, this.currentUser.token,'id_ayuntamiento').subscribe(
+      (result: any) => {
           if (result) {
-            console.log('tabla unitarios');
             console.log(result);
+
           }
-        },
-        error => {
+      },
+      error => {
           console.log(error.toString());
-        }).add(() => {
+      }).add(() => {
       console.log('end of request');
-    });
+  });
   }
 }
