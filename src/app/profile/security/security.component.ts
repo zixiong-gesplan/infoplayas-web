@@ -109,6 +109,7 @@ export class SecurityComponent implements OnInit {
   ngOnInit() {
     this.loadRecords();
     this.default();
+
     this.formUnitarios = new FormGroup({
       jefe_turno: new FormControl(),
       socorrista: new FormControl(),
@@ -138,8 +139,6 @@ export class SecurityComponent implements OnInit {
 
   private anhadir_medios(playa,option){
     this.loadRelatedRecords(playa.attributes.objectid_12,option);
-
-
     this.nombre_playa = playa.attributes.nombre_municipio;
     this.iddgse = playa.attributes.id_dgse;
     this.clasificacion = playa.attributes.clasificacion;
@@ -172,7 +171,6 @@ export class SecurityComponent implements OnInit {
     this.currentUser = this.authService.getCurrentUser();
     this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
     this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
-
       this.service.getEsriDataLayer('https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0/query',
           this.filtermunicipio, '*', false, this.currentUser.token).subscribe(
           (result: any) => {
@@ -211,9 +209,26 @@ export class SecurityComponent implements OnInit {
       console.log('end of request');
     });
   }
-  configuracion(nomMunicipio){
+
+
+configuracion(nomMunicipio){
     $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
     $('#configuracion' ).modal('show');
   }
 
+loadUnitPrice(nomMunicipio){
+    this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
+         '10', '*', false, this.currentUser.token).subscribe(
+        (result: any) => {
+          if (result) {
+            console.log('tabla unitarios');
+            console.log(result);
+          }
+        },
+        error => {
+          console.log(error.toString());
+        }).add(() => {
+      console.log('end of request');
+    });
+  }
 }

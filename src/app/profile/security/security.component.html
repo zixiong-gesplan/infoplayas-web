@@ -30,7 +30,11 @@
               <th class="centrar">Horarios salvamento <i *ngIf="playa.attributes.clasificacion!='PENDIENTE'" class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'horarios')" title="Añadir medios humano y medios materiales"></i> <br></th>
           </tr>
           <tr *ngIf="playa.attributes.clasificacion==='USO PROHIBIDO'">
-              <th colspan="3" class="centrar">Añadir Medios <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'bajo')" title="Añadir medios humano y medios materiales"></i><br><span style="font-size: 0.7em;">(Sin servicio de salvamento)</span></th>
+              <th colspan="3" class="centrar">Añadir Medios <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'bajo')" title="Añadir medios humano y medios materiales"></i><br><span style="font-size: 0.7em;">(Sin servicio de salvamento)</span></th></tr>
+              <tr>
+                <td colspan="3"><hr></td>
+              </tr>
+
       </ng-template>
   </p-table>
 
