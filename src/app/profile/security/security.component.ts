@@ -5,6 +5,7 @@ import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
 import {Danger} from '../../models/danger';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 declare var $:any;
 declare var jQuery:any;
 declare const aytos: any;
@@ -98,29 +99,49 @@ export class SecurityComponent implements OnInit {
   iddgse;
   peligrosa:boolean;
   activarGP:boolean = true;
+  formUnitarios: FormGroup;
 
 
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
               private spinnerService: Ng4LoadingSpinnerService,
-              private elementRef: ElementRef) { }
+              private elementRef: ElementRef,
+              private fb: FormBuilder) { }
 
   ngOnInit() {
     this.loadRecords();
     this.default();
-
-
+    this.formUnitarios = new FormGroup({
+      jefe_turno: new FormControl(),
+      socorrista: new FormControl(),
+      socorrista_embarcacion: new FormControl(),
+      socorrista_embarcacion_per: new FormControl(),
+      banderas: new FormControl(),
+      mastiles: new FormControl(),
+      carteles: new FormControl(),
+      banderas_comp: new FormControl(),
+      aros_salvavidas: new FormControl(),
+      carretes: new FormControl(),
+      m_cuerda: new FormControl(),
+      boyas_amarillas: new FormControl(),
+      boyas_verdes: new FormControl(),
+      boyas_rojas: new FormControl(),
+      señales: new FormControl()
+    })
   }
 
+  public preciosUnitarios(){
+
+    console.log(this.formUnitarios.value);
+  }
   private horario(id_dgse,mc){
     this.altoini = mc.inputFieldValue;
   }
 
   private anhadir_medios(playa,option){
+    this.loadRelatedRecords(playa.attributes.objectid_12,option);
 
-    let modaloption = option;
-    $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
-    $('#' + modaloption).modal('show');
+
     this.nombre_playa = playa.attributes.nombre_municipio;
     this.iddgse = playa.attributes.id_dgse;
     this.clasificacion = playa.attributes.clasificacion;
@@ -141,9 +162,11 @@ export class SecurityComponent implements OnInit {
   }
 
   public calculadora(medio){
-    $('#calculadora'+medio).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
-    $('#calculadora'+medio).modal('show');
-    this.medio = medio;
+      this.spinnerService.show();
+      $('#calculadora'+medio).modal('show');
+      $('#calculadora'+medio).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+      this.spinnerService.hide();
+      this.medio = medio;
   }
 
   loadRecords() {
@@ -157,7 +180,7 @@ export class SecurityComponent implements OnInit {
           (result: any) => {
               if (result) {
                    this.datosPlaya =  result;
-                   console.log(this.datosPlaya);
+                   //console.log(this.datosPlaya);
               }
           },
           error => {
@@ -168,7 +191,9 @@ export class SecurityComponent implements OnInit {
       });
   }
 
-  loadRelatedRecords(object_id) {
+  loadRelatedRecords(object_id,option) {
+    this.spinnerService.show();
+    let modaloption = option;
     this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
         object_id, '4', '*', false, this.currentUser.token).subscribe(
         (result: any) => {
@@ -177,6 +202,9 @@ export class SecurityComponent implements OnInit {
             this.datosPlayaRelacionada = result;
             console.log('tabla relacionada');
             console.log(this.datosPlayaRelacionada);
+            $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+            $('#' + modaloption).modal('show');
+            this.spinnerService.hide();
           }
         },
         error => {
@@ -184,6 +212,10 @@ export class SecurityComponent implements OnInit {
         }).add(() => {
       console.log('end of request');
     });
+  }
+  configuracion(nomMunicipio){
+    $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+    $('#configuracion' ).modal('show');
   }
 
 }
