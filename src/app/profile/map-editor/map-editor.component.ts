@@ -122,8 +122,10 @@ export class MapEditorComponent implements OnInit {
         });
         this.formIncidents = this.fb.group({
             objectid: new FormControl(''),
-            incidentes_graves: new FormControl(''),
-            incidentes_mgraves: new FormControl(''),
+            incidentes_graves: new FormControl('', Validators.compose([Validators.required, Validators.min(0),
+                Validators.pattern('^[0-9]+')])),
+            incidentes_mgraves: new FormControl('', Validators.compose([Validators.required, Validators.min(0),
+                Validators.pattern('^[0-9]+')])),
             actividades_deportivas: new FormControl(''),
             balizamiento: new FormControl(''),
             actividades_acotadas: new FormControl(''),

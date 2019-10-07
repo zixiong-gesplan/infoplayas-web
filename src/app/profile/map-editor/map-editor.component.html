@@ -106,21 +106,29 @@
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
+                        <i style="color: #1f57ff; margin-top: 2px"
+                           pTooltip="Dichos datos podrán interesarse por los Ayuntamientos a la Dirección General de Seguridad y Emergencias, cuando no se dispongan de ellos, que los facilitará de conformidad con los recabados por el CECOES-112."
+                           class="pull-left fa fa-info-circle"></i>
                         <label class="esri-font" style="font-weight: bolder">Histórico de Incidencias
                             registradas.</label>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
+                        <i style="color: #1f57ff; margin-top: 2px" pTooltip="Incidentes que han puesto en peligro la vida de las personas o su integridad física"
+                           class="pull-left fa fa-info-circle"></i>
                         <label class="esri-font">Número de incidentes graves</label>
-                        <input class="esri-feature-form__input" pInputText type="number"
+                        <input class="esri-feature-form__input" pInputText type="number" min="0" pattern="^[0-9]+"
                                formControlName="incidentes_graves"/>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="esri-font">Número de incidentes muy graves</label>
-                        <input class="esri-feature-form__input" pInputText type="number"
+                        <i style="color: #1f57ff; margin-top: 2px" pTooltip="Incidentes con resultado de muerte."
+                           class="pull-left fa fa-info-circle"></i>
+                        <a href="https://rfess.es/wp-content/uploads/2019/02/Canarias-2015-2018.pdf"
+                            class="esri-font" target="_blank" pTooltip="En caso de no disponer de este dato pinche en este enlace">Número de incidentes muy graves</a>
+                        <input class="esri-feature-form__input" pInputText type="number" min="0" pattern="^[0-9]+"
                                formControlName="incidentes_mgraves"/>
                     </div>
                 </div>
@@ -189,7 +197,8 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <button class="esri-button" type="submit" [disabled]="!formIncidents.valid">
+                        <button [class]="!formIncidents.valid ? 'esri-button esri-button--disabled' : 'esri-button'"
+                                class="esri-button" type="submit" [disabled]="!formIncidents.valid">
                             Guardar
                         </button>
                         <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')"
@@ -376,7 +385,7 @@
                                     formControlName="accesos" [style]="{'width':'100%'}"></p-dropdown>
                     </div>
                 </div>
-                <!--                panel de peligrosidad-->
+                <!--                panel de info cobertura telefonica-->
                 <p-overlayPanel #op2>
                     <img src="assets/images/info/cobertura.png" alt="cobertura telefónica ayuda"/>
                 </p-overlayPanel>
