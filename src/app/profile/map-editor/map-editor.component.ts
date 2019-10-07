@@ -138,7 +138,7 @@ export class MapEditorComponent implements OnInit {
             objectid: new FormControl(''),
             peligrosidad_mar: new FormControl('', Validators.required),
             peligros_anadidos: new FormControl(''),
-            cobertura_telefonica: new FormControl(''),
+            cobertura_telefonica: new FormControl('', Validators.required),
             accesos: new FormControl(''),
             observaciones: new FormControl(''),
             id_dgse: new FormControl(''),

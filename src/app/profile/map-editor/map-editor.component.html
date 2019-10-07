@@ -250,12 +250,15 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label style="padding-bottom: 5px;" class="esri-font">Leyenda de la tabla de períodos donde la afluencia difiere dentro de cada período. Sin color indica sin cambios:</label>
+                        <label style="padding-bottom: 5px;" class="esri-font">Leyenda de la tabla de períodos donde la
+                            afluencia difiere dentro de cada período. Sin color indica sin cambios:</label>
                         <div class="ui-g">
-                            <div style="background-color: darkorange; color: #ffffff !important; width: 50%" class="ui-g-6">
+                            <div style="background-color: darkorange; color: #ffffff !important; width: 50%"
+                                 class="ui-g-6">
                                 <span>Fin de semana</span>
                             </div>
-                            <div style="background-color: darkblue; color: #ffffff !important; width: 50%" class="ui-g-6">
+                            <div style="background-color: darkblue; color: #ffffff !important; width: 50%"
+                                 class="ui-g-6">
                                 <span>Entre semana</span>
                             </div>
                         </div>
@@ -373,9 +376,18 @@
                                     formControlName="accesos" [style]="{'width':'100%'}"></p-dropdown>
                     </div>
                 </div>
+                <!--                panel de peligrosidad-->
+                <p-overlayPanel #op2>
+                    <img src="assets/images/info/cobertura.png" alt="cobertura telefónica ayuda"/>
+                </p-overlayPanel>
                 <div class="form-row">
                     <div class="form-group">
                         <div class="ui-g">
+                            <div class="ui-inputgroup">
+                                <i (mouseenter)="op2.show($event)" style="color: #1f57ff"
+                                   class="pull-left fa fa-info-circle fa-2x"></i>
+                                <label class="esri-font">Puede consultar la cobertura en el mapa detallado.</label>
+                            </div>
                             <div class="ui-g-12">
                                 <p-radioButton class="esri-font" name="grupocobertura" value=1
                                                label="Con cobertura telefónica"
