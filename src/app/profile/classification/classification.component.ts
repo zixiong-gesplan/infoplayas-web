@@ -39,15 +39,16 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         this.municipio = JSON.parse(localStorage.getItem('municipality'));
         this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
         this.DangerPopulationLevel = this.getDangerPopulationLevel();
-        this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias'];
+        this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'valoracion'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
             {label: 'Entorno', icon: 'fa fa-fw fa-thermometer'},
-            {label: 'Incidencias & Usos', icon: 'fa fa-fw fa-medkit'}
+            {label: 'Incidencias & Usos', icon: 'fa fa-fw fa-medkit'},
+            {label: 'Valoración final', icon: 'fa fa-fw fa-calculator'}
         ];
         this.mapHeightContainer = '78vh';
         this.mapZoomLevel = 12;
-        this.localClasification = '-';
+        this.localClasification = 'PENDIENTE';
     }
 
     initCubPortfolio() {

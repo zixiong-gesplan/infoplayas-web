@@ -58,6 +58,7 @@ export class MapEditorComponent implements OnInit {
     formIncidents: FormGroup;
     formEnvironment: FormGroup;
     formFlow: FormGroup;
+    formEvaluation: FormGroup;
     noDangerOptions: SelectItem[];
     wavesOptions: SelectItem[];
     accessOptions: SelectItem[];
@@ -84,7 +85,7 @@ export class MapEditorComponent implements OnInit {
                 private confirmationService: ConfirmationService) {
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
-            {label: 'Playas libres para el baño', value: 'LIBRE'},
+            {label: 'Playa libre para el baño', value: 'LIBRE'},
             {label: 'Peligrosa o susceptible de producir daño', value: 'PELIGROSA'},
         ];
         this.wavesOptions = [
@@ -154,6 +155,10 @@ export class MapEditorComponent implements OnInit {
             flowLevelDefault: new FormControl(''),
             flowLevelWeekend: new FormControl(''),
             id_dgse: new FormControl('')
+        });
+        this.formEvaluation = this.fb.group({
+            objectid: new FormControl(''),
+            dangerLevel: new FormControl('', Validators.required)
         });
         this.onChanges();
         // establecemos valores en espanol para el calendario
@@ -225,8 +230,10 @@ export class MapEditorComponent implements OnInit {
         const updateObj = new Array();
         updateObj.push({attributes: convertEsriBool[0]});
         const mode = fg.get('on_edit').value ? 'updates' : 'adds';
+        // cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
+        fg.get('on_edit').setValue(true);
         const postExecuteTask = fg.contains('desprendimientos') && this.viewNoDanger ? 'no_prohibido' : fg.contains('desprendimientos')
-            ? 'prohibido' : 'none';
+            ? 'prohibido' : this.getCompleteState() === 100 ? 'actualizar_grado' : 'none';
         this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + tableId
             + '/applyEdits', postExecuteTask);
     }
@@ -270,12 +277,12 @@ export class MapEditorComponent implements OnInit {
             this.urlInfoMap + '&zoom=' + this.zoom + '&center=' + this.selectLongitude + ',' + this.selectLatitude;
     }
 
-    private executePostData(prohibido: boolean) {
+    private updateClasification(clasification: string) {
         const updateObj = new Array();
         updateObj.push({
             attributes: {
                 objectid_12: this.selectedId,
-                clasificacion: prohibido ? 'USO PROHIBIDO' : 'PENDIENTE'
+                clasificacion: clasification
             }
         });
         this.editDataLayer(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_url + '/applyEdits');
@@ -407,6 +414,10 @@ export class MapEditorComponent implements OnInit {
                         selectFeature(view, objectId, playasLayer, form).then(function (output) {
                             t.sendMessage(output.beachId, output.localName, output.clasificacion);
                             t.selectedId = output.beachId;
+                            t.formEvaluation.reset();
+                            if (output.clasificacion !== 'PENDIENTE') {
+                                t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
+                            }
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
@@ -439,6 +450,10 @@ export class MapEditorComponent implements OnInit {
                                 .then(function (output) {
                                     t.sendMessage(output.beachId, output.localName, output.clasificacion);
                                     t.selectedId = output.beachId;
+                                    t.formEvaluation.reset();
+                                    if (output.clasificacion !== 'PENDIENTE') {
+                                        t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
+                                    }
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
@@ -535,18 +550,20 @@ export class MapEditorComponent implements OnInit {
                     console.log(result);
                     switch (postExecute) {
                         case 'no_prohibido':
-                            this.executePostData(false);
+                            this.updateClasification('PENDIENTE');
                             break;
                         case 'prohibido':
-                            this.executePostData(true);
+                            this.updateClasification('PROHIBIDO');
                             break;
+                        case 'actualizar_grado':
+                            this.updateGrades();
                     }
                 }
             },
             error => {
                 console.log(error.toString());
             }).add(() => {
-            if (postExecute === 'none') {
+            if (postExecute === 'none' || postExecute === 'actualizar_grado') {
                 console.log('end of request');
                 this.sendMessage('noid', unselectFeature(), 'PENDIENTE');
             }
@@ -688,8 +705,9 @@ export class MapEditorComponent implements OnInit {
         });
         let unselect = true;
         if (this.periods.length > 0) {
+            const postExec = this.getCompleteState() === 100 ? 'actualizar_grado' : 'none';
             this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
-                + '/applyEdits', 'none');
+                + '/applyEdits', postExec);
             unselect = false;
         }
         // borramos los periodos si los hay
@@ -779,5 +797,24 @@ export class MapEditorComponent implements OnInit {
                 this.invalidDates.push(iniDate);
             }
         });
+    }
+
+    onSubmitEvaluation() {
+        this.updateClasification(this.formEvaluation.get('dangerLevel').value);
+        this.updateGrades();
+    }
+
+    getCompleteState(): number {
+        let percentage = 0;
+        percentage += this.formIncidents.get('on_edit').value ? 30 : 0;
+        percentage += this.formEnvironment.get('on_edit').value ? 30 : 0;
+        percentage += this.periods.length > 0 ? 30 : 0;
+        percentage += this.formEvaluation.valid ? 10 : 0;
+        return percentage;
+    }
+
+    updateGrades() {
+        // TODO implementar calculo de grados de proteccion
+        console.log('actualizando grados de protección');
     }
 }
