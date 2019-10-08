@@ -8,7 +8,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 declare var $:any;
 declare var jQuery:any;
 declare const aytos: any;
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
+
 
 @Component({
   selector: 'app-security',
@@ -143,7 +144,16 @@ export class SecurityComponent implements OnInit {
   }
 
   private update(){
-    swal("Deleted!", "Your imaginary file has been deleted!", "success");
+
+    Swal.fire({
+  type: 'success',
+  title: 'Exito',
+  text: 'la actualización ha sido correcta',
+  footer: ''
+})
+      console.log(this.formUnitarios);
+
+  //show toast in top screen if result
   }
 
   private anhadir_medios(playa,option){
@@ -187,10 +197,13 @@ export class SecurityComponent implements OnInit {
                    this.datosPlaya =  result;
                    console.log(this.datosPlaya);
                    this.codMunicipio(this.datosPlaya);
+                 }else{
+
                  }
           },
           error => {
               console.log(error.toString());
+
           }).add(() => {
           console.log('end of request');
           this.spinnerService.hide();
@@ -212,10 +225,13 @@ export class SecurityComponent implements OnInit {
             $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
             $('#' + modaloption).modal('show');
             this.spinnerService.hide();
+          }else{
+
           }
         },
         error => {
           console.log(error.toString());
+
         }).add(() => {
       console.log('end of request');
     });
