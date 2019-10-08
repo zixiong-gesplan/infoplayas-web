@@ -50,6 +50,7 @@ export class MapEditorComponent implements OnInit {
     @Output() localName = new EventEmitter<string>();
     @Output() nZones = new EventEmitter<number>();
     @Output() clasification = new EventEmitter<string>();
+    @Output() lastChangeTracking = new EventEmitter<Date>();
     @Input() mapHeight: string;
     @Input() zoom: number;
     @Input() selectForm: string;
@@ -207,10 +208,11 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
-    sendMessage(id: string, name: string, clasification: string) {
+    sendMessage(id: string, name: string, clasification: string, lastChange: Date) {
         this.beachId.emit(id);
         this.localName.emit(name);
         this.clasification.emit(clasification);
+        this.lastChangeTracking.emit(lastChange);
     }
 
     getUnselectedMessage() {
@@ -277,12 +279,14 @@ export class MapEditorComponent implements OnInit {
             this.urlInfoMap + '&zoom=' + this.zoom + '&center=' + this.selectLongitude + ',' + this.selectLatitude;
     }
 
-    private updateClasification(clasification: string) {
+    private updateClasification(clasification: string, updateTime: boolean) {
         const updateObj = new Array();
         updateObj.push({
             attributes: {
                 objectid_12: this.selectedId,
-                clasificacion: clasification
+                clasificacion: clasification,
+                ultimo_cambio: updateTime ? this.toDateFormat(new Date().toLocaleString(), true) : null,
+                ultimo_editor: updateTime ? this.currentUser.username : null
             }
         });
         this.editDataLayer(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_url + '/applyEdits');
@@ -412,7 +416,7 @@ export class MapEditorComponent implements OnInit {
                         const objectId = target.getAttribute('oid');
 
                         selectFeature(view, objectId, playasLayer, form).then(function (output) {
-                            t.sendMessage(output.beachId, output.localName, output.clasificacion);
+                            t.sendMessage(output.beachId, output.localName, output.clasificacion, output.ultimo_cambio);
                             t.selectedId = output.beachId;
                             t.formEvaluation.reset();
                             if (output.clasificacion !== 'PENDIENTE') {
@@ -448,7 +452,7 @@ export class MapEditorComponent implements OnInit {
                         if (result) {
                             selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature)
                                 .then(function (output) {
-                                    t.sendMessage(output.beachId, output.localName, output.clasificacion);
+                                    t.sendMessage(output.beachId, output.localName, output.clasificacion, output.ultimo_cambio);
                                     t.selectedId = output.beachId;
                                     t.formEvaluation.reset();
                                     if (output.clasificacion !== 'PENDIENTE') {
@@ -466,22 +470,26 @@ export class MapEditorComponent implements OnInit {
                                     t.centroidOption = true;
                                 });
                         } else {
-                            t.sendMessage('noid', unselectFeature(), 'PENDIENTE');
+                            t.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
                             t.centroidOption = false;
                         }
                     });
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas), 'PENDIENTE');
+                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas), 'PENDIENTE', new Date());
                 };
 
+                // aplicamos distintos filtros al mapa en funcion de lo que se quiera mostrar en cada apartado
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
                     let filter = 'municipio = \'' + aytos[IdentityManager.credentials[0].userId].municipio_minus + '\'';
+                    const cadMunicipioSinNombre = ' AND nombre_municipio <> \'\' AND nombre_municipio IS NOT NULL';
                     filter = event.target.dataset.filter === '.protection' ? filter +
-                        ' AND clasificacion <> \'USO PROHIBIDO\' AND nombre_municipio <> \'\' AND nombre_municipio IS NOT NULL'
-                        : event.target.dataset.filter === '.clasification' ? filter + ' AND nombre_municipio <> \'\' AND nombre_municipio IS NOT NULL'
-                            : event.target.dataset.filter === '.result' ? filter + ' AND clasificacion IS NOT NULL AND clasificacion <> \'PENDIENTE\' AND nombre_municipio <> \'\' AND nombre_municipio IS NOT NULL'
+                        ' AND clasificacion <> \'USO PROHIBIDO\'' + cadMunicipioSinNombre
+                        : event.target.dataset.filter === '.clasification' ? filter + cadMunicipioSinNombre
+                            : event.target.dataset.filter === '.result' ? filter
+                                + ' AND ultimo_cambio IS NOT NULL AND clasificacion IS NOT NULL AND clasificacion <> \'PENDIENTE\''
+                                + cadMunicipioSinNombre + ' OR (clasificacion = \'USO PROHIBIDO\'' + cadMunicipioSinNombre + ' AND ' + filter + ')'
                                 : filter;
                     playasLayer.definitionExpression = filter;
                     t.spinnerService.show();
@@ -550,10 +558,10 @@ export class MapEditorComponent implements OnInit {
                     console.log(result);
                     switch (postExecute) {
                         case 'no_prohibido':
-                            this.updateClasification('PENDIENTE');
+                            this.updateClasification('PENDIENTE', false);
                             break;
                         case 'prohibido':
-                            this.updateClasification('PROHIBIDO');
+                            this.updateClasification('PROHIBIDO', true);
                             break;
                         case 'actualizar_grado':
                             this.updateGrades();
@@ -565,7 +573,7 @@ export class MapEditorComponent implements OnInit {
             }).add(() => {
             if (postExecute === 'none' || postExecute === 'actualizar_grado') {
                 console.log('end of request');
-                this.sendMessage('noid', unselectFeature(), 'PENDIENTE');
+                this.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
             }
         });
     }
@@ -582,7 +590,7 @@ export class MapEditorComponent implements OnInit {
             }).add(() => {
             console.log('end of request');
             if (unselect) {
-                this.sendMessage('noid', unselectFeature(), 'PENDIENTE');
+                this.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
             }
         });
     }
@@ -599,7 +607,7 @@ export class MapEditorComponent implements OnInit {
                 console.log(error.toString());
             }).add(() => {
             console.log('end of request');
-            this.sendMessage('noid', unselectFeature(), 'PENDIENTE');
+            this.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
         });
     }
 
@@ -700,8 +708,8 @@ export class MapEditorComponent implements OnInit {
         this.periods = [...this.periods.filter(s => !s.attributes.objectid)];
         const addvalues = JSON.parse(JSON.stringify(this.periods));
         addvalues.forEach(value => {
-            value.attributes.fecha_fin = this.toDateFormat(value.attributes.fecha_fin);
-            value.attributes.fecha_inicio = this.toDateFormat(value.attributes.fecha_inicio);
+            value.attributes.fecha_fin = this.toDateFormat(value.attributes.fecha_fin, false);
+            value.attributes.fecha_inicio = this.toDateFormat(value.attributes.fecha_inicio, false);
         });
         let unselect = true;
         if (this.periods.length > 0) {
@@ -768,13 +776,17 @@ export class MapEditorComponent implements OnInit {
             this.invalidDates = tableC;
         }
     }
-
-    toDateFormat(dateStr: string): string {
+    // para convertir fechas de angular a formato entendido por postgres, solo fecha o fecha y horas, minutos y segundos
+    // 2016-06-22 19:10:25 postgres format Date type
+    toDateFormat(dateStr: string, timePart: boolean): string {
         const date = new Date(dateStr);
         const dd = String(date.getDate()).padStart(2, '0');
         const mm = String(date.getMonth() + 1).padStart(2, '0');
         const yyyy = date.getFullYear();
-        return yyyy + '-' + mm + '-' + dd;
+        const hh =  date.getHours();
+        const i = date.getMinutes();
+        const ss = date.getSeconds();
+        return timePart ? yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + i + ':' + ss : yyyy + '-' + mm + '-' + dd;
     }
 
     private iterateInvalidDates() {
@@ -800,7 +812,7 @@ export class MapEditorComponent implements OnInit {
     }
 
     onSubmitEvaluation() {
-        this.updateClasification(this.formEvaluation.get('dangerLevel').value);
+        this.updateClasification(this.formEvaluation.get('dangerLevel').value, true);
         this.updateGrades();
     }
 

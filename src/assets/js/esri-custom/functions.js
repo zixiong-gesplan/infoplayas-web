@@ -23,6 +23,7 @@ function selectFeature(view, objectId, featureLayer, form) {
         outPutData.id_dgse = editFeature.attributes.id_dgse;
         outPutData.localName = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'Nombre por definir';
         outPutData.clasificacion = editFeature.attributes.clasificacion;
+        outPutData.ultimo_cambio = editFeature.attributes.ultimo_cambio;
         // extensiones del feature para componentes externos
         outPutData.coordX = editFeature.geometry.centroid.x;
         outPutData.coordY = editFeature.geometry.centroid.y;

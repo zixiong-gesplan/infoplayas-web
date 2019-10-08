@@ -26,6 +26,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     cargaPoblacional: number;
     municipio: Municipality;
     DangerPopulationLevel: number;
+    lastChangeOnselectedBeach: Date;
 
     constructor() {
     }
@@ -153,6 +154,15 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
             $('#protectionFilterMenu').hide();
         } else {
             $('#protectionFilterMenu').show();
+        }
+    }
+
+    receiveLastChangeTracking($event: Date) {
+        this.lastChangeOnselectedBeach = $event;
+        if ($event || this.localClasification === 'USO PROHIBIDO') {
+            $('#resultsFilterMenu').show();
+        } else {
+            $('#resultsFilterMenu').hide();
         }
     }
 

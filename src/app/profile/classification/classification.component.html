@@ -236,7 +236,8 @@
                     protección
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
-                <div pTooltip="Presentación de resultados de la clasificación y grado de protección"
+                <div id="resultsFilterMenu"
+                     pTooltip="Presentación de resultados de la clasificación y grado de protección"
                      tooltipPosition="top" (click)="setForm('resultados');op2.show($event)" data-filter=".result"
                      class="cbp-filter-item text-capitalize">
                     resultados
@@ -331,6 +332,7 @@
                     (localName)="receiveLocalName($event)"
                     (nZones)="receiveNzones($event)"
                     (clasification)="receiveClasification($event)"
+                    (lastChangeTracking)="receiveLastChangeTracking($event)"
                     [zoom]="mapZoomLevel"
                     [mapHeight]="mapHeightContainer"
                     [selectForm]="actualForm"
