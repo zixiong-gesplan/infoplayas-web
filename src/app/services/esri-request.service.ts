@@ -7,7 +7,7 @@ export class EsriRequestService {
     constructor(private http: HttpClient) {
     }
 
-    getEsriDataLayer(featureEndPoint: string, cWhere: string, outFields: string, geometry: boolean, token: string, order: string) {
+    getEsriDataLayer(featureEndPoint: string, cWhere: string, outFields: string, geometry: boolean, token: string, order: string, centro: boolean) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
 
@@ -15,6 +15,7 @@ export class EsriRequestService {
             .append('where', cWhere)
             .append('orderByFields', order)//ordenamos por el campo clasificacion
             .append('outFields', outFields)
+            .append('returnCentroid', centro ? 'true' : 'false' )
             .append('returnGeometry', geometry ? 'true' : 'false')
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
@@ -35,7 +36,7 @@ export class EsriRequestService {
     updateEsriData(featureEndPoint: string, data: Object, mode: string, token: string) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
-
+        console.log(data);
         const params = new HttpParams().set('token', token).append('f', 'json')
             .append(mode, JSON.stringify(data));
         return this.http.post(featureEndPoint, params, {headers: headers});

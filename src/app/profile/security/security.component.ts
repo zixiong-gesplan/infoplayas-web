@@ -8,6 +8,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 declare var $:any;
 declare var jQuery:any;
 declare const aytos: any;
+import swal from 'sweetalert';
 
 @Component({
   selector: 'app-security',
@@ -99,6 +100,7 @@ export class SecurityComponent implements OnInit {
   activarGP:boolean = true;
   formUnitarios: FormGroup;
   codMun;
+  datasend:[] =[];
 
 
   constructor(private authService: AuthGuardService,
@@ -110,31 +112,38 @@ export class SecurityComponent implements OnInit {
   ngOnInit() {
     this.loadRecords();
     this.default();
-    this.formUnitarios = new FormGroup({
-      jefe_turno: new FormControl(),
-      socorrista: new FormControl(),
-      socorrista_embarcacion: new FormControl(),
-      socorrista_embarcacion_per: new FormControl(),
-      banderas: new FormControl(),
-      mastiles: new FormControl(),
-      carteles: new FormControl(),
-      banderas_comp: new FormControl(),
-      aros_salvavidas: new FormControl(),
-      carretes: new FormControl(),
-      m_cuerda: new FormControl(),
-      boyas_amarillas: new FormControl(),
-      boyas_verdes: new FormControl(),
-      boyas_rojas: new FormControl(),
-      señales: new FormControl()
+    this.formUnitarios = this.fb.group({
+      objectid: new FormControl(''),
+      jefe_turno_pvp: new FormControl(0, Validators.min(0)),
+      socorrista_pvp: new FormControl(0),
+      socorrista_embarcacion_pvp: new FormControl(0),
+      socorrista_embarcacion_per_pvp: new FormControl(0),
+      bandera_pvp: new FormControl(0),
+      mastil_pvp: new FormControl(0),
+      cartel_pvp: new FormControl(0),
+      bandera_comp_pvp: new FormControl(0),
+      carrete_pvp: new FormControl(0),
+      m_cuerda_pvp: new FormControl(0),
+      boya_pvp: new FormControl(0),
+      torre_pvp: new FormControl(0),
+      desfibrilador_pvp: new FormControl(0),
+      botiquin_pvp: new FormControl(0),
+      sistemas_izado_pvp: new FormControl(0),
+      salvavidas_pvp: new FormControl(0),
+      senales_prohibicion: new FormControl(0),
+      id_ayuntamiento: new FormControl(0),
+      ultimo_editor: new FormControl(''),
+      ultimo_cambio: new FormControl('')
     })
   }
 
-  public preciosUnitarios(){
 
-    console.log(this.formUnitarios.value);
-  }
   private horario(id_dgse,mc){
     this.altoini = mc.inputFieldValue;
+  }
+
+  private update(){
+    swal("Deleted!", "Your imaginary file has been deleted!", "success");
   }
 
   private anhadir_medios(playa,option){
@@ -172,13 +181,13 @@ export class SecurityComponent implements OnInit {
     this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
     this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
       this.service.getEsriDataLayer('https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0/query',
-          this.filtermunicipio, '*', false, this.currentUser.token,'clasificacion').subscribe(
+          this.filtermunicipio, '*', true, this.currentUser.token,'clasificacion', true).subscribe(
           (result: any) => {
               if (result) {
                    this.datosPlaya =  result;
                    console.log(this.datosPlaya);
-                   this.codMunicipio();
-              }
+                   this.codMunicipio(this.datosPlaya);
+                 }
           },
           error => {
               console.log(error.toString());
@@ -197,6 +206,7 @@ export class SecurityComponent implements OnInit {
           if (result) {
             // this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
             this.datosPlayaRelacionada = result;
+
             // console.log('tabla relacionada');
             // console.log(this.datosPlayaRelacionada);
             $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
@@ -212,24 +222,28 @@ export class SecurityComponent implements OnInit {
   }
 
 
-configuracion(n){
+configuracion(){
     this.loadUnitPrice();
     $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
     $('#configuracion' ).modal('show');
   }
 
-  codMunicipio(){
-    return this.datosPlaya.features[0].attributes.id_dgse.substring(0,3);
+  codMunicipio(datosPlaya){
+    this.codMun = this.datosPlaya.features[0].attributes.id_dgse.substring(0,3);
+    return this.codMun;
   }
 
 loadUnitPrice(){
-  this.codMun = this.codMunicipio();
   this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url+ '/10/query',
-    'id_ayuntamiento =\'this.codMun\'', '*', false, this.currentUser.token,'id_ayuntamiento').subscribe(
+    'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token,'id_ayuntamiento',false).subscribe(
       (result: any) => {
-          if (result) {
-            console.log(result);
-
+        console.log('unitprice '+result);
+          if (result.features.length!=0) {
+            console.log(result.features[0].attributes);
+            this.formUnitarios.patchValue(result.features[0].attributes);
+            this.formUnitarios.patchValue({on_edit: true});
+          }else{
+              this.formUnitarios.patchValue({on_edit: false});
           }
       },
       error => {
