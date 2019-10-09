@@ -101,8 +101,8 @@ export class SecurityComponent implements OnInit {
   activarGP:boolean = true;
   formUnitarios: FormGroup;
   codMun;
-  datasend:[] =[];
-
+  datasend: string[] = [];
+  objeto_attributes:{};
 
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
@@ -144,16 +144,50 @@ export class SecurityComponent implements OnInit {
   }
 
   private update(){
+    let datos: string[] = [];
+    let preciosUnitarios = {
+      attributes:{
+        ultimo_cambio: '',
+        id_ayuntamiento:'',
+      },
+    };
+    preciosUnitarios.attributes = this.formUnitarios.value;
+    preciosUnitarios.attributes.ultimo_cambio = this.toDateFormat(true);
+    preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
+    datos.push(preciosUnitarios)
 
-    Swal.fire({
-  type: 'success',
-  title: 'Exito',
-  text: 'la actualización ha sido correcta',
-  footer: ''
-})
-      console.log(this.formUnitarios);
+    this.service.updateEsriData('https://utility.arcgis.com/usrsvcs/servers/88157824485b48fb9a3dbecc205587f9/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/10/applyEdits',
+        datos, 'updates', this.currentUser.token).subscribe(
+        (result: any) => {
+            if (result.length!==0) {
+                  Swal.fire({
+                    type: 'success',
+                    title: 'Exito',
+                    text: 'la actualización ha sido correcta',
+                    footer: ''
+              })
+            }else{
+              Swal.fire({
+                type: 'error',
+                title: 'A mamarla',
+                text: 'Se ha producido un error bichado',
+                footer: ''
+          })
+            }
+        },
+        error => {
+          Swal.fire({
+            type: 'error',
+            title: 'A mamarla',
+            text: 'Se ha producido un error bichado',
+            footer: ''
+      })
+        }).add(() => {
+        console.log('end of request');
 
-  //show toast in top screen if result
+    });
+
+
   }
 
   private anhadir_medios(playa,option){
@@ -195,7 +229,7 @@ export class SecurityComponent implements OnInit {
           (result: any) => {
               if (result) {
                    this.datosPlaya =  result;
-                   console.log(this.datosPlaya);
+                   //console.log(this.datosPlaya);
                    this.codMunicipio(this.datosPlaya);
                  }else{
 
@@ -233,7 +267,7 @@ export class SecurityComponent implements OnInit {
           console.log(error.toString());
 
         }).add(() => {
-      console.log('end of request');
+      //console.log('end of request');
     });
   }
 
@@ -253,9 +287,9 @@ loadUnitPrice(){
   this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url+ '/10/query',
     'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token,'id_ayuntamiento',false).subscribe(
       (result: any) => {
-        console.log('unitprice '+result);
+
           if (result.features.length!=0) {
-            console.log(result.features[0].attributes);
+            //console.log(result.features[0].attributes);
             this.formUnitarios.patchValue(result.features[0].attributes);
             this.formUnitarios.patchValue({on_edit: true});
           }else{
@@ -263,9 +297,25 @@ loadUnitPrice(){
           }
       },
       error => {
-          console.log(error.toString());
+          //console.log(error.toString());
       }).add(() => {
-      console.log('end of request');
+      //console.log('end of request');
   });
   }
+
+
+
+  // para convertir fechas de angular a formato entendido por postgres, solo fecha o fecha y horas, minutos y segundos
+  // 2016-06-22 19:10:25 postgres format Date type
+  toDateFormat(timePart: boolean): string {
+      const date = new Date();
+      const dd = String(date.getDate()).padStart(2, '0');
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const yyyy = date.getFullYear();
+      const hh =  date.getHours();
+      const i = date.getMinutes();
+      const ss = date.getSeconds();
+      return timePart ? yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + i + ':' + ss : yyyy + '-' + mm + '-' + dd;
+  }
+
 }
