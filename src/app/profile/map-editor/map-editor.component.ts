@@ -759,11 +759,11 @@ export class MapEditorComponent implements OnInit {
     private loadInvalidDates() {
         const table = [...this.periods].filter(s => s.attributes.incluir_dias !== 'FS');
         table.forEach(value => {
-            const currDate = moment(value.attributes.fecha_inicio).startOf('day').subtract(1, 'days');
+            const currDate = moment(value.attributes.fecha_inicio).startOf('day');
             if (value.attributes.fecha_fin) {
-                const lastDate = moment(value.attributes.fecha_fin).startOf('day');
-                while (currDate.add(1, 'days').diff(lastDate) <= 0) {
-                    this.invalidDates.push(currDate.clone().toDate());
+                const lastDate = moment(value.attributes.fecha_fin).startOf('day').add(1, 'days');
+                for (const day = moment(currDate); day.isBefore(lastDate); day.add(1, 'days')) {
+                    this.invalidDates.push(moment(day).toDate());
                 }
             } else {
                 this.invalidDates.push(currDate.clone().toDate());
