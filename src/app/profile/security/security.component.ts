@@ -154,9 +154,9 @@ export class SecurityComponent implements OnInit {
     preciosUnitarios.attributes = this.formUnitarios.value;
     preciosUnitarios.attributes.ultimo_cambio = this.toDateFormat(true);
     preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
-    datos.push(preciosUnitarios)
+    datos.push(preciosUnitarios);
 
-    this.service.updateEsriData('https://utility.arcgis.com/usrsvcs/servers/88157824485b48fb9a3dbecc205587f9/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/10/applyEdits',
+    this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url+'/10/applyEdits',
         datos, 'updates', this.currentUser.token).subscribe(
         (result: any) => {
             if (result.length!==0) {
@@ -166,11 +166,13 @@ export class SecurityComponent implements OnInit {
                     text: 'la actualización ha sido correcta',
                     footer: ''
               })
+
+                $('#configuracion' ).modal('hide');
             }else{
               Swal.fire({
                 type: 'error',
-                title: 'A mamarla',
-                text: 'Se ha producido un error bichado',
+                title: '',
+                text: 'Se ha producido un error inesperado',
                 footer: ''
           })
             }
@@ -178,8 +180,8 @@ export class SecurityComponent implements OnInit {
         error => {
           Swal.fire({
             type: 'error',
-            title: 'A mamarla',
-            text: 'Se ha producido un error bichado',
+            title: '',
+            text: 'Se ha producido un error inesperado',
             footer: ''
       })
         }).add(() => {
@@ -224,7 +226,7 @@ export class SecurityComponent implements OnInit {
     this.currentUser = this.authService.getCurrentUser();
     this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
     this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
-      this.service.getEsriDataLayer('https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0/query',
+      this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url+'/query',
           this.filtermunicipio, '*', true, this.currentUser.token,'clasificacion', true).subscribe(
           (result: any) => {
               if (result) {
@@ -247,7 +249,7 @@ export class SecurityComponent implements OnInit {
   loadRelatedRecords(object_id,option) {
     this.spinnerService.show();
     let modaloption = option;
-    this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
+    this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url+ '/queryRelatedRecords',
         object_id, '4', '*', false, this.currentUser.token).subscribe(
         (result: any) => {
           if (result) {
