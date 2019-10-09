@@ -9,6 +9,7 @@ import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Attribute} from '../../models/attribute';
+import * as moment from 'moment';
 
 declare var $: any;
 declare var jquery: any;
@@ -285,7 +286,7 @@ export class MapEditorComponent implements OnInit {
             attributes: {
                 objectid_12: this.selectedId,
                 clasificacion: clasification,
-                ultimo_cambio: updateTime ? this.toDateFormat(new Date().toLocaleString(), true) : null,
+                ultimo_cambio: updateTime ? moment().format('YYYY-MM-DD HH:mm:ss') : null,
                 ultimo_editor: updateTime ? this.currentUser.username : null
             }
         });
@@ -544,8 +545,7 @@ export class MapEditorComponent implements OnInit {
                     value.attributes.fecha_fin = new Date(value.attributes.fecha_fin);
                     value.attributes.fecha_inicio = new Date(value.attributes.fecha_inicio);
                 });
-                // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
-                this.iterateInvalidDates();
+                this.loadInvalidDates();
             }
         });
     }
@@ -637,23 +637,16 @@ export class MapEditorComponent implements OnInit {
                 }
             });
         });
-        // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
+        // actualizamos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
+        this.invalidDates = [];
+        this.loadInvalidDates();
+        // seteamos los valores del calendario para que apareca al abrirlo en la ultima fecha
         const iniDate = new Date(this.formFlow.get('dates').value[0]);
         if (this.formFlow.get('dates').value[1]) {
             const lastDate = new Date(this.formFlow.get('dates').value[1]);
-            const days = (lastDate.getTime() - iniDate.getTime()) / (1000 * 3600 * 24);
-            for (let i = 0; i < days + 1; i++) {
-                const nextDay = new Date(iniDate);
-                nextDay.setDate(iniDate.getDate() + i);
-                if (nextDay > lastDate) {
-                    break;
-                }
-                this.invalidDates.push(nextDay);
-            }
             lastDate.setDate(lastDate.getDate() + 1);
             this.formFlow.get('dates').setValue(lastDate);
         } else {
-            this.invalidDates.push(iniDate);
             this.formFlow.get('dates').setValue(iniDate);
         }
         this.formFlow.get('flowLevelWeekend').setValue(null);
@@ -708,8 +701,8 @@ export class MapEditorComponent implements OnInit {
         this.periods = [...this.periods.filter(s => !s.attributes.objectid)];
         const addvalues = JSON.parse(JSON.stringify(this.periods));
         addvalues.forEach(value => {
-            value.attributes.fecha_fin = this.toDateFormat(value.attributes.fecha_fin, false);
-            value.attributes.fecha_inicio = this.toDateFormat(value.attributes.fecha_inicio, false);
+            value.attributes.fecha_fin = moment(value.attributes.fecha_fin).format('YYYY-MM-DD');
+            value.attributes.fecha_inicio = moment(value.attributes.fecha_inicio).format('YYYY-MM-DD');
         });
         let unselect = true;
         if (this.periods.length > 0) {
@@ -750,63 +743,30 @@ export class MapEditorComponent implements OnInit {
 
     onRowDelete(rowData) {
         // eliminamos la pareja del registro si es uno de fin de semana o laborable, sino borramos solo el registro seleccionado
-        if (rowData.attributes.incluir_dias !== 'TD') {
-            const tableA = [...this.periods];
-            const pairIndex = tableA[tableA.indexOf(rowData) + 1] &&
-            tableA[tableA.indexOf(rowData) + 1].attributes.fecha_inicio === rowData.attributes.fecha_inicio ?
-                tableA.indexOf(rowData) + 1 : tableA.indexOf(rowData) - 1;
-            this.deletePeriods.push(this.periods[pairIndex].attributes.objectid);
-            this.periods = tableA.filter(s => tableA.indexOf(s) !== pairIndex);
-        }
-        const tableB = [...this.periods];
-        this.periods = tableB.filter(s => s !== rowData);
-        this.deletePeriods.push(rowData.attributes.objectid);
-        // eliminamos los dias de los periodos en invalidDates
-        const tableC = [...this.invalidDates];
-        const iniDate = rowData.attributes.fecha_inicio;
-        if (rowData.attributes.fecha_fin) {
-            const lastDate = rowData.attributes.fecha_fin;
-            const days = (lastDate.getTime() - iniDate.getTime()) / (1000 * 3600 * 24);
-            const index = tableC.indexOf(tableC.find(x => x.getTime() === iniDate.getTime()));
-            tableC.splice(index, days + 1);
-            this.invalidDates = tableC;
-        } else {
-            const index = tableC.indexOf(tableC.find(x => x === iniDate));
-            tableC.splice(index, 1);
-            this.invalidDates = tableC;
-        }
-    }
-    // para convertir fechas de angular a formato entendido por postgres, solo fecha o fecha y horas, minutos y segundos
-    // 2016-06-22 19:10:25 postgres format Date type
-    toDateFormat(dateStr: string, timePart: boolean): string {
-        const date = new Date(dateStr);
-        const dd = String(date.getDate()).padStart(2, '0');
-        const mm = String(date.getMonth() + 1).padStart(2, '0');
-        const yyyy = date.getFullYear();
-        const hh =  date.getHours();
-        const i = date.getMinutes();
-        const ss = date.getSeconds();
-        return timePart ? yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + i + ':' + ss : yyyy + '-' + mm + '-' + dd;
+        const tableA = [...this.periods];
+        let tableB = [...this.periods];
+        this.periods = tableA.filter(s => s.attributes.fecha_inicio.getTime() !== rowData.attributes.fecha_inicio.getTime());
+        tableB = tableB.filter(s => s.attributes.fecha_inicio.getTime() === rowData.attributes.fecha_inicio.getTime());
+        tableB.forEach(value => {
+            this.deletePeriods.push(value.attributes.objectid);
+        });
+        // actualizamos los dias ya seleccionados en el calendario
+        this.invalidDates = [];
+        this.loadInvalidDates();
     }
 
-    private iterateInvalidDates() {
-        // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
+    // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
+    private loadInvalidDates() {
         const table = [...this.periods].filter(s => s.attributes.incluir_dias !== 'FS');
         table.forEach(value => {
-            const iniDate = value.attributes.fecha_inicio;
+            const currDate = moment(value.attributes.fecha_inicio).startOf('day').subtract(1, 'days');
             if (value.attributes.fecha_fin) {
-                const lastDate = value.attributes.fecha_fin;
-                const days = (lastDate.getTime() - iniDate.getTime()) / (1000 * 3600 * 24);
-                for (let i = 0; i < days + 1; i++) {
-                    const nextDay = new Date(iniDate);
-                    nextDay.setDate(iniDate.getDate() + i);
-                    if (nextDay > lastDate) {
-                        break;
-                    }
-                    this.invalidDates.push(nextDay);
+                const lastDate = moment(value.attributes.fecha_fin).startOf('day');
+                while (currDate.add(1, 'days').diff(lastDate) <= 0) {
+                    this.invalidDates.push(currDate.clone().toDate());
                 }
             } else {
-                this.invalidDates.push(iniDate);
+                this.invalidDates.push(currDate.clone().toDate());
             }
         });
     }
