@@ -3,7 +3,7 @@
 
 }
 .tamanhofont{
-  font-size: 0.8em !important;
+  font-size: 0.9em !important;
   text-align: center !important;
 }
 .tamanhofontcal{
@@ -16,7 +16,8 @@
 .inputCustom{
   height: 30px !important;
   width: 100% !important;
-  font-size: 0.6em !important;
+  font-size: 1.0em !important;
+  text-align: center !important;
 }
 .inputCustomCal{
   height: 30px !important;

@@ -12,7 +12,10 @@
 <!--security Details Starts-->
 <section id="shop" class="paddingtopbottom100px">
   <div class="container">
-    <h3 class="first">Playas del municipio de: <span style="font-weight:bold">{{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="configuración" (click)="configuracion()"></i></span></h3>
+    <div class="section-title text-center">
+        <h2 class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: {{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="Añada los precios unitarios" (click)="configuracion()"></i></h2>
+    </div>
+
     <p-table *ngFor=" let playa of datosPlaya.features">
       <ng-template pTemplate="header" >
           <tr>

@@ -144,6 +144,7 @@ export class SecurityComponent implements OnInit {
   }
 
     private update() {
+      this.spinnerService.show();
         const datos = [];
         const preciosUnitarios = {
             attributes: {
@@ -161,6 +162,7 @@ export class SecurityComponent implements OnInit {
             datos, 'updates', this.currentUser.token).subscribe(
             (result: any) => {
                 if (result.length !== 0) {
+                  this.spinnerService.hide();
                     Swal.fire({
                         type: 'success',
                         title: 'Exito',
@@ -170,6 +172,7 @@ export class SecurityComponent implements OnInit {
 
                     $('#configuracion').modal('hide');
                 } else {
+                  this.spinnerService.hide();
                     Swal.fire({
                         type: 'error',
                         title: '',
@@ -179,6 +182,7 @@ export class SecurityComponent implements OnInit {
                 }
             },
             error => {
+              this.spinnerService.hide();
                 Swal.fire({
                     type: 'error',
                     title: '',
@@ -277,8 +281,7 @@ export class SecurityComponent implements OnInit {
 
 configuracion(){
     this.loadUnitPrice();
-    $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
-    $('#configuracion' ).modal('show');
+
   }
 
   codMunicipio(datosPlaya){
@@ -287,6 +290,7 @@ configuracion(){
   }
 
 loadUnitPrice(){
+  this.spinnerService.hide();
   this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url+ '/10/query',
     'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token,'id_ayuntamiento',false).subscribe(
       (result: any) => {
@@ -295,12 +299,16 @@ loadUnitPrice(){
             //console.log(result.features[0].attributes);
             this.formUnitarios.patchValue(result.features[0].attributes);
             this.formUnitarios.patchValue({on_edit: true});
+            this.spinnerService.hide();
+            $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+            $('#configuracion' ).modal('show');
           }else{
               this.formUnitarios.patchValue({on_edit: false});
+              this.spinnerService.hide();
           }
       },
       error => {
-          //console.log(error.toString());
+          this.spinnerService.hide();
       }).add(() => {
       //console.log('end of request');
   });
