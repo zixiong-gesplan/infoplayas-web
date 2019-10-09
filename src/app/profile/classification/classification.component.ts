@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {Municipality} from '../../models/municipality';
+import {GradesProtectionService} from '../../services/grades-protection.service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -28,7 +29,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     DangerPopulationLevel: number;
     lastChangeOnselectedBeach: Date;
 
-    constructor() {
+    constructor(private gradeService: GradesProtectionService) {
     }
 
     ngAfterViewInit() {
@@ -50,6 +51,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         this.mapHeightContainer = '78vh';
         this.mapZoomLevel = 12;
         this.localClasification = 'PENDIENTE';
+
+        this.gradeService.calculate('242');
     }
 
     initCubPortfolio() {

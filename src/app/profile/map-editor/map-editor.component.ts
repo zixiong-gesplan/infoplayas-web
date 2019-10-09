@@ -81,14 +81,15 @@ export class MapEditorComponent implements OnInit {
     periods: Attribute[];
     deletePeriods: number[];
     colsFlow: any;
+    dateNow: Date;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
                 private confirmationService: ConfirmationService) {
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
-            {label: 'Playa libre para el baño', value: 'LIBRE'},
             {label: 'Peligrosa o susceptible de producir daño', value: 'PELIGROSA'},
+            {label: 'Playa libre para el baño', value: 'LIBRE'}
         ];
         this.wavesOptions = [
             {label: 'Selecciona estado de la mar', value: null},
@@ -185,28 +186,13 @@ export class MapEditorComponent implements OnInit {
 
     // fechas maxima y minima para los calendarios de afluencias y carga lista de periodos
     initCalendarDates() {
+        this.dateNow = new Date();
         this.periods = [];
         this.deletePeriods = [];
         const today = new Date();
         this.minDate = new Date(today.getFullYear(), 0, 1);
         this.maxDate = new Date(today.getFullYear() + 1, 0, 0);
         this.invalidDates = [];
-    }
-
-    loadRelatedRecords() {
-        this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
-            '237', '0', '*', true, this.currentUser.token).subscribe(
-            (result: any) => {
-                if (result) {
-                    // this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
-                    // console.log(this.selectedBeachDanger);
-                }
-            },
-            error => {
-                console.log(error.toString());
-            }).add(() => {
-            console.log('end of request');
-        });
     }
 
     sendMessage(id: string, name: string, clasification: string, lastChange: Date) {
@@ -374,7 +360,6 @@ export class MapEditorComponent implements OnInit {
                     filterMunicipios = 'municipio = \'' + aytos[user].municipio_mayus + '\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
-                    console.log(filterMunicipios);
 
                     municipiosLayer.queryFeatures({
                         outFields: ['*'],
@@ -565,7 +550,7 @@ export class MapEditorComponent implements OnInit {
                             this.updateClasification('PROHIBIDO', true);
                             break;
                         case 'actualizar_grado':
-                            this.updateGrades();
+                            // this.updateGrades();
                     }
                 }
             },
@@ -774,7 +759,6 @@ export class MapEditorComponent implements OnInit {
 
     onSubmitEvaluation() {
         this.updateClasification(this.formEvaluation.get('dangerLevel').value, true);
-        this.updateGrades();
     }
 
     getCompleteState(): number {
@@ -786,8 +770,4 @@ export class MapEditorComponent implements OnInit {
         return percentage;
     }
 
-    updateGrades() {
-        // TODO implementar calculo de grados de proteccion
-        console.log('actualizando grados de protección');
-    }
 }

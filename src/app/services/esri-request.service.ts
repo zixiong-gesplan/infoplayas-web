@@ -35,8 +35,6 @@ export class EsriRequestService {
 
     updateEsriData(featureEndPoint: string, data: Object, mode: string, token: string) {
         const headers = new HttpHeaders();
-        console.log(data);
-        console.log(JSON.stringify(data));
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
         const params = new HttpParams().set('token', token).append('f', 'json')
             .append(mode, JSON.stringify(data));

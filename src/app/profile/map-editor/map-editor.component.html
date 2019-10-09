@@ -91,7 +91,7 @@
                         <button class="esri-button" type="submit" [disabled]="!formDanger.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')"
+                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -115,14 +115,14 @@
                         <label class="esri-font" style="font-weight : bolder">Criterios para clasificar la playa o ZBM como libre
                             o peligrosa en función de las siguientes características:</label>
                         <ul>
-                            <li class="esri-legend__service esri-font"><b>Libres:</b> Las playas no comprendidas en el
-                                apartados anterior. Se podrán utilizar para el baño, deportes náuticos y demás
-                                actividades de tipo recreativo, con arreglo a la normativa vigente para los mismos.
-                            </li>
                             <li class="esri-legend__service esri-font"><b>Peligrosas:</b> Las que por razones
                                 permanentes o circunstanciales reúnan condiciones SUSCEPTIBLES DE PRODUCIR DAÑO AMENAZA
                                 INMEDIATA A LA VIDA HUMANA. Se podrá tolerar el uso de las mismas con limitaciones,
                                 adoptándose las medidas de seguridad que, en cada caso, se consideren necesarias.
+                            </li>
+                            <li class="esri-legend__service esri-font"><b>Libres:</b> Las playas no comprendidas en el
+                                apartado anterior. Se podrán utilizar para el baño, deportes náuticos y demás
+                                actividades de tipo recreativo, con arreglo a la normativa vigente para los mismos.
                             </li>
                         </ul>
                     </div>
@@ -140,7 +140,7 @@
                                 [disabled]="!formEvaluation.valid || getCompleteState() !== 100">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')"
+                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -253,7 +253,7 @@
                                 class="esri-button" type="submit" [disabled]="!formIncidents.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')"
+                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -335,7 +335,7 @@
                             type="submit" [disabled]="!formFlow.valid || periods.length === 0">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')"
+                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -480,7 +480,7 @@
                                 type="submit" [disabled]="!formEnvironment.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')"
+                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -492,7 +492,7 @@
         <div [hidden]="selectForm !=='inventario'">
             <div id="form" class="esri-component"></div>
             <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
-            <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE')" onclick="unselectFeature()"
+            <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)" onclick="unselectFeature()"
                    type="button"
                    class="esri-button esri-button--secondary"
                    value="Cancelar"/>
