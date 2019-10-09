@@ -3,7 +3,7 @@
 
 }
 .tamanhofont{
-  font-size: 0.6em !important;
+  font-size: 0.8em !important;
   text-align: center !important;
 }
 .tamanhofontcal{
@@ -30,7 +30,7 @@
 
 .modal-dialog-main {
 
-  top:40% !important;
+  top:30% !important;
   transform: translate(0, -50%) !important;
   -ms-transform: translate(0, -50%) !important;
   -webkit-transform: translate(0, -50%) !important;

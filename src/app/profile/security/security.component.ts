@@ -8,6 +8,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 declare var $:any;
 declare var jQuery:any;
 declare const aytos: any;
+import Swal from 'sweetalert2'
+
 
 @Component({
   selector: 'app-security',
@@ -98,7 +100,9 @@ export class SecurityComponent implements OnInit {
   peligrosa:boolean;
   activarGP:boolean = true;
   formUnitarios: FormGroup;
-
+  codMun;
+  datasend: string[] = [];
+  objeto_attributes:{};
 
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
@@ -109,37 +113,88 @@ export class SecurityComponent implements OnInit {
   ngOnInit() {
     this.loadRecords();
     this.default();
-    this.formUnitarios = new FormGroup({
-      jefe_turno: new FormControl(),
-      socorrista: new FormControl(),
-      socorrista_embarcacion: new FormControl(),
-      socorrista_embarcacion_per: new FormControl(),
-      banderas: new FormControl(),
-      mastiles: new FormControl(),
-      carteles: new FormControl(),
-      banderas_comp: new FormControl(),
-      aros_salvavidas: new FormControl(),
-      carretes: new FormControl(),
-      m_cuerda: new FormControl(),
-      boyas_amarillas: new FormControl(),
-      boyas_verdes: new FormControl(),
-      boyas_rojas: new FormControl(),
-      señales: new FormControl()
+    this.formUnitarios = this.fb.group({
+      objectid: new FormControl(''),
+      jefe_turno_pvp: new FormControl(0, Validators.min(0)),
+      socorrista_pvp: new FormControl(0),
+      socorrista_embarcacion_pvp: new FormControl(0),
+      socorrista_embarcacion_per_pvp: new FormControl(0),
+      bandera_pvp: new FormControl(0),
+      mastil_pvp: new FormControl(0),
+      cartel_pvp: new FormControl(0),
+      bandera_comp_pvp: new FormControl(0),
+      carrete_pvp: new FormControl(0),
+      m_cuerda_pvp: new FormControl(0),
+      boya_pvp: new FormControl(0),
+      torre_pvp: new FormControl(0),
+      desfibrilador_pvp: new FormControl(0),
+      botiquin_pvp: new FormControl(0),
+      sistemas_izado_pvp: new FormControl(0),
+      salvavidas_pvp: new FormControl(0),
+      senales_prohibicion: new FormControl(0),
+      id_ayuntamiento: new FormControl(0),
+      ultimo_editor: new FormControl(''),
+      ultimo_cambio: new FormControl('')
     })
   }
 
-  public preciosUnitarios(){
 
-    console.log(this.formUnitarios.value);
-  }
   private horario(id_dgse,mc){
     this.altoini = mc.inputFieldValue;
   }
 
+    private update() {
+        const datos = [];
+        const preciosUnitarios = {
+            attributes: {
+                ultimo_cambio: '',
+                id_ayuntamiento: '',
+                ultimo_editor: ''
+            },
+        };
+        preciosUnitarios.attributes = this.formUnitarios.value;
+        preciosUnitarios.attributes.ultimo_cambio = this.toDateFormat(true);
+        preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
+        datos.push(preciosUnitarios);
+
+        this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
+            datos, 'updates', this.currentUser.token).subscribe(
+            (result: any) => {
+                if (result.length !== 0) {
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Exito',
+                        text: 'la actualización ha sido correcta',
+                        footer: ''
+                    });
+
+                    $('#configuracion').modal('hide');
+                } else {
+                    Swal.fire({
+                        type: 'error',
+                        title: '',
+                        text: 'Se ha producido un error inesperado',
+                        footer: ''
+                    });
+                }
+            },
+            error => {
+                Swal.fire({
+                    type: 'error',
+                    title: '',
+                    text: 'Se ha producido un error inesperado',
+                    footer: ''
+                });
+            }).add(() => {
+            console.log('end of request');
+
+        });
+
+
+  }
+
   private anhadir_medios(playa,option){
     this.loadRelatedRecords(playa.attributes.objectid_12,option);
-
-
     this.nombre_playa = playa.attributes.nombre_municipio;
     this.iddgse = playa.attributes.id_dgse;
     this.clasificacion = playa.attributes.clasificacion;
@@ -172,17 +227,20 @@ export class SecurityComponent implements OnInit {
     this.currentUser = this.authService.getCurrentUser();
     this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
     this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
-
-      this.service.getEsriDataLayer('https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0/query',
-          this.filtermunicipio, '*', false, this.currentUser.token).subscribe(
+      this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url+'/query',
+          this.filtermunicipio, '*', true, this.currentUser.token,'clasificacion', true).subscribe(
           (result: any) => {
               if (result) {
                    this.datosPlaya =  result;
                    //console.log(this.datosPlaya);
-              }
+                   this.codMunicipio(this.datosPlaya);
+                 }else{
+
+                 }
           },
           error => {
               console.log(error.toString());
+
           }).add(() => {
           console.log('end of request');
           this.spinnerService.hide();
@@ -192,28 +250,75 @@ export class SecurityComponent implements OnInit {
   loadRelatedRecords(object_id,option) {
     this.spinnerService.show();
     let modaloption = option;
-    this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
+    this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url+ '/queryRelatedRecords',
         object_id, '4', '*', false, this.currentUser.token).subscribe(
         (result: any) => {
           if (result) {
             // this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
             this.datosPlayaRelacionada = result;
-            console.log('tabla relacionada');
-            console.log(this.datosPlayaRelacionada);
+
+            // console.log('tabla relacionada');
+            // console.log(this.datosPlayaRelacionada);
             $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
             $('#' + modaloption).modal('show');
             this.spinnerService.hide();
+          }else{
+
           }
         },
         error => {
           console.log(error.toString());
+
         }).add(() => {
-      console.log('end of request');
+      //console.log('end of request');
     });
   }
-  configuracion(nomMunicipio){
+
+
+configuracion(){
+    this.loadUnitPrice();
     $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
     $('#configuracion' ).modal('show');
+  }
+
+  codMunicipio(datosPlaya){
+    this.codMun = this.datosPlaya.features[0].attributes.id_dgse.substring(0,3);
+    return this.codMun;
+  }
+
+loadUnitPrice(){
+  this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url+ '/10/query',
+    'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token,'id_ayuntamiento',false).subscribe(
+      (result: any) => {
+
+          if (result.features.length!=0) {
+            //console.log(result.features[0].attributes);
+            this.formUnitarios.patchValue(result.features[0].attributes);
+            this.formUnitarios.patchValue({on_edit: true});
+          }else{
+              this.formUnitarios.patchValue({on_edit: false});
+          }
+      },
+      error => {
+          //console.log(error.toString());
+      }).add(() => {
+      //console.log('end of request');
+  });
+  }
+
+
+
+  // para convertir fechas de angular a formato entendido por postgres, solo fecha o fecha y horas, minutos y segundos
+  // 2016-06-22 19:10:25 postgres format Date type
+  toDateFormat(timePart: boolean): string {
+      const date = new Date();
+      const dd = String(date.getDate()).padStart(2, '0');
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const yyyy = date.getFullYear();
+      const hh =  date.getHours();
+      const i = date.getMinutes();
+      const ss = date.getSeconds();
+      return timePart ? yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + i + ':' + ss : yyyy + '-' + mm + '-' + dd;
   }
 
 }
