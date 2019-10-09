@@ -143,51 +143,52 @@ export class SecurityComponent implements OnInit {
     this.altoini = mc.inputFieldValue;
   }
 
-  private update(){
-    let datos: string[] = [];
-    let preciosUnitarios = {
-      attributes:{
-        ultimo_cambio: '',
-        id_ayuntamiento:'',
-      },
-    };
-    preciosUnitarios.attributes = this.formUnitarios.value;
-    preciosUnitarios.attributes.ultimo_cambio = this.toDateFormat(true);
-    preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
-    datos.push(preciosUnitarios);
+    private update() {
+        const datos = [];
+        const preciosUnitarios = {
+            attributes: {
+                ultimo_cambio: '',
+                id_ayuntamiento: '',
+                ultimo_editor: ''
+            },
+        };
+        preciosUnitarios.attributes = this.formUnitarios.value;
+        preciosUnitarios.attributes.ultimo_cambio = this.toDateFormat(true);
+        preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
+        datos.push(preciosUnitarios);
 
-    this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url+'/10/applyEdits',
-        datos, 'updates', this.currentUser.token).subscribe(
-        (result: any) => {
-            if (result.length!==0) {
-                  Swal.fire({
-                    type: 'success',
-                    title: 'Exito',
-                    text: 'la actualización ha sido correcta',
+        this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
+            datos, 'updates', this.currentUser.token).subscribe(
+            (result: any) => {
+                if (result.length !== 0) {
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Exito',
+                        text: 'la actualización ha sido correcta',
+                        footer: ''
+                    });
+
+                    $('#configuracion').modal('hide');
+                } else {
+                    Swal.fire({
+                        type: 'error',
+                        title: '',
+                        text: 'Se ha producido un error inesperado',
+                        footer: ''
+                    });
+                }
+            },
+            error => {
+                Swal.fire({
+                    type: 'error',
+                    title: '',
+                    text: 'Se ha producido un error inesperado',
                     footer: ''
-              })
+                });
+            }).add(() => {
+            console.log('end of request');
 
-                $('#configuracion' ).modal('hide');
-            }else{
-              Swal.fire({
-                type: 'error',
-                title: '',
-                text: 'Se ha producido un error inesperado',
-                footer: ''
-          })
-            }
-        },
-        error => {
-          Swal.fire({
-            type: 'error',
-            title: '',
-            text: 'Se ha producido un error inesperado',
-            footer: ''
-      })
-        }).add(() => {
-        console.log('end of request');
-
-    });
+        });
 
 
   }
