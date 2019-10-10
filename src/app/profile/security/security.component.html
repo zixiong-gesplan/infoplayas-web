@@ -667,9 +667,8 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Predicción del tiempo para la playa: {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}}</h4>
+      <div class="modal-header modal-header-custom">
+        <h4 class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">Predicción del tiempo</h4>
       </div>
       <div class="modal-body">
         <img class="tamanho_img" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>

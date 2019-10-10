@@ -60,6 +60,25 @@
   width:82% !important;
 }
 
+
+.modal-body
+{
+    background-color: #FFFFFF;
+}
+
+.modal-header-custom
+{
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    -moz-border-radius-topleft: 6px;
+    -moz-border-radius-topright: 6px;
+      background-color: #ABF0AF;
+}
+
+
+
 @media (max-width: 641px) {
   /* Bump up size of carousel content */
   .tamanhofont  {
