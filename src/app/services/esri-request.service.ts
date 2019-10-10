@@ -7,7 +7,7 @@ export class EsriRequestService {
     constructor(private http: HttpClient) {
     }
 
-    getEsriDataLayer(featureEndPoint: string, cWhere: string, outFields: string, geometry: boolean, token: string, order: string, centro: boolean) {
+   getEsriDataLayer(featureEndPoint: string, cWhere: string, outFields: string, geometry: boolean, token: string, order: string, centro: boolean) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
 
@@ -35,7 +35,6 @@ export class EsriRequestService {
 
     updateEsriData(featureEndPoint: string, data: Object, mode: string, token: string) {
         const headers = new HttpHeaders();
-        console.log(data);
         console.log(JSON.stringify(data));
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
         const params = new HttpParams().set('token', token).append('f', 'json')
@@ -50,5 +49,9 @@ export class EsriRequestService {
         const params = new HttpParams().set('token', token).append('f', 'json')
             .append('objectIds', objectIds.join(','));
         return this.http.post(featureEndPoint, params, {headers: headers});
+    }
+
+    meteoData(lat,lon){
+      return this.http.get('http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&APPID=237a80e2e639efd0fadf62f91c0b65e7&units=metric&lang=es')
     }
 }

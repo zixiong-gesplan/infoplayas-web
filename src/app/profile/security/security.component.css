@@ -13,6 +13,18 @@
 .pointer{
   cursor: pointer !important;
 }
+.tamanho_img{
+  height: 50px !important;
+  width: 50px!important;
+}
+
+.centered {
+  vertical-align:middle; text-align:center;
+}
+.centered img {
+  display:block; margin:0 auto;
+}
+
 .inputCustom{
   height: 30px !important;
   width: 100% !important;

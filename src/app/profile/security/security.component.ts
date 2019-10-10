@@ -8,6 +8,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 declare var $:any;
 declare var jQuery:any;
 declare const aytos: any;
+declare var UTMXYToLatLon: any;
+declare var RadToDeg: any;
 import Swal from 'sweetalert2'
 
 
@@ -103,6 +105,27 @@ export class SecurityComponent implements OnInit {
   codMun;
   datasend: string[] = [];
   objeto_attributes:{};
+  mode: string = 'adds';
+  latitud;
+  longitud;
+  datosclima = {
+    main: {
+      temp: '',
+      humidity:'',
+      pressure:'',
+      temp_max: '',
+      temp_min:' '
+
+    },
+    weather:[{
+      icon: '02d',
+      description:'',
+    }],
+    wind:{
+      deg:'',
+      speed:''
+    }
+  };
 
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
@@ -111,6 +134,7 @@ export class SecurityComponent implements OnInit {
               private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.utmToLatLong('327495','3109493');
     this.loadRecords();
     this.default();
     this.formUnitarios = this.fb.group({
@@ -138,94 +162,6 @@ export class SecurityComponent implements OnInit {
     })
   }
 
-
-  private horario(id_dgse,mc){
-    this.altoini = mc.inputFieldValue;
-  }
-
-    private update() {
-      this.spinnerService.show();
-        const datos = [];
-        const preciosUnitarios = {
-            attributes: {
-                ultimo_cambio: '',
-                id_ayuntamiento: '',
-                ultimo_editor: ''
-            },
-        };
-        preciosUnitarios.attributes = this.formUnitarios.value;
-        preciosUnitarios.attributes.ultimo_cambio = this.toDateFormat(true);
-        preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
-        datos.push(preciosUnitarios);
-
-        this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
-            datos, 'updates', this.currentUser.token).subscribe(
-            (result: any) => {
-                if (result.length !== 0) {
-                  this.spinnerService.hide();
-                    Swal.fire({
-                        type: 'success',
-                        title: 'Exito',
-                        text: 'la actualización ha sido correcta',
-                        footer: ''
-                    });
-
-                    $('#configuracion').modal('hide');
-                } else {
-                  this.spinnerService.hide();
-                    Swal.fire({
-                        type: 'error',
-                        title: '',
-                        text: 'Se ha producido un error inesperado',
-                        footer: ''
-                    });
-                }
-            },
-            error => {
-              this.spinnerService.hide();
-                Swal.fire({
-                    type: 'error',
-                    title: '',
-                    text: 'Se ha producido un error inesperado',
-                    footer: ''
-                });
-            }).add(() => {
-            console.log('end of request');
-
-        });
-
-
-  }
-
-  private anhadir_medios(playa,option){
-    this.loadRelatedRecords(playa.attributes.objectid_12,option);
-    this.nombre_playa = playa.attributes.nombre_municipio;
-    this.iddgse = playa.attributes.id_dgse;
-    this.clasificacion = playa.attributes.clasificacion;
-    if(playa.attributes.clasificacion==='USO PROHIBIDO'){
-      this.peligrosa = true;
-    }
-  }
-
-  private mostrar_pasiva_grado_bajo(grado){
-      if(grado==='bajo'){
-        this.pasiva = true;
-      }
-  }
-
-  default(){
-    this.pasiva = false;
-    this.peligrosa = false;
-  }
-
-  public calculadora(medio){
-      this.spinnerService.show();
-      $('#calculadora'+medio).modal('show');
-      $('#calculadora'+medio).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
-      this.spinnerService.hide();
-      this.medio = medio;
-  }
-
   loadRecords() {
     this.spinnerService.show();
     this.currentUser = this.authService.getCurrentUser();
@@ -235,9 +171,11 @@ export class SecurityComponent implements OnInit {
           this.filtermunicipio, '*', true, this.currentUser.token,'clasificacion', true).subscribe(
           (result: any) => {
               if (result) {
+
                    this.datosPlaya =  result;
-                   //console.log(this.datosPlaya);
+                   console.log(this.datosPlaya);
                    this.codMunicipio(this.datosPlaya);
+                   this.spinnerService.hide();
                  }else{
 
                  }
@@ -258,10 +196,7 @@ export class SecurityComponent implements OnInit {
         object_id, '4', '*', false, this.currentUser.token).subscribe(
         (result: any) => {
           if (result) {
-            // this.selectedBeachDanger = result.relatedRecordGroups[0].relatedRecords[0].attributes;
             this.datosPlayaRelacionada = result;
-
-            // console.log('tabla relacionada');
             // console.log(this.datosPlayaRelacionada);
             $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
             $('#' + modaloption).modal('show');
@@ -277,34 +212,70 @@ export class SecurityComponent implements OnInit {
       //console.log('end of request');
     });
   }
+  private update() {
+    this.spinnerService.show();
+    const preciosUnitariosSend = [];
+    const preciosUnitarios = {
+      attributes: {
+        ultimo_cambio: '',
+        id_ayuntamiento: '',
+        ultimo_editor: ''
+      },
+    };
+    preciosUnitarios.attributes = this.formUnitarios.value;
+    preciosUnitarios.attributes.ultimo_cambio = this.toDateFormat(true);
+    preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
+    preciosUnitarios.attributes.id_ayuntamiento = this.codMun;
+    preciosUnitariosSend.push(preciosUnitarios);
 
+    this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
+    preciosUnitariosSend, this.mode, this.currentUser.token).subscribe(
+      (result: any) => {
+        if (result.length !== 0) {
+          this.spinnerService.hide();
+          Swal.fire({
+            type: 'success',
+            title: 'Exito',
+            text: 'la actualización ha sido correcta',
+            footer: ''
+          });
 
-configuracion(){
-    this.loadUnitPrice();
+          $('#configuracion').modal('hide');
+        } else {
+          this.spinnerService.hide();
+          Swal.fire({
+            type: 'error',
+            title: '',
+            text: 'Se ha producido un error inesperado',
+            footer: ''
+          });
+        }
+      },
+      error => {
+        this.spinnerService.hide();
+        Swal.fire({
+          type: 'error',
+          title: '',
+          text: 'Se ha producido un error inesperado',
+          footer: ''
+        });
+      }).add(() => {
+        console.log('end of request');
 
-  }
-
-  codMunicipio(datosPlaya){
-    this.codMun = this.datosPlaya.features[0].attributes.id_dgse.substring(0,3);
-    return this.codMun;
-  }
+      });
+    }
 
 loadUnitPrice(){
   this.spinnerService.hide();
+  $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+  $('#configuracion' ).modal('show');
   this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url+ '/10/query',
     'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token,'id_ayuntamiento',false).subscribe(
       (result: any) => {
-
           if (result.features.length!=0) {
-            //console.log(result.features[0].attributes);
             this.formUnitarios.patchValue(result.features[0].attributes);
-            this.formUnitarios.patchValue({on_edit: true});
+            this.mode = 'updates';
             this.spinnerService.hide();
-            $('#configuracion' ).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
-            $('#configuracion' ).modal('show');
-          }else{
-              this.formUnitarios.patchValue({on_edit: false});
-              this.spinnerService.hide();
           }
       },
       error => {
@@ -314,11 +285,52 @@ loadUnitPrice(){
   });
   }
 
+  public configuracion(){
+      this.loadUnitPrice();
+    }
 
+  private horario(id_dgse,mc){
+    this.altoini = mc.inputFieldValue;
+  }
+
+  private anhadir_medios(playa,option){
+    this.loadRelatedRecords(playa.attributes.objectid_12,option);
+    this.nombre_playa = playa.attributes.nombre_municipio;
+    this.iddgse = playa.attributes.id_dgse;
+    this.clasificacion = playa.attributes.clasificacion;
+    if(playa.attributes.clasificacion==='USO PROHIBIDO'){
+      this.peligrosa = true;
+    }
+  }
+
+  private mostrar_pasiva_grado_bajo(grado){
+      if(grado==='bajo'){
+        this.pasiva = true;
+      }
+  }
+
+  public default(){
+    this.pasiva = false;
+    this.peligrosa = false;
+  }
+
+  public calculadora(medio){
+      this.spinnerService.show();
+      $('#calculadora'+medio).modal('show');
+      $('#calculadora'+medio).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+      this.spinnerService.hide();
+      this.medio = medio;
+  }
+
+
+  public codMunicipio(datosPlaya){
+      this.codMun = this.datosPlaya.features[0].attributes.id_dgse.substring(0,3);
+      return this.codMun;
+    }
 
   // para convertir fechas de angular a formato entendido por postgres, solo fecha o fecha y horas, minutos y segundos
   // 2016-06-22 19:10:25 postgres format Date type
-  toDateFormat(timePart: boolean): string {
+  public toDateFormat(timePart: boolean): string {
       const date = new Date();
       const dd = String(date.getDate()).padStart(2, '0');
       const mm = String(date.getMonth() + 1).padStart(2, '0');
@@ -329,4 +341,37 @@ loadUnitPrice(){
       return timePart ? yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + i + ':' + ss : yyyy + '-' + mm + '-' + dd;
   }
 
+  public utmToLatLong(x, y){
+    var latlon = new Array(2);
+    var  zone, southhemi;
+     x = parseFloat (x);
+     y = parseFloat (y);
+    zone = parseInt('28');
+    southhemi = false;
+    UTMXYToLatLon (x, y, zone, southhemi, latlon);
+    this.latitud=RadToDeg (latlon[0]);
+    this.longitud = RadToDeg (latlon[1]);
+
+  }
+
+  meteo(playa){
+
+    this.utmToLatLong(playa.centroid.x,playa.centroid.y);
+    this.service.meteoData(this.latitud,this.longitud).subscribe(
+      (result: any) => {
+        if (result.length !== 0) {
+        this.datosclima = result;
+        console.log(this.datosclima);
+        }
+      },
+      error => {
+        this.spinnerService.hide();
+        Swal.fire({
+          type: 'error',
+          title: '',
+          text: 'Se ha producido un error inesperado',
+          footer: ''
+        });
+      })
+    }
 }
