@@ -15,7 +15,7 @@ declare const aytos: any;
 })
 export class ClassificationComponent implements OnInit, AfterViewInit {
     itemsProtection: MenuItem[];
-    beachName: string;
+    beachObjectId: string;
     numberOfBeachs: number;
     mapZoomLevel: number;
     mapHeightContainer: string;
@@ -28,6 +28,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     municipio: Municipality;
     DangerPopulationLevel: number;
     lastChangeOnselectedBeach: Date;
+    colsGrade: any;
 
     constructor(private gradeService: GradesProtectionService) {
     }
@@ -52,7 +53,13 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         this.mapZoomLevel = 12;
         this.localClasification = 'PENDIENTE';
 
-        this.gradeService.calculate('242');
+        this.colsGrade = [
+            {field: 'fecha_inicio', header: 'Inicio', width: '20%', orderBy: 'fecha_inicio'},
+            {field: 'fecha_fin', header: 'Fin', width: '20%', orderBy: 'fecha_fin'},
+            {field: 'afluencia', header: 'Afluencia', width: '20%', type: 'text', orderBy: 'afluencia'},
+            {field: 'grado', header: 'Grado', width: '20%', type: 'text', orderBy: 'grado'},
+            {field: 'grado_valor', header: 'Nivel', width: '20%', type: 'text', orderBy: 'grado_valor'}
+        ];
     }
 
     initCubPortfolio() {
@@ -135,7 +142,12 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     receiveBeachId($event: string) {
-        this.beachName = $event;
+        this.beachObjectId = $event;
+        if ($event !== 'noid') {
+            this.gradeService.calculate($event);
+        } else {
+            this.gradeService.records = [];
+        }
     }
 
     receiveNzones($event: number) {

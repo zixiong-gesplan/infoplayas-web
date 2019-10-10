@@ -182,6 +182,11 @@ export class MapEditorComponent implements OnInit {
             {subfield: 'nivel', header: 'Nivel', width: '29%', type: 'text', orderBy: 'attributes.nivel'}
         ];
         this.initCalendarDates();
+        // TODO ejemplo de llamada multiple con forkjoin
+        const filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
+        this.service.getAllData(environment.infoplayas_catalogo_edicion_url + '/query',
+            environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords', '1',
+            filtermunicipio, this.currentUser.token, ['242', '237']);
     }
 
     // fechas maxima y minima para los calendarios de afluencias y carga lista de periodos

@@ -9,7 +9,7 @@ import {GradeRecord} from '../models/grade-record';
     providedIn: 'root'
 })
 export class GradesProtectionService {
-    private records: GradeRecord[];
+    records: GradeRecord[];
 
     constructor(private service: EsriRequestService, private authService: AuthGuardService) {
     }
@@ -89,9 +89,8 @@ export class GradesProtectionService {
                     this.records.forEach(value => {
                         value.grado = this.calculateGradeLvl(value.afluencia, pIncidents, pSports, vSeaConditions, vEnvironment,
                             vPopulation);
+                        value.grado_valor = value.grado === 'A' ? 2 : value.grado === 'M' ? 1 : 0;
                     });
-
-                    console.log(this.records);
                 }
             },
             error => {

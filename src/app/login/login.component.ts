@@ -29,7 +29,6 @@ export class LoginComponent implements OnInit {
                     persist: this.getBoolean(new URLSearchParams(fragment).get('persist')),
                     error: new URLSearchParams(fragment).get('error')
                 };
-                console.log(current_user);
                 if (current_user.error === 'access_denied') {
                     this.router.navigate(['home']);
                     return false;
