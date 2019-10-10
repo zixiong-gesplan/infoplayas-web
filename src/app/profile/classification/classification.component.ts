@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {Municipality} from '../../models/municipality';
 import {GradesProtectionService} from '../../services/grades-protection.service';
+import {AuthGuardService} from '../../services/auth-guard.service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -30,7 +31,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     lastChangeOnselectedBeach: Date;
     colsGrade: any;
 
-    constructor(private gradeService: GradesProtectionService) {
+    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService) {
     }
 
     ngAfterViewInit() {
@@ -144,7 +145,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     receiveBeachId($event: string) {
         this.beachObjectId = $event;
         if ($event !== 'noid') {
-            this.gradeService.calculate($event);
+            this.gradeService.calculate($event, this.authService.getCurrentUser().token);
         } else {
             this.gradeService.records = [];
         }
