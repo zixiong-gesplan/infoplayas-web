@@ -12,8 +12,11 @@
 <!--security Details Starts-->
 <section id="shop" class="paddingtopbottom100px">
   <div class="container">
-    <h3 class="first">Playas del municipio de: <span style="font-weight:bold">{{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="configuración" (click)="configuracion()"></i></span></h3>
-    <p-table *ngFor=" let playa of datosPlaya.features">
+    <div class="section-title text-center">
+        <h2 class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: {{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="Añada los precios unitarios" (click)="configuracion()"></i></h2>
+    </div>
+
+    <p-table *ngFor="let playa of datosPlaya.features">
       <ng-template pTemplate="header" >
           <tr>
               <th colspan="3" class="centrar"><span style="color:#8CBB28">IDGSE: {{playa.attributes.id_dgse}} - {{!playa.attributes.nombre_municipio ? 'Nombre sin asignar' : playa.attributes.nombre_municipio}} </span> <span class="font-style-1  blue-color">{{playa.attributes.clasificacion}} </span>
@@ -21,7 +24,6 @@
                <i style="color:#F96054" *ngIf="playa.attributes.clasificacion==='PENDIENTE'" class="fa fa-info" aria-hidden="true" title="Clasificación PENDIENTE"></i>
                <i style="color:#FA924A" *ngIf="playa.attributes.clasificacion==='PELIGROSA'" class="fa fa-exclamation-triangle" aria-hidden="true" title="Playa PELIGROSA"></i>
                <i style="color:#54A777" *ngIf="playa.attributes.clasificacion==='LIBRE'" class="fa fa-check" aria-hidden="true" title="Playa LIBRE"></i>
-
               </th>
           </tr>
           <tr *ngIf="playa.attributes.clasificacion!='USO PROHIBIDO'">
@@ -32,6 +34,23 @@
           <tr *ngIf="playa.attributes.clasificacion==='USO PROHIBIDO'">
               <th colspan="3" class="centrar">Añadir Medios <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'bajo')" title="Añadir medios humano y medios materiales"></i><br><span style="font-size: 0.7em;">(Sin servicio de salvamento)</span></th></tr>
               <tr>
+                <th colspan="3">
+                  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#tiempo" (click)="meteo(playa)">Información meteorológica</button>
+              <!-- <p-accordion>
+                    <p-accordionTab header="Información meteorológica" (click)="meteo(playa)">
+                      <img class="tamanho_img" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
+                      Descripcion: {{datosclima.weather[0].description}} <br>
+                      Temperatura: {{datosclima.main.temp}}º <br>
+                      Temperatura max: <span style="color:#F52E1A">{{datosclima.main.temp_max}}º</span><br>
+                      Temperatura min: <span style="color:#0BB6EC">{{datosclima.main.temp_min}}º</span><br>
+                      Presion: {{datosclima.main.pressure}} bars <br>
+                      V. Viento: {{datosclima.wind.speed}} m/s <br>
+                      Inclinación del viento: {{datosclima.wind.deg}}º <br>
+                    </p-accordionTab>
+                  </p-accordion>  -->
+                </th>
+              </tr>
+            <tr>
                 <td colspan="3"><hr></td>
               </tr>
 
@@ -639,3 +658,32 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+
+<!-- Modal tiempo atmosferico-->
+<div id="tiempo" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header modal-header-custom">
+        <h4 class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">Predicción del tiempo</h4>
+      </div>
+      <div class="modal-body">
+        <img class="tamanho_img" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
+        Descripcion: {{datosclima.weather[0].description}} <br>
+        Temperatura: {{datosclima.main.temp}}º <br>
+        Temperatura max: <span style="color:#F52E1A">{{datosclima.main.temp_max}}º</span><br>
+        Temperatura min: <span style="color:#0BB6EC">{{datosclima.main.temp_min}}º</span><br>
+        Presion: {{datosclima.main.pressure}} bars <br>
+        V. Viento: {{datosclima.wind.speed}} m/s <br>
+        Inclinación del viento: {{datosclima.wind.deg}}º <br>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+
+  </div>
+</div>

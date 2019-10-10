@@ -3,7 +3,7 @@
 
 }
 .tamanhofont{
-  font-size: 0.8em !important;
+  font-size: 0.9em !important;
   text-align: center !important;
 }
 .tamanhofontcal{
@@ -13,10 +13,23 @@
 .pointer{
   cursor: pointer !important;
 }
+.tamanho_img{
+  height: 50px !important;
+  width: 50px!important;
+}
+
+.centered {
+  vertical-align:middle; text-align:center;
+}
+.centered img {
+  display:block; margin:0 auto;
+}
+
 .inputCustom{
   height: 30px !important;
   width: 100% !important;
-  font-size: 0.6em !important;
+  font-size: 1.0em !important;
+  text-align: center !important;
 }
 .inputCustomCal{
   height: 30px !important;
@@ -46,6 +59,25 @@
 
   width:82% !important;
 }
+
+
+.modal-body
+{
+    background-color: #FFFFFF;
+}
+
+.modal-header-custom
+{
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    -moz-border-radius-topleft: 6px;
+    -moz-border-radius-topright: 6px;
+      background-color: #ABF0AF;
+}
+
+
 
 @media (max-width: 641px) {
   /* Bump up size of carousel content */
