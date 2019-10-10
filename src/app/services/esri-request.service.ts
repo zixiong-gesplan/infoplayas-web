@@ -9,13 +9,14 @@ export class EsriRequestService {
     constructor(private http: HttpClient) {
     }
 
-    getEsriDataLayer(featureEndPoint: string, cWhere: string, outFields: string, geometry: boolean, token: string, order: string, centro: boolean) {
+    getEsriDataLayer(featureEndPoint: string, cWhere: string, outFields: string, geometry: boolean, token: string, order: string,
+                     centro: boolean) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
 
         const params = new HttpParams().set('token', token).append('f', 'json')
             .append('where', cWhere)
-            .append('orderByFields', order)//ordenamos por el campo clasificacion
+            .append('orderByFields', order)
             .append('outFields', outFields)
             .append('returnCentroid', centro ? 'true' : 'false')
             .append('returnGeometry', geometry ? 'true' : 'false');
@@ -79,7 +80,8 @@ export class EsriRequestService {
             // results[1] es la tabla relacionada
             if (results) {
                 for (let i = 0; i < myArrayOfFunction.length; i += 2) {
-                    (results[i] as any).relatedRecords = results[i + 1].relatedRecordGroups[0] ? results[i + 1].relatedRecordGroups[0].relatedRecords : [];
+                    (results[i] as any).relatedRecords = results[i + 1].relatedRecordGroups[0] ?
+                        results[i + 1].relatedRecordGroups[0].relatedRecords : [];
                     this.beachs.push(results[i]);
                 }
                 console.log(this.beachs);
