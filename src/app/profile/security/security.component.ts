@@ -11,6 +11,7 @@ declare const aytos: any;
 declare var UTMXYToLatLon: any;
 declare var RadToDeg: any;
 import Swal from 'sweetalert2'
+import {RequestService} from '../../services/request.service';
 
 
 @Component({
@@ -130,6 +131,7 @@ export class SecurityComponent implements OnInit {
 
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
+              private mservice: RequestService,
               private spinnerService: Ng4LoadingSpinnerService,
               private elementRef: ElementRef,
               private fb: FormBuilder) { }
@@ -356,24 +358,24 @@ loadUnitPrice(){
 
   }
 
-  meteo(playa){
+    meteo(playa) {
 
-    this.utmToLatLong(playa.centroid.x,playa.centroid.y);
-    this.service.meteoData(this.latitud,this.longitud).subscribe(
-      (result: any) => {
-        if (result.length !== 0) {
-        this.datosclima = result;
-        console.log(this.datosclima);
-        }
-      },
-      error => {
-        this.spinnerService.hide();
-        Swal.fire({
-          type: 'error',
-          title: '',
-          text: 'Se ha producido un error inesperado',
-          footer: ''
-        });
-      })
+        this.utmToLatLong(playa.centroid.x, playa.centroid.y);
+        this.mservice.meteoData(this.latitud, this.longitud).subscribe(
+            (result: any) => {
+                if (result.length !== 0) {
+                    this.datosclima = result;
+                    console.log(this.datosclima);
+                }
+            },
+            error => {
+                this.spinnerService.hide();
+                Swal.fire({
+                    type: 'error',
+                    title: '',
+                    text: 'Se ha producido un error inesperado',
+                    footer: ''
+                });
+            });
     }
 }
