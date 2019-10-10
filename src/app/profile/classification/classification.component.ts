@@ -30,6 +30,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     DangerPopulationLevel: number;
     lastChangeOnselectedBeach: Date;
     colsGrade: any;
+    visible: string;
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService) {
     }
