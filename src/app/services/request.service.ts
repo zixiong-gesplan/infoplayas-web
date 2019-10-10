@@ -16,4 +16,9 @@ export class RequestService {
             .append('fields', '-observationsMetadata');
         return this.http.get(environment.istac + indicator, {params: params});
     }
+
+    meteoData(lat, lon) {
+        return this.http.get('http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon
+            + '&APPID=237a80e2e639efd0fadf62f91c0b65e7&units=metric&lang=es');
+    }
 }
