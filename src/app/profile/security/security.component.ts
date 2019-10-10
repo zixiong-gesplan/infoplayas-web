@@ -106,6 +106,7 @@ export class SecurityComponent implements OnInit {
   datasend: string[] = [];
   objeto_attributes:{};
   mode: string = 'adds';
+  index: number;
   latitud;
   longitud;
   datosclima = {
@@ -161,6 +162,7 @@ export class SecurityComponent implements OnInit {
       ultimo_cambio: new FormControl('')
     })
   }
+
 
   loadRecords() {
     this.spinnerService.show();
