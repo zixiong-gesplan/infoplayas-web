@@ -76,8 +76,6 @@ export class GradesProtectionService {
                     value.grado_valor = value.grado === 'A' ? 2 : value.grado === 'M' ? 1 : 0;
                 });
                 this.filterRecords = [...new Set(this.records.map(x => x.grado))];
-                console.log(this.records);
-
             } else {
                 this.records = [];
             }

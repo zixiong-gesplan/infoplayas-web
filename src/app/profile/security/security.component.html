@@ -673,16 +673,44 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <h4 class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">Predicción del tiempo</h4>
         <h3 *ngIf="nombre_playa" class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">{{nombre_playa}}</h3>
       </div>
-      <div class="modal-body">
-        <img class="tamanho_img" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
-        Descripcion: {{datosclima.weather[0].description}} <br>
-        Temperatura: {{datosclima.main.temp}}º <br>
-        Temperatura max: <span style="color:#F52E1A">{{datosclima.main.temp_max}}º</span><br>
-        Temperatura min: <span style="color:#0BB6EC">{{datosclima.main.temp_min}}º</span><br>
-        Humedad: {{datosclima.main.humidity}}% <br>
-        Presion: {{datosclima.main.pressure}} bars <br>
-        V. Viento: {{datosclima.wind.speed}} m/s <br>
-        Inclinación del viento: {{datosclima.wind.deg}}º <br>
+      <div class="modal-body text-center">
+        <img class="tamanho_img text-center" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
+        <table class="table table-striped">
+          <tbody>
+            <tr>
+              <th scope="row">Descripcion:</th>
+              <td> {{datosclima.weather[0].description | titlecase}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Temperatura:</th>
+              <td>{{datosclima.main.temp}}º</td>
+            </tr>
+            <tr>
+              <th scope="row">Temperatura max:</th>
+                <td><span style="color:#F52E1A">{{datosclima.main.temp_max}}º</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Temperatura min:</th>
+                <td><span style="color:#0BB6EC">{{datosclima.main.temp_min}}º</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Humedad:</th>
+                <td>{{datosclima.main.humidity}}%</td>
+            </tr>
+            <tr>
+              <th scope="row">Presion:</th>
+                <td>{{datosclima.main.pressure}} bars</td>
+            </tr>
+            <tr>
+              <th scope="row">V. viento:</th>
+                <td>{{datosclima.wind.speed}} m/s</td>
+            </tr>
+            <tr>
+              <th scope="row">Inclinación del viento:</th>
+                <td>{{datosclima.wind.deg}}º/td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
