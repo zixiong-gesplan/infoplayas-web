@@ -292,7 +292,7 @@ loadUnitPrice(){
     zone = parseInt('28');
     southhemi = false;
     UTMXYToLatLon (x, y, zone, southhemi, latlon);
-    this.latitud=RadToDeg (latlon[0]);
+    this.latitud = RadToDeg (latlon[0]);
     this.longitud = RadToDeg (latlon[1]);
 
   }
