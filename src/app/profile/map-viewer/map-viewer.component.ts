@@ -32,6 +32,7 @@ declare let features: any;
 })
 export class MapViewerComponent implements OnInit {
     @Input() zoom: number;
+    @Input() mapHeight: string;
     private currentUser: Auth;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private gradeService: GradesProtectionService) {
