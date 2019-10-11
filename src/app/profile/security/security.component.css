@@ -102,10 +102,25 @@
 
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1185px) {
   /* Bump up size of carousel content */
   .tamanhofont  {
-    font-size: 0.5em !important;
+    font-size: 0.2em !important;
+  }
+
+}
+
+@media (max-width: 1280px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.3em !important;
+  }
+
+}
+@media (max-width: 1610px) {
+  /* Bump up size of carousel content */
+  .tamanhofont  {
+    font-size: 0.7em !important;
   }
 
 }

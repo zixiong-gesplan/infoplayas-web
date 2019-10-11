@@ -2,6 +2,7 @@ import { Component, OnInit,ElementRef} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {EsriRequestService} from '../../services/esri-request.service';
+import {RequestService} from '../../services/request.service';
 import {environment} from '../../../environments/environment';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -107,8 +108,8 @@ export class SecurityComponent implements OnInit {
   objeto_attributes:{};
   mode: string = 'adds';
   index: number;
-  latitud;
-  longitud;
+  latitud: number=0;
+  longitud: number=0;
   datosclima = {
     main: {
       temp: '',
@@ -132,7 +133,8 @@ export class SecurityComponent implements OnInit {
               private service: EsriRequestService,
               private spinnerService: Ng4LoadingSpinnerService,
               private elementRef: ElementRef,
-              private fb: FormBuilder) { }
+              private fb: FormBuilder,
+              private serviceMeteo: RequestService) { }
 
   ngOnInit() {
     this.utmToLatLong('327495','3109493');
@@ -356,14 +358,14 @@ loadUnitPrice(){
 
   }
 
-  meteo(playa){
-
+  public meteo(playa){
+    this.nombre_playa = playa.attributes.nombre_municipio;
     this.utmToLatLong(playa.centroid.x,playa.centroid.y);
-    this.service.meteoData(this.latitud,this.longitud).subscribe(
+    this.serviceMeteo.meteoData(this.latitud,this.longitud).subscribe(
       (result: any) => {
         if (result.length !== 0) {
         this.datosclima = result;
-        console.log(this.datosclima);
+        $('#tiempo').modal('show');
         }
       },
       error => {
