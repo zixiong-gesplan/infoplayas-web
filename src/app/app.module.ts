@@ -32,6 +32,7 @@ import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 import {registerLocaleData} from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import {ToastModule} from 'primeng/toast';
+import { MapViewerComponent } from './profile/map-viewer/map-viewer.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -47,7 +48,8 @@ registerLocaleData(localeEs, 'es');
         ReportComponent,
         ContactUsComponent,
         MapEditorComponent,
-        WelcomeComponent
+        WelcomeComponent,
+        MapViewerComponent
     ],
     imports: [
         BrowserModule,
