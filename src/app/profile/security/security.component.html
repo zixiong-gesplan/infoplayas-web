@@ -53,6 +53,7 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="humanos">
   <div class="modal-dialog modal-dialog-main modal-dialog-centered" role="document">
     <div class="modal-content">
+      <form [formGroup]="formMediosHumanos" (ngSubmit)="updateMediosHumanos()">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" (click)="default()">&times;</span></button>
         <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}
@@ -86,14 +87,14 @@
             </tr>
             <tr>
               <th class="centrar"><input type="number"  id="ndias" class="form-control  inputCustom"  readonly></th>
-              <th class="centrar"><input type="number"  id="longitud" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="storre" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="sacuaticaspie" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="sacuaticas" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="spieagua" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="smbarcacion" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="sper" class="form-control  inputCustom" value="0"></th>
+              <th class="centrar"><input type="number"  id="longitud" class="form-control  inputCustom" value="0"></th>
+              <th class="centrar"><input type="number"  formControlName="jefes_turno" name="jefes_turno" id="jefes_turno" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_torre" name="socorristas_torre" id="socorristas_torre" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_polivalentes" name="socorristas_polivalentes" id="socorristas_polivalentes" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_acuatico" name="socorristas_acuatico" id="socorristas_acuatico" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion" name="socorristas_embarcacion" id="socorristas_embarcacion" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_apie" name="socorristas_apie" id="socorristas_apie" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion_per" name="socorristas_embarcacion_per"  id="socorristas_embarcacion_per" class="form-control  inputCustom" min="0"></th>
 
             </tr>
             <br>
@@ -102,8 +103,9 @@
       </div>
       <div class="modal-footer botonCentrado">
         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button> -->
-        <button type="button" class="btn btn-primary">Actualizar</button>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
       </div>
+    </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -261,7 +263,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <h4 class="modal-title text-center" style="color:#8CBB28">{{nombre_playa}}</h4>
       </div>
       <div class="modal-body">
-        <p-table *ngFor="let hsalvamento of gradeService.records">
+        <p-table *ngFor="let hsalvamento of gradeService.records" class="mb-5">
           <ng-template pTemplate="header" >
             <tr >
 
@@ -272,9 +274,13 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th class="centrar"><p-calendar #myCalender [(ngModel)]="altoini" [timeOnly]="true" placeholder="hora inicio" id=""></p-calendar></th>
               <th class="centrar"><p-calendar [(ngModel)]="altofin" [timeOnly]="true" placeholder="hora fin" id="" ></p-calendar></th>
             </tr>
+            <tr>
+            <td colspan="2">
+            <hr>
+          </td>
+            </tr>
           </ng-template >
         </p-table>
-        <br>
         </div>
         <div class="modal-footer botonCentrado">
           <button type="button" class="btn btn-primary">Actualizar</button>
@@ -661,7 +667,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     <div class="modal-content">
       <div class="modal-header modal-header-custom">
         <h4 class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">Predicción del tiempo</h4>
-        <h3 *ngIf="nombre_playa" class="modal-title  font-weight-700 padding-bottom-20 position-relative text-capitalize text-center" style="color:'#FAB730'">{{nombre_playa}}</h3>
+        <h3 *ngIf="nombre_playa" class="modal-title  font-weight-700 padding-bottom-20 position-relative text-capitalize text-center" style="color:#FB9605">{{nombre_playa}}</h3>
       </div>
       <div class="modal-body text-center">
         <img class="tamanho_img text-center" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>

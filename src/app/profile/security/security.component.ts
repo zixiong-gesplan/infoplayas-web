@@ -38,6 +38,7 @@ export class SecurityComponent implements OnInit {
   peligrosa:boolean;
   activarGP:boolean = true;
   formUnitarios: FormGroup;
+  formMediosHumanos: FormGroup;
   codMun;
   datasend: string[] = [];
   objeto_attributes:{};
@@ -98,6 +99,18 @@ export class SecurityComponent implements OnInit {
       id_ayuntamiento: new FormControl(0),
       ultimo_editor: new FormControl(''),
       ultimo_cambio: new FormControl('')
+    })
+    this.formMediosHumanos = this.fb.group({
+        ndias: new FormControl(0),
+        jefes_turno: new FormControl(0),
+        socorristas_torre: new FormControl(0),
+        socorristas_polivalentes: new FormControl(0),
+        socorristas_acuatico: new FormControl(0),
+        socorristas_embarcacion: new FormControl(0),
+        socorristas_apie:new FormControl(0),
+        socorristas_embarcacion_per:new FormControl(0),
+
+
     })
   }
 
@@ -319,4 +332,8 @@ loadUnitPrice(){
         });
       })
     }
+
+public updateMediosHumanos(){
+  console.log(this.formMediosHumanos.value);
+}
 }
