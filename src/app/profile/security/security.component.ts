@@ -298,6 +298,7 @@ loadUnitPrice(){
   }
 
   public meteo(playa){
+      this.spinnerService.show();
     this.nombre_playa = playa.attributes.nombre_municipio;
     this.utmToLatLong(playa.centroid.x,playa.centroid.y);
     this.serviceMeteo.meteoData(this.latitud,this.longitud).subscribe(
@@ -305,6 +306,7 @@ loadUnitPrice(){
         if (result.length !== 0) {
         this.datosclima = result;
         $('#tiempo').modal('show');
+        this.spinnerService.hide();
         }
       },
       error => {

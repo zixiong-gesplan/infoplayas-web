@@ -22,16 +22,5 @@ export class RequestService {
             + '&APPID=237a80e2e639efd0fadf62f91c0b65e7&units=metric&lang=es');
     }
 
-    public utmToLatLong(x, y){
-      var latlon = new Array(2);
-      var  zone, southhemi;
-       x = parseFloat (x);
-       y = parseFloat (y);
-      zone = parseInt('28');
-      southhemi = false;
-      UTMXYToLatLon (x, y, zone, southhemi, latlon);
-      this.latitud=RadToDeg (latlon[0]);
-      this.longitud = RadToDeg (latlon[1]);
-
-    }
+    
 }

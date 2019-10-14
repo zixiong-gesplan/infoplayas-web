@@ -58,15 +58,6 @@
         <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}
           <div class="container">
             <div class="row">
-              <!-- <div class="col">
-                <label style="font-size:0.7em; color: black" >Grado de protección:</label>
-                <select id="inputState" class="form-control form-control-sm">
-                  <option selected>Seleccione grado de protección</option>
-                  <option>Alto</option>
-                  <option>Medio</option>
-                  <option>Bajo</option>
-                </select>
-              </div> -->
             </div>
           </div>
           </h4>
@@ -77,9 +68,9 @@
           <ng-template pTemplate="header" >
             <tr>
               <th colspan="9" class="centrar">
-                <span *ngIf="gradoP==='B'">Grado Medio</span>
-                <span *ngIf="gradoP==='M'">Grado Medio</span>
-                <span *ngIf="gradoP==='A'">Grado Alto</span>
+                <span *ngIf="gradoP==='A'">Grado de protección Alto</span>
+                <span *ngIf="gradoP==='M'">Grado de protección Medio</span>
+                <span *ngIf="gradoP==='B'">Grado de protección Bajo</span>
               </th>
             </tr>
             <tr>
@@ -106,7 +97,6 @@
 
             </tr>
             <br>
-            <hr>
             </ng-template >
         </p-table>
       </div>
@@ -190,7 +180,7 @@ Medios Materiales - Banderas y Cartelerías <i class="fa fa-calculator  pointer"
 <h4 class="centrar text-color-grey-646464 font-weight-700" title="Las Playas y ZBM con Grado de Protección Moderado y Alto deberán disponer de torres o sillas de vigilancia, de acuerdo a lo establecido en el Anexo IV. II. B y C del Decreto 116/2018.
 Anexo IV.II.3. Torre o silla de vigilancia:
 'Se situará al menos a no más de 20 metros de la pleamar recomendándose la instalación de una por cada 400 metros de playa, con un área de responsabilidad de 200 metros a cada lado.
-Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Además dispondrá de juego de banderas y un soporte para su izado hasta una altura mínima de 3 metros. Como equipamiento mínimo de las torres o sillas o vigilancia deberán disponer de un botiquín portátil y un desfibrilador semiautomático (DESA) por cada dos sillas o torres de vigilancia a excepción de playas donde sólo haya una, que dispondrá de tal equipamiento'. (*) El equipamiento de vigilancia, salvamento y megafonía se analiza más adelante.">Medios Materiales - Torre o Silla de Vigilancia</h4>
+Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Además dispondrá de juego de banderas y un soporte para su izado hasta una altura mínima de 3 metros. Como equipamiento mínimo de las torres o sillas o vigilancia deberán disponer de un botiquín portátil y un desfibrilador semiautomático (DESA) por cada dos sillas o torres de vigilancia a excepción de playas donde sólo haya una, que dispondrá de tal equipamiento'. (*) El equipamiento de vigilancia, salvamento y megafonía se analiza más adelante.">Medios  - Torre o Silla de Vigilancia</h4>
 <p-table>
   <ng-template pTemplate="header" >
     <tr>
@@ -671,7 +661,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     <div class="modal-content">
       <div class="modal-header modal-header-custom">
         <h4 class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">Predicción del tiempo</h4>
-        <h3 *ngIf="nombre_playa" class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">{{nombre_playa}}</h3>
+        <h3 *ngIf="nombre_playa" class="modal-title  font-weight-700 padding-bottom-20 position-relative text-capitalize text-center" style="color:'#FAB730'">{{nombre_playa}}</h3>
       </div>
       <div class="modal-body text-center">
         <img class="tamanho_img text-center" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
