@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {loadModules} from 'esri-loader';
-import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment.prod';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
@@ -10,7 +9,7 @@ declare var $: any;
 declare var jquery: any;
 
 // variables javascript esri maps
-declare let view: any;
+declare let viewer: any;
 declare const createScaleBar: any;
 declare const createBaseMapToggle: any;
 declare const createLegend: any;
@@ -35,14 +34,13 @@ export class MapViewerComponent implements OnInit {
     @Input() mapHeight: string;
     private currentUser: Auth;
 
-    constructor(private authService: AuthGuardService, private service: EsriRequestService, private gradeService: GradesProtectionService) {
+    constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService) {
     }
 
     ngOnInit() {
         this.currentUser = this.authService.getCurrentUser();
         this.setMap();
     }
-
 
     private setMap() {
         const options = {css: true, version: '4.11'};
@@ -86,30 +84,13 @@ export class MapViewerComponent implements OnInit {
                     }
                 });
                 // and we show that map in a container w/ id #viewDiv
-                view = new MapView({
-                    container: 'viewDiv', // Reference to the scene div created in step 5
+                viewer = new MapView({
+                    container: 'viewDivViewer', // Reference to the scene div created in step 5
                     map: webmap, // Reference to the map object created before the scene
                     zoom: this.zoom
                 });
 
-                // Create a point graphic
-
-                // Add graphics to GraphicsLayer directly as an array
-                // layer.graphics = [graphicA, graphicB];
-
-
-                // First create a point geometry (this is the location of the Titanic)
-                const point = {
-                    type: 'point', // autocasts as new Point()
-                    x: 462430.1819498175,
-                    y: 3093228.306533833 - 12,
-                    spatialReference: {
-                        latestWkid: 32628,
-                        wkid: 32628
-                    }
-                };
-
-                // Create a symbol for drawing the point
+                // Se crean los simbolos para los marcadores
                 const symbolHigh = {
                     type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
                     url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNTEyLjAwMTQwMzgwODU5MzgiIHZlcnNpb249IjEuMSIgd2lkdGg9IjUxMiIgc3R5bGU9IiI+PHJlY3QgaWQ9ImJhY2tncm91bmRyZWN0IiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4PSIwIiB5PSIwIiBmaWxsPSJub25lIiBzdHJva2U9Im5vbmUiLz4KCjxnIGNsYXNzPSJjdXJyZW50TGF5ZXIiIHN0eWxlPSIiPjx0aXRsZT5MYXllciAxPC90aXRsZT48cmVjdCBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS1kYXNob2Zmc2V0PSIiIGZpbGwtcnVsZT0ibm9uemVybyIgaWQ9InN2Z18zIiB4PSI3Ni45MTM1MzQ2NDEyNjU4NyIgeT0iMTIyLjc2ODc4MDA1MjY2MTkiIHdpZHRoPSIyNzcuMTk1OTkyMjk3MzUxMDQiIGhlaWdodD0iMjY3LjU0MzM3ODY3MTU5ODUiIHN0eWxlPSJjb2xvcjogcmdiKDAsIDAsIDApOyIgY2xhc3M9IiIgZmlsbC1vcGFjaXR5PSIxIi8+PGcgaWQ9InN1cmZhY2UxIiBjbGFzcz0ic2VsZWN0ZWQiIGZpbGw9IiNlYjFhMWEiIGZpbGwtb3BhY2l0eT0iMSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utb3BhY2l0eT0iMSI+CjxwYXRoIGQ9Ik0yMTcuNDE4MDU5MzAxMDM2ODMsMTU5LjAzNTA2NTY5ODk2MzE3IEMxNjMuNjI1MDkwMzAxMDM2ODMsMTU5LjAzNTA2NTY5ODk2MzE3IDExOS44NjMzNzEzMDEwMzY4NCwyMDIuNzk2Nzg0Njk4OTYzMTcgMTE5Ljg2MzM3MTMwMTAzNjg0LDI1Ni41ODU4NDY2OTg5NjMxNyBDMTE5Ljg2MzM3MTMwMTAzNjg0LDMxMC4zNzg4MTU2OTg5NjMxNCAxNjMuNjI1MDkwMzAxMDM2ODMsMzU0LjE0MDUzNDY5ODk2MzE3IDIxNy40MTgwNTkzMDEwMzY4MywzNTQuMTQwNTM0Njk4OTYzMTcgQzI3MS4yMDcxMjEzMDEwMzY4LDM1NC4xNDA1MzQ2OTg5NjMxNyAzMTQuOTY4ODQwMzAxMDM2ODMsMzEwLjM3ODgxNTY5ODk2MzE0IDMxNC45Njg4NDAzMDEwMzY4MywyNTYuNTg1ODQ2Njk4OTYzMTcgQzMxNC45Njg4NDAzMDEwMzY4MywyMDIuNzk2Nzg0Njk4OTYzMTcgMjcxLjIwNzEyMTMwMTAzNjgsMTU5LjAzNTA2NTY5ODk2MzE3IDIxNy40MTgwNTkzMDEwMzY4MywxNTkuMDM1MDY1Njk4OTYzMTcgek0yNzUuMzM2MDI3MzAxMDM2ODQsMjM4LjIxNDc1MzY5ODk2MzE2IEwyMDUuNDQ5MzA5MzAxMDM2ODMsMzA4LjEwMTQ3MjY5ODk2MzE2IEMyMDIuNTE1NzE1MzAxMDM2ODMsMzExLjAzNTA2NTY5ODk2MzE0IDE5OC42NjgwNTkzMDEwMzY4MywzMTIuNTAzODE1Njk4OTYzMTQgMTk0LjgyNDMwOTMwMTAzNjgzLDMxMi41MDM4MTU2OTg5NjMxNCBDMTkwLjk4MDU1OTMwMTAzNjgzLDMxMi41MDM4MTU2OTg5NjMxNCAxODcuMTM2ODA5MzAxMDM2ODMsMzExLjAzODk3MjY5ODk2MzE2IDE4NC4yMDMyMTUzMDEwMzY4MywzMDguMTAxNDcyNjk4OTYzMTYgTDE1Ny40OTYxODQzMDEwMzY4MywyODEuMzk0NDQwNjk4OTYzMTQgQzE1MS42Mjg5OTYzMDEwMzY4NCwyNzUuNTMxMTU5Njk4OTYzMTcgMTUxLjYyODk5NjMwMTAzNjg0LDI2Ni4wMTk0NDA2OTg5NjMxNCAxNTcuNDk2MTg0MzAxMDM2ODMsMjYwLjE1MjI1MzY5ODk2MzIgQzE2My4zNTk0NjUzMDEwMzY4MywyNTQuMjg1MDY1Njk4OTYzMTcgMTcyLjg3MTE4NDMwMTAzNjgzLDI1NC4yODUwNjU2OTg5NjMxNyAxNzguNzM4MzcxMzAxMDM2ODQsMjYwLjE1MjI1MzY5ODk2MzIgTDE5NC44MjQzMDkzMDEwMzY4MywyNzYuMjM4MTkwNjk4OTYzMTQgTDI1NC4wOTM4NDAzMDEwMzY4MywyMTYuOTcyNTY1Njk4OTYzMTcgQzI1OS45NTcxMjEzMDEwMzY4LDIxMS4xMDUzNzg2OTg5NjMxNiAyNjkuNDY4ODQwMzAxMDM2ODMsMjExLjEwNTM3ODY5ODk2MzE2IDI3NS4zMzYwMjczMDEwMzY4NCwyMTYuOTcyNTY1Njk4OTYzMTcgQzI4MS4yMDMyMTUzMDEwMzY4MywyMjIuODM1ODQ2Njk4OTYzMTcgMjgxLjIwMzIxNTMwMTAzNjgzLDIzMi4zNDc1NjU2OTg5NjMxNyAyNzUuMzM2MDI3MzAxMDM2ODQsMjM4LjIxNDc1MzY5ODk2MzE2IHpNMjc1LjMzNjAyNzMwMTAzNjg0LDIzOC4yMTQ3NTM2OTg5NjMxNiAiIHN0eWxlPSJmaWxsLXJ1bGU6IG5vbnplcm87IiBpZD0ic3ZnXzEiIGZpbGw9IiNlYjFhMWEiIGZpbGwtb3BhY2l0eT0iMSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utb3BhY2l0eT0iMSIvPgo8cGF0aCBkPSJNNDM0LjkxMDI0NjMwMTAzNjgsMTM5LjQ5NjAwMzY5ODk2MzE2IEw0MzQuODk0NjIxMzAxMDM2OCwxMzkuMDk3NTY1Njk4OTYzMTcgQzQzNC42NzE5NjUzMDEwMzY4MywxMzQuMTc5NTk2Njk4OTYzMTcgNDM0LjUyMzUyNzMwMTAzNjg0LDEyOC45NzY0NzI2OTg5NjMxNiA0MzQuNDMzNjg0MzAxMDM2ODYsMTIzLjE4NzQwOTY5ODk2MzE3IEM0MzQuMDE1NzE1MzAxMDM2ODMsOTQuOTU2OTQwNjk4OTYzMTcgNDExLjU3NDMwOTMwMTAzNjg2LDcxLjYwNTM3ODY5ODk2MzE2IDM4My4zMzk5MzQzMDEwMzY4Niw3MC4wMjcyNTM2OTg5NjMxNiBDMzI0LjQ3Mjc0NjMwMTAzNjgsNjYuNzQyMDk2Njk4OTYzMTcgMjc4LjkzMzY4NDMwMTAzNjg2LDQ3LjU0Njc4NDY5ODk2MzE2NSAyNDAuMDIzNTI3MzAxMDM2ODQsOS42MjEwMDM2OTg5NjMxNjUgTDIzOS42OTE0OTYzMDEwMzY4NCw5LjMwNDU5NjY5ODk2MzE2NSBDMjI3LjAwMDA5MDMwMTAzNjgzLC0yLjMzMjEyMTMwMTAzNjgzNDUgMjA3Ljg1NTU1OTMwMTAzNjgzLC0yLjMzMjEyMTMwMTAzNjgzNDUgMTk1LjE2MDI0NjMwMTAzNjg0LDkuMzA0NTk2Njk4OTYzMTY1IEwxOTQuODI4MjE1MzAxMDM2ODMsOS42MjEwMDM2OTg5NjMxNjUgQzE1NS45MTgwNTkzMDEwMzY4Myw0Ny41NDY3ODQ2OTg5NjMxNjUgMTEwLjM3ODk5NjMwMTAzNjg0LDY2Ljc0MjA5NjY5ODk2MzE3IDUxLjUxMTgwOTMwMTAzNjgzNCw3MC4wMzExNTk2OTg5NjMxNyBDMjMuMjgxMzQwMzAxMDM2ODM1LDcxLjYwNTM3ODY5ODk2MzE2IDAuODM2MDI3MzAxMDM2ODM0Niw5NC45NTY5NDA2OTg5NjMxNyAwLjQxODA1OTMwMTAzNjgzNDc1LDEyMy4xOTEzMTU2OTg5NjMxNyBDMC4zMzIxMjEzMDEwMzY4MzQ3LDEyOC45NDEzMTU2OTg5NjMxNyAwLjE3OTc3NzMwMTAzNjgzNDc2LDEzNC4xNDQ0NDA2OTg5NjMxNyAtMC4wNDI4Nzg2OTg5NjMxNjUzMiwxMzkuMDk3NTY1Njk4OTYzMTcgTC0wLjA2NjMxNTY5ODk2MzE2NTI1LDE0MC4wMjMzNDY2OTg5NjMxNyBDLTEuMjEwODQ2Njk4OTYzMTY1MiwyMDAuMDUwNjkwNjk4OTYzMTcgLTIuNjMyNzIyNjk4OTYzMTY1NCwyNzQuNzU3NzIyNjk4OTYzMTYgMjIuMzU5NDY1MzAxMDM2ODM1LDM0Mi41NjYzMTU2OTg5NjMxNCBDMzYuMTAxNjUzMzAxMDM2ODMsMzc5Ljg1NTM3ODY5ODk2MzIgNTYuOTE0MTUzMzAxMDM2ODMsNDEyLjI2OTQ0MDY5ODk2MzE0IDg0LjIxNDkzNDMwMTAzNjgzLDQzOC45MTM5NzI2OTg5NjMxNiBDMTE1LjMwODY4NDMwMTAzNjgzLDQ2OS4yNTc3MjI2OTg5NjMxNiAxNTYuMDM1MjQ2MzAxMDM2ODQsNDkzLjM0NzU2NTY5ODk2MzE0IDIwNS4yNjE4MDkzMDEwMzY4Myw1MTAuNTExNjI4Njk4OTYzMiBDMjA2Ljg2MzM3MTMwMTAzNjg0LDUxMS4wNzAyMjI2OTg5NjMxNiAyMDguNTI3NDM0MzAxMDM2ODMsNTExLjUyMzM0NjY5ODk2MzE3IDIxMC4yMjI3NDYzMDEwMzY4NCw1MTEuODYzMTkwNjk4OTYzMTQgQzIxMi42MTMzNzEzMDEwMzY4NCw1MTIuMzM5NzUzNjk4OTYzMiAyMTUuMDE5NjIxMzAxMDM2ODQsNTEyLjU3ODAzNDY5ODk2MzIgMjE3LjQyNTg3MTMwMTAzNjg0LDUxMi41NzgwMzQ2OTg5NjMyIEMyMTkuODMyMTIxMzAxMDM2ODQsNTEyLjU3ODAzNDY5ODk2MzIgMjIyLjI0MjI3NzMwMTAzNjg0LDUxMi4zMzk3NTM2OTg5NjMyIDIyNC42Mjg5OTYzMDEwMzY4NCw1MTEuODYzMTkwNjk4OTYzMTQgQzIyNi4zMjQzMDkzMDEwMzY4Myw1MTEuNTIzMzQ2Njk4OTYzMTcgMjI4LjAwMDA5MDMwMTAzNjgzLDUxMS4wNjYzMTU2OTg5NjMxNCAyMjkuNjA5NDY1MzAxMDM2ODMsNTEwLjUwMzgxNTY5ODk2MzE0IEMyNzguNzc3NDM0MzAxMDM2ODYsNDkzLjMwODUwMzY5ODk2MzIgMzE5LjQ2MTAyNzMwMTAzNjg0LDQ2OS4yMDY5NDA2OTg5NjMxNCAzNTAuNTI3NDM0MzAxMDM2ODYsNDM4Ljg2NzA5NjY5ODk2MzE3IEMzNzcuODE2NDk2MzAxMDM2OCw0MTIuMjE0NzUzNjk4OTYzMiAzOTguNjI4OTk2MzAxMDM2OCwzNzkuNzkyODc4Njk4OTYzMiA0MTIuMzgyOTAzMzAxMDM2ODMsMzQyLjQ5NjAwMzY5ODk2MzIgQzQzNy40Njg4NDAzMDEwMzY4MywyNzQuNDg0Mjg0Njk4OTYzMTcgNDM2LjA1MDg3MTMwMTAzNjgsMTk5LjYzNjYyODY5ODk2MzE2IDQzNC45MTAyNDYzMDEwMzY4LDEzOS40OTYwMDM2OTg5NjMxNiB6TTIxNy40MTgwNTkzMDEwMzY4MywzODQuMTgzNTAzNjk4OTYzMiBDMTQ3LjA1ODY4NDMwMTAzNjgzLDM4NC4xODM1MDM2OTg5NjMyIDg5LjgyMDQwMzMwMTAzNjgzLDMyNi45NDUyMjI2OTg5NjMxNiA4OS44MjA0MDMzMDEwMzY4MywyNTYuNTg1ODQ2Njk4OTYzMTcgQzg5LjgyMDQwMzMwMTAzNjgzLDE4Ni4yMjY0NzI2OTg5NjMxNiAxNDcuMDU4Njg0MzAxMDM2ODMsMTI4Ljk4ODE5MDY5ODk2MzE3IDIxNy40MTgwNTkzMDEwMzY4MywxMjguOTg4MTkwNjk4OTYzMTcgQzI4Ny43NzM1MjczMDEwMzY4NCwxMjguOTg4MTkwNjk4OTYzMTcgMzQ1LjAxNTcxNTMwMTAzNjgzLDE4Ni4yMjY0NzI2OTg5NjMxNiAzNDUuMDE1NzE1MzAxMDM2ODMsMjU2LjU4NTg0NjY5ODk2MzE3IEMzNDUuMDE1NzE1MzAxMDM2ODMsMzI2Ljk0NTIyMjY5ODk2MzE2IDI4Ny43NzM1MjczMDEwMzY4NCwzODQuMTgzNTAzNjk4OTYzMiAyMTcuNDE4MDU5MzAxMDM2ODMsMzg0LjE4MzUwMzY5ODk2MzIgek0yMTcuNDE4MDU5MzAxMDM2ODMsMzg0LjE4MzUwMzY5ODk2MzIgIiBzdHlsZT0iZmlsbC1ydWxlOiBub256ZXJvOyIgaWQ9InN2Z18yIiBmaWxsPSIjZWIxYTFhIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLW9wYWNpdHk9IjEiLz4KPC9nPjwvZz48L3N2Zz4=',
@@ -129,26 +110,34 @@ export class MapViewerComponent implements OnInit {
                     height: '32px'
                 };
 
-                // Create a graphic and add the geometry and symbol to it
-                const pointGraphic = new Graphic({
-                    geometry: point,
-                    symbol: symbolHigh
-                });
-
-                // Add the graphics to the view's graphics layer
-                view.graphics.addMany([pointGraphic]);
+                this.gradeService.features$.subscribe(
+                    (results: any) => {
+                        if (results) {
+                            viewer.graphics = [];
+                            results.forEach(value => {
+                                value.geometry.y = value.geometry.y - 20;
+                                const grap = Graphic.fromJSON(value);
+                                grap.symbol = value.grado_maximo === 'A' ? symbolHigh : value.grado_maximo === 'M' ?
+                                    symbolMedium : symbolLow;
+                                viewer.graphics.add(grap);
+                            });
+                        }
+                    },
+                    error => {
+                        console.log(error.toString());
+                    });
 
                 const t = this;
                 let playasLayer, municipiosLayer;
                 // Create widgets
-                const scaleBar = createScaleBar(ScaleBar, view);
-                const basemapToggle = createBaseMapToggle(BasemapToggle, view, 'streets-vector');
-                const legend = createLegend(Legend, view, 'legendDiv');
-                const expandList = createExpand(Expand, view, document.getElementById('listPlayas')
+                const scaleBar = createScaleBar(ScaleBar, viewer);
+                const basemapToggle = createBaseMapToggle(BasemapToggle, viewer, 'streets-vector');
+                const legend = createLegend(Legend, viewer, 'legendDivViewer');
+                const expandList = createExpand(Expand, viewer, document.getElementById('listPlayasViewer')
                     , 'esri-icon-layer-list', 'Listado de playas');
 
-                view.when(function () {
-                    view.popup.autoOpenEnabled = false; // disable popups
+                viewer.when(function () {
+                    viewer.popup.autoOpenEnabled = false; // disable popups
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
@@ -163,31 +152,31 @@ export class MapViewerComponent implements OnInit {
                     municipiosLayer.queryFeatures({
                         outFields: ['*'],
                         where: filterMunicipios,
-                        geometry: view.initialExtent,
+                        geometry: viewer.initialExtent,
                         returnGeometry: true
                     }).then(function (results) {
                         const latitude = results.features[0].geometry.centroid.latitude;
                         const longitude = results.features[0].geometry.centroid.longitude;
-                        view.center = [longitude, latitude];
+                        viewer.center = [longitude, latitude];
                         // Default Home value is current extent
-                        const home = createHomeButton(Home, view);
+                        const home = createHomeButton(Home, viewer);
                         // Add widgets to the view
-                        view.ui.add([home, expandList], 'top-left');
-                        view.ui.add(scaleBar, 'bottom-left');
-                        view.ui.add(['info', legend], 'top-right');
-                        view.ui.add(['infobutton'], 'bottom-right');
+                        viewer.ui.add([home, expandList], 'top-left');
+                        viewer.ui.add(scaleBar, 'bottom-left');
+                        viewer.ui.add(['infoViewer', legend], 'top-right');
 
                         // Some elements are hidden by default. We show them when the view is loaded
-                        $('#info')[0].classList.remove('esri-hidden');
-                        $('#listPlayas')[0].classList.remove('esri-hidden');
+                        $('#infoViewer')[0].classList.remove('esri-hidden');
+                        $('#listPlayasViewer')[0].classList.remove('esri-hidden');
                     });
 
-                    const listID = 'ulPlaya';
-                    listNode = $('#ulPlaya')[0];
+                    const listID = 'ulPlayaViewer';
+                    listNode = $('#ulPlayaViewer')[0];
                     listNode.addEventListener('click', onListClickHandler);
 
-                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas).then(function (nBeachs) {
+                    loadList(viewer, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas).then(function (nBeachs) {
                         // TODO
+
                     });
 
                     function onListClickHandler(event) {
@@ -200,7 +189,7 @@ export class MapViewerComponent implements OnInit {
                         const result = resultId && features && features[parseInt(resultId, 10)];
 
                         try {
-                            view.goTo(result.geometry.extent.expand(2));
+                            viewer.goTo(result.geometry.extent.expand(2));
 
                         } catch (error) {
                         }

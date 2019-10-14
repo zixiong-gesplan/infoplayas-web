@@ -16,7 +16,7 @@
         <div class="col-md-4 testimonial">
             <div class="information-written-data">
                 <h2 class="border-color-blue-5 text-color-grey paddingleft10px text-capitalize margin-top0"><span
-                        class="green-color">Clasificaci&oacute;n de playas </span><br>otras zonas de Baño Mar&iacute;timas
+                    class="green-color">Clasificaci&oacute;n de playas </span><br>otras zonas de Baño Mar&iacute;timas
                 </h2>
                 <!-- Swiper -->
             </div>
@@ -37,7 +37,7 @@
                                     PELIGRO PARA LA VIDA HUMANA. No se podr&aacute;n utilizar para el ejercicio del baño
                                     ni para actividades recreativas o deportivas,
                                     ya sea en su entorno acu&aacute;tico o terrestre. <br><a
-                                            class="testimonial-p blue-color text-capitalize">Saber m&aacute;s</a></p>
+                                        class="testimonial-p blue-color text-capitalize">Saber m&aacute;s</a></p>
                             </div>
                             <div class="profile-box">
                                 <div class="profile-box-img">
@@ -110,7 +110,7 @@
         <div class="col-md-4 testimonial">
             <div class="information-written-data">
                 <h2 class="border-color-blue-5 text-color-grey paddingleft10px text-capitalize margin-top0"><span
-                        class="green-color"> Criterios para la determinaci&oacute;n</span><br>del grado de protecci&oacute;n
+                    class="green-color"> Criterios para la determinaci&oacute;n</span><br>del grado de protecci&oacute;n
                 </h2>
                 <!-- Swiper -->
             </div>
@@ -179,7 +179,7 @@
                                     y entorno de la playa, la realizaci&oacute;n de actividades deportivas y de recreo y
                                     existencia de balizamiento en zonas de baño,
                                     que ser&aacute;n valorados en funci&oacute;n de su peligrosidad.<br><a
-                                            class="testimonial-p blue-color text-capitalize">Saber m&aacute;s</a>
+                                        class="testimonial-p blue-color text-capitalize">Saber m&aacute;s</a>
                                 </p>
                             </div>
                             <div class="profile-box">
@@ -430,14 +430,14 @@
         <div class="col-md-6 portfolio-wide paddingleft25px">
             <div class="information-written-data wow fadeIn">
                 <h2
-                        class="border-color-blue-3 no-margin text-color-grey ">
+                    class="border-color-blue-3 no-margin text-color-grey ">
                     {{(localName ? localName : 'seleccione playa') }}
                     <br> <span [hidden]="localName && localName.length > 20"
                                class="green-color font-style-1">Editor</span></h2>
             </div>
         </div>
         <p-overlayPanel #op2>
-            <label>Zonas: {{numberOfBeachs}}</label>
+            <label>Playas: {{numberOfBeachs}}</label>
         </p-overlayPanel>
         <div class="row">
             <div id="js-filters-mosaic-flat" class="col-lg-offset-6 cbp-l-filters-buttonCenter">
@@ -464,7 +464,7 @@
                 </div>
                 <div id="resultsFilterMenu"
                      pTooltip="Presentación de resultados de la clasificación y grado de protección"
-                     tooltipPosition="top" (click)="setForm('resultados');op2.show($event)" data-filter=".result"
+                     tooltipPosition="top" (click)="calculateGradesProtection();op2.show($event)" data-filter=".result"
                      class="cbp-filter-item text-capitalize">
                     resultados
                     <!--                    <div class="cbp-filter-counter"></div>-->
@@ -489,80 +489,28 @@
                 </div>
                 <div class="cbp-item result">
                     <div class="cbp-caption">
-                        <div class="cbp-caption-defaultWrap">
-                            <img src="assets/images/gallery3.jpg" alt="project">
-                        </div>
-                        <div class="cbp-caption-activeWrap">
-                            <div class="cbp-l-caption-alignCenter">
-                                <div class="cbp-l-caption-body">
-                                    <div class="plus">
-                                        <img src="assets/images/plus-sign.png" alt="sign">
-                                    </div>
-                                    <div class="cbp-l-caption-title">creative art work</div>
-                                    <br>
-                                    <a href="assets/images/gallery3.jpg"
-                                       class="cbp-lightbox portfolio-img-button btn  btn-rounded btn-large"
-                                       data-title="creative art work<br>by Tiberiu Neamu">View Large</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="cbp-item result">
-                    <div class="cbp-caption">
-                        <div class="cbp-caption-defaultWrap">
-                            <img src="assets/images/gallery3.jpg" alt="project">
-                        </div>
-                        <div class="cbp-caption-activeWrap">
-                            <div class="cbp-l-caption-alignCenter">
-                                <div class="cbp-l-caption-body">
-                                    <div class="plus">
-                                        <img src="assets/images/plus-sign.png" alt="sign">
-                                    </div>
-                                    <div class="cbp-l-caption-title">creative art work</div>
-                                    <br>
-                                    <a href="assets/images/gallery3.jpg"
-                                       class="cbp-lightbox portfolio-img-button btn  btn-rounded btn-large"
-                                       data-title="creative art work<br>by Tiberiu Neamu">View Large</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="cbp-item result">
-                    <div class="cbp-caption">
-                        <div class="cbp-caption-defaultWrap">
-                            <img src="assets/images/gallery3.jpg" alt="project">
-                        </div>
-                        <div class="cbp-caption-activeWrap">
-                            <div class="cbp-l-caption-alignCenter">
-                                <div class="cbp-l-caption-body">
-                                    <div class="plus">
-                                        <img src="assets/images/plus-sign.png" alt="sign">
-                                    </div>
-                                    <div class="cbp-l-caption-title">creative art work</div>
-                                    <br>
-                                    <a href="assets/images/gallery3.jpg"
-                                       class="cbp-lightbox portfolio-img-button btn  btn-rounded btn-large"
-                                       data-title="creative art work<br>by Tiberiu Neamu">View Large</a>
-                                </div>
-                            </div>
-                        </div>
+                        <p>Explicación de lo que se puede ver</p>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row paddingleft15px paddingright15px">
+        <div [hidden]="!viewResults" class="row paddingleft15px paddingright15px padding-bottom-15">
+            <app-map-viewer
+                [mapHeight]="mapHeightContainer"
+                [zoom]="mapZoomLevel">
+            </app-map-viewer>
+        </div>
+        <div [hidden]="viewResults" class="row paddingleft15px paddingright15px">
             <app-map-editor
-                    (beachId)="receiveBeachId($event)"
-                    (localName)="receiveLocalName($event)"
-                    (nZones)="receiveNzones($event)"
-                    (clasification)="receiveClasification($event)"
-                    (lastChangeTracking)="receiveLastChangeTracking($event)"
-                    [zoom]="mapZoomLevel"
-                    [mapHeight]="mapHeightContainer"
-                    [selectForm]="actualForm"
-                    [urlInfoMap]="'https://gesplangis.es/arcgis/apps/webappviewer/index.html?id=d570f2faba45491d9d0927fc29f97dc2'">
+                (beachId)="receiveBeachId($event)"
+                (localName)="receiveLocalName($event)"
+                (nZones)="receiveNzones($event)"
+                (clasification)="receiveClasification($event)"
+                (lastChangeTracking)="receiveLastChangeTracking($event)"
+                [zoom]="mapZoomLevel"
+                [mapHeight]="mapHeightContainer"
+                [selectForm]="actualForm"
+                [urlInfoMap]="'https://gesplangis.es/arcgis/apps/webappviewer/index.html?id=d570f2faba45491d9d0927fc29f97dc2'">
             </app-map-editor>
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -710,8 +658,8 @@
                         grados</h2>
                 </div>
                 <div
-                        [class]="gradeService.records && gradeService.records.length > 0 ? 'col-md-12 cart_table wow fadeInUp' : 'col-md-12 cart_table'"
-                        data-wow-delay="300ms">
+                    [class]="gradeService.records && gradeService.records.length > 0 ? 'col-md-12 cart_table wow fadeInUp' : 'col-md-12 cart_table'"
+                    data-wow-delay="300ms">
                     <p-table *ngIf="gradeService.records && gradeService.records.length > 0" [columns]="colsGrade"
                              [value]="gradeService.records">
                         <ng-template pTemplate="header" let-columns>

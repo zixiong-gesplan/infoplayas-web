@@ -53,6 +53,16 @@ export class EsriRequestService {
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 
+    getEsriLayerIdsOnly(featureEndPoint: string, token: string, cWhere: string) {
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'application/X-www-form-urlencoded');
+
+        const params = new HttpParams().set('token', token).append('f', 'json')
+            .append('where', cWhere)
+            .append('returnIdsOnly', 'true');
+        return this.http.post(featureEndPoint, params, {headers: headers});
+    }
+
     getAllData(featureEndPoint, featureEndPointRelated, relationshipId, cWhere, token, parentIds: string[]) {
         this.beachs = [];
         const headers = new HttpHeaders();

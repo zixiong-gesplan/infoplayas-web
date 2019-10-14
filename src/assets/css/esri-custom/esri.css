@@ -14,6 +14,22 @@
     float: left;
 }
 
+#mainContainerViewer {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+#viewDivViewer {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    float: left;
+}
+
 .custom-widget {
     border-radius: 2px;
     width: 11em!important;
@@ -68,6 +84,11 @@ textarea {
 /*-------------------------------WIDGET DE LISTADO DE PLAYAS-------------------------------------*/
 
 #listPlayas {
+    width: 15rem;
+    max-height: 300px;
+}
+
+#listPlayasViewer {
     width: 15rem;
     max-height: 300px;
 }

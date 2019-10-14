@@ -3,6 +3,8 @@ import {MenuItem} from 'primeng/api';
 import {Municipality} from '../../models/municipality';
 import {GradesProtectionService} from '../../services/grades-protection.service';
 import {AuthGuardService} from '../../services/auth-guard.service';
+import {environment} from '../../../environments/environment.prod';
+import {EsriRequestService} from '../../services/esri-request.service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -31,8 +33,10 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     lastChangeOnselectedBeach: Date;
     colsGrade: any;
     visible: string;
+    objectIDs: any[];
+    viewResults: boolean;
 
-    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService) {
+    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService) {
     }
 
     ngAfterViewInit() {
@@ -62,6 +66,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
             {field: 'grado', header: 'Grado', width: '20%', type: 'text', orderBy: 'grado'},
             {field: 'grado_valor', header: 'Nivel', width: '20%', type: 'text', orderBy: 'grado_valor'}
         ];
+        // cargamos los ids de las playas para usarlo posteriormente al mostrar los resultados
+        this.loadBeachsIds();
     }
 
     initCubPortfolio() {
@@ -143,6 +149,20 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         });
     }
 
+    loadBeachsIds() {
+        const filtermunicipio = 'municipio = \'' + aytos[this.authService.getCurrentUser().username].municipio_minus + '\'';
+        this.service.getEsriLayerIdsOnly(environment.infoplayas_catalogo_edicion_url + '/query',
+            this.authService.getCurrentUser().token, filtermunicipio).subscribe(
+            (result: any) => {
+                if (result) {
+                    this.objectIDs = result.objectIds;
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
+    }
+
     receiveBeachId($event: string) {
         this.beachObjectId = $event;
         if ($event !== 'noid') {
@@ -189,6 +209,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     setForm(opFilter: string) {
+        this.viewResults = false;
         this.actualForm = opFilter === 'protection' ? this.selectedLayerProtection > 0 ?
             this.listOfLayersProtection[this.selectedLayerProtection] : this.listOfLayersProtection[0] : opFilter;
     }
@@ -201,5 +222,10 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         }
         const lisValues: number [] = [0, 1, 3, 5];
         return n > 0 ? lisValues[n - 1] : 0;
+    }
+
+    calculateGradesProtection() {
+        this.gradeService.calculateAll(this.objectIDs, this.authService.getCurrentUser().token);
+        this.viewResults = true;
     }
 }
