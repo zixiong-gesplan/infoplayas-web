@@ -64,6 +64,9 @@ export class SecurityComponent implements OnInit {
       speed:''
     }
   };
+    private selectObjectId: number;
+    private options: string;
+    private grados: [] = [];
 
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
@@ -74,7 +77,6 @@ export class SecurityComponent implements OnInit {
               private gradeService: GradesProtectionService,) { }
 
   ngOnInit() {
-
     this.loadRecords();
     this.default();
     this.formUnitarios = this.fb.group({
@@ -116,7 +118,7 @@ export class SecurityComponent implements OnInit {
 
 
   loadRecords() {
-    this.spinnerService.show();
+
     this.currentUser = this.authService.getCurrentUser();
     this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
     this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
@@ -126,10 +128,21 @@ export class SecurityComponent implements OnInit {
               if (result) {
 
                    this.datosPlaya =  result;
+                  this.gradeService.filterRecords.subscribe(
+                      (results: any) => {
+                          if (results.depende === '') {
+                              alert('STOP NO HAY DATOS');
+                          } else {
+                                this.grados = [];
+                                // console.log(results[0]);
+                              this.loadRelatedRecords(this.selectObjectId, this.options);
+                          }
+                      },
+                      error => {
+                          console.log(error.toString());
+                      });
                    console.log(this.datosPlaya);
                    this.codMunicipio(this.datosPlaya);
-                   this.spinnerService.hide();
-                 }else{
 
                  }
           },
@@ -143,7 +156,7 @@ export class SecurityComponent implements OnInit {
   }
 
   loadRelatedRecords(object_id,option) {
-    this.spinnerService.show();
+
     let modaloption = option;
     this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url+ '/queryRelatedRecords',
         object_id, '4', '*', false, this.currentUser.token).subscribe(
@@ -153,7 +166,7 @@ export class SecurityComponent implements OnInit {
             // console.log(this.datosPlayaRelacionada);
             $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
             $('#' + modaloption).modal('show');
-            this.spinnerService.hide();
+
           }else{
 
           }
@@ -246,18 +259,20 @@ loadUnitPrice(){
     this.altoini = mc.inputFieldValue;
   }
 
-  private anhadir_medios(playa,option){
+    private anhadir_medios(playa, option) {
+        this.selectObjectId = playa.attributes.objectid_12;
+        this.options = option;
+        this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
+        this.nombre_playa = playa.attributes.nombre_municipio;
+        this.iddgse = playa.attributes.id_dgse;
+        this.clasificacion = playa.attributes.clasificacion;
+        this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
+        this.loadRelatedRecords(playa.attributes.objectid_12, option);
 
-    this.nombre_playa = playa.attributes.nombre_municipio;
-    this.iddgse = playa.attributes.id_dgse;
-    this.clasificacion = playa.attributes.clasificacion;
-    this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
-    this.loadRelatedRecords(playa.attributes.objectid_12,option);
-
-    if(playa.attributes.clasificacion==='USO PROHIBIDO'){
-      this.peligrosa = true;
+        if (playa.attributes.clasificacion === 'USO PROHIBIDO') {
+            this.peligrosa = true;
+        }
     }
-  }
 
   private mostrar_pasiva_grado_bajo(grado){
       if(grado==='bajo'){

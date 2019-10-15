@@ -145,11 +145,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
 
     receiveBeachId($event: string) {
         this.beachObjectId = $event;
-        if ($event !== 'noid') {
-            this.gradeService.calculate($event, this.authService.getCurrentUser().token);
-        } else {
-            this.gradeService.records = [];
-        }
+        // if ($event !== 'noid') {
+        //     this.gradeService.calculate($event, this.authService.getCurrentUser().token);
+        // } else {
+        //     this.gradeService.records = [];
+        // }
     }
 
     receiveNzones($event: number) {

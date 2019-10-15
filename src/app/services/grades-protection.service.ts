@@ -5,20 +5,21 @@ import {AuthGuardService} from './auth-guard.service';
 import {Attribute} from '../models/attribute';
 import {GradeRecord} from '../models/grade-record';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {forkJoin} from 'rxjs';
+import {BehaviorSubject, forkJoin} from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class GradesProtectionService {
     records: GradeRecord[];
-    filterRecords;
+    private recordsSource = new BehaviorSubject<any>({});
+    filterRecords = this.recordsSource.asObservable();
 
     constructor(private service: EsriRequestService, private authService: AuthGuardService, private http: HttpClient) {
     }
 
     calculate(parentid: string, token: string) {
-        this.filterRecords = [];
+        const records = [];
         const httpRequests = [];
         const relationsIds = ['1', '2', '3'];
         const headers = new HttpHeaders();
@@ -36,7 +37,6 @@ export class GradesProtectionService {
         });
 
         forkJoin(httpRequests).subscribe(results => {
-
             if (results[0].relatedRecordGroups.length > 0 && results[1].relatedRecordGroups.length > 0
                 && results[2].relatedRecordGroups.length > 0) {
                 // calculos para el valor de peligrosidad Incidentes y actividades deportivas
@@ -54,10 +54,10 @@ export class GradesProtectionService {
                     env_sea.accesos === 'SDIF' ? 1 :
                         env_sea.accesos === 'AVHC' ? 3 : 5 : 0;
                 // traemos los periodos y niveles de afluencia
-                this.records = [];
+
                 const periods: Attribute[] = (results[2] as any).relatedRecordGroups[0].relatedRecords;
                 periods.forEach(value => {
-                    this.records.push({
+                    records.push({
                         fecha_fin: new Date(value.attributes.fecha_fin),
                         fecha_inicio: new Date(value.attributes.fecha_inicio),
                         incluir_dias: value.attributes.incluir_dias,
@@ -71,17 +71,17 @@ export class GradesProtectionService {
                 // calculo del grado
                 const riskfactors = (vIncidents + vSports + vSeaConditions + vEnvironment + vPopulation) / 5;
                 const riskLvl = riskfactors > 4 ? 'A' : riskfactors > 2 ? 'M' : 'B';
-                this.records.forEach(value => {
+                records.forEach(value => {
                     value.grado = this.calculateGradeLvl(value.afluencia, riskLvl);
                     value.grado_valor = value.grado === 'A' ? 2 : value.grado === 'M' ? 1 : 0;
                 });
-                this.filterRecords = [...new Set(this.records.map(x => x.grado))];
-                console.log(this.filterRecords);
+                const temp = [...new Set(records.map(x => x.grado))];
+                console.log(temp);
+                this.recordsSource.next(temp);
             } else {
-                this.records = [];
+                this.recordsSource.next({depende: ''});
             }
         });
-
     }
 
     getDangerPopulationLevel(cargaPoblacional: number): number {

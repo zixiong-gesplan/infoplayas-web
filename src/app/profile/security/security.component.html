@@ -65,7 +65,7 @@
       </div>
       <div class="modal-body">
         <!-- <h4 [hidden]="peligrosa" class="centrar text-color-grey-646464 font-weight-700">Medios Humanos <i class="fa fa-calculator pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo humano" (click)="calculadora('humanos')"></i></h4> -->
-        <p-table *ngFor="let gradoP of gradeService.filterRecords">
+        <p-table *ngFor="let gradoP of grados">
           <ng-template pTemplate="header" >
             <tr>
               <th colspan="9" class="centrar">
