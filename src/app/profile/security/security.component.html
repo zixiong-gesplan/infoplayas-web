@@ -53,28 +53,27 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="humanos">
   <div class="modal-dialog modal-dialog-main modal-dialog-centered" role="document">
     <div class="modal-content">
+      <form [formGroup]="formMediosHumanos" (ngSubmit)="updateMediosHumanos()">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" (click)="default()">&times;</span></button>
         <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}
           <div class="container">
             <div class="row">
-              <div class="col">
-                <label style="font-size:0.7em; color: black" >Grado de protección:</label>
-                <select id="inputState" class="form-control form-control-sm">
-                  <option selected>Seleccione grado de protección</option>
-                  <option>Alto</option>
-                  <option>Medio</option>
-                  <option>Bajo</option>
-                </select>
-              </div>
             </div>
           </div>
           </h4>
       </div>
       <div class="modal-body">
         <!-- <h4 [hidden]="peligrosa" class="centrar text-color-grey-646464 font-weight-700">Medios Humanos <i class="fa fa-calculator pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo humano" (click)="calculadora('humanos')"></i></h4> -->
-        <p-table>
+        <p-table *ngFor="let gradoP of grados">
           <ng-template pTemplate="header" >
+            <tr>
+              <th colspan="9" class="centrar">
+                <span *ngIf="gradoP==='A'">Grado de protección Alto</span>
+                <span *ngIf="gradoP==='M'">Grado de protección Medio</span>
+                <span *ngIf="gradoP==='B'">Grado de protección Bajo</span>
+              </th>
+            </tr>
             <tr>
               <th class="tamanhofont">Nº de días</th>
               <th class="tamanhofont">Longitud</th>
@@ -88,25 +87,25 @@
             </tr>
             <tr>
               <th class="centrar"><input type="number"  id="ndias" class="form-control  inputCustom"  readonly></th>
-              <th class="centrar"><input type="number"  id="longitud" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="storre" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="sacuaticaspie" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="sacuaticas" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="spieagua" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="smbarcacion" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="sper" class="form-control  inputCustom" value="0"></th>
+              <th class="centrar"><input type="number"  id="longitud" class="form-control  inputCustom" value="0"></th>
+              <th class="centrar"><input type="number"  formControlName="jefes_turno" name="jefes_turno" id="jefes_turno" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_torre" name="socorristas_torre" id="socorristas_torre" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_polivalentes" name="socorristas_polivalentes" id="socorristas_polivalentes" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_acuatico" name="socorristas_acuatico" id="socorristas_acuatico" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion" name="socorristas_embarcacion" id="socorristas_embarcacion" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_apie" name="socorristas_apie" id="socorristas_apie" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion_per" name="socorristas_embarcacion_per"  id="socorristas_embarcacion_per" class="form-control  inputCustom" min="0"></th>
 
             </tr>
+            <br>
             </ng-template >
         </p-table>
-       <br>
-
       </div>
       <div class="modal-footer botonCentrado">
         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button> -->
-        <button type="button" class="btn btn-primary">Actualizar</button>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
       </div>
+    </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -183,7 +182,7 @@ Medios Materiales - Banderas y Cartelerías <i class="fa fa-calculator  pointer"
 <h4 class="centrar text-color-grey-646464 font-weight-700" title="Las Playas y ZBM con Grado de Protección Moderado y Alto deberán disponer de torres o sillas de vigilancia, de acuerdo a lo establecido en el Anexo IV. II. B y C del Decreto 116/2018.
 Anexo IV.II.3. Torre o silla de vigilancia:
 'Se situará al menos a no más de 20 metros de la pleamar recomendándose la instalación de una por cada 400 metros de playa, con un área de responsabilidad de 200 metros a cada lado.
-Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Además dispondrá de juego de banderas y un soporte para su izado hasta una altura mínima de 3 metros. Como equipamiento mínimo de las torres o sillas o vigilancia deberán disponer de un botiquín portátil y un desfibrilador semiautomático (DESA) por cada dos sillas o torres de vigilancia a excepción de playas donde sólo haya una, que dispondrá de tal equipamiento'. (*) El equipamiento de vigilancia, salvamento y megafonía se analiza más adelante.">Medios Materiales - Torre o Silla de Vigilancia</h4>
+Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Además dispondrá de juego de banderas y un soporte para su izado hasta una altura mínima de 3 metros. Como equipamiento mínimo de las torres o sillas o vigilancia deberán disponer de un botiquín portátil y un desfibrilador semiautomático (DESA) por cada dos sillas o torres de vigilancia a excepción de playas donde sólo haya una, que dispondrá de tal equipamiento'. (*) El equipamiento de vigilancia, salvamento y megafonía se analiza más adelante.">Medios  - Torre o Silla de Vigilancia</h4>
 <p-table>
   <ng-template pTemplate="header" >
     <tr>
@@ -254,25 +253,36 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 
 <!-- Modal horario-->
 <div class="modal fade" id="horarios" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-horarios" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h5 class="modal-title" id="exampleModalLongTitle">Horarios de salvamento</h5>
+        <h5 class="modal-title text-center" id="exampleModalLongTitle">Horarios de salvamento</h5>
+        <h4 class="modal-title text-center" style="color:#8CBB28">{{nombre_playa}}</h4>
       </div>
       <div class="modal-body">
-        <p-table>
+        <p-table *ngFor="let hsalvamento of gradeService.Publicrecords" class="mb-5">
           <ng-template pTemplate="header" >
+            <tr >
+
+              <th colspan="2" class="centrar">Horario comprendido entre: {{hsalvamento.fecha_inicio | date }} a {{hsalvamento.fecha_fin | date }} </th>
+
+            </tr>
             <tr>
               <th class="centrar"><p-calendar #myCalender [(ngModel)]="altoini" [timeOnly]="true" placeholder="hora inicio" id=""></p-calendar></th>
               <th class="centrar"><p-calendar [(ngModel)]="altofin" [timeOnly]="true" placeholder="hora fin" id="" ></p-calendar></th>
             </tr>
+            <tr>
+            <td colspan="2">
+            <hr>
+          </td>
+            </tr>
           </ng-template >
         </p-table>
-        </div>∫
-        <div class="modal-footer">
+        </div>
+        <div class="modal-footer botonCentrado">
           <button type="button" class="btn btn-primary">Actualizar</button>
         </div>
       </div>
@@ -354,9 +364,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             <div class="modal-footer botonCentrado">
               <button type="submit" class="btn btn-primary" [disabled]="!formUnitarios.valid">Actualizar</button>
             </div>
-            <!-- <input formControlName="id_ayuntamiento" name="id_ayuntamiento" id="id_ayuntamiento" type="hidden" value="">
-            <input formControlName="ultimo_editor" name="ultimo_editor" id="ultimo_editor" type="hidden" value="">
-            <input formControlName="ultimo_cambio" name="ultimo_cambio" id="ultimo_cambio" type="hidden" value=""> -->
+
       </form>
         </div>
       </div>
@@ -657,21 +665,49 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     <div class="modal-content">
       <div class="modal-header modal-header-custom">
         <h4 class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">Predicción del tiempo</h4>
-        <h3 *ngIf="nombre_playa" class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">{{nombre_playa}}</h3>
+        <h3 *ngIf="nombre_playa" class="modal-title  font-weight-700 padding-bottom-20 position-relative text-capitalize text-center" style="color:#FB9605">{{!nombre_playa ? 'Nombre sin asignar' : nombre_playa | titlecase}}</h3>
       </div>
-      <div class="modal-body">
-        <img class="tamanho_img" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
-        Descripcion: {{datosclima.weather[0].description}} <br>
-        Temperatura: {{datosclima.main.temp}}º <br>
-        Temperatura max: <span style="color:#F52E1A">{{datosclima.main.temp_max}}º</span><br>
-        Temperatura min: <span style="color:#0BB6EC">{{datosclima.main.temp_min}}º</span><br>
-        Humedad: {{datosclima.main.humidity}}% <br>
-        Presion: {{datosclima.main.pressure}} bars <br>
-        V. Viento: {{datosclima.wind.speed}} m/s <br>
-        Inclinación del viento: {{datosclima.wind.deg}}º <br>
+      <div class="modal-body text-center">
+        <img class="tamanho_img text-center" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
+        <table class="table table-striped">
+          <tbody>
+            <tr>
+              <th scope="row">Descripcion:</th>
+              <td> {{datosclima.weather[0].description | titlecase}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Temperatura:</th>
+              <td>{{datosclima.main.temp}}º</td>
+            </tr>
+            <tr>
+              <th scope="row">Temperatura max:</th>
+                <td><span style="color:#F52E1A">{{datosclima.main.temp_max}}º</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Temperatura min:</th>
+                <td><span style="color:#0BB6EC">{{datosclima.main.temp_min}}º</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Humedad:</th>
+                <td>{{datosclima.main.humidity}}%</td>
+            </tr>
+            <tr>
+              <th scope="row">Presion:</th>
+                <td>{{datosclima.main.pressure}} bars</td>
+            </tr>
+            <tr>
+              <th scope="row">V. viento:</th>
+                <td>{{datosclima.wind.speed}} m/s</td>
+            </tr>
+            <tr>
+              <th scope="row">Inclinación del viento:</th>
+                <td>{{datosclima.wind.deg}}º</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      <div class="modal-footer centrar">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
 

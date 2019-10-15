@@ -168,7 +168,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         if ($event !== 'noid') {
             this.gradeService.calculate($event, this.authService.getCurrentUser().token);
         } else {
-            this.gradeService.records = [];
+            this.gradeService.Publicrecords = [];
         }
     }
 

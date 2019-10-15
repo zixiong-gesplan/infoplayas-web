@@ -11,14 +11,17 @@ import {BehaviorSubject, forkJoin} from 'rxjs';
     providedIn: 'root'
 })
 export class GradesProtectionService {
-    records: GradeRecord[];
     private featuresSource = new BehaviorSubject<any[]>([]);
     features$ = this.featuresSource.asObservable();
+    Publicrecords: GradeRecord[];
+    private recordsSource = new BehaviorSubject<any>([]);
+    filterRecords = this.recordsSource.asObservable();
 
     constructor(private service: EsriRequestService, private authService: AuthGuardService, private http: HttpClient) {
     }
 
     calculate(parentid: string, token: string) {
+        const records = [];
         const httpRequests = [];
         const relationsIds = ['1', '2', '3'];
         const headers = new HttpHeaders();
@@ -53,10 +56,10 @@ export class GradesProtectionService {
                     env_sea.accesos === 'SDIF' ? 1 :
                         env_sea.accesos === 'AVHC' ? 3 : 5 : 0;
                 // traemos los periodos y niveles de afluencia
-                this.records = [];
+
                 const periods: Attribute[] = (results[2] as any).relatedRecordGroups[0].relatedRecords;
                 periods.forEach(value => {
-                    this.records.push({
+                    records.push({
                         fecha_fin: new Date(value.attributes.fecha_fin),
                         fecha_inicio: new Date(value.attributes.fecha_inicio),
                         incluir_dias: value.attributes.incluir_dias,
@@ -70,12 +73,15 @@ export class GradesProtectionService {
                 // calculo del grado
                 const riskfactors = (vIncidents + vSports + vSeaConditions + vEnvironment + vPopulation) / 5;
                 const riskLvl = riskfactors > 4 ? 'A' : riskfactors > 2 ? 'M' : 'B';
-                this.records.forEach(value => {
+                records.forEach(value => {
                     value.grado = this.calculateGradeLvl(value.afluencia, riskLvl);
                     value.grado_valor = value.grado === 'A' ? 2 : value.grado === 'M' ? 1 : 0;
                 });
+                this.Publicrecords = records;
+                const temp = [...new Set(records.map(x => x.grado))];
+                this.recordsSource.next(temp);
             } else {
-                this.records = [];
+                this.recordsSource.next({nodata: ''});
             }
         });
     }
@@ -135,10 +141,10 @@ export class GradesProtectionService {
                         env_sea.accesos === 'SDIF' ? 1 :
                             env_sea.accesos === 'AVHC' ? 3 : 5 : 0;
                     // traemos los periodos y niveles de afluencia
-                    this.records = [];
+                    const records = [];
                     const periods: Attribute[] = list3[i].relatedRecords;
                     periods.forEach(p => {
-                        this.records.push({
+                        records.push({
                             fecha_fin: new Date(p.attributes.fecha_fin),
                             fecha_inicio: new Date(p.attributes.fecha_inicio),
                             incluir_dias: p.attributes.incluir_dias,
@@ -152,14 +158,14 @@ export class GradesProtectionService {
                     // calculo del grado
                     const riskfactors = (vIncidents + vSports + vSeaConditions + vEnvironment + vPopulation) / 5;
                     const riskLvl = riskfactors > 4 ? 'A' : riskfactors > 2 ? 'M' : 'B';
-                    this.records.forEach(r => {
+                    records.forEach(r => {
                         r.grado = this.calculateGradeLvl(r.afluencia, riskLvl);
                         r.grado_valor = r.grado === 'A' ? 2 : r.grado === 'M' ? 1 : 0;
                     });
-                    features[i].records = this.records;
+                    features[i].records = records;
                     // sacamos el valor del grado mas alto
-                    this.records.sort((a, b) => (b.grado_valor > a.grado_valor) ? 1 : ((a.grado_valor > b.grado_valor) ? -1 : 0));
-                    features[i].grado_maximo = this.records[0].grado;
+                    records.sort((a, b) => (b.grado_valor > a.grado_valor) ? 1 : ((a.grado_valor > b.grado_valor) ? -1 : 0));
+                    features[i].grado_maximo = records[0].grado;
                     // preparamos el objeto para que tenga la estructura para añadir a la capa grafica de un mapa.
                     features[i].geometry = features[i].centroid;
                     delete features[i].centroid;
@@ -170,8 +176,6 @@ export class GradesProtectionService {
                     i += 1;
                 });
                 this.featuresSource.next(features);
-            } else {
-                this.records = [];
             }
         });
     }

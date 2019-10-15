@@ -21,4 +21,6 @@ export class RequestService {
         return this.http.get('http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon
             + '&APPID=237a80e2e639efd0fadf62f91c0b65e7&units=metric&lang=es');
     }
+
+    
 }

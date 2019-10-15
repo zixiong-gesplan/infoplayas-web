@@ -1,8 +1,10 @@
 import { Component, OnInit,ElementRef} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
+import {GradeRecord } from '../../models/grade-record';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {RequestService} from '../../services/request.service';
+import {GradesProtectionService} from '../../services/grades-protection.service';
 import {environment} from '../../../environments/environment';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -18,73 +20,6 @@ import Swal from 'sweetalert2'
   selector: 'app-security',
   templateUrl: './security.component.html',
   styleUrls: ['./security.component.css'],
-  // styles: [`
-  //       /* Column Priorities */
-  //       @media only all {
-  //           th.ui-p-6,
-  //           td.ui-p-6,
-  //           th.ui-p-5,
-  //           td.ui-p-5,
-  //           th.ui-p-4,
-  //           td.ui-p-4,
-  //           th.ui-p-3,
-  //           td.ui-p-3,
-  //           th.ui-p-2,
-  //           td.ui-p-2,
-  //           th.ui-p-1,
-  //           td.ui-p-1 {
-  //               display: none;
-  //           }
-  //       }
-  //
-  //       /* Show priority 1 at 320px (20em x 16px) */
-  //       @media screen and (min-width: 20em) {
-  //           th.ui-p-1,
-  //           td.ui-p-1 {
-  //               display: table-cell;
-  //           }
-  //       }
-  //
-  //       /* Show priority 2 at 480px (30em x 16px) */
-  //       @media screen and (min-width: 30em) {
-  //           th.ui-p-2,
-  //           td.ui-p-2 {
-  //               display: table-cell;
-  //           }
-  //       }
-  //
-  //       /* Show priority 3 at 640px (40em x 16px) */
-  //       @media screen and (min-width: 40em) {
-  //           th.ui-p-3,
-  //           td.ui-p-3 {
-  //               display: table-cell;
-  //           }
-  //       }
-  //
-  //       /* Show priority 4 at 800px (50em x 16px) */
-  //       @media screen and (min-width: 50em) {
-  //           th.ui-p-4,
-  //           td.ui-p-4 {
-  //               display: table-cell;
-  //           }
-  //       }
-  //
-  //       /* Show priority 5 at 960px (60em x 16px) */
-  //       @media screen and (min-width: 60em) {
-  //           th.ui-p-5,
-  //           td.ui-p-5 {
-  //               display: table-cell;
-  //           }
-  //       }
-  //
-  //       /* Show priority 6 at 1,120px (70em x 16px) */
-  //       @media screen and (min-width: 70em) {
-  //           th.ui-p-6,
-  //           td.ui-p-6 {
-  //               display: table-cell;
-  //           }
-  //       }
-  //   `]
     })
 export class SecurityComponent implements OnInit {
 
@@ -103,6 +38,7 @@ export class SecurityComponent implements OnInit {
   peligrosa:boolean;
   activarGP:boolean = true;
   formUnitarios: FormGroup;
+  formMediosHumanos: FormGroup;
   codMun;
   datasend: string[] = [];
   objeto_attributes:{};
@@ -128,16 +64,19 @@ export class SecurityComponent implements OnInit {
       speed:''
     }
   };
+    private selectObjectId: number;
+    private options: string;
+    private grados: [] = [];
 
   constructor(private authService: AuthGuardService,
               private service: EsriRequestService,
               private spinnerService: Ng4LoadingSpinnerService,
               private elementRef: ElementRef,
               private fb: FormBuilder,
-              private serviceMeteo: RequestService) { }
+              private serviceMeteo: RequestService,
+              private gradeService: GradesProtectionService,) { }
 
   ngOnInit() {
-    this.utmToLatLong('327495','3109493');
     this.loadRecords();
     this.default();
     this.formUnitarios = this.fb.group({
@@ -163,11 +102,23 @@ export class SecurityComponent implements OnInit {
       ultimo_editor: new FormControl(''),
       ultimo_cambio: new FormControl('')
     })
+    this.formMediosHumanos = this.fb.group({
+        ndias: new FormControl(0),
+        jefes_turno: new FormControl(0),
+        socorristas_torre: new FormControl(0),
+        socorristas_polivalentes: new FormControl(0),
+        socorristas_acuatico: new FormControl(0),
+        socorristas_embarcacion: new FormControl(0),
+        socorristas_apie:new FormControl(0),
+        socorristas_embarcacion_per:new FormControl(0),
+
+
+    })
   }
 
 
   loadRecords() {
-    this.spinnerService.show();
+
     this.currentUser = this.authService.getCurrentUser();
     this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
     this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
@@ -175,12 +126,27 @@ export class SecurityComponent implements OnInit {
           this.filtermunicipio, '*', true, this.currentUser.token,'clasificacion', true).subscribe(
           (result: any) => {
               if (result) {
+                    this.datosPlaya =  result;
+                    this.codMunicipio(this.datosPlaya);
+                    this.gradeService.filterRecords.subscribe(
+                      (results: any) => {
+                        console.log(results);
+                          if (results.nodata === '') {
+                            Swal.fire({
+                              type: 'error',
+                              title: '',
+                              text: 'No existen grados de proteccion para esta playa     debe determinar el grado de protección en la fase 2',
+                              footer: ''
+                            });
+                          } else {
+                                this.grados = results;
+                                this.loadRelatedRecords(this.selectObjectId, this.options);
+                          }
+                      },
+                      error => {
+                          console.log(error.toString());
+                      });
 
-                   this.datosPlaya =  result;
-                   console.log(this.datosPlaya);
-                   this.codMunicipio(this.datosPlaya);
-                   this.spinnerService.hide();
-                 }else{
 
                  }
           },
@@ -194,7 +160,7 @@ export class SecurityComponent implements OnInit {
   }
 
   loadRelatedRecords(object_id,option) {
-    this.spinnerService.show();
+
     let modaloption = option;
     this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url+ '/queryRelatedRecords',
         object_id, '4', '*', false, this.currentUser.token).subscribe(
@@ -204,7 +170,7 @@ export class SecurityComponent implements OnInit {
             // console.log(this.datosPlayaRelacionada);
             $('#' + modaloption).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
             $('#' + modaloption).modal('show');
-            this.spinnerService.hide();
+
           }else{
 
           }
@@ -297,15 +263,18 @@ loadUnitPrice(){
     this.altoini = mc.inputFieldValue;
   }
 
-  private anhadir_medios(playa,option){
-    this.loadRelatedRecords(playa.attributes.objectid_12,option);
-    this.nombre_playa = playa.attributes.nombre_municipio;
-    this.iddgse = playa.attributes.id_dgse;
-    this.clasificacion = playa.attributes.clasificacion;
-    if(playa.attributes.clasificacion==='USO PROHIBIDO'){
-      this.peligrosa = true;
+    private anhadir_medios(playa, option) {
+        this.selectObjectId = playa.attributes.objectid_12;
+        this.options = option;
+        this.nombre_playa = playa.attributes.nombre_municipio;
+        this.iddgse = playa.attributes.id_dgse;
+        this.clasificacion = playa.attributes.clasificacion;
+        this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
+
+        if (playa.attributes.clasificacion === 'USO PROHIBIDO') {
+            this.peligrosa = true;
+        }
     }
-  }
 
   private mostrar_pasiva_grado_bajo(grado){
       if(grado==='bajo'){
@@ -353,12 +322,13 @@ loadUnitPrice(){
     zone = parseInt('28');
     southhemi = false;
     UTMXYToLatLon (x, y, zone, southhemi, latlon);
-    this.latitud=RadToDeg (latlon[0]);
+    this.latitud = RadToDeg (latlon[0]);
     this.longitud = RadToDeg (latlon[1]);
 
   }
 
   public meteo(playa){
+      this.spinnerService.show();
     this.nombre_playa = playa.attributes.nombre_municipio;
     this.utmToLatLong(playa.centroid.x,playa.centroid.y);
     this.serviceMeteo.meteoData(this.latitud,this.longitud).subscribe(
@@ -366,6 +336,7 @@ loadUnitPrice(){
         if (result.length !== 0) {
         this.datosclima = result;
         $('#tiempo').modal('show');
+        this.spinnerService.hide();
         }
       },
       error => {
@@ -378,4 +349,8 @@ loadUnitPrice(){
         });
       })
     }
+
+public updateMediosHumanos(){
+  console.log(this.formMediosHumanos.value);
+}
 }
