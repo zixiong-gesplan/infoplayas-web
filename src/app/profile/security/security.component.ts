@@ -126,15 +126,13 @@ export class SecurityComponent implements OnInit {
           this.filtermunicipio, '*', true, this.currentUser.token,'clasificacion', true).subscribe(
           (result: any) => {
               if (result) {
-
-                   this.datosPlaya =  result;
+                  this.datosPlaya =  result;
                   this.gradeService.filterRecords.subscribe(
                       (results: any) => {
                           if (results.depende === '') {
                               alert('STOP NO HAY DATOS');
                           } else {
                                 this.grados = results;
-                                // console.log(results[0]);
                               this.loadRelatedRecords(this.selectObjectId, this.options);
                           }
                       },
@@ -262,12 +260,12 @@ loadUnitPrice(){
     private anhadir_medios(playa, option) {
         this.selectObjectId = playa.attributes.objectid_12;
         this.options = option;
-        this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
+        //this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
         this.nombre_playa = playa.attributes.nombre_municipio;
         this.iddgse = playa.attributes.id_dgse;
         this.clasificacion = playa.attributes.clasificacion;
         this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
-        this.loadRelatedRecords(playa.attributes.objectid_12, option);
+        //this.loadRelatedRecords(playa.attributes.objectid_12, option);
 
         if (playa.attributes.clasificacion === 'USO PROHIBIDO') {
             this.peligrosa = true;
