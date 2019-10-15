@@ -59,6 +59,10 @@
 
   width:82% !important;
 }
+.modal-dialog-horarios {
+
+  width:55% !important;
+}
 
 
 .modal-body
@@ -76,7 +80,6 @@
     -moz-border-radius-topright: 6px;
       background-color: #ABF0AF;
 }
-
 
 
 @media (max-width: 641px) {

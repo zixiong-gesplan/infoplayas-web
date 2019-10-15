@@ -11,7 +11,7 @@ import {BehaviorSubject, forkJoin} from 'rxjs';
     providedIn: 'root'
 })
 export class GradesProtectionService {
-    records: GradeRecord[];
+    Publicrecords: GradeRecord[];
     private recordsSource = new BehaviorSubject<any>([]);
     filterRecords = this.recordsSource.asObservable();
 
@@ -75,6 +75,7 @@ export class GradesProtectionService {
                     value.grado = this.calculateGradeLvl(value.afluencia, riskLvl);
                     value.grado_valor = value.grado === 'A' ? 2 : value.grado === 'M' ? 1 : 0;
                 });
+                this.Publicrecords = records;
                 const temp = [...new Set(records.map(x => x.grado))];
                 console.log(temp);
                 this.recordsSource.next(temp);

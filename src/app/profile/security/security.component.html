@@ -253,7 +253,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 
 <!-- Modal horario-->
 <div class="modal fade" id="horarios" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-horarios" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -263,7 +263,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <h4 class="modal-title text-center" style="color:#8CBB28">{{nombre_playa}}</h4>
       </div>
       <div class="modal-body">
-        <p-table *ngFor="let hsalvamento of gradeService.records" class="mb-5">
+        <p-table *ngFor="let hsalvamento of gradeService.Publicrecords" class="mb-5">
           <ng-template pTemplate="header" >
             <tr >
 
@@ -364,9 +364,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             <div class="modal-footer botonCentrado">
               <button type="submit" class="btn btn-primary" [disabled]="!formUnitarios.valid">Actualizar</button>
             </div>
-            <!-- <input formControlName="id_ayuntamiento" name="id_ayuntamiento" id="id_ayuntamiento" type="hidden" value="">
-            <input formControlName="ultimo_editor" name="ultimo_editor" id="ultimo_editor" type="hidden" value="">
-            <input formControlName="ultimo_cambio" name="ultimo_cambio" id="ultimo_cambio" type="hidden" value=""> -->
+
       </form>
         </div>
       </div>

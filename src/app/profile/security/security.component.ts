@@ -126,21 +126,27 @@ export class SecurityComponent implements OnInit {
           this.filtermunicipio, '*', true, this.currentUser.token,'clasificacion', true).subscribe(
           (result: any) => {
               if (result) {
-                  this.datosPlaya =  result;
-                  this.gradeService.filterRecords.subscribe(
+                    this.datosPlaya =  result;
+                    this.codMunicipio(this.datosPlaya);
+                    this.gradeService.filterRecords.subscribe(
                       (results: any) => {
+                        console.log(results);
                           if (results.depende === '') {
-                              alert('STOP NO HAY DATOS');
+                            Swal.fire({
+                              type: 'error',
+                              title: '',
+                              text: 'No existen grados de proteccion para esta playa     debe determinar el grado de protección en la fase 2',
+                              footer: ''
+                            });
                           } else {
                                 this.grados = results;
-                              this.loadRelatedRecords(this.selectObjectId, this.options);
+                                this.loadRelatedRecords(this.selectObjectId, this.options);
                           }
                       },
                       error => {
                           console.log(error.toString());
                       });
-                   console.log(this.datosPlaya);
-                   this.codMunicipio(this.datosPlaya);
+
 
                  }
           },
@@ -260,12 +266,10 @@ loadUnitPrice(){
     private anhadir_medios(playa, option) {
         this.selectObjectId = playa.attributes.objectid_12;
         this.options = option;
-        //this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
         this.nombre_playa = playa.attributes.nombre_municipio;
         this.iddgse = playa.attributes.id_dgse;
         this.clasificacion = playa.attributes.clasificacion;
         this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
-        //this.loadRelatedRecords(playa.attributes.objectid_12, option);
 
         if (playa.attributes.clasificacion === 'USO PROHIBIDO') {
             this.peligrosa = true;
