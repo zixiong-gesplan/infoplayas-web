@@ -12,7 +12,7 @@ import {BehaviorSubject, forkJoin} from 'rxjs';
 })
 export class GradesProtectionService {
     records: GradeRecord[];
-    private recordsSource = new BehaviorSubject<any>({});
+    private recordsSource = new BehaviorSubject<any>([]);
     filterRecords = this.recordsSource.asObservable();
 
     constructor(private service: EsriRequestService, private authService: AuthGuardService, private http: HttpClient) {

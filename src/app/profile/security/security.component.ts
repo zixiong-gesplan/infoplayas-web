@@ -133,7 +133,7 @@ export class SecurityComponent implements OnInit {
                           if (results.depende === '') {
                               alert('STOP NO HAY DATOS');
                           } else {
-                                this.grados = [];
+                                this.grados = results;
                                 // console.log(results[0]);
                               this.loadRelatedRecords(this.selectObjectId, this.options);
                           }
