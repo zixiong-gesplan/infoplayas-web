@@ -4,6 +4,7 @@ import {environment} from '../../../environments/environment.prod';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {GradesProtectionService} from '../../services/grades-protection.service';
+import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 
 declare var $: any;
 declare var jquery: any;
@@ -34,7 +35,8 @@ export class MapViewerComponent implements OnInit {
     @Input() mapHeight: string;
     private currentUser: Auth;
 
-    constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService) {
+    constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
+                private spinnerService: Ng4LoadingSpinnerService) {
     }
 
     ngOnInit() {
@@ -112,6 +114,7 @@ export class MapViewerComponent implements OnInit {
 
                 this.gradeService.features$.subscribe(
                     (results: any) => {
+                        this.spinnerService.show();
                         if (results) {
                             viewer.graphics = [];
                             results.forEach(value => {
@@ -121,11 +124,14 @@ export class MapViewerComponent implements OnInit {
                                     symbolMedium : symbolLow;
                                 viewer.graphics.add(grap);
                             });
+                            this.spinnerService.hide();
                         }
                     },
                     error => {
                         console.log(error.toString());
-                    });
+                    }).add(() => {
+                    // this.spinnerService.hide();
+                });
 
                 const t = this;
                 let playasLayer, municipiosLayer;
