@@ -116,6 +116,36 @@ export class SecurityComponent implements OnInit {
     })
   }
 
+    readFeatures() {
+        this.service.features$.subscribe(
+            (results: any) => {
+                if (results[0]) {
+                    const beach = (results[0] as any);
+                    if (beach.relatedRecords1.relatedRecords && beach.relatedRecords2.relatedRecords
+                        && beach.relatedRecords3.relatedRecords) {
+                        beach.periods = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
+                            beach.relatedRecords3.relatedRecords);
+                        beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periods);
+                        beach.grados = this.gradeService.getDistinctGrades(beach.periods);
+                        console.log(beach);
+                        this.grados = beach.grados;
+                        this.datosPlayaRelacionada = beach;
+                        $('#' + this.options).modal({backdrop: 'static', keyboard: false});// inicializamos desactivado el esc y el click fuera de la modal
+                        $('#' + this.options).modal('show');
+                    } else {
+                        Swal.fire({
+                            type: 'error',
+                            title: '',
+                            text: 'No existen grados de proteccion para esta playa     debe determinar el grado de protección en la fase 2',
+                            footer: ''
+                        });
+                    }
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
+    }
 
   loadRecords() {
 
@@ -128,26 +158,6 @@ export class SecurityComponent implements OnInit {
               if (result) {
                     this.datosPlaya =  result;
                     this.codMunicipio(this.datosPlaya);
-                    this.gradeService.filterRecords.subscribe(
-                      (results: any) => {
-                        console.log(results);
-                          if (results.nodata === '') {
-                            Swal.fire({
-                              type: 'error',
-                              title: '',
-                              text: 'No existen grados de proteccion para esta playa     debe determinar el grado de protección en la fase 2',
-                              footer: ''
-                            });
-                          } else {
-                                this.grados = results;
-                                this.loadRelatedRecords(this.selectObjectId, this.options);
-                          }
-                      },
-                      error => {
-                          console.log(error.toString());
-                      });
-
-
                  }
           },
           error => {
@@ -155,6 +165,7 @@ export class SecurityComponent implements OnInit {
 
           }).add(() => {
           console.log('end of request');
+          this.readFeatures();
           this.spinnerService.hide();
       });
   }
@@ -264,13 +275,12 @@ loadUnitPrice(){
   }
 
     private anhadir_medios(playa, option) {
+        this.service.getMultipleRelatedData([playa.attributes.objectid_12], ['1', '2', '3', '4'], this.authService.getCurrentUser().token);
         this.selectObjectId = playa.attributes.objectid_12;
         this.options = option;
         this.nombre_playa = playa.attributes.nombre_municipio;
         this.iddgse = playa.attributes.id_dgse;
         this.clasificacion = playa.attributes.clasificacion;
-        this.gradeService.calculate(playa.attributes.objectid_12, this.currentUser.token);
-
         if (playa.attributes.clasificacion === 'USO PROHIBIDO') {
             this.peligrosa = true;
         }

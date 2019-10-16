@@ -5,6 +5,7 @@ import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {GradesProtectionService} from '../../services/grades-protection.service';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
+import {EsriRequestService} from '../../services/esri-request.service';
 
 declare var $: any;
 declare var jquery: any;
@@ -36,12 +37,24 @@ export class MapViewerComponent implements OnInit {
     private currentUser: Auth;
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
-                private spinnerService: Ng4LoadingSpinnerService) {
+                private spinnerService: Ng4LoadingSpinnerService, private service: EsriRequestService) {
     }
 
     ngOnInit() {
         this.currentUser = this.authService.getCurrentUser();
         this.setMap();
+    }
+
+    // preparamos una lista de features provenientes del REST API para que tenga la estructura para añadir a la capa grafica de un mapa.
+    convertCentroidDataToGraphic(featuresList: any[]) {
+        featuresList.forEach(f => {
+            f.geometry = f.centroid;
+            delete f.centroid;
+            f.geometry.spatialReference = {
+                latestWkid: 32628,
+                wkid: 32628
+            };
+        });
     }
 
     private setMap() {
@@ -112,7 +125,7 @@ export class MapViewerComponent implements OnInit {
                     height: '32px'
                 };
 
-                this.gradeService.features$.subscribe(
+                this.service.features$.subscribe(
                     (results: any) => {
                         this.spinnerService.show();
                         if (results) {
