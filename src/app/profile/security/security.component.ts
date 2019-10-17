@@ -119,7 +119,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
 
     readFeatures() {
-      this.datos =   this.service.features$.subscribe(
+        this.datos = this.service.features$.subscribe(
             (results: any) => {
                 const beach = (results[0] as any);
                 console.log(results);
@@ -160,7 +160,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
         this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
         this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
-            this.filtermunicipio, '*',false, this.currentUser.token, 'clasificacion', true).subscribe(
+            this.filtermunicipio, '*', false, this.currentUser.token, 'clasificacion', true).subscribe(
             (result: any) => {
                 if (result) {
                     this.readFeatures();
@@ -171,7 +171,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
             },
             error => {
                 console.log(error.toString());
-                  this.spinnerService.hide();
+                this.spinnerService.hide();
 
             }).add(() => {
             console.log('end of request');
@@ -350,7 +350,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 break;
             }
         }
-        this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token,'security');
+        this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token);
 
         this.options = option;
         this.nombre_playa = playa.attributes.nombre_municipio;
@@ -366,9 +366,10 @@ export class SecurityComponent implements OnInit, OnDestroy {
             this.pasiva = true;
         }
     }
-    ngOnDestroy(){
-    this.datos.unsubscribe();
 
+    ngOnDestroy() {
+        this.datos.unsubscribe();
+        this.service.clearfeaturesSource();
     }
 
 }

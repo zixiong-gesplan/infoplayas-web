@@ -130,8 +130,9 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     yoffset: '-18px'
                 };
 
-              this.datos =  this.service.features$.subscribe(
+                this.datos = this.service.features$.subscribe(
                     (results: any) => {
+                        this.spinnerService.show();
                         let beachs = (results as any[]);
                         if (results.length > 0) {
                             const layer = new GraphicsLayer({
@@ -156,8 +157,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     },
                     error => {
                         console.log(error.toString());
-                    }).add(() => {
-                });
+                        this.spinnerService.hide();
+                    });
 
                 const t = this;
                 let playasLayer, municipiosLayer;
@@ -234,7 +235,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
             });
     }
 
-    ngOnDestroy(){
-      this.datos.unsubscribe();
+    ngOnDestroy() {
+        this.datos.unsubscribe();
+        this.service.clearfeaturesSource();
     }
 }

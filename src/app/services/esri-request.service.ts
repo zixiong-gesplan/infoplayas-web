@@ -5,7 +5,7 @@ import {environment} from '../../environments/environment.prod';
 
 @Injectable()
 export class EsriRequestService {
-  private featuresSource = new BehaviorSubject<any[]>([]);
+    private featuresSource = new BehaviorSubject<any[]>([]);
     features$ = this.featuresSource.asObservable();
 
 
@@ -66,7 +66,7 @@ export class EsriRequestService {
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 
-    getMultipleRelatedData(beachs: any[], relationsIds: string[], token: string, component: string) {
+    getMultipleRelatedData(beachs: any[], relationsIds: string[], token: string) {
         const httpRequests = [];
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
@@ -93,10 +93,13 @@ export class EsriRequestService {
                     }
                     features.push(ob);
                 });
-                  this.featuresSource.next(features);
+                this.featuresSource.next(features);
             }
         });
     }
 
+    clearfeaturesSource() {
+        this.featuresSource.next([]);
+    }
 
 }
