@@ -156,7 +156,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
 
     loadRecords() {
-
+        this.spinnerService.show();
         this.currentUser = this.authService.getCurrentUser();
         this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
         this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
@@ -369,7 +369,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
     ngOnDestroy(){
     this.datos.unsubscribe();
-    
+
     }
 
 }
