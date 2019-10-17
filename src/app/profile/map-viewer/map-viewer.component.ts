@@ -133,7 +133,6 @@ export class MapViewerComponent implements OnInit, OnDestroy {
               this.datos =  this.service.features$.subscribe(
                     (results: any) => {
                         let beachs = (results as any[]);
-                        console.log(results);
                         if (results.length > 0) {
                             const layer = new GraphicsLayer({
                                 graphics: []

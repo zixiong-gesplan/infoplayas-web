@@ -228,7 +228,7 @@ export class MapEditorComponent implements OnInit {
         // cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
         fg.get('on_edit').setValue(true);
         const postExecuteTask = fg.contains('desprendimientos') && this.viewNoDanger ? 'no_prohibido' : fg.contains('desprendimientos')
-            ? 'prohibido' : this.getCompleteState() === 100 ? 'actualizar_grado' : 'none';
+            ? 'prohibido' : 'none';
         this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + tableId
             + '/applyEdits', postExecuteTask);
     }
@@ -555,15 +555,13 @@ export class MapEditorComponent implements OnInit {
                         case 'prohibido':
                             this.updateClasification('PROHIBIDO', true);
                             break;
-                        case 'actualizar_grado':
-                            // this.updateGrades();
                     }
                 }
             },
             error => {
                 console.log(error.toString());
             }).add(() => {
-            if (postExecute === 'none' || postExecute === 'actualizar_grado') {
+            if (postExecute === 'none') {
                 console.log('end of request');
                 this.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
             }
@@ -698,9 +696,8 @@ export class MapEditorComponent implements OnInit {
         });
         let unselect = true;
         if (this.periods.length > 0) {
-            const postExec = this.getCompleteState() === 100 ? 'actualizar_grado' : 'none';
             this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
-                + '/applyEdits', postExec);
+                + '/applyEdits', 'none');
             unselect = false;
         }
         // borramos los periodos si los hay

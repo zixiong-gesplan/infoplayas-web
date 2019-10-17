@@ -79,7 +79,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        //this.service.clearfeaturesSource();
         this.loadRecords();
         this.default();
         this.formUnitarios = this.fb.group({
@@ -369,7 +368,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
     ngOnDestroy(){
     this.datos.unsubscribe();
-    
+
     }
 
 }
