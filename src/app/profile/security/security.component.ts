@@ -198,7 +198,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
             error => {
                 this.spinnerService.hide();
             }).add(() => {
-            //console.log('end of request');
         });
     }
 
