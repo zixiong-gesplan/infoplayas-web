@@ -67,7 +67,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     private options: string;
     private grados: [] = [];
     private periodos: [] = [];
-    private datos;
+    private subscripcionFeatures;
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -125,6 +125,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 const beach = (results[0] as any);
                 console.log(results);
                 if (results.length > 0) {
+
                     if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords2.length > 0
                         && beach.relatedRecords3.length > 0) {
                         beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
@@ -189,8 +190,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/10/query',
             'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token, 'id_ayuntamiento', false).subscribe(
             (result: any) => {
-                if (result.features.length !== 0) {
-                    this.formUnitarios.patchValue(result.features[0].attributes);
+                if (result.features.length !== 0) {;
                     this.mode = 'updates';
                     this.spinnerService.hide();
                 }
@@ -200,10 +200,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
             }).add(() => {
             //console.log('end of request');
         });
-    }
-
-    public configuracion() {
-        this.loadUnitPrice();
     }
 
     public default() {
