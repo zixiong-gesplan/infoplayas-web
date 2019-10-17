@@ -35,7 +35,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     @Input() zoom: number;
     @Input() mapHeight: string;
     private currentUser: Auth;
-    private datos;
+    private subscripcionFeatures;
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
                 private spinnerService: Ng4LoadingSpinnerService, private service: EsriRequestService) {
@@ -236,7 +236,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.datos.unsubscribe();
+        this.subscripcionFeatures.unsubscribe();
         this.service.clearfeaturesSource();
     }
 }

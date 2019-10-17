@@ -67,7 +67,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
     private options: string;
     private grados: [] = [];
     private periodos: [] = [];
-    private datos;
+    private subscripcionFeatures;
+
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -368,7 +369,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.datos.unsubscribe();
+        this.subscripcionFeatures.unsubscribe();
         this.service.clearfeaturesSource();
     }
 
