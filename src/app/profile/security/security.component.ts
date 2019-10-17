@@ -66,7 +66,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     private selectObjectId: number;
     private options: string;
     grados: [] = [];
-    periodos: [] = [];
+    periodos: any [] = [];
     private subscripcionFeatures;
 
     constructor(private authService: AuthGuardService,
