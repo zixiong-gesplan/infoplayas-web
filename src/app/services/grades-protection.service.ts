@@ -1,38 +1,28 @@
 import {Injectable} from '@angular/core';
-import {environment} from '../../environments/environment.prod';
-import {EsriRequestService} from './esri-request.service';
-import {AuthGuardService} from './auth-guard.service';
 import {Attribute} from '../models/attribute';
 import {GradeRecord} from '../models/grade-record';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {BehaviorSubject, forkJoin} from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class GradesProtectionService {
-    private featuresSource1 = new BehaviorSubject<any[]>([]);
-    features1$ = this.featuresSource1.asObservable();
-    Publicrecords: GradeRecord[];
-    private recordsSource = new BehaviorSubject<any>([]);
-    filterRecords = this.recordsSource.asObservable();
 
-    constructor(private service: EsriRequestService, private authService: AuthGuardService, private http: HttpClient) {
+    constructor() {
     }
 
     calculateGradeForPeriods(incidents_Sports, env_sea, periods: Attribute[]): GradeRecord[] {
         // calculos para el valor de peligrosidad Incidentes y actividades deportivas
-        const vIncidents = incidents_Sports.incidentes_mgraves > 0 ? 5 :
-            incidents_Sports.incidentes_graves > 0 ? 3 : 0;
-        let dangerLevel = incidents_Sports.actividades_deportivas ? 5 : 0;
-        dangerLevel -= incidents_Sports.balizamiento ? 4 : 0;
-        dangerLevel -= incidents_Sports.actividades_acotadas ? 2 : 0;
+        const vIncidents = incidents_Sports[0].attributes.incidentes_mgraves > 0 ? 5 :
+            incidents_Sports[0].attributes.incidentes_graves > 0 ? 3 : 0;
+        let dangerLevel = incidents_Sports[0].attributes.actividades_deportivas ? 5 : 0;
+        dangerLevel -= incidents_Sports[0].attributes.balizamiento ? 4 : 0;
+        dangerLevel -= incidents_Sports[0].attributes.actividades_acotadas ? 2 : 0;
         const vSports = dangerLevel > 0 ? dangerLevel : 0;
         // calculos para el valor de peligrosidad condiciones del entorno fisico y del mar
-        const vSeaConditions = env_sea.peligrosidad_mar;
-        const vEnvironment = env_sea.peligros_anadidos ?
-            env_sea.accesos === 'SDIF' ? 1 :
-                env_sea.accesos === 'AVHC' ? 3 : 5 : 0;
+        const vSeaConditions = env_sea[0].attributes.peligrosidad_mar;
+        const vEnvironment = env_sea[0].attributes.peligros_anadidos ?
+            env_sea[0].attributes.accesos === 'SDIF' ? 1 :
+                env_sea[0].attributes.accesos === 'AVHC' ? 3 : 5 : 0;
         // traemos los periodos y niveles de afluencia
         const records = [];
         periods.forEach(p => {

@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {BehaviorSubject, forkJoin} from 'rxjs';
 import {environment} from '../../environments/environment.prod';
-import {Attribute} from '../models/attribute';
 
 @Injectable()
 export class EsriRequestService {
@@ -66,14 +65,14 @@ export class EsriRequestService {
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 
-    getMultipleRelatedData(objectids: number[], relationsIds: string[], token: string) {
+    getMultipleRelatedData(beachs: any[], relationsIds: string[], token: string) {
         const httpRequests = [];
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
 
         relationsIds.forEach(value => {
             const params = new HttpParams().set('token', token).append('f', 'json')
-                .append('objectIds', objectids.join(','))
+                .append('objectIds', beachs.map(a => a.attributes.objectid_12).join(','))
                 .append('outFields', '*')
                 .append('returnGeometry', 'false')
                 .append('relationshipId', value);
@@ -84,18 +83,21 @@ export class EsriRequestService {
         forkJoin(httpRequests).subscribe(results => {
             const features = [];
             if (results) {
-                objectids.forEach(f => {
-                    const ob = {objectId: f};
+                beachs.forEach(f => {
+                    const ob = {objectId: f.attributes.objectid_12, centroid: f.centroid ? f.centroid : null};
                     for (let i = 0; i < httpRequests.length; i++) {
-                        const cad = i + 1;
-                        ob['relatedRecords' + cad] = results[i].relatedRecordGroups.find(r => r.objectId === f) ?
-                            results[i].relatedRecordGroups.find(r => r.objectId === f) : [];
-                        delete ob['relatedRecords' + cad].objectId;
+                        ob['relatedRecords' + relationsIds[i]] = results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid_12)
+                            ? results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid_12).relatedRecords : [];
+                        delete ob['relatedRecords' + relationsIds[i]].objectId;
                     }
                     features.push(ob);
                 });
                 this.featuresSource.next(features);
             }
         });
+    }
+
+    clearfeaturesSource() {
+        this.featuresSource.next([]);
     }
 }

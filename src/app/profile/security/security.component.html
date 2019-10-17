@@ -259,11 +259,11 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h5 class="modal-title text-center" id="exampleModalLongTitle">Horarios de salvamento</h5>
+        <h5 class="modal-title text-center" id="horariosModalLongTitle">Horarios de salvamento</h5>
         <h4 class="modal-title text-center" style="color:#8CBB28">{{nombre_playa}}</h4>
       </div>
       <div class="modal-body">
-        <p-table *ngFor="let hsalvamento of gradeService.Publicrecords" class="mb-5">
+        <p-table *ngFor="let hsalvamento of periodos" class="mb-5">
           <ng-template pTemplate="header" >
             <tr >
 
@@ -289,7 +289,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     </div>
   </div>
 
-  <!-- Modal horario -->
+  <!-- Modal unitarios -->
   <div class="modal fade" id="configuracion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-main modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -298,7 +298,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title text-center" id="exampleModalLongTitle"><span style="color:#8CBB28">Precios unitarios para el municipio de: {{nomMunicipio | titlecase}}</span></h4>
+          <h4 class="modal-title text-center" id="unitariosModalLongTitle"><span style="color:#8CBB28">Precios unitarios para el municipio de: {{nomMunicipio | titlecase}}</span></h4>
           <h5 class="centrar text-color-grey-646464 font-weight-700" >Medios Humanos</h5>
         </div>
         <div class="modal-body">
