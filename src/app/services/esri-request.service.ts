@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {BehaviorSubject, forkJoin} from 'rxjs';
+import {BehaviorSubject, forkJoin, Subscription} from 'rxjs';
 import {environment} from '../../environments/environment.prod';
 
 @Injectable()
 export class EsriRequestService {
-  public featuresSource = new BehaviorSubject<any[]>([]);
+  private featuresSource = new BehaviorSubject<any[]>([]);
     features$ = this.featuresSource.asObservable();
+
 
     constructor(private http: HttpClient) {
     }
@@ -65,7 +66,7 @@ export class EsriRequestService {
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 
-    getMultipleRelatedData(beachs: any[], relationsIds: string[], token: string) {
+    getMultipleRelatedData(beachs: any[], relationsIds: string[], token: string, component: string) {
         const httpRequests = [];
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
@@ -92,12 +93,10 @@ export class EsriRequestService {
                     }
                     features.push(ob);
                 });
-                this.featuresSource.next(features);
+                  this.featuresSource.next(features);
             }
         });
     }
 
-    clearfeaturesSource() {
-        this.featuresSource.next([]);
-    }
+
 }

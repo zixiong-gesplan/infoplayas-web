@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, OnDestroy} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {EsriRequestService} from '../../services/esri-request.service';
@@ -20,7 +20,7 @@ declare var RadToDeg: any;
     templateUrl: './security.component.html',
     styleUrls: ['./security.component.css'],
 })
-export class SecurityComponent implements OnInit {
+export class SecurityComponent implements OnInit, OnDestroy {
 
     currentUser: Auth;
     filtermunicipio;
@@ -67,6 +67,7 @@ export class SecurityComponent implements OnInit {
     private options: string;
     private grados: [] = [];
     private periodos: [] = [];
+    private datos;
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -119,7 +120,7 @@ export class SecurityComponent implements OnInit {
     }
 
     readFeatures() {
-        this.service.features$.subscribe(
+      this.datos =   this.service.features$.subscribe(
             (results: any) => {
                 const beach = (results[0] as any);
                 console.log(results);
@@ -350,7 +351,7 @@ export class SecurityComponent implements OnInit {
                 break;
             }
         }
-        this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token);
+        this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token,'security');
 
         this.options = option;
         this.nombre_playa = playa.attributes.nombre_municipio;
@@ -366,5 +367,9 @@ export class SecurityComponent implements OnInit {
             this.pasiva = true;
         }
     }
-  
+    ngOnDestroy(){
+    this.datos.unsubscribe();
+    
+    }
+
 }

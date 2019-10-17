@@ -248,7 +248,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
 
     calculateGradesProtection() {
         this.spinnerService.show();
-        this.service.getMultipleRelatedData(this.beachs, ['1', '2', '3'], this.authService.getCurrentUser().token);
+        this.service.getMultipleRelatedData(this.beachs, ['1', '2', '3'], this.authService.getCurrentUser().token,'clasification');
         this.viewResults = true;
     }
 }

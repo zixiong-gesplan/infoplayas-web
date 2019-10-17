@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {loadModules} from 'esri-loader';
 import {environment} from '../../../environments/environment.prod';
 import {Auth} from '../../models/auth';
@@ -31,10 +31,11 @@ declare let features: any;
     templateUrl: './map-viewer.component.html',
     styleUrls: ['./map-viewer.component.css']
 })
-export class MapViewerComponent implements OnInit {
+export class MapViewerComponent implements OnInit, OnDestroy {
     @Input() zoom: number;
     @Input() mapHeight: string;
     private currentUser: Auth;
+    private datos;
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
                 private spinnerService: Ng4LoadingSpinnerService, private service: EsriRequestService) {
@@ -129,7 +130,7 @@ export class MapViewerComponent implements OnInit {
                     yoffset: '-18px'
                 };
 
-                this.service.features$.subscribe(
+              this.datos =  this.service.features$.subscribe(
                     (results: any) => {
                         let beachs = (results as any[]);
                         console.log(results);
@@ -232,5 +233,9 @@ export class MapViewerComponent implements OnInit {
                 // handle any errors
                 console.error(err);
             });
+    }
+
+    ngOnDestroy(){
+      this.datos.unsubscribe();
     }
 }
