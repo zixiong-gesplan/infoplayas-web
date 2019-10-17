@@ -3,6 +3,7 @@ import {CanActivate} from '@angular/router/src/interfaces';
 import {Auth} from '../models/auth';
 import {Municipality} from '../models/municipality';
 import {RequestService} from './request.service';
+declare function init_plugins();
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +18,7 @@ export class AuthGuardService implements CanActivate {
     }
 
     canActivate(): boolean {
+        init_plugins();
         if (!this.isAuthenticated()) {
             window.location.href = this.urlAuthorize;
             return false;

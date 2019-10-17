@@ -47,7 +47,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.service.clearfeaturesSource();
         this.municipio = JSON.parse(localStorage.getItem('municipality'));
         this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
         this.DangerPopulationLevel = this.getDangerPopulationLevel();

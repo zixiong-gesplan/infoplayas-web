@@ -15,7 +15,6 @@ declare const aytos: any;
 declare var UTMXYToLatLon: any;
 declare var RadToDeg: any;
 
-
 @Component({
     selector: 'app-security',
     templateUrl: './security.component.html',
@@ -79,7 +78,7 @@ export class SecurityComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.service.clearfeaturesSource();
+        //this.service.clearfeaturesSource();
         this.loadRecords();
         this.default();
         this.formUnitarios = this.fb.group({
@@ -138,6 +137,7 @@ export class SecurityComponent implements OnInit {
                         // inicializamos desactivado el esc y el click fuera de la modal
                         $('#' + this.options).modal({backdrop: 'static', keyboard: false});
                         $('#' + this.options).modal('show');
+
                     } else {
                         Swal.fire({
                             type: 'error',
@@ -155,24 +155,28 @@ export class SecurityComponent implements OnInit {
     }
 
     loadRecords() {
+
         this.currentUser = this.authService.getCurrentUser();
         this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
         this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
-            this.filtermunicipio, '*', true, this.currentUser.token, 'clasificacion', true).subscribe(
+            this.filtermunicipio, '*',false, this.currentUser.token, 'clasificacion', true).subscribe(
             (result: any) => {
                 if (result) {
+                    this.readFeatures();
                     this.datosPlaya = result;
                     this.codMunicipio(this.datosPlaya);
+                    this.spinnerService.hide();
                 }
             },
             error => {
                 console.log(error.toString());
+                  this.spinnerService.hide();
 
             }).add(() => {
             console.log('end of request');
-            this.readFeatures();
-            this.spinnerService.hide();
+
+
         });
     }
 
@@ -347,7 +351,7 @@ export class SecurityComponent implements OnInit {
             }
         }
         this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token);
-        this.selectObjectId = playa.attributes.objectid_12;
+
         this.options = option;
         this.nombre_playa = playa.attributes.nombre_municipio;
         this.iddgse = playa.attributes.id_dgse;
@@ -362,4 +366,5 @@ export class SecurityComponent implements OnInit {
             this.pasiva = true;
         }
     }
+  
 }

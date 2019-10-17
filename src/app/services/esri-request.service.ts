@@ -5,7 +5,7 @@ import {environment} from '../../environments/environment.prod';
 
 @Injectable()
 export class EsriRequestService {
-    private featuresSource = new BehaviorSubject<any[]>([]);
+  public featuresSource = new BehaviorSubject<any[]>([]);
     features$ = this.featuresSource.asObservable();
 
     constructor(private http: HttpClient) {

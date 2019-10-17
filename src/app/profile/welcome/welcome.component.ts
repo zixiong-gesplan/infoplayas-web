@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 declare var Swiper: any;
 declare var $: any;
 declare var jquery: any;
-
 @Component({
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
@@ -11,19 +10,12 @@ declare var jquery: any;
 })
 export class WelcomeComponent implements OnInit {
 
-    
-    
-    
-    
-  constructor() {
-      
-  }
-  
+  constructor() {}
+
   ngAfterViewInit() {
       this.initSwiper();
-     
   }
-  
+
   ngOnInit() {
   }
   initSwiper() {
@@ -58,6 +50,6 @@ export class WelcomeComponent implements OnInit {
           }
       });
   }
-  
-  
+
+
 }
