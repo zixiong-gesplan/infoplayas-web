@@ -120,7 +120,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
 
     readFeatures() {
-        this.datos = this.service.features$.subscribe(
+        this.subscripcionFeatures = this.service.features$.subscribe(
             (results: any) => {
                 const beach = (results[0] as any);
                 console.log(results);

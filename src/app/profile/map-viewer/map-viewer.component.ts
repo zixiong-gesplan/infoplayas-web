@@ -130,7 +130,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     yoffset: '-18px'
                 };
 
-                this.datos = this.service.features$.subscribe(
+                this.subscripcionFeatures = this.service.features$.subscribe(
                     (results: any) => {
                         this.spinnerService.show();
                         let beachs = (results as any[]);
