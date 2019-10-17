@@ -668,7 +668,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <h3 *ngIf="nombre_playa" class="modal-title  font-weight-700 padding-bottom-20 position-relative text-capitalize text-center" style="color:#FB9605">{{!nombre_playa ? 'Nombre sin asignar' : nombre_playa | titlecase}}</h3>
       </div>
       <div class="modal-body text-center">
-        <img class="tamanho_img text-center" src="http://openweathermap.org/img/w/{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
+        <img class="tamanho_img text-center" src="{{urlimageweather}}{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
         <table class="table table-striped">
           <tbody>
             <tr>

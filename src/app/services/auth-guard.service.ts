@@ -3,16 +3,17 @@ import {CanActivate} from '@angular/router/src/interfaces';
 import {Auth} from '../models/auth';
 import {Municipality} from '../models/municipality';
 import {RequestService} from './request.service';
+import {environment} from '../../environments/environment';
+
 declare function init_plugins();
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthGuardService implements CanActivate {
-    client_id = 'RNiCC2e9tgwl1mCV';
-    url = 'https://www.arcgis.com/sharing/rest/oauth2/authorize';
-    redirectUri = 'http://localhost:4200/login';
-    urlAuthorize: string = this.url + '?client_id=' + this.client_id + '&response_type=token&redirect_uri=' + this.redirectUri;
+
+    urlAuthorize: string = environment.urlAuthorize + '?client_id=' + environment.client_id + '&response_type=token&redirect_uri='
+        + environment.redirectUri;
 
     constructor(private service: RequestService) {
     }

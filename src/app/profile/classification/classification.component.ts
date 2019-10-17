@@ -3,8 +3,8 @@ import {MenuItem} from 'primeng/api';
 import {Municipality} from '../../models/municipality';
 import {GradesProtectionService} from '../../services/grades-protection.service';
 import {AuthGuardService} from '../../services/auth-guard.service';
-import {environment} from '../../../environments/environment.prod';
 import {EsriRequestService} from '../../services/esri-request.service';
+import {environment} from '../../../environments/environment';
 
 declare var Swiper: any;
 declare var $: any;

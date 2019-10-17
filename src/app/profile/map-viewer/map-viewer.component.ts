@@ -1,11 +1,11 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {loadModules} from 'esri-loader';
-import {environment} from '../../../environments/environment.prod';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {GradesProtectionService} from '../../services/grades-protection.service';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {EsriRequestService} from '../../services/esri-request.service';
+import {environment} from '../../../environments/environment';
 
 declare var $: any;
 declare var jquery: any;

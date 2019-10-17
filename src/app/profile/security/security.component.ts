@@ -68,6 +68,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     grados: [] = [];
     periodos: any [] = [];
     private subscripcionFeatures;
+    urlimageweather =  environment.urlimageweather;
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -190,7 +191,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
             'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token, 'id_ayuntamiento', false).subscribe(
             (result: any) => {
                 if (result.features.length !== 0) {
-                    ;
+                    this.formUnitarios.patchValue(result.features[0].attributes);
+                    console.log(result.features[0].attributes);
                     this.mode = 'updates';
                     this.spinnerService.hide();
                 }
@@ -246,6 +248,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
 
     public meteo(playa) {
+        console.log(environment.urlimageweather);
         this.spinnerService.show();
         this.nombre_playa = playa.attributes.nombre_municipio;
         this.utmToLatLong(playa.centroid.x, playa.centroid.y);
