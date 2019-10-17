@@ -69,7 +69,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
     private periodos: [] = [];
     private subscripcionFeatures;
 
-
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -125,6 +124,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 const beach = (results[0] as any);
                 console.log(results);
                 if (results.length > 0) {
+
                     if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords2.length > 0
                         && beach.relatedRecords3.length > 0) {
                         beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
@@ -156,7 +156,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
 
     loadRecords() {
-
+        this.spinnerService.show();
         this.currentUser = this.authService.getCurrentUser();
         this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
         this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
@@ -190,7 +190,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
             'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token, 'id_ayuntamiento', false).subscribe(
             (result: any) => {
                 if (result.features.length !== 0) {
-                    this.formUnitarios.patchValue(result.features[0].attributes);
+                    ;
                     this.mode = 'updates';
                     this.spinnerService.hide();
                 }
@@ -200,10 +200,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
             }).add(() => {
             //console.log('end of request');
         });
-    }
-
-    public configuracion() {
-        this.loadUnitPrice();
     }
 
     public default() {
@@ -371,6 +367,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscripcionFeatures.unsubscribe();
         this.service.clearfeaturesSource();
-    }
 
+    }
 }
