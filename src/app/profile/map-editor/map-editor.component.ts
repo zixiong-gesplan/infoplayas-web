@@ -533,6 +533,7 @@ export class MapEditorComponent implements OnInit {
             } else {
                 this.formFlow.patchValue({id_dgse: output.id_dgse});
                 this.periods = results[query.objectIds[0]].features;
+                this.periods.sort((a, b) => (a.attributes.fecha_inicio > b.attributes.fecha_inicio) ? 1 : -1);
                 this.periods.forEach(value => {
                     value.attributes.fecha_fin = new Date(value.attributes.fecha_fin);
                     value.attributes.fecha_inicio = new Date(value.attributes.fecha_inicio);
