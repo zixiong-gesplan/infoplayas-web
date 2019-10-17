@@ -5,6 +5,7 @@ import {GradesProtectionService} from '../../services/grades-protection.service'
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {environment} from '../../../environments/environment.prod';
 import {EsriRequestService} from '../../services/esri-request.service';
+import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 
 declare var Swiper: any;
 declare var $: any;
@@ -33,10 +34,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     lastChangeOnselectedBeach: Date;
     colsGrade: any;
     visible: string;
-    objectIDs: any[];
+    beachs: any[];
     viewResults: boolean;
 
-    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService) {
+    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
+                private spinnerService: Ng4LoadingSpinnerService) {
     }
 
     ngAfterViewInit() {
@@ -45,6 +47,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+        this.service.clearfeaturesSource();
         this.municipio = JSON.parse(localStorage.getItem('municipality'));
         this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
         this.DangerPopulationLevel = this.getDangerPopulationLevel();
@@ -69,6 +72,26 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         // cargamos los ids de las playas para usarlo posteriormente al mostrar los resultados
         this.loadBeachsIds();
     }
+
+    // readFeatures() {
+    //     this.service.features$.subscribe(
+    //         (results: any) => {
+    //             if (results[0]) {
+    //                 // console.log(results);
+    //                 const beachs = results;
+    //                 if (beachs[0]) {
+    //                     beachs[0].periods = this.gradeService.calculateGradeForPeriods(beachs[0].relatedRecords1, beachs[0].relatedRecords2,
+    //                         beachs[0].relatedRecords3.relatedRecords);
+    //                     beachs[0].grado_maximo = this.gradeService.getMaximunGrade(beachs[0].periods);
+    //                     beachs[0].grados = this.gradeService.getDistinctGrades(beachs[0].periods);
+    //                     console.log(beachs[0]);
+    //                 }
+    //             }
+    //         },
+    //         error => {
+    //             console.log(error.toString());
+    //         });
+    // }
 
     initCubPortfolio() {
         $('#js-grid-mosaic-flat').cubeportfolio({
@@ -151,11 +174,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
 
     loadBeachsIds() {
         const filtermunicipio = 'municipio = \'' + aytos[this.authService.getCurrentUser().username].municipio_minus + '\'';
-        this.service.getEsriLayerIdsOnly(environment.infoplayas_catalogo_edicion_url + '/query',
-            this.authService.getCurrentUser().token, filtermunicipio).subscribe(
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filtermunicipio,
+            'objectid_12', false, this.authService.getCurrentUser().token, 'objectid_12', true).subscribe(
             (result: any) => {
-                if (result) {
-                    this.objectIDs = result.objectIds;
+                if (result.features.length > 0) {
+                    this.beachs = result.features;
                 }
             },
             error => {
@@ -165,11 +188,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
 
     receiveBeachId($event: string) {
         this.beachObjectId = $event;
-        if ($event !== 'noid') {
-            this.gradeService.calculate($event, this.authService.getCurrentUser().token);
-        } else {
-            this.gradeService.Publicrecords = [];
-        }
+        // if ($event !== 'noid') {
+        //     this.gradeService.calculate($event, this.authService.getCurrentUser().token);
+        // } else {
+        //     this.gradeService.Publicrecords = [];
+        // }
     }
 
     receiveNzones($event: number) {
@@ -225,7 +248,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     calculateGradesProtection() {
-        this.gradeService.calculateAll(this.objectIDs, this.authService.getCurrentUser().token);
+        this.spinnerService.show();
+        this.service.getMultipleRelatedData(this.beachs, ['1', '2', '3'], this.authService.getCurrentUser().token);
         this.viewResults = true;
     }
 }

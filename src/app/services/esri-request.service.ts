@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {forkJoin} from 'rxjs';
+import {BehaviorSubject, forkJoin} from 'rxjs';
+import {environment} from '../../environments/environment.prod';
 
 @Injectable()
 export class EsriRequestService {
-    beachs: any[];
+    private featuresSource = new BehaviorSubject<any[]>([]);
+    features$ = this.featuresSource.asObservable();
 
     constructor(private http: HttpClient) {
     }
@@ -63,40 +65,39 @@ export class EsriRequestService {
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 
-    getAllData(featureEndPoint, featureEndPointRelated, relationshipId, cWhere, token, parentIds: string[]) {
-        this.beachs = [];
+    getMultipleRelatedData(beachs: any[], relationsIds: string[], token: string) {
+        const httpRequests = [];
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
-        const myArrayOfFunction = [];
-        parentIds.forEach(value => {
-            const paramsA = new HttpParams().set('token', token).append('f', 'json')
-                .append('where', cWhere)
-                .append('outFields', '*')
-                .append('returnCentroid', 'false')
-                .append('returnGeometry', 'false')
-                .append('objectIds', value);
-            const paramsB = new HttpParams().set('token', token).append('f', 'json')
+
+        relationsIds.forEach(value => {
+            const params = new HttpParams().set('token', token).append('f', 'json')
+                .append('objectIds', beachs.map(a => a.attributes.objectid_12).join(','))
                 .append('outFields', '*')
                 .append('returnGeometry', 'false')
-                .append('relationshipId', relationshipId)
-                .append('objectIds', value);
-            myArrayOfFunction.push(this.http.post(featureEndPoint, paramsA, {headers: headers}));
-            paramsB.append('objectIds', value);
-            myArrayOfFunction.push(this.http.post(featureEndPointRelated, paramsB, {headers: headers}));
+                .append('relationshipId', value);
+            httpRequests.push(this.http.post(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
+                params, {headers: headers}));
         });
 
-        forkJoin(myArrayOfFunction).subscribe(results => {
-            // results[0] es la playa
-            // results[1] es la tabla relacionada
+        forkJoin(httpRequests).subscribe(results => {
+            const features = [];
             if (results) {
-                for (let i = 0; i < myArrayOfFunction.length; i += 2) {
-                    (results[i] as any).relatedRecords = results[i + 1].relatedRecordGroups[0] ?
-                        results[i + 1].relatedRecordGroups[0].relatedRecords : [];
-                    this.beachs.push(results[i]);
-                }
-                console.log(this.beachs);
+                beachs.forEach(f => {
+                    const ob = {objectId: f.attributes.objectid_12, centroid: f.centroid ? f.centroid : null};
+                    for (let i = 0; i < httpRequests.length; i++) {
+                        ob['relatedRecords' + relationsIds[i]] = results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid_12)
+                            ? results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid_12).relatedRecords : [];
+                        delete ob['relatedRecords' + relationsIds[i]].objectId;
+                    }
+                    features.push(ob);
+                });
+                this.featuresSource.next(features);
             }
         });
     }
 
+    clearfeaturesSource() {
+        this.featuresSource.next([]);
+    }
 }
