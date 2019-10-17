@@ -33,7 +33,7 @@
               "src/assets/js/esri-custom/constructors.js",
               "src/assets/js/esri-custom/functions.js",
               "src/assets/js/esri-custom/globals.js",
-              "src/assets/js/jquery.cubeportfolio.min.js"
+              
             ]
           },
           "configurations": {
