@@ -5,7 +5,6 @@ import {GradesProtectionService} from '../../services/grades-protection.service'
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {environment} from '../../../environments/environment.prod';
 import {EsriRequestService} from '../../services/esri-request.service';
-import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 
 declare var Swiper: any;
 declare var $: any;
@@ -37,8 +36,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     beachs: any[];
     viewResults: boolean;
 
-    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
-                private spinnerService: Ng4LoadingSpinnerService) {
+    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService) {
     }
 
     ngAfterViewInit() {

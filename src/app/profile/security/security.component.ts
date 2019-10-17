@@ -65,8 +65,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
     };
     private selectObjectId: number;
     private options: string;
-    private grados: [] = [];
-    private periodos: [] = [];
+    grados: [] = [];
+    periodos: [] = [];
     private subscripcionFeatures;
 
     constructor(private authService: AuthGuardService,
@@ -272,7 +272,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
         console.log(this.formMediosHumanos.value);
     }
 
-    private update() {
+    public update() {
         this.spinnerService.show();
         const preciosUnitariosSend = [];
         const preciosUnitarios = {
