@@ -6,7 +6,7 @@ import {RequestService} from '../../services/request.service';
 import {GradesProtectionService} from '../../services/grades-protection.service';
 import {environment} from '../../../environments/environment';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators, FormArray} from '@angular/forms';
 import Swal from 'sweetalert2';
 
 declare var $: any;
@@ -106,24 +106,35 @@ export class SecurityComponent implements OnInit, OnDestroy {
             ultimo_cambio: new FormControl('')
         });
         this.formMediosHumanos = this.fb.group({
-            ndias: new FormControl(0),
-            jefes_turno: new FormControl(0),
-            socorristas_torre: new FormControl(0),
-            socorristas_polivalentes: new FormControl(0),
-            socorristas_acuatico: new FormControl(0),
-            socorristas_embarcacion: new FormControl(0),
-            socorristas_apie: new FormControl(0),
-            socorristas_embarcacion_per: new FormControl(0),
-
+            rHumanos: new FormArray([])
 
         });
+    }
+get f() { return this.formMediosHumanos.controls; }
+get t() { return this.f.rHumanos as FormArray; }
+
+dinamicForm(grados){
+  this.t.controls = [];
+  for (let i = 0; i < grados.length; i++) {
+    
+    this.t.push(this.fb.group({
+      jefes_turno: new FormControl(0),
+      socorristas_torre: new FormControl(0),
+      socorristas_polivalentes: new FormControl(0),
+      socorristas_acuatico: new FormControl(0),
+      socorristas_embarcacion: new FormControl(0),
+      socorristas_apie: new FormControl(0),
+      socorristas_embarcacion_per: new FormControl(0)
+
+    }));
+  }
+  console.log(this.t.controls);
     }
 
     readFeatures() {
         this.subscripcionFeatures = this.service.features$.subscribe(
             (results: any) => {
                 const beach = (results[0] as any);
-                console.log(results);
                 if (results.length > 0) {
 
                     if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords2.length > 0
@@ -132,8 +143,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
                             beach.relatedRecords3);
                         beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
                         beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
-                        console.log(beach);
                         this.grados = beach.grados;
+                        this.dinamicForm(this.grados);
                         this.periodos = beach.periodos;
                         this.datosPlayaRelacionada = beach;
                         // inicializamos desactivado el esc y el click fuera de la modal
@@ -192,7 +203,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
             (result: any) => {
                 if (result.features.length !== 0) {
                     this.formUnitarios.patchValue(result.features[0].attributes);
-                    console.log(result.features[0].attributes);
                     this.mode = 'updates';
                     this.spinnerService.hide();
                 }
