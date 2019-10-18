@@ -9,6 +9,6 @@ export const environment = {
     client_id: 'RNiCC2e9tgwl1mCV',
     urlAuthorize: 'https://www.arcgis.com/sharing/rest/oauth2/authorize',
     urlimageweather: 'https://openweathermap.org/img/w/',
-    // TODO redirectUri: 'https://www.infoplayascanarias.es/login'
-    redirectUri: 'https://servi15/infoplayascanarias/login',
+    // TODO sustituir para sitio definitivo con redirectUri: 'https://www.infoplayascanarias.es/login'
+    redirectUri: 'https://servi15.tf.gesplan.es/infoplayascanarias/login',
 };
