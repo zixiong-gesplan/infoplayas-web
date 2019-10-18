@@ -69,13 +69,13 @@
           <ng-template pTemplate="header" >
             <tr>
               <th colspan="9" class="centrar">
-                <span *ngIf="gradoP==='A'">Grado de protección Alto</span>
-                <span *ngIf="gradoP==='M'">Grado de protección Medio</span>
-                <span *ngIf="gradoP==='B'">Grado de protección Bajo</span>
+                <span *ngIf="gradoP.value.grado==='A'">Grado de protección Alto</span>
+                <span *ngIf="gradoP.value.grado==='M'">Grado de protección Medio</span>
+                <span *ngIf="gradoP.value.grado==='B'">Grado de protección Bajo</span>
               </th>
             </tr>
             <tr>
-              <th class="tamanhofont">Nº de días</th>
+
               <th class="tamanhofont">Longitud</th>
               <th class="tamanhofont">Jefatura de playa o turno</th>
               <th class="tamanhofont">Socorrista en torre o silla de vigilancia</th>
@@ -86,7 +86,7 @@
               <th class="tamanhofont">Socorrista embarcación con PER</th>
             </tr>
             <tr >
-              <th class="centrar"><input type="number"   id="ndias" class="form-control  inputCustom"  readonly></th>
+            
               <th class="centrar"><input type="number"  id="longitud" class="form-control  inputCustom" readonly></th>
               <th class="centrar"><input type="number"  formControlName="jefes_turno"  class="form-control  inputCustom" min="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_torre"  class="form-control  inputCustom" min="0"></th>

@@ -69,6 +69,12 @@ export class SecurityComponent implements OnInit, OnDestroy {
     periodos: any [] = [];
     private subscripcionFeatures;
     urlimageweather =  environment.urlimageweather;
+    prueba = {
+      datos: [{
+          grado: '',
+          controles: '',
+      }],
+    }
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -116,7 +122,7 @@ get t() { return this.f.rHumanos as FormArray; }
 dinamicForm(grados){
   this.t.controls = [];
   for (let i = 0; i < grados.length; i++) {
-    
+
     this.t.push(this.fb.group({
       jefes_turno: new FormControl(0),
       socorristas_torre: new FormControl(0),
@@ -124,11 +130,12 @@ dinamicForm(grados){
       socorristas_acuatico: new FormControl(0),
       socorristas_embarcacion: new FormControl(0),
       socorristas_apie: new FormControl(0),
-      socorristas_embarcacion_per: new FormControl(0)
+      socorristas_embarcacion_per: new FormControl(0),
+      grado: new FormControl(grados[i])
 
     }));
+console.log(this.t.controls);
   }
-  console.log(this.t.controls);
     }
 
     readFeatures() {
@@ -258,7 +265,7 @@ dinamicForm(grados){
     }
 
     public meteo(playa) {
-        console.log(environment.urlimageweather);
+
         this.spinnerService.show();
         this.nombre_playa = playa.attributes.nombre_municipio;
         this.utmToLatLong(playa.centroid.x, playa.centroid.y);
