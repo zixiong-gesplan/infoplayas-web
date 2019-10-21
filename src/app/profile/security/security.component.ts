@@ -108,6 +108,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
             ultimo_cambio: new FormControl('')
         });
         this.formMediosHumanos = this.fb.group({
+          
             rHumanos: new FormArray([])
 
         });
