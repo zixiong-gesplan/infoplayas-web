@@ -45,6 +45,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     index: number;
     latitud: number = 0;
     longitud: number = 0;
+    grado_valor:number;
     datosclima = {
         main: {
             temp: '',
@@ -69,12 +70,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     periodos: any [] = [];
     private subscripcionFeatures;
     urlimageweather =  environment.urlimageweather;
-    prueba = {
-      datos: [{
-          grado: '',
-          controles: '',
-      }],
-    }
+
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -124,54 +120,56 @@ dinamicForm(grados){
   for (let i = 0; i < grados.length; i++) {
 
     this.t.push(this.fb.group({
-      jefes_turno: new FormControl(0),
-      socorristas_torre: new FormControl(0),
-      socorristas_polivalentes: new FormControl(0),
-      socorristas_acuatico: new FormControl(0),
-      socorristas_embarcacion: new FormControl(0),
-      socorristas_apie: new FormControl(0),
-      socorristas_embarcacion_per: new FormControl(0),
-      grado: new FormControl(grados[i])
+      jefes_turno: new FormControl(),
+      socorristas_torre: new FormControl(),
+      socorristas_polivalentes: new FormControl(),
+      socorristas_acuatico: new FormControl(),
+      socorristas_embarcacion: new FormControl(),
+      socorristas_apie: new FormControl(),
+      socorristas_embarcacion_per: new FormControl(),
+      grado: new FormControl(grados[i]),
+      id_dgse: new FormControl(this.iddgse),
+      nivel: new FormControl(),
 
     }));
-console.log(this.t.controls);
+
   }
     }
 
-    readFeatures() {
-        this.subscripcionFeatures = this.service.features$.subscribe(
-            (results: any) => {
-                const beach = (results[0] as any);
-                if (results.length > 0) {
+readFeatures() {
+  this.subscripcionFeatures = this.service.features$.subscribe(
+    (results: any) => {
+      const beach = (results[0] as any);
+      if (results.length > 0) {
+        if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords2.length > 0
+          && beach.relatedRecords3.length > 0) {
+            beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
+              beach.relatedRecords3);
+              beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
+              beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
+              console.log(beach.grados);
+              this.grados = beach.grados;
+              this.dinamicForm(this.grados);
+              this.periodos = beach.periodos;
+              this.datosPlayaRelacionada = beach;
+              // inicializamos desactivado el esc y el click fuera de la modal
+              $('#' + this.options).modal({backdrop: 'static', keyboard: false});
+              $('#' + this.options).modal('show');
 
-                    if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords2.length > 0
-                        && beach.relatedRecords3.length > 0) {
-                        beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
-                            beach.relatedRecords3);
-                        beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
-                        beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
-                        this.grados = beach.grados;
-                        this.dinamicForm(this.grados);
-                        this.periodos = beach.periodos;
-                        this.datosPlayaRelacionada = beach;
-                        // inicializamos desactivado el esc y el click fuera de la modal
-                        $('#' + this.options).modal({backdrop: 'static', keyboard: false});
-                        $('#' + this.options).modal('show');
-
-                    } else {
-                        Swal.fire({
-                            type: 'error',
-                            title: '',
-                            text: 'No existen grados de proteccion para esta playa     debe determinar el grado de protección en la fase 2',
-                            footer: ''
-                        });
-                    }
-                }
-                this.spinnerService.hide();
-            },
-            error => {
-                console.log(error.toString());
-            });
+            } else {
+              Swal.fire({
+                type: 'error',
+                title: '',
+                text: 'No existen grados de proteccion para esta playa     debe determinar el grado de protección en la fase 2',
+                footer: ''
+              });
+            }
+          }
+          this.spinnerService.hide();
+        },
+        error => {
+          console.log(error.toString());
+        });
     }
 
     loadRecords() {
@@ -289,6 +287,13 @@ console.log(this.t.controls);
     }
 
     public updateMediosHumanos() {
+        const MediosHumanos = {
+            attributes: {
+                ultimo_cambio: '',
+                ultimo_editor: ''
+            },
+        };
+        MediosHumanos.attributes = this.formMediosHumanos.value;
         console.log(this.formMediosHumanos.value);
     }
 
@@ -307,6 +312,7 @@ console.log(this.t.controls);
         preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
         preciosUnitarios.attributes.id_ayuntamiento = this.codMun;
         preciosUnitariosSend.push(preciosUnitarios);
+        console.log(preciosUnitarios);
 
         this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
             preciosUnitariosSend, this.mode, this.currentUser.token).subscribe(
@@ -350,6 +356,7 @@ console.log(this.t.controls);
     }
 
     private anhadir_medios(playa, option) {
+
         this.spinnerService.show();
         let relationIds;
         switch (option) {

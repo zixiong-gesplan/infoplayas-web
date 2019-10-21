@@ -5,10 +5,13 @@ import {GradeRecord} from '../models/grade-record';
 @Injectable({
     providedIn: 'root'
 })
-export class GradesProtectionService {
 
-    constructor() {
-    }
+
+
+export class GradesProtectionService{
+
+
+    constructor() {}
 
     calculateGradeForPeriods(incidents_Sports, env_sea, periods: Attribute[]): GradeRecord[] {
         // calculos para el valor de peligrosidad Incidentes y actividades deportivas
@@ -81,4 +84,5 @@ export class GradesProtectionService {
         ];
         return aRisk_Flow.filter(x => x[0] === riskLvl + flow)[0][1];
     }
+
 }
