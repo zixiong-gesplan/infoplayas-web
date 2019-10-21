@@ -330,7 +330,7 @@ export class MapEditorComponent implements OnInit {
                 // then we load a web map from an id
                 const webmap = new WebMap({
                     portalItem: {
-                        id: environment.idportal
+                        id: environment.idportalForms
                     }
                 });
                 // and we show that map in a container w/ id #viewDiv

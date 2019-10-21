@@ -16,7 +16,7 @@ declare const createScaleBar: any;
 declare const createBaseMapToggle: any;
 declare const createLegend: any;
 declare const createExpand: any;
-declare const playasLayerId: any;
+declare const playasLayerViewerId: any;
 declare const municipiosLayerId: any;
 declare let filterPlayas: any;
 declare let filterMunicipios: any;
@@ -97,7 +97,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 const webmap = new WebMap({
                     portalItem: {
                         // TODO cambiar al nuevo webmap
-                        id: environment.idportal
+                        id: environment.idportalView
                     }
                 });
                 // and we show that map in a container w/ id #viewDiv
@@ -172,7 +172,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 viewer.when(function () {
                     viewer.popup.autoOpenEnabled = false; // disable popups
                     // Get layer objects from the web map
-                    playasLayer = webmap.findLayerById(playasLayerId);
+                    playasLayer = webmap.findLayerById(playasLayerViewerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
                     const user = IdentityManager.credentials[0].userId;
 
