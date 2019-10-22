@@ -115,25 +115,48 @@ export class SecurityComponent implements OnInit, OnDestroy {
 get f() { return this.formMediosHumanos.controls; }
 get t() { return this.f.atrtributes as FormArray; }
 
-dinamicForm(grados){
+dinamicForm(grados,related){
   this.t.controls = [];
-  for (let i = 0; i < grados.length; i++) {
+  if(related.length > 0){
+    this.mode = 'updates';
+    for (let i = 0; i < related.length; i++) {
 
-    this.t.push(this.fb.group({
-      jefes_turno: new FormControl(),
-      socorristas_torre: new FormControl(),
-      socorristas_polivalentes: new FormControl(),
-      socorristas_acuatico: new FormControl(),
-      socorristas_embarcacion: new FormControl(),
-      socorristas_apie: new FormControl(),
-      socorristas_embarcacion_per: new FormControl(),
-      grado: new FormControl(grados[i]),
-      id_dgse: new FormControl(this.iddgse),
-      nivel: new FormControl(),
+      this.t.push(this.fb.group({
+        objectid: new FormControl(related[i].attributes.objectid),
+        jefes_turno: new FormControl(related[i].attributes.jefes_turno),
+        socorristas_torre: new FormControl(related[i].attributes.socorristas_torre),
+        socorristas_polivalentes: new FormControl(related[i].attributes.socorristas_polivalentes),
+        socorristas_acuatico: new FormControl(related[i].attributes.socorristas_acuatico),
+        socorristas_embarcacion: new FormControl(related[i].attributes.socorristas_embarcacion),
+        socorristas_apie: new FormControl(related[i].attributes.socorristas_apie),
+        socorristas_embarcacion_per: new FormControl(related[i].attributes.socorristas_embarcacion_per),
+        grado: new FormControl(related[i].attributes.grado),
+        id_dgse: new FormControl(related[i].attributes.id_dgse),
+        nivel: new FormControl(null),
 
-    }));
+      }));
 
+    }
+  }else{
+    for (let i = 0; i < grados.length; i++) {
+
+      this.t.push(this.fb.group({
+        jefes_turno: new FormControl(),
+        socorristas_torre: new FormControl(),
+        socorristas_polivalentes: new FormControl(),
+        socorristas_acuatico: new FormControl(),
+        socorristas_embarcacion: new FormControl(),
+        socorristas_apie: new FormControl(),
+        socorristas_embarcacion_per: new FormControl(),
+        grado: new FormControl(grados[i]),
+        id_dgse: new FormControl(this.iddgse),
+        nivel: new FormControl(),
+
+      }));
+
+    }
   }
+
     }
 
 readFeatures() {
@@ -148,7 +171,7 @@ readFeatures() {
               beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
               this.grados = beach.grados;
-              this.dinamicForm(this.grados);
+              this.dinamicForm(this.grados,beach.relatedRecords4 );
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
               // inicializamos desactivado el esc y el click fuera de la modal
@@ -303,7 +326,7 @@ readFeatures() {
         });
 
         this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/5/applyEdits',
-            preciosMediosHumanos, 'adds', this.currentUser.token).subscribe(
+            preciosMediosHumanos, this.mode, this.currentUser.token).subscribe(
             (result: any) => {
               console.log(result);
                 if (!result.error) {
