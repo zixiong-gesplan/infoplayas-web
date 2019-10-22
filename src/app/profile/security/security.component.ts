@@ -119,7 +119,7 @@ dinamicForm(grados,related){
   this.t.controls = [];
   if(related.length > 0){
     this.mode = 'updates';
-    if(related.length != grados.length){alert('mierda');}
+    //if(related.length != grados.length){alert('mierda');}
     for (let i = 0; i < related.length; i++) {
       this.t.push(this.fb.group({
         objectid: new FormControl(related[i].attributes.objectid),
@@ -160,17 +160,18 @@ readFeatures() {
       if (results.length > 0) {
         if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords2.length > 0
           && beach.relatedRecords3.length > 0) {
+            // inicializamos desactivado el esc y el click fuera de la modal
+            $('#' + this.options).modal({backdrop: 'static', keyboard: false});
+            $('#' + this.options).modal('show');
+
             beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
               beach.relatedRecords3);
               beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
               this.grados = beach.grados;
-              this.dinamicForm(this.grados,beach.relatedRecords4 );
+              if(beach.relatedRecords4){ this.dinamicForm(this.grados,beach.relatedRecords4 );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
-              // inicializamos desactivado el esc y el click fuera de la modal
-              $('#' + this.options).modal({backdrop: 'static', keyboard: false});
-              $('#' + this.options).modal('show');
 
             } else {
               Swal.fire({
