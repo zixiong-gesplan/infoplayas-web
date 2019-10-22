@@ -417,20 +417,20 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <p-toggleButton formControlName="peligros_anadidos" onLabel="SI existen peligros añadidos"
-                                        offLabel="NO existen peligros añadidos"
-                                        onIcon="fa fa-exclamation-triangle fa-3x"
-                                        offIcon="fa fa-leaf fa-3x"
-                                        [style]="{'width':'100%', 'height': '4.5em','text-align': 'right'}"></p-toggleButton>
+                        <label>Número de peligros añadidos</label>
+                        <input class="esri-feature-form__input" pInputText type="number" min="0" pattern="^[0-6]"
+                               formControlName="peligros_anadidos" (change)="onChangeAdditionalDangers($event)"/>
                     </div>
                 </div>
-                <div [hidden]="!formEnvironment.get('peligros_anadidos').value" class="form-row">
-                    <div class="form-group">
-                        <label class="esri-font">Indicar peligros</label>
-                        <textarea [rows]="4" [cols]="80"
-                                  class="esri-feature-form__input" pInputTextarea
-                                  type="textarea" formControlName="observaciones"
-                                  placeholder="Requerido - Min(4) - permite texto largo"></textarea>
+                <div *ngFor="let danger of tEnv.controls; let i = index" class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <div [formGroup]="danger" class="esri-pad">
+                            <div class="form-group">
+                                <label style="padding-bottom: 5px;" class="esri-font">Peligro {{i + 1}}</label>
+                                <p-dropdown class="esri-feature-form__input" [options]="additionalDangersOptions"
+                                            formControlName="riesgo" [style]="{'width':'100%'}"></p-dropdown>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-row">
