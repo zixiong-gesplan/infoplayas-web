@@ -68,10 +68,10 @@
         <p-table [formGroup]="gradoP"   *ngFor="let gradoP of t.controls; let i=index;">
           <ng-template pTemplate="header" >
             <tr>
-              <th colspan="9" class="centrar">
-                <span *ngIf="gradoP.value.grado==='A'">Grado de protección Alto</span>
-                <span *ngIf="gradoP.value.grado==='M'">Grado de protección Medio</span>
-                <span *ngIf="gradoP.value.grado==='B'">Grado de protección Bajo</span>
+              <th colspan="8" class="centrar">
+                <span *ngIf="gradoP.value.grado==='A'" style="color:#F5B7B1">Grado de protección Alto</span>
+                <span *ngIf="gradoP.value.grado==='M'" style="color:#F5B7B1">Grado de protección Medio</span>
+                <span *ngIf="gradoP.value.grado==='B'" style="color:#F5B7B1">Grado de protección Bajo</span>
               </th>
             </tr>
             <tr>
@@ -86,15 +86,15 @@
               <th class="tamanhofont">Socorrista embarcación con PER</th>
             </tr>
             <tr >
-            
+
               <th class="centrar"><input type="number"  id="longitud" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="number"  formControlName="jefes_turno"  class="form-control  inputCustom" min="0"></th>
-              <th class="centrar"><input type="number"  formControlName="socorristas_torre"  class="form-control  inputCustom" min="0"></th>
-              <th class="centrar"><input type="number"  formControlName="socorristas_polivalentes"   class="form-control  inputCustom" min="0"></th>
-              <th class="centrar"><input type="number"  formControlName="socorristas_acuatico" class="form-control  inputCustom" min="0"></th>
-              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion"  class="form-control  inputCustom" min="0"></th>
-              <th class="centrar"><input type="number"  formControlName="socorristas_apie"  class="form-control  inputCustom" min="0"></th>
-              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion_per" class="form-control  inputCustom" min="0"></th>
+              <th class="centrar"><input type="number"  formControlName="jefes_turno"  class="form-control  inputCustom" min="0" placeholder="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_torre"  class="form-control  inputCustom" min="0" placeholder="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_polivalentes"   class="form-control  inputCustom" min="0" placeholder="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_acuatico" class="form-control  inputCustom" min="0" placeholder="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion"  class="form-control  inputCustom" min="0" placeholder="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_apie"  class="form-control  inputCustom" min="0" placeholder="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion_per" class="form-control  inputCustom" min="0" placeholder="0"></th>
 
             </tr>
             <br>

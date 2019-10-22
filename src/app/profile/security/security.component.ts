@@ -40,11 +40,11 @@ export class SecurityComponent implements OnInit, OnDestroy {
     formMediosHumanos: FormGroup;
     codMun;
     datasend: string[] = [];
-    objeto_attributes: {};
     mode: string = 'adds';
     index: number;
     latitud: number = 0;
     longitud: number = 0;
+    grado_valor:number;
     datosclima = {
         main: {
             temp: '',
@@ -64,17 +64,12 @@ export class SecurityComponent implements OnInit, OnDestroy {
         }
     };
     private selectObjectId: number;
+
     private options: string;
     grados: [] = [];
     periodos: any [] = [];
     private subscripcionFeatures;
     urlimageweather =  environment.urlimageweather;
-    prueba = {
-      datos: [{
-          grado: '',
-          controles: '',
-      }],
-    }
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -112,66 +107,86 @@ export class SecurityComponent implements OnInit, OnDestroy {
             ultimo_cambio: new FormControl('')
         });
         this.formMediosHumanos = this.fb.group({
-            rHumanos: new FormArray([])
+
+            atrtributes: new FormArray([])
 
         });
     }
 get f() { return this.formMediosHumanos.controls; }
-get t() { return this.f.rHumanos as FormArray; }
+get t() { return this.f.atrtributes as FormArray; }
 
-dinamicForm(grados){
+dinamicForm(grados,related){
   this.t.controls = [];
-  for (let i = 0; i < grados.length; i++) {
-
-    this.t.push(this.fb.group({
-      jefes_turno: new FormControl(0),
-      socorristas_torre: new FormControl(0),
-      socorristas_polivalentes: new FormControl(0),
-      socorristas_acuatico: new FormControl(0),
-      socorristas_embarcacion: new FormControl(0),
-      socorristas_apie: new FormControl(0),
-      socorristas_embarcacion_per: new FormControl(0),
-      grado: new FormControl(grados[i])
-
-    }));
-console.log(this.t.controls);
-  }
+  if(related.length > 0){
+    this.mode = 'updates';
+    //if(related.length != grados.length){alert('mierda');}
+    for (let i = 0; i < related.length; i++) {
+      this.t.push(this.fb.group({
+        objectid: new FormControl(related[i].attributes.objectid),
+        jefes_turno: new FormControl(related[i].attributes.jefes_turno),
+        socorristas_torre: new FormControl(related[i].attributes.socorristas_torre),
+        socorristas_polivalentes: new FormControl(related[i].attributes.socorristas_polivalentes),
+        socorristas_acuatico: new FormControl(related[i].attributes.socorristas_acuatico),
+        socorristas_embarcacion: new FormControl(related[i].attributes.socorristas_embarcacion),
+        socorristas_apie: new FormControl(related[i].attributes.socorristas_apie),
+        socorristas_embarcacion_per: new FormControl(related[i].attributes.socorristas_embarcacion_per),
+        grado: new FormControl(related[i].attributes.grado),
+        id_dgse: new FormControl(related[i].attributes.id_dgse),
+        nivel: new FormControl(null),
+      }));
     }
+  }else{
+    for (let i = 0; i < grados.length; i++) {
+      this.t.push(this.fb.group({
+        jefes_turno: new FormControl(),
+        socorristas_torre: new FormControl(),
+        socorristas_polivalentes: new FormControl(),
+        socorristas_acuatico: new FormControl(),
+        socorristas_embarcacion: new FormControl(),
+        socorristas_apie: new FormControl(),
+        socorristas_embarcacion_per: new FormControl(),
+        grado: new FormControl(grados[i]),
+        id_dgse: new FormControl(this.iddgse),
+        nivel: new FormControl(),
+      }));
+    }
+  }
+}
 
-    readFeatures() {
-        this.subscripcionFeatures = this.service.features$.subscribe(
-            (results: any) => {
-                const beach = (results[0] as any);
-                if (results.length > 0) {
+readFeatures() {
+  this.subscripcionFeatures = this.service.features$.subscribe(
+    (results: any) => {
+      const beach = (results[0] as any);
+      if (results.length > 0) {
+        if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords2.length > 0
+          && beach.relatedRecords3.length > 0) {
+            // inicializamos desactivado el esc y el click fuera de la modal
+            $('#' + this.options).modal({backdrop: 'static', keyboard: false});
+            $('#' + this.options).modal('show');
 
-                    if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords2.length > 0
-                        && beach.relatedRecords3.length > 0) {
-                        beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
-                            beach.relatedRecords3);
-                        beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
-                        beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
-                        this.grados = beach.grados;
-                        this.dinamicForm(this.grados);
-                        this.periodos = beach.periodos;
-                        this.datosPlayaRelacionada = beach;
-                        // inicializamos desactivado el esc y el click fuera de la modal
-                        $('#' + this.options).modal({backdrop: 'static', keyboard: false});
-                        $('#' + this.options).modal('show');
+            beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
+              beach.relatedRecords3);
+              beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
+              beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
+              this.grados = beach.grados;
+              if(beach.relatedRecords4){ this.dinamicForm(this.grados,beach.relatedRecords4 );}
+              this.periodos = beach.periodos;
+              this.datosPlayaRelacionada = beach;
 
-                    } else {
-                        Swal.fire({
-                            type: 'error',
-                            title: '',
-                            text: 'No existen grados de proteccion para esta playa     debe determinar el grado de protección en la fase 2',
-                            footer: ''
-                        });
-                    }
-                }
-                this.spinnerService.hide();
-            },
-            error => {
-                console.log(error.toString());
-            });
+            } else {
+              Swal.fire({
+                type: 'error',
+                title: '',
+                text: 'No existen grados de protección para esta playa     debe determinar el grado de protección en la fase 2',
+                footer: ''
+              });
+            }
+          }
+          this.spinnerService.hide();
+        },
+        error => {
+          console.log(error.toString());
+        });
     }
 
     loadRecords() {
@@ -182,6 +197,7 @@ console.log(this.t.controls);
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
             this.filtermunicipio, '*', false, this.currentUser.token, 'clasificacion', true).subscribe(
             (result: any) => {
+              console.log('load record');
                 if (result) {
                     this.readFeatures();
                     this.datosPlaya = result;
@@ -289,7 +305,55 @@ console.log(this.t.controls);
     }
 
     public updateMediosHumanos() {
-        console.log(this.formMediosHumanos.value);
+      this.spinnerService.show();
+        let preciosMediosHumanos = [];
+        let bucledelformMedioHumanos =  [];
+        let preciosMedios = {
+            attributes: {},
+        };
+        bucledelformMedioHumanos.push(this.formMediosHumanos.value);
+        bucledelformMedioHumanos.forEach(r => {
+            r.atrtributes.forEach(x =>{
+              preciosMedios.attributes = x;
+              //copiamos el objeto preciosMedios para que no cambie al hacer el push
+              let preciosMediosCopia = Object.assign({} , preciosMedios);
+              preciosMediosHumanos.push(preciosMediosCopia);
+            });
+        });
+
+        this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/5/applyEdits',
+            preciosMediosHumanos, this.mode, this.currentUser.token).subscribe(
+            (result: any) => {
+              console.log(result);
+                if (!result.error) {
+                    this.spinnerService.hide();
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Exito',
+                        text: 'la actualización ha sido correcta',
+                        footer: ''
+                    });
+
+                    $('#humanos').modal('hide');
+                } else {
+                    this.spinnerService.hide();
+                    Swal.fire({
+                        type: 'error',
+                        title: '',
+                        text: 'Se ha producido un error inesperado',
+                        footer: ''
+                    });
+                }
+            },
+            error => {
+                this.spinnerService.hide();
+                Swal.fire({
+                    type: 'error',
+                    title: '',
+                    text: 'Se ha producido un error inesperado',
+                    footer: ''
+                });
+            })
     }
 
     public update() {
@@ -307,6 +371,7 @@ console.log(this.t.controls);
         preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
         preciosUnitarios.attributes.id_ayuntamiento = this.codMun;
         preciosUnitariosSend.push(preciosUnitarios);
+        //console.log(preciosUnitariosSend);
 
         this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
             preciosUnitariosSend, this.mode, this.currentUser.token).subscribe(
@@ -350,6 +415,7 @@ console.log(this.t.controls);
     }
 
     private anhadir_medios(playa, option) {
+
         this.spinnerService.show();
         let relationIds;
         switch (option) {
