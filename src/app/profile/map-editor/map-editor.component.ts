@@ -81,6 +81,7 @@ export class MapEditorComponent implements OnInit {
     invalidDates: Array<Date>;
     periods: Attribute[];
     deletePeriods: number[];
+    deleteAddtionalDangers: number[];
     colsFlow: any;
     dateNow: Date;
 
@@ -215,9 +216,26 @@ export class MapEditorComponent implements OnInit {
             }
         } else {
             for (let i = this.tEnv.length; i >= numberOfDangers; i--) {
+                if (this.tEnv.value[i]) {
+                    this.deleteAddtionalDangers.push(this.tEnv.value[i].objectid);
+                }
                 this.tEnv.removeAt(i);
             }
         }
+    }
+
+    onInitAdditionalDangers(data) {
+        this.deleteAddtionalDangers = [];
+        data.forEach(value => {
+            this.tEnv.push(this.fb.group({
+                objectid: [value.attributes.objectid],
+                riesgo: [value.attributes.riesgo, Validators.required],
+                id_dgse: [''],
+                ultimo_editor: [''],
+                ultimo_cambio: ['']
+            }));
+        });
+        this.formEnvironment.get('peligros_anadidos').setValue(data.length);
     }
 
     // fechas maxima y minima para los calendarios de afluencias y carga lista de periodos
@@ -556,6 +574,7 @@ export class MapEditorComponent implements OnInit {
         query.objectIds = [output.beachId];
         queryTask.executeRelationshipQuery(query).then((results: any) => {
             this.formEnvironment.reset();
+            this.tEnv.controls = [];
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 this.formEnvironment.patchValue({id_dgse: output.id_dgse});
                 this.formEnvironment.patchValue({on_edit: false});
@@ -564,7 +583,6 @@ export class MapEditorComponent implements OnInit {
                 this.loadRelatedAdditionalDangers(output.beachId);
                 this.formEnvironment.patchValue(results[query.objectIds[0]].features[0].attributes);
                 this.formEnvironment.patchValue({on_edit: true});
-                console.log(this.formEnvironment.value);
             }
         });
     }
@@ -574,12 +592,9 @@ export class MapEditorComponent implements OnInit {
             parentId, '9', '*', true, this.currentUser.token).subscribe(
             (result: any) => {
                 if (result.relatedRecordGroups.length > 0) {
-                    // console.log(result.relatedRecordGroups[0].relatedRecords[0].attributes);
-                    // TODO hacemos patch value de los registros en el array form de dangers
-                    console.log(result.relatedRecordGroups);
+                    this.onInitAdditionalDangers(result.relatedRecordGroups[0].relatedRecords);
                 } else {
                     this.formEnvironment.get('peligros_anadidos').setValue(0);
-                    console.log(result);
                 }
             },
             error => {
@@ -849,31 +864,33 @@ export class MapEditorComponent implements OnInit {
     }
 
     private updateAdditionalDangers() {
-        // casteamos la fecha a formato valido de bbdd postgre
-        // this.periods = [...this.periods.filter(s => !s.attributes.objectid)];
+        // borramos los registros que han sido eliminados por el usuario
+        if (this.deleteAddtionalDangers.length > 0) {
+            this.removeRelatedData(this.deleteAddtionalDangers, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+                + '/deleteFeatures', false);
+        }
         const addvalues = [...this.tEnv.value].filter(s => !s.objectid).map(value => {
-            return { attributes: value };
+            return {attributes: value};
         });
         const updatesvalues = [...this.tEnv.value].filter(s => s.objectid).map(value => {
-            return { attributes: value };
+            return {attributes: value};
         });
-        console.log(addvalues);
-        console.log(updatesvalues);
-        // const addvalues = JSON.parse(JSON.stringify(this.periods));
-        // addvalues.forEach(value => {
-        //     value.attributes.fecha_fin = moment(value.attributes.fecha_fin).format('YYYY-MM-DD');
-        //     value.attributes.fecha_inicio = moment(value.attributes.fecha_inicio).format('YYYY-MM-DD');
-        // });
-        // let unselect = true;
-        // if (this.periods.length > 0) {
-        //     this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
-        //         + '/applyEdits', 'none');
-        //     unselect = false;
-        // }
-        // // borramos los periodos si los hay
-        // if (this.deletePeriods.length > 0) {
-        //     this.removeRelatedData(this.deletePeriods, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
-        //         + '/deleteFeatures', unselect);
-        // }
+        updatesvalues.forEach(value => {
+            value.attributes.ultimo_cambio = moment(new Date()).format('YYYY-MM-DD hh:mm:ss');
+            value.attributes.ultimo_editor = this.currentUser.username;
+        });
+        if (updatesvalues.length > 0) {
+            this.editRelatedData(addvalues, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+                + '/applyEdits', 'none');
+        }
+        addvalues.forEach(value => {
+            value.attributes.id_dgse = this.formEnvironment.get('id_dgse').value;
+            value.attributes.ultimo_cambio = moment(new Date()).format('YYYY-MM-DD hh:mm:ss');
+            value.attributes.ultimo_editor = this.currentUser.username;
+        });
+        if (addvalues.length > 0) {
+            this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+                + '/applyEdits', 'none');
+        }
     }
 }
