@@ -27,28 +27,28 @@ var forms = {
         },
         {
             name: "id_dgse",
-            label: "ID D.Seguridad y Emergencias",
+            label: "ID Catalago General de Canarias",
             editable: false,
             hint: "Identificador de la Dirección General de Emergencias - Identificador prioritario"
         },
         {
             name: "codigo_pilotaje_litoral",
-            label: "ID Gobierno de Canarias",
+            label: "ID pilotaje litoral canario",
             editable: false
         },
         {
             name: "codigo_mapama",
-            label: "ID MAPAMA",
+            label: "ID Guía de Playas Nacional",
             editable: false
         },
         {
             name: "nombre_pilotaje_litoral",
-            label: "Nombre según Gobierno de Canarias",
+            label: "Nombre pilotaje  Litoral canario",
             editable: false
         },
         {
             name: "nombre_mapama",
-            label: "Nombre según MAPAMA",
+            label: "Nombre Catalago nacional",
             editable: false
         }
     ]
