@@ -119,8 +119,8 @@ dinamicForm(grados,related){
   this.t.controls = [];
   if(related.length > 0){
     this.mode = 'updates';
+    if(related.length != grados.length){alert('mierda');}
     for (let i = 0; i < related.length; i++) {
-
       this.t.push(this.fb.group({
         objectid: new FormControl(related[i].attributes.objectid),
         jefes_turno: new FormControl(related[i].attributes.jefes_turno),
@@ -133,13 +133,10 @@ dinamicForm(grados,related){
         grado: new FormControl(related[i].attributes.grado),
         id_dgse: new FormControl(related[i].attributes.id_dgse),
         nivel: new FormControl(null),
-
       }));
-
     }
   }else{
     for (let i = 0; i < grados.length; i++) {
-
       this.t.push(this.fb.group({
         jefes_turno: new FormControl(),
         socorristas_torre: new FormControl(),
@@ -151,13 +148,10 @@ dinamicForm(grados,related){
         grado: new FormControl(grados[i]),
         id_dgse: new FormControl(this.iddgse),
         nivel: new FormControl(),
-
       }));
-
     }
   }
-
-    }
+}
 
 readFeatures() {
   this.subscripcionFeatures = this.service.features$.subscribe(
@@ -310,6 +304,7 @@ readFeatures() {
     }
 
     public updateMediosHumanos() {
+      this.spinnerService.show();
         let preciosMediosHumanos = [];
         let bucledelformMedioHumanos =  [];
         let preciosMedios = {
@@ -375,7 +370,6 @@ readFeatures() {
         preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
         preciosUnitarios.attributes.id_ayuntamiento = this.codMun;
         preciosUnitariosSend.push(preciosUnitarios);
-        console.log(this.mode);
         //console.log(preciosUnitariosSend);
 
         this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
