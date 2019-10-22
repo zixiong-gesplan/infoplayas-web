@@ -40,7 +40,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
     formMediosHumanos: FormGroup;
     codMun;
     datasend: string[] = [];
-    objeto_attributes: {};
     mode: string = 'adds';
     index: number;
     latitud: number = 0;
@@ -65,12 +64,12 @@ export class SecurityComponent implements OnInit, OnDestroy {
         }
     };
     private selectObjectId: number;
+
     private options: string;
     grados: [] = [];
     periodos: any [] = [];
     private subscripcionFeatures;
     urlimageweather =  environment.urlimageweather;
-
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -108,13 +107,13 @@ export class SecurityComponent implements OnInit, OnDestroy {
             ultimo_cambio: new FormControl('')
         });
         this.formMediosHumanos = this.fb.group({
-          
-            rHumanos: new FormArray([])
+
+            atrtributes: new FormArray([])
 
         });
     }
 get f() { return this.formMediosHumanos.controls; }
-get t() { return this.f.rHumanos as FormArray; }
+get t() { return this.f.atrtributes as FormArray; }
 
 dinamicForm(grados){
   this.t.controls = [];
@@ -148,7 +147,6 @@ readFeatures() {
               beach.relatedRecords3);
               beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
-              console.log(beach.grados);
               this.grados = beach.grados;
               this.dinamicForm(this.grados);
               this.periodos = beach.periodos;
@@ -161,7 +159,7 @@ readFeatures() {
               Swal.fire({
                 type: 'error',
                 title: '',
-                text: 'No existen grados de proteccion para esta playa     debe determinar el grado de protección en la fase 2',
+                text: 'No existen grados de protección para esta playa     debe determinar el grado de protección en la fase 2',
                 footer: ''
               });
             }
@@ -181,6 +179,7 @@ readFeatures() {
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
             this.filtermunicipio, '*', false, this.currentUser.token, 'clasificacion', true).subscribe(
             (result: any) => {
+              console.log('load record');
                 if (result) {
                     this.readFeatures();
                     this.datosPlaya = result;
@@ -288,14 +287,54 @@ readFeatures() {
     }
 
     public updateMediosHumanos() {
-        const MediosHumanos = {
-            attributes: {
-                ultimo_cambio: '',
-                ultimo_editor: ''
-            },
+        let preciosMediosHumanos = [];
+        let bucledelformMedioHumanos =  [];
+        let preciosMedios = {
+            attributes: {},
         };
-        MediosHumanos.attributes = this.formMediosHumanos.value;
-        console.log(this.formMediosHumanos.value);
+        bucledelformMedioHumanos.push(this.formMediosHumanos.value);
+        bucledelformMedioHumanos.forEach(r => {
+            r.atrtributes.forEach(x =>{
+              preciosMedios.attributes = x;
+              //copiamos el objeto preciosMedios para que no cambie al hacer el push
+              let preciosMediosCopia = Object.assign({} , preciosMedios);
+              preciosMediosHumanos.push(preciosMediosCopia);
+            });
+        });
+
+        this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/5/applyEdits',
+            preciosMediosHumanos, 'adds', this.currentUser.token).subscribe(
+            (result: any) => {
+              console.log(result);
+                if (!result.error) {
+                    this.spinnerService.hide();
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Exito',
+                        text: 'la actualización ha sido correcta',
+                        footer: ''
+                    });
+
+                    $('#humanos').modal('hide');
+                } else {
+                    this.spinnerService.hide();
+                    Swal.fire({
+                        type: 'error',
+                        title: '',
+                        text: 'Se ha producido un error inesperado',
+                        footer: ''
+                    });
+                }
+            },
+            error => {
+                this.spinnerService.hide();
+                Swal.fire({
+                    type: 'error',
+                    title: '',
+                    text: 'Se ha producido un error inesperado',
+                    footer: ''
+                });
+            })
     }
 
     public update() {
@@ -313,7 +352,8 @@ readFeatures() {
         preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
         preciosUnitarios.attributes.id_ayuntamiento = this.codMun;
         preciosUnitariosSend.push(preciosUnitarios);
-        console.log(preciosUnitarios);
+        console.log(this.mode);
+        //console.log(preciosUnitariosSend);
 
         this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
             preciosUnitariosSend, this.mode, this.currentUser.token).subscribe(

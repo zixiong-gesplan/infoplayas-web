@@ -544,6 +544,7 @@ export class MapEditorComponent implements OnInit {
     }
 
     private editRelatedData(updateObj, currentUser, mode, endpoint, postExecute) {
+      console.log(updateObj);
         this.service.updateEsriData(endpoint,
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
