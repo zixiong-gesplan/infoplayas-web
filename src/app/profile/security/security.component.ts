@@ -38,6 +38,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     activarGP: boolean = true;
     formUnitarios: FormGroup;
     formMediosHumanos: FormGroup;
+    formHorarios: FormGroup;
     codMun;
     datasend: string[] = [];
     mode: string = 'adds';
@@ -83,6 +84,13 @@ export class SecurityComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.loadRecords();
         this.default();
+        this.formHorarios = this.fb.group({
+            objectid: new FormControl(''),
+            hora_inicio: new FormControl(),
+            hora_fin: new FormControl(),
+            ultimo_editor: new FormControl(''),
+            ultimo_cambio: new FormControl('')
+        });
         this.formUnitarios = this.fb.group({
             objectid: new FormControl(''),
             jefe_turno_pvp: new FormControl(0, Validators.min(0)),
@@ -103,7 +111,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
             salvavidas_pvp: new FormControl(0),
             senales_prohibicion: new FormControl(0),
             id_ayuntamiento: new FormControl(0),
-            ultimo_editor: new FormControl(''),
+            ultimo_editor: new FormControl(this.currentUser),
             ultimo_cambio: new FormControl('')
         });
         this.formMediosHumanos = this.fb.group({
@@ -119,6 +127,7 @@ dinamicForm(grados,related){
   this.t.controls = [];
   if(related.length > 0){
     this.mode = 'updates';
+    //necesitamos controlar el cambio de grado de proteccion
     //if(related.length != grados.length){alert('mierda');}
     for (let i = 0; i < related.length; i++) {
       this.t.push(this.fb.group({
@@ -133,6 +142,8 @@ dinamicForm(grados,related){
         grado: new FormControl(related[i].attributes.grado),
         id_dgse: new FormControl(related[i].attributes.id_dgse),
         nivel: new FormControl(null),
+        ultimo_editor: new FormControl(this.currentUser),
+        ultimo_cambio: new FormControl('')
       }));
     }
   }else{
@@ -148,6 +159,8 @@ dinamicForm(grados,related){
         grado: new FormControl(grados[i]),
         id_dgse: new FormControl(this.iddgse),
         nivel: new FormControl(),
+        ultimo_editor: new FormControl(this.currentUser),
+        ultimo_cambio: new FormControl('')
       }));
     }
   }
@@ -448,6 +461,10 @@ readFeatures() {
             this.pasiva = true;
         }
     }
+public updateHorarios(){
+  console.log('algo');
+  console.log(this.formHorarios.value);
+}
 
     ngOnDestroy() {
         this.subscripcionFeatures.unsubscribe();

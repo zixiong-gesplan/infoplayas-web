@@ -255,6 +255,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 <div class="modal fade" id="horarios" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-horarios" role="document">
     <div class="modal-content">
+    <form [formGroup]="formHorarios" (ngSubmit)="updateHorarios()">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -271,8 +272,8 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 
             </tr>
             <tr>
-              <th class="centrar"><p-calendar #myCalender [(ngModel)]="altoini" [timeOnly]="true" placeholder="hora inicio" id=""></p-calendar></th>
-              <th class="centrar"><p-calendar [timeOnly]="true" placeholder="hora fin" ></p-calendar></th>
+              <th class="centrar"><p-calendar formControlName="hora_inicio" [timeOnly]="true" placeholder="hora inicio"></p-calendar></th>
+              <th class="centrar"><p-calendar formControlName="hora_fin"  [timeOnly]="true" placeholder="hora fin" ></p-calendar></th>
             </tr>
             <tr>
             <td colspan="2">
@@ -283,8 +284,9 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         </p-table>
         </div>
         <div class="modal-footer botonCentrado">
-          <button type="button" class="btn btn-primary">Actualizar</button>
+          <button type="submit" class="btn btn-primary">Actualizar</button>
         </div>
+      </form>
       </div>
     </div>
   </div>
