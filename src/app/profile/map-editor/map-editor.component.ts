@@ -3,7 +3,7 @@ import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {loadModules} from 'esri-loader';
 import {EsriRequestService} from '../../services/esri-request.service';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {environment} from '../../../environments/environment';
 import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
@@ -65,6 +65,7 @@ export class MapEditorComponent implements OnInit {
     wavesOptions: SelectItem[];
     accessOptions: SelectItem[];
     FlowOptions: SelectItem[];
+    additionalDangersOptions: SelectItem[];
     viewNoDanger: boolean;
     selectedId: string;
     selectLongitude: number;
@@ -80,6 +81,7 @@ export class MapEditorComponent implements OnInit {
     invalidDates: Array<Date>;
     periods: Attribute[];
     deletePeriods: number[];
+    deleteAddtionalDangers: number[];
     colsFlow: any;
     dateNow: Date;
 
@@ -102,6 +104,18 @@ export class MapEditorComponent implements OnInit {
             {label: 'Sin dificultades de acceso', value: 'SDIF'},
             {label: 'Sólo accesible con vehículos todo terreno o a pie', value: 'AVHC'},
             {label: 'Sólo accesible con medios aéreos o marítimos', value: 'AVAM'}
+        ];
+        this.additionalDangersOptions = [
+            {label: 'Selecciona el tipo de riesgo', value: null},
+            {label: 'Desniveles bruscos y taludes, tanto en la zona de la playa como en su acceso al agua', value: 'DES'},
+            {label: 'Riesgo de accidentes por desprendimiento de rocas', value: 'ROC'},
+            {label: 'La abundancia de maleza que pudieran provocar caída de ramas o lesiones por transitar', value: 'MAL'},
+            {label: 'Los derivados de su situación en áreas inundables o susceptibles de riadas', value: 'INUND'},
+            {label: 'Por el tipo de terreno, grandes rocas o bolos, solárium en rocas innacesibles en pleamar, etc.', value: 'TERR'},
+            {
+                label: 'Riesgos derivados de vertidos, fugas o accidentes, susceptibles de producir contaminación química o biológica',
+                value: 'VERT'
+            }
         ];
         this.FlowOptions = [
             {label: 'Alta', value: 'A', icon: 'fa fa-fw fa-level-up'},
@@ -144,6 +158,7 @@ export class MapEditorComponent implements OnInit {
             objectid: new FormControl(''),
             peligrosidad_mar: new FormControl('', Validators.required),
             peligros_anadidos: new FormControl(''),
+            dangers: new FormArray([]),
             cobertura_telefonica: new FormControl('', Validators.required),
             accesos: new FormControl(''),
             observaciones: new FormControl(''),
@@ -182,12 +197,45 @@ export class MapEditorComponent implements OnInit {
             {subfield: 'nivel', header: 'Nivel', width: '29%', type: 'text', orderBy: 'attributes.nivel'}
         ];
         this.initCalendarDates();
-        // TODO ejemplo de llamada multiple con forkjoin
-        // const filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
+    }
 
-        // this.service.getAllData(environment.infoplayas_catalogo_edicion_url + '/query',
-        //     environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords', '1',
-        //     filtermunicipio, this.currentUser.token, ['242', '237']);
+    get fEnv() { return this.formEnvironment.controls; }
+    get tEnv() { return this.fEnv.dangers as FormArray; }
+
+    onChangeAdditionalDangers(e) {
+        const numberOfDangers = e.target.value || 0;
+        if (this.tEnv.length < numberOfDangers) {
+            for (let i = this.tEnv.length; i < numberOfDangers; i++) {
+                this.tEnv.push(this.fb.group({
+                    objectid: [''],
+                    riesgo: ['', Validators.required],
+                    id_dgse: [''],
+                    ultimo_editor: [''],
+                    ultimo_cambio: ['']
+                }));
+            }
+        } else {
+            for (let i = this.tEnv.length; i >= numberOfDangers; i--) {
+                if (this.tEnv.value[i]) {
+                    this.deleteAddtionalDangers.push(this.tEnv.value[i].objectid);
+                }
+                this.tEnv.removeAt(i);
+            }
+        }
+    }
+
+    onInitAdditionalDangers(data) {
+        this.deleteAddtionalDangers = [];
+        data.forEach(value => {
+            this.tEnv.push(this.fb.group({
+                objectid: [value.attributes.objectid],
+                riesgo: [value.attributes.riesgo, Validators.required],
+                id_dgse: [''],
+                ultimo_editor: [''],
+                ultimo_cambio: ['']
+            }));
+        });
+        this.formEnvironment.get('peligros_anadidos').setValue(data.length);
     }
 
     // fechas maxima y minima para los calendarios de afluencias y carga lista de periodos
@@ -228,7 +276,7 @@ export class MapEditorComponent implements OnInit {
         // cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
         fg.get('on_edit').setValue(true);
         const postExecuteTask = fg.contains('desprendimientos') && this.viewNoDanger ? 'no_prohibido' : fg.contains('desprendimientos')
-            ? 'prohibido' : 'none';
+            ? 'prohibido' : fg.contains('peligros_anadidos') ? 'update_dangers' : 'none';
         this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + tableId
             + '/applyEdits', postExecuteTask);
     }
@@ -254,7 +302,7 @@ export class MapEditorComponent implements OnInit {
         });
         // cambios en validaciones en tiempo de ejecucion
         this.formEnvironment.get('peligros_anadidos').valueChanges.subscribe(value => {
-            if (value) {
+            if (value > 0) {
                 this.formEnvironment.get('accesos').setValidators([Validators.required]);
             } else {
                 this.formEnvironment.get('accesos').setValidators(null);
@@ -418,7 +466,7 @@ export class MapEditorComponent implements OnInit {
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
-                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 2, t.formEnvironment);
+                            t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 2);
                             t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 3);
                             // guardamos los datos de geometria de la playa para componentes externos
                             t.coordX = output.coordX;
@@ -454,7 +502,7 @@ export class MapEditorComponent implements OnInit {
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
-                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 2, t.formEnvironment);
+                                    t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 2);
                                     t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 3);
                                     // guardamos los datos de geometria de la playa para componentes externos
                                     t.coordX = output.coordX;
@@ -517,6 +565,45 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
+    // cargamo el formulario de la tabla relacionada para el formulario formEnvironment
+    private execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, relationshipId) {
+        const query = new RelationshipQuery();
+        query.returnGeometry = false;
+        query.outFields = ['*'];
+        query.relationshipId = relationshipId;
+        query.objectIds = [output.beachId];
+        queryTask.executeRelationshipQuery(query).then((results: any) => {
+            this.formEnvironment.reset();
+            this.tEnv.controls = [];
+            if (Object.entries(results).length === 0 && results.constructor === Object) {
+                this.formEnvironment.patchValue({id_dgse: output.id_dgse});
+                this.formEnvironment.patchValue({on_edit: false});
+                this.formEnvironment.get('peligros_anadidos').setValue(0);
+            } else {
+                this.loadRelatedAdditionalDangers(output.beachId);
+                this.formEnvironment.patchValue(results[query.objectIds[0]].features[0].attributes);
+                this.formEnvironment.patchValue({on_edit: true});
+            }
+        });
+    }
+
+    loadRelatedAdditionalDangers(parentId: string) {
+        this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
+            parentId, '9', '*', true, this.currentUser.token).subscribe(
+            (result: any) => {
+                if (result.relatedRecordGroups.length > 0) {
+                    this.onInitAdditionalDangers(result.relatedRecordGroups[0].relatedRecords);
+                } else {
+                    this.formEnvironment.get('peligros_anadidos').setValue(0);
+                }
+            },
+            error => {
+                console.log(error.toString());
+            }).add(() => {
+            console.log('end of request');
+        });
+    }
+
     // cargamos el formulario de afluencia relacion 1-M
     private execRelatedFlowQuery(queryTask, RelationshipQuery, output, relationshipId) {
         // borramos las fechas auxiliares en la afluencia
@@ -557,6 +644,8 @@ export class MapEditorComponent implements OnInit {
                         case 'prohibido':
                             this.updateClasification('PROHIBIDO', true);
                             break;
+                        case 'update_dangers':
+                            this.updateAdditionalDangers();
                     }
                 }
             },
@@ -775,4 +864,34 @@ export class MapEditorComponent implements OnInit {
         return percentage;
     }
 
+    private updateAdditionalDangers() {
+        // borramos los registros que han sido eliminados por el usuario
+        if (this.deleteAddtionalDangers.length > 0) {
+            this.removeRelatedData(this.deleteAddtionalDangers, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+                + '/deleteFeatures', false);
+        }
+        const addvalues = [...this.tEnv.value].filter(s => !s.objectid).map(value => {
+            return {attributes: value};
+        });
+        const updatesvalues = [...this.tEnv.value].filter(s => s.objectid).map(value => {
+            return {attributes: value};
+        });
+        updatesvalues.forEach(value => {
+            value.attributes.ultimo_cambio = moment(new Date()).format('YYYY-MM-DD hh:mm:ss');
+            value.attributes.ultimo_editor = this.currentUser.username;
+        });
+        if (updatesvalues.length > 0) {
+            this.editRelatedData(addvalues, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+                + '/applyEdits', 'none');
+        }
+        addvalues.forEach(value => {
+            value.attributes.id_dgse = this.formEnvironment.get('id_dgse').value;
+            value.attributes.ultimo_cambio = moment(new Date()).format('YYYY-MM-DD hh:mm:ss');
+            value.attributes.ultimo_editor = this.currentUser.username;
+        });
+        if (addvalues.length > 0) {
+            this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+                + '/applyEdits', 'none');
+        }
+    }
 }
