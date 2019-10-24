@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 
 declare var $: any;
 declare var jQuery: any;
+import * as moment from 'moment';
 declare const aytos: any;
 declare var UTMXYToLatLon: any;
 declare var RadToDeg: any;
@@ -81,47 +82,43 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 private gradeService: GradesProtectionService,) {
     }
 
-    ngOnInit() {
-        this.loadRecords();
-        this.default();
-        this.formHorarios = this.fb.group({
-            objectid: new FormControl(''),
-            hora_inicio: new FormControl(),
-            hora_fin: new FormControl(),
-            ultimo_editor: new FormControl(''),
-            ultimo_cambio: new FormControl('')
-        });
-        this.formUnitarios = this.fb.group({
-            objectid: new FormControl(''),
-            jefe_turno_pvp: new FormControl(0, Validators.min(0)),
-            socorrista_pvp: new FormControl(0),
-            socorrista_embarcacion_pvp: new FormControl(0),
-            socorrista_embarcacion_per_pvp: new FormControl(0),
-            bandera_pvp: new FormControl(0),
-            mastil_pvp: new FormControl(0),
-            cartel_pvp: new FormControl(0),
-            bandera_comp_pvp: new FormControl(0),
-            carrete_pvp: new FormControl(0),
-            m_cuerda_pvp: new FormControl(0),
-            boya_pvp: new FormControl(0),
-            torre_pvp: new FormControl(0),
-            desfibrilador_pvp: new FormControl(0),
-            botiquin_pvp: new FormControl(0),
-            sistemas_izado_pvp: new FormControl(0),
-            salvavidas_pvp: new FormControl(0),
-            senales_prohibicion: new FormControl(0),
-            id_ayuntamiento: new FormControl(0),
-            ultimo_editor: new FormControl(this.currentUser),
-            ultimo_cambio: new FormControl('')
-        });
-        this.formMediosHumanos = this.fb.group({
+ngOnInit() {
+  this.loadRecords();
+  this.default();
+  this.formHorarios = this.fb.group({
+    horariosperiodos: new FormArray([])
+  });
 
-            atrtributes: new FormArray([])
-
-        });
-    }
+  this.formUnitarios = this.fb.group({
+    objectid: new FormControl(''),
+    jefe_turno_pvp: new FormControl(0, Validators.min(0)),
+    socorrista_pvp: new FormControl(0),
+    socorrista_embarcacion_pvp: new FormControl(0),
+    socorrista_embarcacion_per_pvp: new FormControl(0),
+    bandera_pvp: new FormControl(0),
+    mastil_pvp: new FormControl(0),
+    cartel_pvp: new FormControl(0),
+    bandera_comp_pvp: new FormControl(0),
+    carrete_pvp: new FormControl(0),
+    m_cuerda_pvp: new FormControl(0),
+    boya_pvp: new FormControl(0),
+    torre_pvp: new FormControl(0),
+    desfibrilador_pvp: new FormControl(0),
+    botiquin_pvp: new FormControl(0),
+    sistemas_izado_pvp: new FormControl(0),
+    salvavidas_pvp: new FormControl(0),
+    senales_prohibicion: new FormControl(0),
+    id_ayuntamiento: new FormControl(0),
+    ultimo_editor: new FormControl(this.currentUser.username),
+    ultimo_cambio: new FormControl(this.toDateFormat(true))
+  });
+  this.formMediosHumanos = this.fb.group({
+    atrtributes: new FormArray([])
+  });
+}
 get f() { return this.formMediosHumanos.controls; }
 get t() { return this.f.atrtributes as FormArray; }
+
 
 dinamicForm(grados,related){
   this.t.controls = [];
@@ -142,8 +139,8 @@ dinamicForm(grados,related){
         grado: new FormControl(related[i].attributes.grado),
         id_dgse: new FormControl(related[i].attributes.id_dgse),
         nivel: new FormControl(null),
-        ultimo_editor: new FormControl(this.currentUser),
-        ultimo_cambio: new FormControl('')
+        ultimo_editor: new FormControl(this.currentUser.username),
+        ultimo_cambio: new FormControl(this.toDateFormat(true))
       }));
     }
   }else{
@@ -160,10 +157,28 @@ dinamicForm(grados,related){
         id_dgse: new FormControl(this.iddgse),
         nivel: new FormControl(),
         ultimo_editor: new FormControl(this.currentUser),
-        ultimo_cambio: new FormControl('')
+        ultimo_cambio: new FormControl(this.toDateFormat(true))
       }));
     }
   }
+}
+
+get h() { return this.formHorarios.controls; }
+get g() { return this.h.horariosperiodos as FormArray; }
+
+dinamicFormHorarios(periodos){
+
+    this.g.controls = [];
+      for (let i = 0; i < periodos.length; i++) {
+        this.g.push(this.fb.group({
+          objectid: new FormControl(periodos[i].attributes.objectid),
+          hora_inicio: new FormControl(periodos[i].attributes.hora_inicio ? new Date(periodos[i].attributes.hora_inicio): null ),
+          hora_fin: new FormControl(periodos[i].attributes.hora_fin ? new Date(periodos[i].attributes.hora_fin): null ),
+          ultimo_editor: new FormControl(this.currentUser.username),
+          ultimo_cambio: new FormControl(this.toDateFormat(true))
+        }));
+      }
+
 }
 
 readFeatures() {
@@ -177,14 +192,18 @@ readFeatures() {
             $('#' + this.options).modal({backdrop: 'static', keyboard: false});
             $('#' + this.options).modal('show');
 
-            beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
+              beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
               beach.relatedRecords3);
               beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
               this.grados = beach.grados;
               if(beach.relatedRecords4){ this.dinamicForm(this.grados,beach.relatedRecords4 );}
+
               this.periodos = beach.periodos;
+              console.log(this.periodos );
               this.datosPlayaRelacionada = beach;
+              this.selectObjectId = beach.objectId;
+              this.dinamicFormHorarios(beach.relatedRecords3);
 
             } else {
               Swal.fire({
@@ -195,7 +214,7 @@ readFeatures() {
               });
             }
           }
-          this.spinnerService.hide();
+          //this.spinnerService.hide();
         },
         error => {
           console.log(error.toString());
@@ -210,7 +229,6 @@ readFeatures() {
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
             this.filtermunicipio, '*', false, this.currentUser.token, 'clasificacion', true).subscribe(
             (result: any) => {
-              console.log('load record');
                 if (result) {
                     this.readFeatures();
                     this.datosPlaya = result;
@@ -230,7 +248,7 @@ readFeatures() {
     }
 
     loadUnitPrice() {
-        this.spinnerService.hide();
+        //this.spinnerService.show();
         // inicializamos desactivado el esc y el click fuera de la modal
         $('#configuracion').modal({backdrop: 'static', keyboard: false});
         $('#configuracion').modal('show');
@@ -240,11 +258,11 @@ readFeatures() {
                 if (result.features.length !== 0) {
                     this.formUnitarios.patchValue(result.features[0].attributes);
                     this.mode = 'updates';
-                    this.spinnerService.hide();
+                    //this.spinnerService.hide();
                 }
             },
             error => {
-                this.spinnerService.hide();
+                //this.spinnerService.hide();
             }).add(() => {
         });
     }
@@ -294,8 +312,6 @@ readFeatures() {
     }
 
     public meteo(playa) {
-
-        this.spinnerService.show();
         this.nombre_playa = playa.attributes.nombre_municipio;
         this.utmToLatLong(playa.centroid.x, playa.centroid.y);
         this.serviceMeteo.meteoData(this.latitud, this.longitud).subscribe(
@@ -303,11 +319,10 @@ readFeatures() {
                 if (result.length !== 0) {
                     this.datosclima = result;
                     $('#tiempo').modal('show');
-                    this.spinnerService.hide();
                 }
             },
             error => {
-                this.spinnerService.hide();
+
                 Swal.fire({
                     type: 'error',
                     title: '',
@@ -317,158 +332,224 @@ readFeatures() {
             });
     }
 
-    public updateMediosHumanos() {
-      this.spinnerService.show();
-        let preciosMediosHumanos = [];
-        let bucledelformMedioHumanos =  [];
-        let preciosMedios = {
-            attributes: {},
-        };
-        bucledelformMedioHumanos.push(this.formMediosHumanos.value);
-        bucledelformMedioHumanos.forEach(r => {
-            r.atrtributes.forEach(x =>{
-              preciosMedios.attributes = x;
-              //copiamos el objeto preciosMedios para que no cambie al hacer el push
-              let preciosMediosCopia = Object.assign({} , preciosMedios);
-              preciosMediosHumanos.push(preciosMediosCopia);
-            });
+public updateMediosHumanos() {
+  this.spinnerService.show();
+  let preciosMediosHumanos = [];
+  let bucledelformMedioHumanos =  [];
+  let preciosMedios = {
+    attributes: {},
+  };
+  bucledelformMedioHumanos.push(this.formMediosHumanos.value);
+  bucledelformMedioHumanos.forEach(r => {
+    r.atrtributes.forEach(x =>{
+      preciosMedios.attributes = x;
+      //copiamos el objeto preciosMedios para que no cambie al hacer el push
+      let preciosMediosCopia = Object.assign({} , preciosMedios);
+      preciosMediosHumanos.push(preciosMediosCopia);
+    });
+  });
+
+  this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/5/applyEdits',
+    preciosMediosHumanos, this.mode, this.currentUser.token).subscribe(
+      (result: any) => {
+
+        if (!result.error) {
+          this.spinnerService.hide();
+          Swal.fire({
+            type: 'success',
+            title: 'Exito',
+            text: 'la actualización ha sido correcta',
+            footer: ''
+          });
+
+          $('#humanos').modal('hide');
+        } else {
+          this.spinnerService.hide();
+          Swal.fire({
+            type: 'error',
+            title: '',
+            text: 'Se ha producido un error inesperado',
+            footer: ''
+          });
+        }
+    },
+    error => {
+      this.spinnerService.hide();
+      Swal.fire({
+        type: 'error',
+        title: '',
+        text: 'Se ha producido un error inesperado',
+        footer: ''
+      });
+    })
+    }
+
+public update() {
+  this.spinnerService.show();
+  const preciosUnitariosSend = [];
+  const preciosUnitarios = {
+    attributes: {
+      ultimo_cambio: '',
+      id_ayuntamiento: '',
+      ultimo_editor: ''
+    },
+  };
+  preciosUnitarios.attributes = this.formUnitarios.value;
+  preciosUnitarios.attributes.ultimo_cambio = this.toDateFormat(true);
+  preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
+  preciosUnitarios.attributes.id_ayuntamiento = this.codMun;
+  preciosUnitariosSend.push(preciosUnitarios);
+
+  this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
+  preciosUnitariosSend, this.mode, this.currentUser.token).subscribe(
+    (result: any) => {
+      if (result.length !== 0) {
+        this.spinnerService.hide();
+        Swal.fire({
+          type: 'success',
+          title: 'Exito',
+          text: 'la actualización ha sido correcta',
+          footer: ''
         });
 
-        this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/5/applyEdits',
-            preciosMediosHumanos, this.mode, this.currentUser.token).subscribe(
-            (result: any) => {
-              console.log(result);
-                if (!result.error) {
-                    this.spinnerService.hide();
-                    Swal.fire({
-                        type: 'success',
-                        title: 'Exito',
-                        text: 'la actualización ha sido correcta',
-                        footer: ''
-                    });
-
-                    $('#humanos').modal('hide');
-                } else {
-                    this.spinnerService.hide();
-                    Swal.fire({
-                        type: 'error',
-                        title: '',
-                        text: 'Se ha producido un error inesperado',
-                        footer: ''
-                    });
-                }
-            },
-            error => {
-                this.spinnerService.hide();
-                Swal.fire({
-                    type: 'error',
-                    title: '',
-                    text: 'Se ha producido un error inesperado',
-                    footer: ''
-                });
-            })
-    }
-
-    public update() {
-        this.spinnerService.show();
-        const preciosUnitariosSend = [];
-        const preciosUnitarios = {
-            attributes: {
-                ultimo_cambio: '',
-                id_ayuntamiento: '',
-                ultimo_editor: ''
-            },
-        };
-        preciosUnitarios.attributes = this.formUnitarios.value;
-        preciosUnitarios.attributes.ultimo_cambio = this.toDateFormat(true);
-        preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
-        preciosUnitarios.attributes.id_ayuntamiento = this.codMun;
-        preciosUnitariosSend.push(preciosUnitarios);
-        //console.log(preciosUnitariosSend);
-
-        this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/10/applyEdits',
-            preciosUnitariosSend, this.mode, this.currentUser.token).subscribe(
-            (result: any) => {
-                if (result.length !== 0) {
-                    this.spinnerService.hide();
-                    Swal.fire({
-                        type: 'success',
-                        title: 'Exito',
-                        text: 'la actualización ha sido correcta',
-                        footer: ''
-                    });
-
-                    $('#configuracion').modal('hide');
-                } else {
-                    this.spinnerService.hide();
-                    Swal.fire({
-                        type: 'error',
-                        title: '',
-                        text: 'Se ha producido un error inesperado',
-                        footer: ''
-                    });
-                }
-            },
-            error => {
-                this.spinnerService.hide();
-                Swal.fire({
-                    type: 'error',
-                    title: '',
-                    text: 'Se ha producido un error inesperado',
-                    footer: ''
-                });
-            }).add(() => {
-            console.log('end of request');
-
+        $('#configuracion').modal('hide');
+      } else {
+        this.spinnerService.hide();
+        Swal.fire({
+          type: 'error',
+          title: '',
+          text: 'Se ha producido un error inesperado',
+          footer: ''
         });
+      }
+    },
+    error => {
+      this.spinnerService.hide();
+      Swal.fire({
+        type: 'error',
+        title: '',
+        text: 'Se ha producido un error inesperado',
+        footer: ''
+      });
+    }).add(() => {
+      console.log('end of request');
+
+    });
     }
 
-    private horario(id_dgse, mc) {
-        this.altoini = mc.inputFieldValue;
+private horario(id_dgse, mc) {
+  this.altoini = mc.inputFieldValue;
     }
 
-    private anhadir_medios(playa, option) {
-
-        this.spinnerService.show();
-        let relationIds;
-        switch (option) {
-            case 'humanos': {
-                relationIds = ['1', '2', '3', '4'];
-                break;
-            }
-            case 'materiales': {
-                relationIds = ['1', '2', '3', '5', '6', '7'];
-                break;
-            }
-            default: {
-                relationIds = ['1', '2', '3'];
-                break;
-            }
-        }
-        this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token);
-
-        this.options = option;
-        this.nombre_playa = playa.attributes.nombre_municipio;
-        this.iddgse = playa.attributes.id_dgse;
-        this.clasificacion = playa.attributes.clasificacion;
-        if (playa.attributes.clasificacion === 'USO PROHIBIDO') {
-            this.peligrosa = true;
-        }
+private anhadir_medios(playa, option) {
+  //this.spinnerService.show();
+  let relationIds;
+  switch (option) {
+    case 'humanos': {
+      relationIds = ['1', '2', '3', '4'];
+      break;
     }
+    case 'materiales': {
+      relationIds = ['1', '2', '3', '5', '6', '7'];
+      break;
+    }
+    default: {
+      relationIds = ['1', '2', '3'];
+      break;
+    }
+      }
+      this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token);
 
-    private mostrar_pasiva_grado_bajo(grado) {
-        if (grado === 'bajo') {
-            this.pasiva = true;
-        }
+      this.options = option;
+      this.nombre_playa = playa.attributes.nombre_municipio;
+      this.iddgse = playa.attributes.id_dgse;
+      this.clasificacion = playa.attributes.clasificacion;
+      if (playa.attributes.clasificacion === 'USO PROHIBIDO') {
+        this.peligrosa = true;
+      }
+    }
+private mostrar_pasiva_grado_bajo(grado) {
+  if (grado === 'bajo') {
+    this.pasiva = true;
+  }
     }
 public updateHorarios(){
-  console.log('algo');
-  console.log(this.formHorarios.value);
+
+  let pHorarios = [];
+  let bucleHorarios = [];
+  let pHorariosAdd = {
+      attributes: {
+        hora_inicio:'',
+        hora_fin:''
+      },
+  };
+  bucleHorarios.push(this.formHorarios.value);
+  bucleHorarios.forEach(r => {
+          r.horariosperiodos.forEach(x =>{
+          pHorariosAdd.attributes = x;
+            pHorariosAdd.attributes.hora_inicio = moment(new Date(x.hora_inicio)).subtract(1,'hours').format('YYYY-MM-DD HH:mm:ss');
+            pHorariosAdd.attributes.hora_fin = moment(new Date(x.hora_fin)).subtract(1,'hours').format('YYYY-MM-DD HH:mm:ss');
+        //copiamos el objeto
+        let horariosCopia = Object.assign({} , pHorariosAdd);
+         pHorarios.push(horariosCopia);
+
+      });
+  });
+
+  this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/4/applyEdits',
+     pHorarios, 'updates', this.currentUser.token).subscribe(
+      (result: any) => {
+
+        if (!result.error) {
+          this.spinnerService.hide();
+          Swal.fire({
+            type: 'success',
+            title: 'Exito',
+            text: 'la actualización ha sido correcta',
+            footer: ''
+          });
+
+          $('#horarios').modal('hide');
+        } else {
+          this.spinnerService.hide();
+          Swal.fire({
+            type: 'error',
+            title: '',
+            text: 'Se ha producido un error inesperado',
+            footer: ''
+          });
+        }
+    },
+    error => {
+      this.spinnerService.hide();
+      Swal.fire({
+        type: 'error',
+        title: '',
+        text: 'Se ha producido un error inesperado',
+        footer: ''
+      });
+    })
+ }
+
+dateLessThan(from: string, to: string) {
+    return (group: FormGroup): {[key: string]: any} => {
+      let f = group.controls[from];
+      let t = group.controls[to];
+      if (f.value > t.value && t.value!=="") {
+        Swal.fire({
+          type: 'error',
+          title: 'Error control horario',
+          text: 'La hora de inicio no puede ser menor que la hora de fin',
+          footer: ''
+        });
+        return {}
+      }
+      return {};
+    }
 }
 
-    ngOnDestroy() {
-        this.subscripcionFeatures.unsubscribe();
-        this.service.clearfeaturesSource();
-
-    }
+ngOnDestroy() {
+  this.subscripcionFeatures.unsubscribe();
+  this.service.clearfeaturesSource();
+  }
 }

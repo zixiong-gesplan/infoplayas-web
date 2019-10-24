@@ -31,8 +31,10 @@
               <th class="centrar">Añadir medios materiales <i *ngIf="playa.attributes.clasificacion!='PENDIENTE'" class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'materiales')" title="Añadir medios humano y medios materiales"></i> <br></th>
               <th class="centrar">Horarios salvamento <i *ngIf="playa.attributes.clasificacion!='PENDIENTE'" class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'horarios')" title="Añadir medios humano y medios materiales"></i> <br></th>
           </tr>
-          <tr *ngIf="playa.attributes.clasificacion==='USO PROHIBIDO'">
-              <th colspan="3" class="centrar">Añadir Medios <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'bajo')" title="Añadir medios humano y medios materiales"></i><br><span style="font-size: 0.7em;">(Sin servicio de salvamento)</span></th></tr>
+          <!-- <tr *ngIf="playa.attributes.clasificacion==='USO PROHIBIDO'">
+              <th colspan="3" class="centrar">Añadir Medios <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'bajo')" title="Añadir medios humano y medios materiales"></i><br><span style="font-size: 0.7em;">(Sin servicio de salvamento)</span>
+              </th>
+            </tr> -->
               <tr>
                 <th colspan="3" class="centrar">
                   <button type="button" class="btn btn-info btn-sm"  (click)="meteo(playa)"><i class="fa fa-sun-o"></i> Información meteorológica</button>
@@ -66,12 +68,11 @@
       <div class="modal-body">
         <!-- <h4 [hidden]="peligrosa" class="centrar text-color-grey-646464 font-weight-700">Medios Humanos <i class="fa fa-calculator pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo humano" (click)="calculadora('humanos')"></i></h4> -->
         <p-table [formGroup]="gradoP"   *ngFor="let gradoP of t.controls; let i=index;">
-          <ng-template pTemplate="header" >
+          <ng-template pTemplate="header" *ngIf="gradoP.value.grado!=='B'">
             <tr>
               <th colspan="8" class="centrar">
                 <span *ngIf="gradoP.value.grado==='A'" style="color:#f5160f">Grado de protección Alto</span>
-                <span *ngIf="gradoP.value.grado==='M'" style="color:#e0c011">Grado de protección Medio</span>
-                <span *ngIf="gradoP.value.grado==='B'" style="color:#18c420">Grado de protección Bajo</span>
+                <span *ngIf="gradoP.value.grado==='M'" style="color:#239906">Grado de protección Medio</span>
               </th>
             </tr>
             <tr>
@@ -264,20 +265,23 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <h4 class="modal-title text-center" style="color:#8CBB28">{{nombre_playa}}</h4>
       </div>
       <div class="modal-body">
-        <p-table *ngFor="let hsalvamento of periodos" class="mb-5">
-          <ng-template pTemplate="header" >
-            <tr >
-
-              <th colspan="2" class="centrar">Horario comprendido entre: {{hsalvamento.fecha_inicio | date }} a {{hsalvamento.fecha_fin | date }} </th>
-
-            </tr>
+        <p-table [formGroup]="hsalvamento" *ngFor="let hsalvamento of g.controls; let i=index;" class="mb-5">
+          <ng-template pTemplate="header" *ngIf="periodos[i].grado!=='B'">
             <tr>
-              <th class="centrar"><p-calendar formControlName="hora_inicio" [timeOnly]="true" placeholder="hora inicio"></p-calendar></th>
-              <th class="centrar"><p-calendar formControlName="hora_fin"  [timeOnly]="true" placeholder="hora fin" ></p-calendar></th>
+              <th colspan="2" class="centrar">Horario comprendido entre: {{periodos[i].fecha_inicio | date }} a {{periodos[i].fecha_fin | date }}</th>
+              <tr>
+                <th colspan="2" class="text-center">
+                  <span *ngIf="periodos[i].grado==='A'" style="color:#301cf5">Grado de protección Alto</span>
+                  <span *ngIf="periodos[i].grado==='M'" style="color:#239906">Grado de protección Medio</span>
+                </th>
+              </tr>
+            <tr>
+              <th class="centrar"><p-calendar  dateFormat="HH/mm" formControlName="hora_inicio"  [timeOnly]="true" placeholder="Hora inicio"></p-calendar></th>
+              <th class="centrar"><p-calendar  dateFormat="HH/mm" formControlName="hora_fin" [timeOnly]="true" placeholder="Hora fin" ></p-calendar></th>
             </tr>
             <tr>
             <td colspan="2">
-            <hr>
+
           </td>
             </tr>
           </ng-template >
