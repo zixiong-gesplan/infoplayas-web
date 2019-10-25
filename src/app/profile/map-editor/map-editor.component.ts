@@ -10,6 +10,7 @@ import {OverlayPanel} from 'primeng/primeng';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Attribute} from '../../models/attribute';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 
 declare var $: any;
 declare var jquery: any;
@@ -281,7 +282,6 @@ export class MapEditorComponent implements OnInit {
             ? 'prohibido' : fg.contains('peligros_anadidos') ? 'update_dangers' : 'none';
         this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + tableId
             + '/applyEdits', postExecuteTask);
-        this.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
     }
 
     calculateDangerLever() {
@@ -345,11 +345,13 @@ export class MapEditorComponent implements OnInit {
         const tableA = [...this.periods];
         if (this.multipleDateRangeOverlaps(tableA) && this.formFlow.get('dates').value[1]) {
             this.formFlow.get('flowLevelWeekend').setValue(null);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'NO se ha guardado el período',
-                detail: 'No puede introducir un período que solape otro anterior'
+            Swal.fire({
+                type: 'error',
+                title: 'NO se ha guardado el período',
+                text: 'No puede introducir un período que solape otro anterior.',
+                footer: ''
             });
+
             return false;
         }
         // incluimos los periodos en la lista
@@ -431,7 +433,7 @@ export class MapEditorComponent implements OnInit {
         // borramos los periodos de la bbdd si los hay
         if (tableB.length > 0) {
             this.removeRelatedData(tableB.map(a => a.attributes.objectid), this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
-                + '/deleteFeatures', false);
+                + '/deleteFeatures');
         }
         // actualizamos los dias ya seleccionados en el calendario
         this.invalidDates = [];
@@ -649,7 +651,21 @@ export class MapEditorComponent implements OnInit {
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    t.sendMessage('noid', submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas), 'PENDIENTE', new Date());
+                    if (submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas)) {
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Éxito',
+                            text: 'La actualización ha sido correcta.',
+                            footer: ''
+                        });
+                    } else {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Error',
+                            text: 'No se ha guardado el cambio.',
+                            footer: ''
+                        });
+                    }
                 };
 
                 // aplicamos distintos filtros al mapa en funcion de lo que se quiera mostrar en cada apartado
@@ -767,19 +783,23 @@ export class MapEditorComponent implements OnInit {
                                 detail: 'La base de datos se ha actualizado, continúe con el resto del año en curso.'
                             });
                             break;
+                        case 'none':
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Éxito',
+                                text: 'La actualización ha sido correcta.',
+                                footer: ''
+                            });
+                            break;
                     }
                 }
             },
             error => {
                 console.log(error.toString());
-            }).add(() => {
-            if (postExecute === 'none') {
-                console.log('end of request');
-            }
-        });
+            });
     }
 
-    private removeRelatedData(objectIds, currentUser, endpoint, unselect) {
+    private removeRelatedData(objectIds, currentUser, endpoint) {
         this.service.deleteEsriData(endpoint, currentUser.token, objectIds).subscribe(
             (result: any) => {
                 if (result) {
@@ -790,9 +810,6 @@ export class MapEditorComponent implements OnInit {
                 console.log(error.toString());
             }).add(() => {
             console.log('end of request');
-            if (unselect) {
-                this.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
-            }
         });
     }
 
@@ -801,7 +818,12 @@ export class MapEditorComponent implements OnInit {
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
-                    console.log(result);
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Éxito',
+                        text: 'La actualización ha sido correcta.',
+                        footer: ''
+                    });
                 }
             },
             error => {
@@ -831,7 +853,7 @@ export class MapEditorComponent implements OnInit {
         // borramos los registros que han sido eliminados por el usuario
         if (this.deleteAddtionalDangers.length > 0) {
             this.removeRelatedData(this.deleteAddtionalDangers, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
-                + '/deleteFeatures', false);
+                + '/deleteFeatures');
         }
         const addvalues = [...this.tEnv.value].filter(s => !s.objectid).map(value => {
             return {attributes: value};
