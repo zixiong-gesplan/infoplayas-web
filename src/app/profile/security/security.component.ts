@@ -28,7 +28,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
     datosPlaya: any = [];
     datosPlayaRelacionada: any = [];
     nomMunicipio;
-    altoini: Date;
     nombre_playa;
     grado_proteccion;
     clasificacion;
@@ -39,6 +38,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     activarGP: boolean = true;
     formUnitarios: FormGroup;
     formMediosHumanos: FormGroup;
+    formMediosMateriales: FormGroup;
     formHorarios: FormGroup;
     codMun;
     datasend: string[] = [];
@@ -47,6 +47,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     latitud: number = 0;
     longitud: number = 0;
     grado_valor:number;
+    desabilitar:boolean = false;
     datosclima = {
         main: {
             temp: '',
@@ -89,6 +90,8 @@ ngOnInit() {
     horariosperiodos: new FormArray([])
   });
 
+  this.formMateriales();
+
   this.formUnitarios = this.fb.group({
     objectid: new FormControl(''),
     jefe_turno_pvp: new FormControl(0, Validators.min(0)),
@@ -125,7 +128,7 @@ dinamicForm(grados,related){
   if(related.length > 0){
     this.mode = 'updates';
     //necesitamos controlar el cambio de grado de proteccion
-    //if(related.length != grados.length){alert('mierda');}
+
     for (let i = 0; i < related.length; i++) {
       this.t.push(this.fb.group({
         objectid: new FormControl(related[i].attributes.objectid),
@@ -167,17 +170,35 @@ get h() { return this.formHorarios.controls; }
 get g() { return this.h.horariosperiodos as FormArray; }
 
 dinamicFormHorarios(periodos){
-
     this.g.controls = [];
       for (let i = 0; i < periodos.length; i++) {
-        this.g.push(this.fb.group({
-          objectid: new FormControl(periodos[i].attributes.objectid),
-          hora_inicio: new FormControl(periodos[i].attributes.hora_inicio ? new Date(periodos[i].attributes.hora_inicio): null ),
-          hora_fin: new FormControl(periodos[i].attributes.hora_fin ? new Date(periodos[i].attributes.hora_fin): null ),
-          ultimo_editor: new FormControl(this.currentUser.username),
-          ultimo_cambio: new FormControl(this.toDateFormat(true))
-        }));
+        if(periodos[i].attributes.nivel!=='B'){
+          this.g.push(this.fb.group({
+            objectid: new FormControl(periodos[i].attributes.objectid),
+            hora_inicio: new FormControl(periodos[i].attributes.hora_inicio ? new Date(periodos[i].attributes.hora_inicio): null ),
+            hora_fin: new FormControl(periodos[i].attributes.hora_fin ? new Date(periodos[i].attributes.hora_fin): null ),
+            ultimo_editor: new FormControl(this.currentUser.username),
+            ultimo_cambio: new FormControl(this.toDateFormat(true)),
+          }, {validator: this.dateLessThan('hora_inicio', 'hora_fin')}));
+        }
       }
+}
+
+formMateriales(){
+
+    this.formMediosMateriales = this.fb.group({
+      id_dgse:  new FormControl(''),
+      carretel: new FormControl(''),
+      salvavidas: new FormControl(''),
+      nacceso: new FormControl(''),
+      nbanderas: new FormControl(''),
+      nmastiles: new FormControl(''),
+      ncarteles: new FormControl(''),
+      observacionesBC: new FormControl(''),
+      observacionesSP: new FormControl(''),
+      ultimo_editor: new FormControl(this.currentUser.username),
+      ultimo_cambio: new FormControl(this.toDateFormat(true))
+    });
 
 }
 
@@ -198,9 +219,7 @@ readFeatures() {
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
               this.grados = beach.grados;
               if(beach.relatedRecords4){ this.dinamicForm(this.grados,beach.relatedRecords4 );}
-
               this.periodos = beach.periodos;
-              console.log(this.periodos );
               this.datosPlayaRelacionada = beach;
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedRecords3);
@@ -214,7 +233,6 @@ readFeatures() {
               });
             }
           }
-          //this.spinnerService.hide();
         },
         error => {
           console.log(error.toString());
@@ -242,13 +260,11 @@ readFeatures() {
 
             }).add(() => {
             console.log('end of request');
-
-
         });
     }
 
     loadUnitPrice() {
-        //this.spinnerService.show();
+        this.spinnerService.show();
         // inicializamos desactivado el esc y el click fuera de la modal
         $('#configuracion').modal({backdrop: 'static', keyboard: false});
         $('#configuracion').modal('show');
@@ -258,11 +274,11 @@ readFeatures() {
                 if (result.features.length !== 0) {
                     this.formUnitarios.patchValue(result.features[0].attributes);
                     this.mode = 'updates';
-                    //this.spinnerService.hide();
+                    this.spinnerService.hide();
                 }
             },
             error => {
-                //this.spinnerService.hide();
+                this.spinnerService.hide();
             }).add(() => {
         });
     }
@@ -383,6 +399,9 @@ public updateMediosHumanos() {
       });
     })
     }
+public updateMediosMateriales(){
+  console.log(this.formMediosMateriales.value);
+}
 
 public update() {
   this.spinnerService.show();
@@ -437,12 +456,12 @@ public update() {
     });
     }
 
-private horario(id_dgse, mc) {
-  this.altoini = mc.inputFieldValue;
-    }
+// private horario(id_dgse, mc) {
+//   this.altoini = mc.inputFieldValue;
+//     }
 
 private anhadir_medios(playa, option) {
-  //this.spinnerService.show();
+  this.spinnerService.show();
   let relationIds;
   switch (option) {
     case 'humanos': {
@@ -459,14 +478,15 @@ private anhadir_medios(playa, option) {
     }
       }
       this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token);
-
       this.options = option;
       this.nombre_playa = playa.attributes.nombre_municipio;
       this.iddgse = playa.attributes.id_dgse;
+      this.formMediosMateriales.get('id_dgse').setValue(this.iddgse);
       this.clasificacion = playa.attributes.clasificacion;
       if (playa.attributes.clasificacion === 'USO PROHIBIDO') {
         this.peligrosa = true;
       }
+      this.spinnerService.hide();
     }
 private mostrar_pasiva_grado_bajo(grado) {
   if (grado === 'bajo') {
@@ -533,16 +553,21 @@ public updateHorarios(){
 
 dateLessThan(from: string, to: string) {
     return (group: FormGroup): {[key: string]: any} => {
-      let f = group.controls[from];
-      let t = group.controls[to];
-      if (f.value > t.value && t.value!=="") {
-        Swal.fire({
-          type: 'error',
-          title: 'Error control horario',
-          text: 'La hora de inicio no puede ser menor que la hora de fin',
-          footer: ''
-        });
-        return {}
+      let f = group.controls['hora_inicio'];
+      let t = group.controls['hora_fin'];
+
+      let m = moment(new Date(f.value)).format('HH:mm');
+      let p = moment(new Date(t.value)).format('HH:mm');
+
+      if(m!="00:00" && p !="00:00"){
+        if (parseInt(m) >= parseInt(p) || p=='') {
+          this.desabilitar = true;
+          return {}
+        }else{
+          this.desabilitar = false;
+        }
+      }else{
+        this.desabilitar = true;
       }
       return {};
     }
