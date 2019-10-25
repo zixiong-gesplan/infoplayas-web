@@ -1,5 +1,5 @@
 <ng4-loading-spinner [timeout]="10000" [threshold]="800"></ng4-loading-spinner>
-<p-toast [style]="{marginTop: '20%'}" position="top-center"></p-toast>
+<p-toast [style]="{marginTop: '80px'}" position="top-right"></p-toast>
 <div id="listPlayas" class="panel-side scroller esri-widget esri-hidden">
     <ul id="ulPlaya">
         <li>Cargando&hellip;</li>
@@ -105,14 +105,16 @@
             <form class="esri-pad" [formGroup]="formEvaluation" (ngSubmit)="onSubmitEvaluation()">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
-                    <label class="esri-font" style="font-weight : bolder; margin-bottom: 5px;">Avance de realización de los formularios para la playa:</label>
+                    <label class="esri-font" style="font-weight : bolder; margin-bottom: 5px;">Avance de realización de
+                        los formularios para la playa:</label>
                     <div class="form-group">
                         <p-progressBar [value]="getCompleteState()"></p-progressBar>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="esri-font" style="font-weight : bolder">Criterios para clasificar la playa o ZBM como libre
+                        <label class="esri-font" style="font-weight : bolder">Criterios para clasificar la playa o ZBM
+                            como libre
                             o peligrosa en función de las siguientes características:</label>
                         <ul>
                             <li class="esri-legend__service esri-font"><b>Peligrosas:</b> Las que por razones
@@ -286,7 +288,7 @@
                                     [showIcon]="true">
                             <p-footer>
                                 <div class="form-row">
-                                    <p-button label="Añadir "
+                                    <p-button label="Guardar "
                                               icon="pi pi-plus-circle"
                                               (onClick)="addPeriod()"
                                               [disabled]="!formFlow.get('flowLevelDefault').value || !formFlow.get('dates').value || !this.formFlow.get('dates').value[0]">
@@ -330,16 +332,15 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <button
-                            [class]="!formFlow.valid || periods.length === 0 ? 'esri-button esri-button--disabled' : 'esri-button'"
-                            type="submit" [disabled]="!formFlow.valid || periods.length === 0">
-                            Guardar
-                        </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)"
-                               onclick="unselectFeature()"
-                               type="button"
-                               class="esri-button esri-button--secondary"
-                               value="Cancelar"/>
+                        <div *ngIf="this.invalidDates.length < this.days_of_this_year(); else completeDates"
+                             class="alert alert-warning">
+                            <strong>Atención!</strong> Año en curso INCOMPLETO.
+                        </div>
+                        <ng-template #completeDates>
+                            <div class="alert alert-success">
+                                <strong>Correcto!</strong> Ha completado los períodos de este Año.
+                            </div>
+                        </ng-template>
                     </div>
                 </div>
                 <div class="form-row">
@@ -469,7 +470,7 @@
                     <div class="form-group">
                         <label class="esri-font">Valor de peligrosidad</label>
                         <input class="esri-feature-form__input" pInputText type="number"
-                               [value]="formEnvironment.get('peligros_anadidos').value ?
+                               [value]="formEnvironment.get('peligros_anadidos').value > 0 ?
                                formEnvironment.get('accesos').value === 'SDIF' ? 1 :
                                formEnvironment.get('accesos').value === 'AVHC' ? 3 : 5 : 0" disabled="true">
                     </div>
@@ -492,7 +493,8 @@
         <div [hidden]="selectForm !=='inventario'">
             <div id="form" class="esri-component"></div>
             <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
-            <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)" onclick="unselectFeature()"
+            <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)"
+                   onclick="unselectFeature()"
                    type="button"
                    class="esri-button esri-button--secondary"
                    value="Cancelar"/>

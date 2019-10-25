@@ -5,7 +5,7 @@ import {loadModules} from 'esri-loader';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {environment} from '../../../environments/environment';
-import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
+import {MessageService, SelectItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Attribute} from '../../models/attribute';
@@ -75,19 +75,17 @@ export class MapEditorComponent implements OnInit {
     wkid: number;
     centroidOption: boolean;
     es: any;
-    private currentUser: Auth;
     minDate: Date;
     maxDate: Date;
     invalidDates: Array<Date>;
     periods: Attribute[];
-    deletePeriods: number[];
     deleteAddtionalDangers: number[];
     colsFlow: any;
     dateNow: Date;
+    private currentUser: Auth;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
-                private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
-                private confirmationService: ConfirmationService) {
+                private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService) {
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
             {label: 'Peligrosa o susceptible de producir daño', value: 'PELIGROSA'},
@@ -122,6 +120,14 @@ export class MapEditorComponent implements OnInit {
             {label: 'Media', value: 'M', icon: 'fa fa-fw fa-arrows-h'},
             {label: 'Baja', value: 'B', icon: 'fa fa-fw fa-level-down'}
         ];
+    }
+
+    get fEnv() {
+        return this.formEnvironment.controls;
+    }
+
+    get tEnv() {
+        return this.fEnv.dangers as FormArray;
     }
 
     ngOnInit() {
@@ -199,9 +205,6 @@ export class MapEditorComponent implements OnInit {
         this.initCalendarDates();
     }
 
-    get fEnv() { return this.formEnvironment.controls; }
-    get tEnv() { return this.fEnv.dangers as FormArray; }
-
     onChangeAdditionalDangers(e) {
         const numberOfDangers = e.target.value || 0;
         if (this.tEnv.length < numberOfDangers) {
@@ -230,7 +233,7 @@ export class MapEditorComponent implements OnInit {
             this.tEnv.push(this.fb.group({
                 objectid: [value.attributes.objectid],
                 riesgo: [value.attributes.riesgo, Validators.required],
-                id_dgse: [''],
+                id_dgse: [value.attributes.id_dgse],
                 ultimo_editor: [''],
                 ultimo_cambio: ['']
             }));
@@ -242,7 +245,6 @@ export class MapEditorComponent implements OnInit {
     initCalendarDates() {
         this.dateNow = new Date();
         this.periods = [];
-        this.deletePeriods = [];
         const today = new Date();
         this.minDate = new Date(today.getFullYear(), 0, 1);
         this.maxDate = new Date(today.getFullYear() + 1, 0, 0);
@@ -279,6 +281,7 @@ export class MapEditorComponent implements OnInit {
             ? 'prohibido' : fg.contains('peligros_anadidos') ? 'update_dangers' : 'none';
         this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + tableId
             + '/applyEdits', postExecuteTask);
+        this.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
     }
 
     calculateDangerLever() {
@@ -318,6 +321,134 @@ export class MapEditorComponent implements OnInit {
     setUrlInfoMap() {
         return this.centroidOption ? this.urlInfoMap + '&zoom=18&center=' + this.coordX + ',' + this.coordY + ',' + this.wkid :
             this.urlInfoMap + '&zoom=' + this.zoom + '&center=' + this.selectLongitude + ',' + this.selectLatitude;
+    }
+
+    loadRelatedAdditionalDangers(parentId: string) {
+        this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
+            parentId, '9', '*', true, this.currentUser.token).subscribe(
+            (result: any) => {
+                if (result.relatedRecordGroups.length > 0) {
+                    this.onInitAdditionalDangers(result.relatedRecordGroups[0].relatedRecords);
+                } else {
+                    this.formEnvironment.get('peligros_anadidos').setValue(0);
+                }
+            },
+            error => {
+                console.log(error.toString());
+            }).add(() => {
+            console.log('end of request');
+        });
+    }
+
+    addPeriod() {
+        // comprobamos que no se solapa el periodo introducido con alguno anterior
+        const tableA = [...this.periods];
+        if (this.multipleDateRangeOverlaps(tableA) && this.formFlow.get('dates').value[1]) {
+            this.formFlow.get('flowLevelWeekend').setValue(null);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'NO se ha guardado el período',
+                detail: 'No puede introducir un período que solape otro anterior'
+            });
+            return false;
+        }
+        // incluimos los periodos en la lista
+        const datesIncludeType = this.formFlow.get('flowLevelWeekend').value && this.formFlow.get('dates').value[1] &&
+        this.formFlow.get('flowLevelWeekend').value !== this.formFlow.get('flowLevelDefault').value ? ['LB', 'FS'] : ['TD'];
+        datesIncludeType.forEach(value => {
+            const count = this.periods.push({
+                attributes: {
+                    id_dgse: this.formFlow.get('id_dgse').value,
+                    fecha_inicio: this.formFlow.get('dates').value[0],
+                    fecha_fin: this.formFlow.get('dates').value[1] ? this.formFlow.get('dates').value[1] : this.formFlow.get('dates').value[0],
+                    nivel: value === 'FS' ? this.formFlow.get('flowLevelWeekend').value : this.formFlow.get('flowLevelDefault').value,
+                    incluir_dias: value
+                }
+            });
+            // actualizamos en bbdd
+            const addvalues = JSON.parse(JSON.stringify(this.periods[count - 1]));
+            addvalues.attributes.fecha_fin = moment(addvalues.attributes.fecha_fin).format('YYYY-MM-DD');
+            addvalues.attributes.fecha_inicio = moment(addvalues.attributes.fecha_inicio).format('YYYY-MM-DD');
+            this.editRelatedData([addvalues], this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
+                + '/applyEdits', 'message');
+        });
+        // actualizamos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
+        this.invalidDates = [];
+        this.loadInvalidDates();
+        // seteamos los valores del calendario para que apareca al abrirlo en la ultima fecha
+        const iniDate = new Date(this.formFlow.get('dates').value[0]);
+        if (this.formFlow.get('dates').value[1]) {
+            const lastDate = new Date(this.formFlow.get('dates').value[1]);
+            lastDate.setDate(lastDate.getDate() + 1);
+            this.formFlow.get('dates').setValue(lastDate);
+        } else {
+            this.formFlow.get('dates').setValue(iniDate);
+        }
+        this.formFlow.get('flowLevelWeekend').setValue(null);
+    }
+
+    multipleDateRangeOverlaps(arr: Attribute[]): boolean {
+        for (let i = 0; i < arr.length; i++) {
+            if (
+                this.dateRangeOverlaps(
+                    this.formFlow.get('dates').value[0], this.formFlow.get('dates').value[1],
+                    arr[i].attributes.fecha_inicio, arr[i].attributes.fecha_fin
+                )
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    dateRangeOverlaps(a_start, a_end, b_start, b_end): boolean {
+        if (a_start <= b_start && b_start <= a_end) {
+            return true;
+        } // b starts in a
+        if (a_start <= b_end && b_end <= a_end) {
+            return true;
+        } // b ends in a
+        if (b_start < a_start && a_end < b_end) {
+            return true;
+        } // a in b
+        return false;
+    }
+
+    days_of_this_year() {
+        return this.isLeapYear(new Date().getFullYear()) ? 366 : 365;
+    }
+
+    isLeapYear(year) {
+        return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
+    }
+
+    onRowDelete(rowData) {
+        // eliminamos la pareja del registro si es uno de fin de semana o laborable, sino borramos solo el registro seleccionado
+        const tableA = [...this.periods];
+        let tableB = [...this.periods];
+        this.periods = tableA.filter(s => s.attributes.fecha_inicio.getTime() !== rowData.attributes.fecha_inicio.getTime());
+        tableB = tableB.filter(s => s.attributes.fecha_inicio.getTime() === rowData.attributes.fecha_inicio.getTime());
+        // borramos los periodos de la bbdd si los hay
+        if (tableB.length > 0) {
+            this.removeRelatedData(tableB.map(a => a.attributes.objectid), this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
+                + '/deleteFeatures', false);
+        }
+        // actualizamos los dias ya seleccionados en el calendario
+        this.invalidDates = [];
+        this.loadInvalidDates();
+    }
+
+    onSubmitEvaluation() {
+        this.updateClasification(this.formEvaluation.get('dangerLevel').value, true);
+    }
+
+    getCompleteState(): number {
+        let percentage = 0;
+        percentage += this.formIncidents.get('on_edit').value ? 30 : 0;
+        percentage += this.formEnvironment.get('on_edit').value ? 30 : 0;
+        percentage += this.periods.length > 0 ? 30 : 0;
+        percentage += this.formEvaluation.valid ? 10 : 0;
+        return percentage;
     }
 
     private updateClasification(clasification: string, updateTime: boolean) {
@@ -587,23 +718,6 @@ export class MapEditorComponent implements OnInit {
         });
     }
 
-    loadRelatedAdditionalDangers(parentId: string) {
-        this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
-            parentId, '9', '*', true, this.currentUser.token).subscribe(
-            (result: any) => {
-                if (result.relatedRecordGroups.length > 0) {
-                    this.onInitAdditionalDangers(result.relatedRecordGroups[0].relatedRecords);
-                } else {
-                    this.formEnvironment.get('peligros_anadidos').setValue(0);
-                }
-            },
-            error => {
-                console.log(error.toString());
-            }).add(() => {
-            console.log('end of request');
-        });
-    }
-
     // cargamos el formulario de afluencia relacion 1-M
     private execRelatedFlowQuery(queryTask, RelationshipQuery, output, relationshipId) {
         // borramos las fechas auxiliares en la afluencia
@@ -631,7 +745,6 @@ export class MapEditorComponent implements OnInit {
     }
 
     private editRelatedData(updateObj, currentUser, mode, endpoint, postExecute) {
-      console.log(updateObj);
         this.service.updateEsriData(endpoint,
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
@@ -646,6 +759,14 @@ export class MapEditorComponent implements OnInit {
                             break;
                         case 'update_dangers':
                             this.updateAdditionalDangers();
+                            break;
+                        case 'message':
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Se ha guardado el período introducido',
+                                detail: 'La base de datos se ha actualizado, continúe con el resto del año en curso.'
+                            });
+                            break;
                     }
                 }
             },
@@ -654,7 +775,6 @@ export class MapEditorComponent implements OnInit {
             }).add(() => {
             if (postExecute === 'none') {
                 console.log('end of request');
-                this.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
             }
         });
     }
@@ -688,151 +808,7 @@ export class MapEditorComponent implements OnInit {
                 console.log(error.toString());
             }).add(() => {
             console.log('end of request');
-            this.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
         });
-    }
-
-    addPeriod() {
-        // comprobamos que no se solapa el periodo introducido con alguno anterior
-        const tableA = [...this.periods];
-        if (this.multipleDateRangeOverlaps(tableA) && this.formFlow.get('dates').value[1]) {
-            this.formFlow.get('flowLevelWeekend').setValue(null);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'NO se ha guardado el período',
-                detail: 'No puede introducir un período que solape otro anterior'
-            });
-            return false;
-        }
-        // incluimos los periodos en la lista
-        const datesIncludeType = this.formFlow.get('flowLevelWeekend').value && this.formFlow.get('dates').value[1] &&
-        this.formFlow.get('flowLevelWeekend').value !== this.formFlow.get('flowLevelDefault').value ? ['LB', 'FS'] : ['TD'];
-        datesIncludeType.forEach(value => {
-            this.periods.push({
-                attributes: {
-                    id_dgse: this.formFlow.get('id_dgse').value,
-                    fecha_inicio: this.formFlow.get('dates').value[0],
-                    fecha_fin: this.formFlow.get('dates').value[1] ? this.formFlow.get('dates').value[1] : this.formFlow.get('dates').value[0],
-                    nivel: value === 'FS' ? this.formFlow.get('flowLevelWeekend').value : this.formFlow.get('flowLevelDefault').value,
-                    incluir_dias: value
-                }
-            });
-        });
-        // actualizamos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
-        this.invalidDates = [];
-        this.loadInvalidDates();
-        // seteamos los valores del calendario para que apareca al abrirlo en la ultima fecha
-        const iniDate = new Date(this.formFlow.get('dates').value[0]);
-        if (this.formFlow.get('dates').value[1]) {
-            const lastDate = new Date(this.formFlow.get('dates').value[1]);
-            lastDate.setDate(lastDate.getDate() + 1);
-            this.formFlow.get('dates').setValue(lastDate);
-        } else {
-            this.formFlow.get('dates').setValue(iniDate);
-        }
-        this.formFlow.get('flowLevelWeekend').setValue(null);
-    }
-
-    multipleDateRangeOverlaps(arr: Attribute[]): boolean {
-        for (let i = 0; i < arr.length; i ++) {
-                if (
-                    this.dateRangeOverlaps(
-                        this.formFlow.get('dates').value[0], this.formFlow.get('dates').value[1],
-                        arr[i].attributes.fecha_inicio, arr[i].attributes.fecha_fin
-                    )
-                ) {
-                    return true;
-                }
-        }
-        return false;
-    }
-
-    dateRangeOverlaps(a_start, a_end, b_start, b_end): boolean {
-        if (a_start <= b_start && b_start <= a_end) {
-            return true;
-        } // b starts in a
-        if (a_start <= b_end && b_end <= a_end) {
-            return true;
-        } // b ends in a
-        if (b_start < a_start && a_end < b_end) {
-            return true;
-        } // a in b
-        return false;
-    }
-
-    days_of_a_year(year) {
-        return this.isLeapYear(year) ? 366 : 365;
-    }
-
-    isLeapYear(year) {
-        return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
-    }
-
-    onSubmitFlows() {
-        // chequeamos y advertimos al usuario si hay alguna fecha del año en curso por rellenar.
-        if (this.invalidDates.length < this.days_of_a_year(new Date().getFullYear())) {
-            this.confirmNotEnoughDays();
-        } else {
-            this.savePeriodsOndb();
-        }
-    }
-
-    savePeriodsOndb() {
-        // casteamos la fecha a formato valido de bbdd postgre
-        this.periods = [...this.periods.filter(s => !s.attributes.objectid)];
-        const addvalues = JSON.parse(JSON.stringify(this.periods));
-        addvalues.forEach(value => {
-            value.attributes.fecha_fin = moment(value.attributes.fecha_fin).format('YYYY-MM-DD');
-            value.attributes.fecha_inicio = moment(value.attributes.fecha_inicio).format('YYYY-MM-DD');
-        });
-        let unselect = true;
-        if (this.periods.length > 0) {
-            this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
-                + '/applyEdits', 'none');
-            unselect = false;
-        }
-        // borramos los periodos si los hay
-        if (this.deletePeriods.length > 0) {
-            this.removeRelatedData(this.deletePeriods, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
-                + '/deleteFeatures', unselect);
-        }
-    }
-
-    confirmNotEnoughDays () {
-        this.confirmationService.confirm({
-            message: '¿Está segur@ que quiere guardar los períodos?',
-            header: 'Año en curo INCOMPLETO',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.messageService.add({
-                    severity: 'info',
-                    summary: 'No se completa el período anual',
-                    detail: 'Tenga en cuenta que el dimensionamiento de seguridad no reflejará todo el año en curso.'
-                });
-                this.savePeriodsOndb();
-            },
-            reject: () => {
-                this.messageService.add({
-                    severity: 'warn',
-                    summary: 'No se han guardado los períodos',
-                    detail: 'Complete todo el año en curso y vuelva a guardar.'
-                });
-            }
-        });
-    }
-
-    onRowDelete(rowData) {
-        // eliminamos la pareja del registro si es uno de fin de semana o laborable, sino borramos solo el registro seleccionado
-        const tableA = [...this.periods];
-        let tableB = [...this.periods];
-        this.periods = tableA.filter(s => s.attributes.fecha_inicio.getTime() !== rowData.attributes.fecha_inicio.getTime());
-        tableB = tableB.filter(s => s.attributes.fecha_inicio.getTime() === rowData.attributes.fecha_inicio.getTime());
-        tableB.forEach(value => {
-            this.deletePeriods.push(value.attributes.objectid);
-        });
-        // actualizamos los dias ya seleccionados en el calendario
-        this.invalidDates = [];
-        this.loadInvalidDates();
     }
 
     // ponemos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
@@ -849,19 +825,6 @@ export class MapEditorComponent implements OnInit {
                 this.invalidDates.push(currDate.clone().toDate());
             }
         });
-    }
-
-    onSubmitEvaluation() {
-        this.updateClasification(this.formEvaluation.get('dangerLevel').value, true);
-    }
-
-    getCompleteState(): number {
-        let percentage = 0;
-        percentage += this.formIncidents.get('on_edit').value ? 30 : 0;
-        percentage += this.formEnvironment.get('on_edit').value ? 30 : 0;
-        percentage += this.periods.length > 0 ? 30 : 0;
-        percentage += this.formEvaluation.valid ? 10 : 0;
-        return percentage;
     }
 
     private updateAdditionalDangers() {
@@ -881,7 +844,7 @@ export class MapEditorComponent implements OnInit {
             value.attributes.ultimo_editor = this.currentUser.username;
         });
         if (updatesvalues.length > 0) {
-            this.editRelatedData(addvalues, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+            this.editRelatedData(updatesvalues, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
                 + '/applyEdits', 'none');
         }
         addvalues.forEach(value => {

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {loadModules} from 'esri-loader';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
@@ -34,8 +34,10 @@ declare let features: any;
 export class MapViewerComponent implements OnInit, OnDestroy {
     @Input() zoom: number;
     @Input() mapHeight: string;
+    @Input() SelectedDate: string;
     private currentUser: Auth;
     private subscripcionFeatures;
+    private lastGraphicLayerId: string;
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
                 private spinnerService: Ng4LoadingSpinnerService, private service: EsriRequestService) {
@@ -55,6 +57,11 @@ export class MapViewerComponent implements OnInit, OnDestroy {
             wkid: 32628
         };
         return beach;
+    }
+
+    ngOnDestroy() {
+        this.subscripcionFeatures.unsubscribe();
+        this.service.clearfeaturesSource();
     }
 
     private setMap() {
@@ -128,22 +135,29 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         this.spinnerService.show();
                         let beachs = (results as any[]);
                         if (results.length > 0) {
+                            webmap.remove((webmap.findLayerById(this.lastGraphicLayerId)));
                             const layer = new GraphicsLayer({
                                 graphics: []
                             });
                             beachs = [...beachs].filter(x => x.relatedRecords1.length > 0 && x.relatedRecords2.length > 0
                                 && x.relatedRecords3.length > 0);
                             beachs.forEach(beach => {
+                                // si se ha seleccionado una fecha entonces los periodos se filtraran por esa fecha para mostrar el grado
                                 beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
-                                    beach.relatedRecords3);
-                                beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
-                                beach = this.convertCentroidDataToGraphic(beach);
-                                const grap = Graphic.fromJSON(beach);
-                                grap.symbol = beach.grado_maximo === 'A' ? symbolHigh : symbolMedium;
-                                layer.graphics.add(grap);
+                                    this.SelectedDate ? beach.relatedRecords3
+                                        .filter(b => b.attributes.fecha_inicio <= new Date(this.SelectedDate)
+                                            && b.attributes.fecha_fin >= new Date(this.SelectedDate)) : beach.relatedRecords3);
+                                if (beach.periodos.length > 0) {
+                                    beach.grado_maximo = this.SelectedDate ? beach.periodos[0].grado : this.gradeService.getMaximunGrade(beach.periodos);
+                                    beach = this.convertCentroidDataToGraphic(beach);
+                                    const grap = Graphic.fromJSON(beach);
+                                    grap.symbol = beach.grado_maximo === 'A' ? symbolHigh : symbolMedium;
+                                    beach.grado_maximo === 'A' || beach.grado_maximo === 'M' ? layer.graphics.add(grap) : layer.graphics.add(null);
+                                }
                             });
                             layer.minScale = 20000;
                             webmap.add(layer);
+                            this.lastGraphicLayerId = layer.id;
                         }
                         this.spinnerService.hide();
                     },
@@ -225,10 +239,5 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 // handle any errors
                 console.error(err);
             });
-    }
-
-    ngOnDestroy() {
-        this.subscripcionFeatures.unsubscribe();
-        this.service.clearfeaturesSource();
     }
 }

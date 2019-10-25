@@ -499,7 +499,19 @@
                 </div>
                 <div class="cbp-item result">
                     <div class="cbp-caption">
-                        <p>Explicación de lo que se puede ver</p>
+                        <p-calendar width="100%" appendTo="body" [(ngModel)]="dateForGrades" showButtonBar="true"
+                                    [readonlyInput]="true" [locale]="es" dateFormat="dd/mm"
+                                    placeholder="Grados por fecha" [showIcon]="true"
+                                    (onSelect)="calculateGradesProtection()" (onClearClick)="calculateGradesProtection()"></p-calendar>
+                    </div>
+                </div>
+                <div class="cbp-item result">
+                    <div class="cbp-caption">
+                        <i style="color: #1f57ff; margin-top: 2px"
+                           pTooltip="Puede ver los grados por fecha - opcional. Para ello seleccione una fecha en el calendario para calcular el grado de protección en dicha fecha."
+                           class="pull-left fa fa-2x fa-info-circle"></i>
+                        <label class="info" style="font-weight: bolder; padding-top: 8px">Clasificación y grados de
+                            protección máximo.</label>
                     </div>
                 </div>
             </div>
@@ -507,7 +519,8 @@
         <div [hidden]="!viewResults" class="row paddingleft15px paddingright15px padding-bottom-15">
             <app-map-viewer
                 [mapHeight]="mapHeightContainer"
-                [zoom]="mapZoomLevel">
+                [zoom]="mapZoomLevel"
+                [SelectedDate]="dateForGrades">
             </app-map-viewer>
         </div>
         <div [hidden]="viewResults" class="row paddingleft15px paddingright15px">
