@@ -750,6 +750,11 @@ export class MapEditorComponent implements OnInit {
             } else {
                 this.formFlow.patchValue({id_dgse: output.id_dgse});
                 this.periods = results[query.objectIds[0]].features;
+                // voy a la ultima fecha del calendario en los periodos introducidos
+                const lastDate = new Date(this.periods[this.periods.length - 1].attributes.fecha_fin);
+                lastDate.setDate(lastDate.getDate() + 1);
+                this.formFlow.get('dates').setValue(lastDate);
+
                 this.periods.sort((a, b) => (a.attributes.fecha_inicio > b.attributes.fecha_inicio) ? 1 : -1);
                 this.periods.forEach(value => {
                     value.attributes.fecha_fin = new Date(value.attributes.fecha_fin);
