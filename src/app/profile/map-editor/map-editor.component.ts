@@ -433,7 +433,7 @@ export class MapEditorComponent implements OnInit {
         // borramos los periodos de la bbdd si los hay
         if (tableB.length > 0) {
             this.removeRelatedData(tableB.map(a => a.attributes.objectid), this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
-                + '/deleteFeatures');
+                + '/deleteFeatures', true);
         }
         // actualizamos los dias ya seleccionados en el calendario
         this.invalidDates = [];
@@ -799,11 +799,15 @@ export class MapEditorComponent implements OnInit {
             });
     }
 
-    private removeRelatedData(objectIds, currentUser, endpoint) {
+    private removeRelatedData(objectIds, currentUser, endpoint, message: boolean) {
         this.service.deleteEsriData(endpoint, currentUser.token, objectIds).subscribe(
             (result: any) => {
-                if (result) {
-                    console.log(result);
+                if (result && message) {
+                    this.messageService.add({
+                        severity: 'info',
+                        summary: 'Eliminado el período indicado',
+                        detail: 'La base de datos se ha actualizado, continúe con el resto del año en curso.'
+                    });
                 }
             },
             error => {
@@ -853,7 +857,7 @@ export class MapEditorComponent implements OnInit {
         // borramos los registros que han sido eliminados por el usuario
         if (this.deleteAddtionalDangers.length > 0) {
             this.removeRelatedData(this.deleteAddtionalDangers, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
-                + '/deleteFeatures');
+                + '/deleteFeatures', false);
         }
         const addvalues = [...this.tEnv.value].filter(s => !s.objectid).map(value => {
             return {attributes: value};
