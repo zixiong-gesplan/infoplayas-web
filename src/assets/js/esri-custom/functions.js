@@ -56,16 +56,8 @@ function submitForm(featureLayer, form, fields, filter) {
     const edits = {
       updateFeatures: [editFeature]
     };
-    if (confirmSubmit()){
-      applyAttributeUpdates(edits, featureLayer, view, fields, filter);
-      return unselectFeature();
-    };
+      return applyAttributeUpdates(edits, featureLayer, view, fields, filter);
   }
-};
-
-function confirmSubmit(){
-  var c = confirm("¿Está seguro de que desea guardar los cambios?");
-  return c;
 };
 
 function applyAttributeUpdates(params, featureLayer, view, fields, filter) {
@@ -73,14 +65,16 @@ function applyAttributeUpdates(params, featureLayer, view, fields, filter) {
   if(checkNull(params.updateFeatures[0].attributes.nombre_municipio) === false) {
     params.updateFeatures[0].attributes.nombre_municipio = params.updateFeatures[0].attributes.nombre_municipio.toUpperCase();
   };
-  featureLayer.applyEdits(params).then(function(editsResult) {
+  return featureLayer.applyEdits(params).then(function(editsResult) {
     $('#btnSave')[0].style.cursor = "pointer";
     loadList(view, featureLayer, fields, filter);
+    return true;
   }).catch(function(error) {
     console.log("===============================================");
     console.error("[ applyEdits ] FAILURE: ", error.code, error.name, error.message);
     console.log("error = ", error);
     $('#btnSave')[0].style.cursor = "pointer";
+    return false;
   });
 };
 

@@ -8,9 +8,49 @@
     <div id="viewDivViewer"></div>
     <div id="legendDivViewer" class="card custom-widget"></div>
     <div id="infoViewer" class="container-fluid esri-widget custom-widget esri-hidden">
-        <img src="assets/images/logos/logo.png" class="card-img-top"/>
-        <div class="card-body">
-            <p id="txtSeleccionaViewer" class="card-text">TODO leyenda de los grados</p>
+        <img src="assets/images/logos/logo.png" class="card-img-top padding-bottom-10"/>
+        <h3 class="esri-widget__heading esri-legend__service-label">Grados de protección</h3>
+        <div class="esri-legend__layer-row">
+            <div class="esri-legend__layer-row">
+
+            </div>
+            <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
+                <div class="esri-legend__symbol">
+                    <img src="assets\images\grados\alto.svg" style="height: 25px; width: 25px"/>
+                </div>
+            </div>
+            <div class="esri-legend__layer-cell esri-legend__layer-cell--info">ALTO</div>
         </div>
+        <div class="esri-legend__layer-row">
+            <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
+                <div class="esri-legend__symbol">
+                    <img src="assets\images\grados\moderado.svg" style="height: 25px; width: 25px"/>
+                </div>
+            </div>
+            <div style="margin-bottom: 10px" class="esri-legend__layer-cell esri-legend__layer-cell--info">MODERADO
+            </div>
+        </div>
+    </div>
+</div>
+<div hidden="true">
+    <div id="GradesTable">
+        <p-table [value]="selectedPeriodos">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Grado</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Nº Días</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-period>
+                <tr>
+                    <td>{{period.grado === 'M' ? 'Moderado' : period.grado === 'A' ? 'Alto' : 'Bajo'}}</td>
+                    <td>{{period.fecha_inicio | date:'shortDate'}}</td>
+                    <td>{{period.fecha_fin | date:'shortDate'}}</td>
+                    <td>{{getDifference(period) + 1}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
     </div>
 </div>

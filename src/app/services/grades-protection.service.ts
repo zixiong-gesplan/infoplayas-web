@@ -23,7 +23,7 @@ export class GradesProtectionService{
         const vSports = dangerLevel > 0 ? dangerLevel : 0;
         // calculos para el valor de peligrosidad condiciones del entorno fisico y del mar
         const vSeaConditions = env_sea[0].attributes.peligrosidad_mar;
-        const vEnvironment = env_sea[0].attributes.peligros_anadidos ?
+        const vEnvironment = env_sea[0].attributes.peligros_anadidos > 0 ?
             env_sea[0].attributes.accesos === 'SDIF' ? 1 :
                 env_sea[0].attributes.accesos === 'AVHC' ? 3 : 5 : 0;
         // traemos los periodos y niveles de afluencia
