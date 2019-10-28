@@ -36,7 +36,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     beachs: any[];
     viewResults: boolean;
     dateForGrades: Date;
-    private es: any;
+    es: any;
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService) {
         this.es = {
