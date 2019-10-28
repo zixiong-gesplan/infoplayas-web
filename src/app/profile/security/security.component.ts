@@ -84,6 +84,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     }
 
 ngOnInit() {
+  this.spinnerService.show();
   this.loadRecords();
   this.default();
   this.formHorarios = this.fb.group({
@@ -118,6 +119,7 @@ ngOnInit() {
   this.formMediosHumanos = this.fb.group({
     atrtributes: new FormArray([])
   });
+  this.spinnerService.hide();
 }
 get f() { return this.formMediosHumanos.controls; }
 get t() { return this.f.atrtributes as FormArray; }
@@ -159,7 +161,7 @@ dinamicForm(grados,related){
         grado: new FormControl(grados[i]),
         id_dgse: new FormControl(this.iddgse),
         nivel: new FormControl(),
-        ultimo_editor: new FormControl(this.currentUser),
+        ultimo_editor: new FormControl(this.currentUser.username),
         ultimo_cambio: new FormControl(this.toDateFormat(true))
       }));
     }
@@ -334,6 +336,7 @@ readFeatures() {
             (result: any) => {
                 if (result.length !== 0) {
                     this.datosclima = result;
+                    console.log(this.datosclima);
                     $('#tiempo').modal('show');
                 }
             },
@@ -454,11 +457,7 @@ public update() {
       console.log('end of request');
 
     });
-    }
-
-// private horario(id_dgse, mc) {
-//   this.altoini = mc.inputFieldValue;
-//     }
+}
 
 private anhadir_medios(playa, option) {
   this.spinnerService.show();
@@ -488,11 +487,7 @@ private anhadir_medios(playa, option) {
       }
       this.spinnerService.hide();
     }
-private mostrar_pasiva_grado_bajo(grado) {
-  if (grado === 'bajo') {
-    this.pasiva = true;
-  }
-    }
+
 public updateHorarios(){
 
   let pHorarios = [];
