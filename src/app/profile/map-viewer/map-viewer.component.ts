@@ -6,6 +6,8 @@ import {GradesProtectionService} from '../../services/grades-protection.service'
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
+import {GradeRecord} from '../../models/grade-record';
+import * as moment from 'moment';
 
 declare var $: any;
 declare var jquery: any;
@@ -38,6 +40,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     private currentUser: Auth;
     private subscripcionFeatures;
     private lastGraphicLayerId: string;
+    selectedPeriodos: GradeRecord[];
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
                 private spinnerService: Ng4LoadingSpinnerService, private service: EsriRequestService) {
@@ -103,7 +106,6 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 // then we load a web map from an id
                 const webmap = new WebMap({
                     portalItem: {
-                        // TODO cambiar al nuevo webmap
                         id: environment.idportalView
                     }
                 });
@@ -151,6 +153,14 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                     beach.grado_maximo = this.SelectedDate ? beach.periodos[0].grado : this.gradeService.getMaximunGrade(beach.periodos);
                                     beach = this.convertCentroidDataToGraphic(beach);
                                     const grap = Graphic.fromJSON(beach);
+                                    if (!this.SelectedDate) {
+                                        grap.attributes = beach.periodos;
+                                        grap.popupTemplate = {
+                                            title: 'Tabla de grados',
+                                            content: document.getElementById('GradesTable') ? document.getElementById('GradesTable') : ''
+                                        };
+                                        grap.popupTemplate.overwriteActions = true;
+                                    }
                                     grap.symbol = beach.grado_maximo === 'A' ? symbolHigh : symbolMedium;
                                     beach.grado_maximo === 'A' || beach.grado_maximo === 'M' ? layer.graphics.add(grap) : layer.graphics.add(null);
                                 }
@@ -176,7 +186,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     , 'esri-icon-layer-list', 'Listado de playas');
 
                 viewer.when(function () {
-                    viewer.popup.autoOpenEnabled = false; // disable popups
+                    viewer.popup.autoOpenEnabled = true; // enable popups
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerViewerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
@@ -208,7 +218,15 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         $('#infoViewer')[0].classList.remove('esri-hidden');
                         $('#listPlayasViewer')[0].classList.remove('esri-hidden');
                     });
-
+                    viewer.on('click', function (event) {
+                        // Listen for when the user clicks on the view
+                        viewer.hitTest(event).then(function (response) {
+                            const result = response.results.find(item => item.graphic.layer.id === t.lastGraphicLayerId);
+                            if (result) {
+                                t.selectedPeriodos = result.graphic.attributes;
+                            }
+                        });
+                    });
                     const listID = 'ulPlayaViewer';
                     listNode = $('#ulPlayaViewer')[0];
                     listNode.addEventListener('click', onListClickHandler);
@@ -239,5 +257,10 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 // handle any errors
                 console.error(err);
             });
+    }
+
+    getDifference(p: GradeRecord) {
+        const duration = moment.duration(moment(p.fecha_fin).diff(p.fecha_inicio));
+        return duration.asDays();
     }
 }
