@@ -1,4 +1,4 @@
-<ng4-loading-spinner></ng4-loading-spinner>
+<ng4-loading-spinner [timeout]="10000" [threshold]="500"></ng4-loading-spinner>
 <section class="blog-header blog-page-padding-top" data-parallax="scroll" data-image-src="assets/images/play.jpg"
          style="background-image: url('assets/images/play.jpg'); background-size: cover; background-position: center center;">
   <div class="container">
@@ -57,27 +57,26 @@
     <div class="modal-content">
       <form [formGroup]="formMediosHumanos" (ngSubmit)="updateMediosHumanos()">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" (click)="default()">&times;</span></button>
-        <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" >&times;</span></button>
+        <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}  </h4>
           <div class="container">
             <div class="row">
+            <h5 class="text-center">Longitud de la playa: {{longitudPlaya}} mts</h5>
             </div>
           </div>
-          </h4>
+
       </div>
       <div class="modal-body">
         <!-- <h4 [hidden]="peligrosa" class="centrar text-color-grey-646464 font-weight-700">Medios Humanos <i class="fa fa-calculator pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo humano" (click)="calculadora('humanos')"></i></h4> -->
         <p-table [formGroup]="gradoP"   *ngFor="let gradoP of t.controls; let i=index;">
           <ng-template pTemplate="header" *ngIf="gradoP.value.grado!=='B'">
             <tr>
-              <th colspan="8" class="centrar">
+              <th colspan="7" class="centrar">
                 <span *ngIf="gradoP.value.grado==='A'" style="color:#f5160f">Grado de protección Alto</span>
                 <span *ngIf="gradoP.value.grado==='M'" style="color:#239906">Grado de protección Medio</span>
               </th>
             </tr>
             <tr>
-
-              <th class="tamanhofont">Longitud</th>
               <th class="tamanhofont">Jefatura de playa o turno</th>
               <th class="tamanhofont">Socorrista en torre o silla de vigilancia</th>
               <th class="tamanhofont">Socorrista de actividades acuáticas y vigilancia a pie de agua</th>
@@ -86,9 +85,7 @@
               <th class="tamanhofont">Socorrista embarcación</th>
               <th class="tamanhofont">Socorrista embarcación con PER</th>
             </tr>
-            <tr >
-
-              <th class="centrar"><input type="number"  id="longitud" class="form-control  inputCustom" readonly></th>
+            <tr>
               <th class="centrar"><input type="number"  formControlName="jefes_turno"  class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_torre"  class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_polivalentes"   class="form-control  inputCustom" min="0" placeholder="0"></th>
@@ -114,9 +111,8 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="materiales">
   <div class="modal-dialog modal-dialog-main modal-dialog-centered" role="document">
     <div class="modal-content">
-    <form [formGroup]="formMediosMateriales" (ngSubmit)="updateMediosMateriales()">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" (click)="default()">&times;</span></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
       </div>
   <div class="modal-body">
@@ -134,50 +130,53 @@ c) De zona segura (...)
 (...)
 3. Sin perjuicio de las futuras modificaciones del Anexo III, los Planes de Seguridad y Salvamento podrán contemplar otras banderas complementarias, en tanto no sustituyan a las generales y su significado figure de manera comprensiva en la cartelería y, al menos, en los idiomas español e inglés, así como un tercer idioma a determinar en el citado Plan de Seguridad y Salvamento.">
 Medios Materiales - Banderas y Cartelerías <i class="fa fa-calculator  pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo material" (click)="calculadora('materiales')"></i></h4>
+
+<form [formGroup]="formBanderas">
 <p-table>
 <ng-template pTemplate="header" >
     <tr>
-
       <th class="tamanhofont">Nº de Accesos</th>
       <th class="tamanhofont">Nº de Banderas</th>
       <th class="tamanhofont">Nº de Mástiles</th>
       <th class="tamanhofont">Nº de Carteles</th>
-      <th class="tamanhofont">Observaciones</th>
-
+      <th class="tamanhofont">Nº Banderas complementarias</th>
     </tr>
     <tr>
-
-      <th class="centrar"><input type="number"  formControlName="nacceso" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  formControlName="nbanderas" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  formControlName="nmastiles" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  formControlName="ncarteles" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><textarea class="form-control" rows="3" formControlName="observacionesBC" placeholder="Observaciones"></textarea></th>
+      <th class="centrar"><input type="number"  formControlName="accesos" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="banderas" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="mastiles" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="carteles" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="banderas_comp" class="form-control  inputCustom" min="0" placeholder="0"></th>
     </tr>
     </ng-template >
 </p-table>
-
+</form>
 <br>
  <h4 class="centrar text-color-grey-646464 font-weight-700" title="Anexo IV.II.A: Grado de Protección Bajo:(…). En todo caso, se dotará a las playas sin vigilancia con un grado de protección bajo, de elementos de seguridad pasiva como aros salvavidas y carretes, entre otros">
-                                                                  Medios Materiales - Seguridad Pasiva</h4>
+                                                            Medios Materiales - Seguridad Pasiva</h4>
+<form [formGroup]="formPasiva">
 <p-table >
   <ng-template pTemplate="header" >
     <tr>
 
       <th class="tamanhofont">Nº de Aros Salvavidas</th>
       <th class="tamanhofont">Nº de Carreteles / Malacate</th>
-      <th class="tamanhofont">Observaciones</th>
+
     </tr>
     <tr>
-      <th class="centrar"><input type="number"  formControlName="salvavidas" class="form-control  inputCustom" placeholder="0" ></th>
-      <th class="centrar"><input type="number"  formControlName="carretel" class="form-control  inputCustom" placeholder="0" ></th>
-      <th class="centrar"><textarea class="form-control" rows="3" formControlName="observacionesSP"></textarea></th>
+      <th class="centrar"><input type="number"  formControlName="carretes"  class="form-control  inputCustom" placeholder="0" ></th>
+      <th class="centrar"><input type="number"  formControlName="salvavidas"  class="form-control  inputCustom" placeholder="0" ></th>
+
     </ng-template >
 </p-table>
+</form>
 <br >
 <h4 class="centrar text-color-grey-646464 font-weight-700" title="Las Playas y ZBM con Grado de Protección Moderado y Alto deberán disponer de torres o sillas de vigilancia, de acuerdo a lo establecido en el Anexo IV. II. B y C del Decreto 116/2018.
 Anexo IV.II.3. Torre o silla de vigilancia:
 'Se situará al menos a no más de 20 metros de la pleamar recomendándose la instalación de una por cada 400 metros de playa, con un área de responsabilidad de 200 metros a cada lado.
 Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Además dispondrá de juego de banderas y un soporte para su izado hasta una altura mínima de 3 metros. Como equipamiento mínimo de las torres o sillas o vigilancia deberán disponer de un botiquín portátil y un desfibrilador semiautomático (DESA) por cada dos sillas o torres de vigilancia a excepción de playas donde sólo haya una, que dispondrá de tal equipamiento'. (*) El equipamiento de vigilancia, salvamento y megafonía se analiza más adelante.">Medios  - Torre o Silla de Vigilancia</h4>
+
+<form [formGroup]="formTorres">
 <p-table>
   <ng-template pTemplate="header" >
     <tr>
@@ -190,29 +189,25 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     </tr>
     <tr>
 
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="torres" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="botiquines" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="desfibriladores" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="banderas" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="sistemas_izado" class="form-control  inputCustom" min="0" placeholder="0"></th>
     </ng-template >
 </p-table>
+</form>
 <br>
 
 
 <h4 class="centrar text-color-grey-646464 font-weight-700" >Medios Materiales - Balizamiento</h4>
+<form [formGroup]="formBalizamiento">
 <p-table>
   <ng-template pTemplate="header">
     <tr>
-
-      <th colspan="3" class="tamanhofont">Balizamiento de Zonas de Baño</th>
-      <th colspan="4" class="tamanhofont">Balizamiento de Canales de Lanzamiento o Varada</th>
-      <th rowspan="2" class="tamanhofont">Observaciones</th>
+      <th colspan="4" class="tamanhofont">Balizamiento de Zonas de Baño / Balizamiento de Canales de Lanzamiento o Varada</th>
     </tr>
     <tr>
-      <th class="tamanhofont">Longitud cuerda (m)</th>
-      <th class="tamanhofont">Nº boyas amarillas</th>
-      <th class="tamanhofont">Nº señales prohibición</th>
       <th class="tamanhofont">Longitud cuerda (m)</th>
       <th class="tamanhofont">Nº boyas amarillas</th>
       <th class="tamanhofont">Nº boyas verdes</th>
@@ -220,22 +215,21 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     </tr>
     <tr>
 
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><textarea class="form-control" rows="3" id="observacionesM" placeholder="Observaciones"></textarea></th>
+
+      <th class="centrar"><input type="number"  formControlName="m_cuerda" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="boyas_amarillas" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="boyas_verdes" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="boyas_rojas" class="form-control  inputCustom" min="0" placeholder="0"></th>
+
 
     </ng-template >
 </p-table>
+</form>
 </div>
 <div class="modal-footer botonCentrado">
-  <button type="submit" class="btn btn-primary">Actualizar</button>
+  <button type="button" class="btn btn-primary" (click)="updateMediosMateriales()">Actualizar</button>
 </div>
-</form>
+
 </div><!-- /.modal-content -->
 
 </div><!-- /.modal-dialog -->
