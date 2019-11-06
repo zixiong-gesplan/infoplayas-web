@@ -24,6 +24,7 @@ declare var RadToDeg: any;
 export class SecurityComponent implements OnInit, OnDestroy {
 
     currentUser: Auth;
+    fechaActual: Date = new Date();
     filtermunicipio;
     datosPlaya: any = [];
     datosPlayaRelacionada: any = [];
@@ -46,13 +47,21 @@ export class SecurityComponent implements OnInit, OnDestroy {
     longitud: number = 0;
     desabilitar:boolean = false;
     objectid;
-    estado:boolean = false;
+    contador:number = 0;
     selectObjectId: number;
     options: string;
     grados: [] = [];
     periodos: any [] = [];
     subscripcionFeatures;
+    calculoTotalHumanosP;
+    calculoTotalHumanos;
     urlimageweather =  environment.urlimageweather;
+    unitarios = {
+      jefe_turno_pvp:'',
+      socorrista_pvp:'',
+      socorrista_embarcacion_pvp:'',
+      socorrista_embarcacion_per_pvp:''
+    }
 
     objetoGenerico = {
       attributes: {
@@ -61,6 +70,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
         ultimo_editor: ''
       },
     };
+
     datosclima = {
         main: {
             temp: '',
@@ -344,18 +354,24 @@ readFeatures() {
             console.log('end of request');
         });
     }
+  openConfiguration(){
+    this.loadUnitPrice()
+    $('#configuracion').modal({backdrop: 'static', keyboard: false});
+    $('#configuracion').modal('show');
+
+  }
 
     loadUnitPrice() {
         this.spinnerService.show();
         // inicializamos desactivado el esc y el click fuera de la modal
-        $('#configuracion').modal({backdrop: 'static', keyboard: false});
-        $('#configuracion').modal('show');
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/10/query',
             'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token, 'id_ayuntamiento', false).subscribe(
             (result: any) => {
                 if (result.features.length !== 0) {
                     this.formUnitarios.patchValue(result.features[0].attributes);
                     this.mode = 'updates';
+                    this.unitarios = result.features[0].attributes;
+                    this.createRangeHumanos(this.unitarios);
                     this.spinnerService.hide();
                 }
             },
@@ -365,13 +381,82 @@ readFeatures() {
         });
     }
 
-    public calculadora(medio) {
-        this.spinnerService.show();
-        $('#calculadora' + medio).modal('show');
-        // inicializamos desactivado el esc y el click fuera de la modal
-        $('#calculadora' + medio).modal({backdrop: 'static', keyboard: false});
-        this.spinnerService.hide();
-        this.medio = medio;
+
+
+createRangeHumanos(unitarios){
+  let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords3;
+  let cantidad = this.datosPlayaRelacionada.relatedRecords4;
+
+  this.calculoTotalHumanosP = [];
+  this.calculoTotalHumanos = [];
+  let  calcHumanos = {
+    periodos:[],
+    totaljefep:0,
+    totalsocp: 0,
+    totalsocembp: 0,
+    totalsocperp: 0,
+    costetotalp: 0,
+  };
+  let costeTotales = {
+    totaljefe:0,
+    totalsoc: 0,
+    totalsocemb: 0,
+    totalsocper: 0,
+    costetotal: 0
+  }
+  for (let i = 0; i < playasRelacionadas.length; i++) {
+    if(playasRelacionadas[i].attributes.nivel !='B'){
+
+    calcHumanos.periodos = playasRelacionadas[i].attributes;
+    var fecha2 = moment(new Date(playasRelacionadas[i].attributes.fecha_inicio),'YYYY-DD-MMM');
+    var fecha1 = moment(new Date(playasRelacionadas[i].attributes.fecha_fin),'YYYY-DD-MMM').add(1,'day');//sumanos un dias para realizar el calculo de la totalidad de dias
+    var totaldias:number = fecha1.diff(fecha2, 'days');
+
+    var hora_inicio = moment(new Date(playasRelacionadas[i].attributes.hora_inicio),'hh:mm');
+    var hora_fin = moment(new Date(playasRelacionadas[i].attributes.hora_fin),'hh:mm');//sumanos un dias para realizar el calculo de la totalidad de dias
+    var totalhorasms:number = hora_fin.diff(hora_inicio);
+    var totalhoras:number = moment.duration(totalhorasms).asHours();
+    var cantidadmediosHumanos = cantidad.filter(h => h.attributes.grado === playasRelacionadas[i].attributes.nivel);
+    calcHumanos.totaljefep = parseFloat(unitarios.jefe_turno_pvp) * totaldias * totalhoras * cantidadmediosHumanos[0].attributes.jefes_turno;
+    calcHumanos.totalsocp = parseFloat(unitarios.socorrista_pvp) * totaldias * totalhoras * this.calculoTotalSocorristas(cantidad);
+    calcHumanos.totalsocembp = parseFloat(unitarios.socorrista_embarcacion_pvp) * totaldias * totalhoras * cantidadmediosHumanos[0].attributes.socorristas_embarcacion;
+    calcHumanos.totalsocperp = parseFloat(unitarios.socorrista_embarcacion_per_pvp) * totaldias * totalhoras * cantidadmediosHumanos[0].attributes.socorristas_embarcacion_per;
+    calcHumanos.costetotalp = calcHumanos.totaljefep + calcHumanos.totalsocp + calcHumanos.totalsocembp + calcHumanos.totalsocperp;
+    let copia = Object.assign({} , calcHumanos);
+    this.calculoTotalHumanosP.push(copia);
+    costeTotales.totaljefe += calcHumanos.totaljefep;
+    costeTotales.totalsoc += calcHumanos.totalsocp;
+    costeTotales.totalsocemb+= calcHumanos.totalsocembp;
+    costeTotales.totalsocper+= calcHumanos.totalsocperp;
+  }
+}
+  costeTotales.costetotal= costeTotales.totaljefe + costeTotales.totalsoc + costeTotales.totalsocemb + costeTotales.totalsocper;
+  this.calculoTotalHumanos.push(costeTotales);
+
+}
+calculoTotalSocorristas(data){
+  let total: number = 0;
+  for (let y = 0; y < data.length; y++) {
+
+    if(data[y].attributes.grado !=='B' ){
+      total +=  data[y].attributes.socorristas_acuatico + data[y].attributes.socorristas_apie + data[y].attributes.socorristas_polivalentes + data[y].attributes.socorristas_torre;
+    }
+  }
+
+  return total;
+}
+
+calculadora(medio) {
+  this.spinnerService.show();
+  if(medio ==='humanos'){
+    this.loadUnitPrice();
+  }
+  $('#calculadora' + medio).modal('show');
+  // inicializamos desactivado el esc y el click fuera de la modal
+  $('#calculadora' + medio).modal({backdrop: 'static', keyboard: false});
+  this.spinnerService.hide();
+  this.medio = medio;
+
     }
 
     public codMunicipio(datosPlaya) {
@@ -502,15 +587,16 @@ public updateGenerico(data, tabla, mode){
       (result: any) => {
         if (!result.error) {
           this.spinnerService.hide();
-          if(this.estado === false){
+
             Swal.fire({
               type: 'success',
               title: 'Exito',
               text: 'la actualización ha sido correcta',
               footer: ''
             });
-            this.estado = true;
-          }
+
+
+
           //bajamos todas las ventanas modales abiertas
           $('#' + this.options).modal('hide');
           $('#configuracion').modal('hide');
@@ -589,7 +675,9 @@ public updateHorarios(){
   let pHorariosAdd = {
       attributes: {
         hora_inicio:'',
-        hora_fin:''
+        hora_fin:'',
+        ultimo_cambio : '',
+        ultimo_editor: ''
       },
   };
   bucleHorarios.push(this.formHorarios.value);
@@ -598,6 +686,8 @@ public updateHorarios(){
           pHorariosAdd.attributes = x;
             pHorariosAdd.attributes.hora_inicio = moment(new Date(x.hora_inicio)).subtract(1,'hours').format('YYYY-MM-DD HH:mm:ss');
             pHorariosAdd.attributes.hora_fin = moment(new Date(x.hora_fin)).subtract(1,'hours').format('YYYY-MM-DD HH:mm:ss');
+            pHorariosAdd.attributes.ultimo_cambio = this.toDateFormat(true);
+            pHorariosAdd.attributes.ultimo_editor = this.currentUser.username;
         //copiamos el objeto
         let horariosCopia = Object.assign({} , pHorariosAdd);
          pHorarios.push(horariosCopia);

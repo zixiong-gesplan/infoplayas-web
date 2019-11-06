@@ -13,7 +13,7 @@
 <section id="shop" class="paddingtopbottom100px">
   <div class="container">
     <div class="section-title text-center">
-        <h2 class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: {{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="Añada los precios unitarios" (click)="loadUnitPrice()"></i></h2>
+        <h2 class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: {{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="Añada los precios unitarios" (click)="openConfiguration()"></i></h2>
     </div>
 
     <p-table *ngFor="let playa of datosPlaya.features">
@@ -52,7 +52,7 @@
 <!--security Details End-->
 
 <!-- Modal medio humanos-->
-<div class="modal fade" tabindex="-1" role="dialog" id="humanos">
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" id="humanos">
   <div class="modal-dialog modal-dialog-main modal-dialog-centered" role="document">
     <div class="modal-content">
       <form [formGroup]="formMediosHumanos" (ngSubmit)="updateMediosHumanos()">
@@ -67,7 +67,7 @@
 
       </div>
       <div class="modal-body">
-        <!-- <h4 [hidden]="peligrosa" class="centrar text-color-grey-646464 font-weight-700">Medios Humanos <i class="fa fa-calculator pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo humano" (click)="calculadora('humanos')"></i></h4> -->
+      <h4 [hidden]="peligrosa" class="centrar text-color-grey-646464 font-weight-700">Medios Humanos <i class="fa fa-calculator pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo humano" (click)="calculadora('humanos')"></i></h4>
         <p-table [formGroup]="gradoP"   *ngFor="let gradoP of t.controls; let i=index;">
           <ng-template pTemplate="header" *ngIf="gradoP.value.grado!=='B'">
             <tr>
@@ -90,8 +90,8 @@
               <th class="centrar"><input type="number"  formControlName="socorristas_torre"  class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_polivalentes"   class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_acuatico" class="form-control  inputCustom" min="0" placeholder="0"></th>
-              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion"  class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_apie"  class="form-control  inputCustom" min="0" placeholder="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion"  class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion_per" class="form-control  inputCustom" min="0" placeholder="0"></th>
 
             </tr>
@@ -371,55 +371,101 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
           <h5 class="modal-title text-center">Calculadora de medios -{{medio | titlecase}}</h5>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="jefatura">Jefura (Precio por hora(€))</label>
-            <input type="number" class="form-control  inputCustomCal"  id="jefatura" value="0">
-          </div>
-          <div class="form-group">
-            <label for="socorrista">Socorrista (Precio por hora(€))</label>
-            <input type="number" class="form-control  inputCustomCal" id="socorrista" value="0">
-          </div>
-          <div class="form-group">
-            <label for="sembarcación">Socorrista embarcación (Precio por hora(€))</label>
-            <input type="number" class="form-control  inputCustomCal" id="sembarcación" value="0">
-          </div>
-          <div class="form-group">
-            <label for="sper">Socorristas embarcación con PER (Precio por hora(€))</label>
-            <input type="number" class="form-control  inputCustomCal" id="sper" value="0">
-          </div>
-          <!-- <button type="submit" class="btn btn-default">Submit</button> -->
 
-        <p-table>
-          <ng-template pTemplate="header" >
+        <div class="row align-items-center">
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+            <div class="form-group ">
+              <label for="jefatura">Jefatura de playa (Precio por hora(€))</label>
+              <input type="number" class="form-control inputCustomCal"  id="jefatura" value="{{unitarios.jefe_turno_pvp}}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="socorrista">Socorrista (Precio por hora(€))</label>
+              <input type="number" class="form-control  inputCustomCal" id="socorrista" value="{{unitarios.socorrista_pvp}}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="sembarcación">Socorrista embarcación (Precio por hora(€))</label>
+              <input type="number" class="form-control  inputCustomCal" id="sembarcación" value="{{unitarios.socorrista_embarcacion_pvp}}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="sper">Socorristas embarcación con PER (Precio por hora(€))</label>
+              <input type="number" class="form-control  inputCustomCal" id="sper" value="{{unitarios.socorrista_embarcacion_per_pvp}}" readonly>
+            </div>
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 text-center">
+            <p-table >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th colspan="5" class="centrar">
+                    <span style="color:#239906">Totales anuales medios humanos</span>
+                  </th>
+                </tr>
+                <tr>
+                  <th colspan="5" class="centrar">
+
+                    <span>Año:  {{fechaActual | date:'yyyy'}}</span>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="tamanhofont">Jefatura playa o turno </th>
+                  <th class="tamanhofont">Socorristas </th>
+                  <th class="tamanhofont">Socorrista embarcación </th>
+                  <th class="tamanhofont">Socorrista PER </th>
+                  <th class="tamanhofont"> TOTAL </th>
+                </tr>
+                <tr *ngFor="let totales of calculoTotalHumanos; let i=index;">
+                  <th class="centrar"><span>{{totales.totaljefe | currency: 'EUR' | lowercase  }}</span></th>
+                  <th class="centrar"><span>{{totales.totalsoc | currency: 'EUR' | lowercase  }}</span></th>
+                  <th class="centrar"><span>{{totales.totalsocemb | currency: 'EUR' | lowercase }}</span></th>
+                  <th class="centrar"><span>{{totales.totalsocper | currency: 'EUR' | lowercase }}</span></th>
+                 <th class="centrar"><span class="totales">{{totales.costetotal | currency: 'EUR' | lowercase }}</span></th>
+               </tr>
+               <br>
+                </ng-template >
+
+            </p-table>
+
+          </div>
+
+        </div>
+
+        <p-table *ngFor="let periodoC of calculoTotalHumanosP; let i=index;">
+          <ng-template pTemplate="header" *ngIf="periodoC.periodos.nivel !=='B'">
             <tr>
-
-              <th class="tamanhofont">Periodo</th>
-              <th class="tamanhofont">Clasificación</th>
-              <th class="tamanhofont">G. de protección</th>
-              <th class="tamanhofont">Coste total anual jefatura playa o turno</th>
-              <th class="tamanhofont">Coste total anual socorristas</th>
-              <th class="tamanhofont">Coste total anual socorrista embarcación</th>
-              <th class="tamanhofont">Coste total anual socorrista PER</th>
-              <th class="tamanhofont">Coste total anual equipo humano</th>
+              <th colspan="5" class="centrar">
+                <span *ngIf="periodoC.periodos.nivel ==='A'" style="color:#f5160f">Grado de protección Alto</span>
+                <span *ngIf="periodoC.periodos.nivel ==='M'" style="color:#239906">Grado de protección Medio</span>
+              </th>
             </tr>
             <tr>
-
-              <th class="centrar"><input type="number"  id="longitudSP" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" value="{{clasificacion}}" readonly></th>
-              <th class="centrar"><input type="text"  id="gproteccionSP" class="form-control  inputCustom tamanhofontcal" readonly value="{{grado_proteccion}}"></th>
-              <th class="centrar"><input type="number"  id="salvavidasSP" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="salvavidasSP" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
-             <th class="centrar"><input type="number"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
+              <th colspan="5" class="centrar">
+                <span *ngIf="periodoC.periodos.nivel ==='A'">Periodo: {{periodoC.periodos.fecha_inicio | date }} a {{periodoC.periodos.fecha_fin | date }}</span>
+                <span *ngIf="periodoC.periodos.nivel ==='M'">Periodo: {{periodoC.periodos.fecha_inicio | date }} a {{periodoC.periodos.fecha_fin | date }}</span>
+              </th>
+            </tr>
+            <tr>
+              <th class="tamanhofont">Coste periodo jefatura playa o turno</th>
+              <th class="tamanhofont">Coste periodo socorristas</th>
+              <th class="tamanhofont">Coste periodo socorrista embarcación</th>
+              <th class="tamanhofont">Coste periodo socorrista PER</th>
+              <th class="tamanhofont">Coste periodo equipo humano</th>
+            </tr>
+            <tr>
+              <th class="centrar"><span>{{periodoC.totaljefep | currency: 'EUR' | lowercase }}</span></th>
+              <th class="centrar"><span>{{periodoC.totalsocp | currency: 'EUR' | lowercase }}</span></th>
+              <th class="centrar"><span>{{periodoC.totalsocembp | currency: 'EUR' | lowercase }}</span></th>
+              <th class="centrar"><span>{{periodoC.totalsocperp | currency: 'EUR' | lowercase }}</span></th>
+             <th class="centrar"><span class="totales">{{periodoC.costetotalp | currency: 'EUR' | lowercase }}</span></th>
+           </tr>
+           <br>
             </ng-template >
+
         </p-table>
-        <br>
+        <!-- <br>
         <div class="modal-footer botonCentrado">
           <button type="button" class="btn btn-primary">Calcular</button>
-        </div>
-        </form>
+        </div> -->
+
       </div>
 
 

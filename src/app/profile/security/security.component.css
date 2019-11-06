@@ -29,10 +29,18 @@
   width: 100% !important;
   font-size: 1.0em !important;
   text-align: center !important;
+
+}
+.totales{
+  height: 40px !important;
+  width: 100% !important;
+  font-size: 1.1em !important;
+  text-align: center !important;
+  color: #D6072D !important;
 }
 .inputCustomCal{
   height: 30px !important;
-  width: 50% !important;
+  width: 80% !important;
 
 
 }
