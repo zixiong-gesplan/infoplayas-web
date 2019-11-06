@@ -310,6 +310,7 @@ readFeatures() {
               beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
               this.grados = beach.grados;
+              console.log(beach);
               if(beach.relatedRecords4){ this.dinamicForm(this.grados,beach.relatedRecords4 );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
@@ -405,6 +406,7 @@ readFeatures() {
   }
 
 createRangeHumanos(unitarios){
+
   let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords3;
   if(playasRelacionadas){
     let cantidad = this.datosPlayaRelacionada.relatedRecords4;
@@ -449,7 +451,6 @@ createRangeHumanos(unitarios){
           break;
         }
       }
-
       var hora_inicio = moment(new Date(playasRelacionadas[i].attributes.hora_inicio),'hh:mm');
       var hora_fin = moment(new Date(playasRelacionadas[i].attributes.hora_fin),'hh:mm');//sumanos un dias para realizar el calculo de la totalidad de dias
       var totalhorasms:number = hora_fin.diff(hora_inicio);
@@ -488,23 +489,19 @@ calculoTotalSocorristas(data){
 
 calculadora(medio) {
   this.spinnerService.show();
+  this.medio = medio;
   if(medio ==='humanos'){
     this.loadUnitPrice();
   }
-  console.log(medio);
   $('#calculadora' + medio).modal('show');
-  // inicializamos desactivado el esc y el click fuera de la modal
   $('#calculadora' + medio).modal({backdrop: 'static', keyboard: false});
   this.spinnerService.hide();
-  this.medio = medio;
 
-    }
-
+}
     public codMunicipio(datosPlaya) {
         this.codMun = this.datosPlaya.features[0].attributes.id_dgse.substring(0, 3);
         return this.codMun;
     }
-
     // 2016-06-22 19:10:25 postgres format Date type
     public toDateFormat(timePart: boolean): string {
         const date = new Date();

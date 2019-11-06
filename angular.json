@@ -34,6 +34,9 @@
               "src/assets/js/esri-custom/functions.js",
               "src/assets/js/esri-custom/globals.js",
               "src/assets/js/revolution/jquery.themepunch.tools.min.js",
+              "src/assets/js/revolution/jquery.themepunch.revolution.min.js",
+              "src/assets/js/revolution/jquery.themepunch.revolution.contdown.min.js",
+              "src/assets/js/script.js"
 
             ]
           },
