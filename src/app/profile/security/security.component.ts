@@ -355,7 +355,6 @@ readFeatures() {
         });
     }
   openConfiguration(){
-
     this.loadUnitPrice()
     $('#configuracion').modal({backdrop: 'static', keyboard: false});
     $('#configuracion').modal('show');
@@ -382,12 +381,34 @@ readFeatures() {
         });
     }
 
+  getNumWorkDays(startDate, endDate, modo) {
+    let start = moment(startDate, 'YYYY-MM-DD').startOf('day'); //Pick any format
+    let end = moment(endDate,'YYYY-MM-DD').startOf('day'); //right now (or define an end date yourself)
+    let weekdayCounter = 0;
+    let noweekdayCounter = 0;
+    while (start <= end) {
+      if (start.format('ddd') !== 'Sat' && start.format('ddd') !== 'Sun'){
+        weekdayCounter++; //add 1 to your counter if its not a weekend day
+      }else{
+          noweekdayCounter++;
+      }
+      start = moment(start, 'YYYY-MM-DD').add(1, 'days'); //increment by one day
+    }
 
+    if(modo!='FS'){
+      return weekdayCounter;
+    }
+    else{
+      return noweekdayCounter;
+    }
+
+  }
 
 createRangeHumanos(unitarios){
   let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords3;
   if(playasRelacionadas){
     let cantidad = this.datosPlayaRelacionada.relatedRecords4;
+    console.log(playasRelacionadas);
 
     this.calculoTotalHumanosP = [];
     this.calculoTotalHumanos = [];
@@ -412,8 +433,22 @@ createRangeHumanos(unitarios){
       calcHumanos.periodos = playasRelacionadas[i].attributes;
       var fecha2 = moment(new Date(playasRelacionadas[i].attributes.fecha_inicio),'YYYY-DD-MMM');
       var fecha1 = moment(new Date(playasRelacionadas[i].attributes.fecha_fin),'YYYY-DD-MMM').add(1,'day');//sumanos un dias para realizar el calculo de la totalidad de dias
-      var totaldias:number = fecha1.diff(fecha2, 'days');
-
+      var totaldias;
+      switch (playasRelacionadas[i].attributes.incluir_dias) {
+        case 'TD': {
+           totaldias = fecha1.diff(fecha2, 'days');
+          break;
+        }
+        case 'FS': {
+          totaldias = this.getNumWorkDays(new Date(playasRelacionadas[i].attributes.fecha_inicio),new Date(playasRelacionadas[i].attributes.fecha_fin),'FS');
+          break;
+        }
+        default: {
+          totaldias =  this.getNumWorkDays(new Date(playasRelacionadas[i].attributes.fecha_inicio),new Date(playasRelacionadas[i].attributes.fecha_fin),'LB');
+          break;
+        }
+      }
+      console.log(totaldias);
       var hora_inicio = moment(new Date(playasRelacionadas[i].attributes.hora_inicio),'hh:mm');
       var hora_fin = moment(new Date(playasRelacionadas[i].attributes.hora_fin),'hh:mm');//sumanos un dias para realizar el calculo de la totalidad de dias
       var totalhorasms:number = hora_fin.diff(hora_inicio);
@@ -592,16 +627,12 @@ public updateGenerico(data, tabla, mode){
       (result: any) => {
         if (!result.error) {
           this.spinnerService.hide();
-
             Swal.fire({
               type: 'success',
               title: 'Exito',
               text: 'la actualización ha sido correcta',
               footer: ''
             });
-
-
-
           //bajamos todas las ventanas modales abiertas
           $('#' + this.options).modal('hide');
           $('#configuracion').modal('hide');
@@ -665,7 +696,7 @@ private anhadir_medios(playa, option) {
       relationIds = ['1', '2', '3'];
       break;
     }
-      }
+  }
       this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token);
       this.options = option;
       this.nombre_playa = playa.attributes.nombre_municipio;
