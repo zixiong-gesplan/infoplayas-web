@@ -408,8 +408,9 @@ readFeatures() {
 createRangeHumanos(unitarios){
 
   let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords3;
-  if(playasRelacionadas){
-    let cantidad = this.datosPlayaRelacionada.relatedRecords4;
+  let cantidad = this.datosPlayaRelacionada.relatedRecords4;
+  if(playasRelacionadas && cantidad){
+
     console.log(playasRelacionadas);
 
     this.calculoTotalHumanosP = [];
