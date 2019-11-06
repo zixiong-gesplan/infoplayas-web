@@ -355,6 +355,7 @@ readFeatures() {
         });
     }
   openConfiguration(){
+
     this.loadUnitPrice()
     $('#configuracion').modal({backdrop: 'static', keyboard: false});
     $('#configuracion').modal('show');
@@ -385,53 +386,56 @@ readFeatures() {
 
 createRangeHumanos(unitarios){
   let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords3;
-  let cantidad = this.datosPlayaRelacionada.relatedRecords4;
+  if(playasRelacionadas){
+    let cantidad = this.datosPlayaRelacionada.relatedRecords4;
 
-  this.calculoTotalHumanosP = [];
-  this.calculoTotalHumanos = [];
-  let  calcHumanos = {
-    periodos:[],
-    totaljefep:0,
-    totalsocp: 0,
-    totalsocembp: 0,
-    totalsocperp: 0,
-    costetotalp: 0,
-  };
-  let costeTotales = {
-    totaljefe:0,
-    totalsoc: 0,
-    totalsocemb: 0,
-    totalsocper: 0,
-    costetotal: 0
+    this.calculoTotalHumanosP = [];
+    this.calculoTotalHumanos = [];
+    let  calcHumanos = {
+      periodos:[],
+      totaljefep:0,
+      totalsocp: 0,
+      totalsocembp: 0,
+      totalsocperp: 0,
+      costetotalp: 0,
+    };
+    let costeTotales = {
+      totaljefe:0,
+      totalsoc: 0,
+      totalsocemb: 0,
+      totalsocper: 0,
+      costetotal: 0
+    }
+    for (let i = 0; i < playasRelacionadas.length; i++) {
+      if(playasRelacionadas[i].attributes.nivel !='B'){
+
+      calcHumanos.periodos = playasRelacionadas[i].attributes;
+      var fecha2 = moment(new Date(playasRelacionadas[i].attributes.fecha_inicio),'YYYY-DD-MMM');
+      var fecha1 = moment(new Date(playasRelacionadas[i].attributes.fecha_fin),'YYYY-DD-MMM').add(1,'day');//sumanos un dias para realizar el calculo de la totalidad de dias
+      var totaldias:number = fecha1.diff(fecha2, 'days');
+
+      var hora_inicio = moment(new Date(playasRelacionadas[i].attributes.hora_inicio),'hh:mm');
+      var hora_fin = moment(new Date(playasRelacionadas[i].attributes.hora_fin),'hh:mm');//sumanos un dias para realizar el calculo de la totalidad de dias
+      var totalhorasms:number = hora_fin.diff(hora_inicio);
+      var totalhoras:number = moment.duration(totalhorasms).asHours();
+      var cantidadmediosHumanos = cantidad.filter(h => h.attributes.grado === playasRelacionadas[i].attributes.nivel);
+      calcHumanos.totaljefep = parseFloat(unitarios.jefe_turno_pvp) * totaldias * totalhoras * cantidadmediosHumanos[0].attributes.jefes_turno;
+      calcHumanos.totalsocp = parseFloat(unitarios.socorrista_pvp) * totaldias * totalhoras * this.calculoTotalSocorristas(cantidad);
+      calcHumanos.totalsocembp = parseFloat(unitarios.socorrista_embarcacion_pvp) * totaldias * totalhoras * cantidadmediosHumanos[0].attributes.socorristas_embarcacion;
+      calcHumanos.totalsocperp = parseFloat(unitarios.socorrista_embarcacion_per_pvp) * totaldias * totalhoras * cantidadmediosHumanos[0].attributes.socorristas_embarcacion_per;
+      calcHumanos.costetotalp = calcHumanos.totaljefep + calcHumanos.totalsocp + calcHumanos.totalsocembp + calcHumanos.totalsocperp;
+      let copia = Object.assign({} , calcHumanos);
+      this.calculoTotalHumanosP.push(copia);
+      costeTotales.totaljefe += calcHumanos.totaljefep;
+      costeTotales.totalsoc += calcHumanos.totalsocp;
+      costeTotales.totalsocemb+= calcHumanos.totalsocembp;
+      costeTotales.totalsocper+= calcHumanos.totalsocperp;
+    }
   }
-  for (let i = 0; i < playasRelacionadas.length; i++) {
-    if(playasRelacionadas[i].attributes.nivel !='B'){
+    costeTotales.costetotal= costeTotales.totaljefe + costeTotales.totalsoc + costeTotales.totalsocemb + costeTotales.totalsocper;
+    this.calculoTotalHumanos.push(costeTotales);
 
-    calcHumanos.periodos = playasRelacionadas[i].attributes;
-    var fecha2 = moment(new Date(playasRelacionadas[i].attributes.fecha_inicio),'YYYY-DD-MMM');
-    var fecha1 = moment(new Date(playasRelacionadas[i].attributes.fecha_fin),'YYYY-DD-MMM').add(1,'day');//sumanos un dias para realizar el calculo de la totalidad de dias
-    var totaldias:number = fecha1.diff(fecha2, 'days');
-
-    var hora_inicio = moment(new Date(playasRelacionadas[i].attributes.hora_inicio),'hh:mm');
-    var hora_fin = moment(new Date(playasRelacionadas[i].attributes.hora_fin),'hh:mm');//sumanos un dias para realizar el calculo de la totalidad de dias
-    var totalhorasms:number = hora_fin.diff(hora_inicio);
-    var totalhoras:number = moment.duration(totalhorasms).asHours();
-    var cantidadmediosHumanos = cantidad.filter(h => h.attributes.grado === playasRelacionadas[i].attributes.nivel);
-    calcHumanos.totaljefep = parseFloat(unitarios.jefe_turno_pvp) * totaldias * totalhoras * cantidadmediosHumanos[0].attributes.jefes_turno;
-    calcHumanos.totalsocp = parseFloat(unitarios.socorrista_pvp) * totaldias * totalhoras * this.calculoTotalSocorristas(cantidad);
-    calcHumanos.totalsocembp = parseFloat(unitarios.socorrista_embarcacion_pvp) * totaldias * totalhoras * cantidadmediosHumanos[0].attributes.socorristas_embarcacion;
-    calcHumanos.totalsocperp = parseFloat(unitarios.socorrista_embarcacion_per_pvp) * totaldias * totalhoras * cantidadmediosHumanos[0].attributes.socorristas_embarcacion_per;
-    calcHumanos.costetotalp = calcHumanos.totaljefep + calcHumanos.totalsocp + calcHumanos.totalsocembp + calcHumanos.totalsocperp;
-    let copia = Object.assign({} , calcHumanos);
-    this.calculoTotalHumanosP.push(copia);
-    costeTotales.totaljefe += calcHumanos.totaljefep;
-    costeTotales.totalsoc += calcHumanos.totalsocp;
-    costeTotales.totalsocemb+= calcHumanos.totalsocembp;
-    costeTotales.totalsocper+= calcHumanos.totalsocperp;
   }
-}
-  costeTotales.costetotal= costeTotales.totaljefe + costeTotales.totalsoc + costeTotales.totalsocemb + costeTotales.totalsocper;
-  this.calculoTotalHumanos.push(costeTotales);
 
 }
 calculoTotalSocorristas(data){
@@ -451,6 +455,7 @@ calculadora(medio) {
   if(medio ==='humanos'){
     this.loadUnitPrice();
   }
+  console.log(medio);
   $('#calculadora' + medio).modal('show');
   // inicializamos desactivado el esc y el click fuera de la modal
   $('#calculadora' + medio).modal({backdrop: 'static', keyboard: false});

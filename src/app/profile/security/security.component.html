@@ -693,9 +693,10 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header modal-header-custom">
+      <div class="modal-header modal-header-custom text-center">
         <h4 class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">Predicción del tiempo</h4>
         <h3 *ngIf="nombre_playa" class="modal-title  font-weight-700 padding-bottom-20 position-relative text-capitalize text-center" style="color:#FB9605">{{!nombre_playa ? 'Nombre sin asignar' : nombre_playa | titlecase}}</h3>
+        <h5> {{fechaActual | date:'dd-MM-yyyy'}}</h5>
       </div>
       <div class="modal-body text-center">
         <img class="tamanho_img text-center" src="{{urlimageweather}}{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>

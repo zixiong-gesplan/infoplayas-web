@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {BehaviorSubject, forkJoin, Subscription} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 
 @Injectable()
 export class EsriRequestService {
@@ -9,7 +10,7 @@ export class EsriRequestService {
     features$ = this.featuresSource.asObservable();
 
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private spinnerService: Ng4LoadingSpinnerService,) {
     }
 
     getEsriDataLayer(featureEndPoint: string, cWhere: string, outFields: string, geometry: boolean, token: string, order: string,
@@ -67,6 +68,7 @@ export class EsriRequestService {
     }
 
     getMultipleRelatedData(beachs: any[], relationsIds: string[], token: string) {
+        this.spinnerService.show();
         const httpRequests = [];
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
@@ -94,6 +96,7 @@ export class EsriRequestService {
                     features.push(ob);
                 });
                 this.featuresSource.next(features);
+                this.spinnerService.hide();
             }
         });
     }
