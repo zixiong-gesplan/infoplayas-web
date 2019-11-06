@@ -435,6 +435,7 @@ createRangeHumanos(unitarios){
       var fecha1 = moment(new Date(playasRelacionadas[i].attributes.fecha_fin),'YYYY-DD-MMM').add(1,'day');//sumanos un dias para realizar el calculo de la totalidad de dias
       var totaldias;
       switch (playasRelacionadas[i].attributes.incluir_dias) {
+
         case 'TD': {
            totaldias = fecha1.diff(fecha2, 'days');
           break;
@@ -448,7 +449,7 @@ createRangeHumanos(unitarios){
           break;
         }
       }
-      console.log(totaldias);
+
       var hora_inicio = moment(new Date(playasRelacionadas[i].attributes.hora_inicio),'hh:mm');
       var hora_fin = moment(new Date(playasRelacionadas[i].attributes.hora_fin),'hh:mm');//sumanos un dias para realizar el calculo de la totalidad de dias
       var totalhorasms:number = hora_fin.diff(hora_inicio);
