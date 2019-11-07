@@ -310,7 +310,7 @@ readFeatures() {
               beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
               this.grados = beach.grados;
-              console.log(beach);
+            
               if(beach.relatedRecords4){ this.dinamicForm(this.grados,beach.relatedRecords4 );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
@@ -410,9 +410,6 @@ createRangeHumanos(unitarios){
   let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords3;
   let cantidad = this.datosPlayaRelacionada.relatedRecords4;
   if(playasRelacionadas && cantidad){
-
-    console.log(playasRelacionadas);
-
     this.calculoTotalHumanosP = [];
     this.calculoTotalHumanos = [];
     let  calcHumanos = {
