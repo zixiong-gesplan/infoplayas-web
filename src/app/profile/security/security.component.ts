@@ -622,6 +622,14 @@ public updatePasiva(){
 }
 
 public updateGenerico(data, tabla, mode){
+        console.log()
+    const date = new Date(data[0].attributes.hora_inicio);
+    const now_utc =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+        date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+    console.log(now_utc);
+    data[0].attributes.hora_inicio = now_utc;
+        console.log(data);
+
   this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/'+tabla+'/applyEdits',
     data, mode, this.currentUser.token).subscribe(
       (result: any) => {
@@ -720,8 +728,8 @@ public updateHorarios(){
   bucleHorarios.forEach(r => {
           r.horariosperiodos.forEach(x =>{
           pHorariosAdd.attributes = x;
-            pHorariosAdd.attributes.hora_inicio = moment(new Date(x.hora_inicio)).subtract(1,'hours').format('YYYY-MM-DD HH:mm:ss');
-            pHorariosAdd.attributes.hora_fin = moment(new Date(x.hora_fin)).subtract(1,'hours').format('YYYY-MM-DD HH:mm:ss');
+            pHorariosAdd.attributes.hora_inicio = moment(new Date(x.hora_inicio)).format('YYYY-MM-DD HH:mm:ss');
+            pHorariosAdd.attributes.hora_fin = moment(new Date(x.hora_fin)).format('YYYY-MM-DD HH:mm:ss');
             pHorariosAdd.attributes.ultimo_cambio = this.toDateFormat(true);
             pHorariosAdd.attributes.ultimo_editor = this.currentUser.username;
         //copiamos el objeto
