@@ -1,4 +1,4 @@
-<ng4-loading-spinner></ng4-loading-spinner>
+<ng4-loading-spinner [timeout]="10000" [threshold]="500"></ng4-loading-spinner>
 <section class="blog-header blog-page-padding-top" data-parallax="scroll" data-image-src="assets/images/play.jpg"
          style="background-image: url('assets/images/play.jpg'); background-size: cover; background-position: center center;">
   <div class="container">
@@ -13,7 +13,7 @@
 <section id="shop" class="paddingtopbottom100px">
   <div class="container">
     <div class="section-title text-center">
-        <h2 class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: {{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="Añada los precios unitarios" (click)="loadUnitPrice()"></i></h2>
+        <h2 class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: {{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="Añada los precios unitarios" (click)="openConfiguration()"></i></h2>
     </div>
 
     <p-table *ngFor="let playa of datosPlaya.features">
@@ -52,32 +52,31 @@
 <!--security Details End-->
 
 <!-- Modal medio humanos-->
-<div class="modal fade" tabindex="-1" role="dialog" id="humanos">
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" id="humanos">
   <div class="modal-dialog modal-dialog-main modal-dialog-centered" role="document">
     <div class="modal-content">
       <form [formGroup]="formMediosHumanos" (ngSubmit)="updateMediosHumanos()">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" (click)="default()">&times;</span></button>
-        <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" >&times;</span></button>
+        <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}  </h4>
           <div class="container">
             <div class="row">
+            <h5 class="text-center">Longitud de la playa: {{longitudPlaya}} mts</h5>
             </div>
           </div>
-          </h4>
+
       </div>
       <div class="modal-body">
-        <!-- <h4 [hidden]="peligrosa" class="centrar text-color-grey-646464 font-weight-700">Medios Humanos <i class="fa fa-calculator pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo humano" (click)="calculadora('humanos')"></i></h4> -->
+      <h4 [hidden]="peligrosa" class="centrar text-color-grey-646464 font-weight-700">Medios Humanos <i class="fa fa-calculator pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo humano" (click)="calculadora('humanos')"></i></h4>
         <p-table [formGroup]="gradoP"   *ngFor="let gradoP of t.controls; let i=index;">
           <ng-template pTemplate="header" *ngIf="gradoP.value.grado!=='B'">
             <tr>
-              <th colspan="8" class="centrar">
+              <th colspan="7" class="centrar">
                 <span *ngIf="gradoP.value.grado==='A'" style="color:#f5160f">Grado de protección Alto</span>
                 <span *ngIf="gradoP.value.grado==='M'" style="color:#239906">Grado de protección Medio</span>
               </th>
             </tr>
             <tr>
-
-              <th class="tamanhofont">Longitud</th>
               <th class="tamanhofont">Jefatura de playa o turno</th>
               <th class="tamanhofont">Socorrista en torre o silla de vigilancia</th>
               <th class="tamanhofont">Socorrista de actividades acuáticas y vigilancia a pie de agua</th>
@@ -86,15 +85,13 @@
               <th class="tamanhofont">Socorrista embarcación</th>
               <th class="tamanhofont">Socorrista embarcación con PER</th>
             </tr>
-            <tr >
-
-              <th class="centrar"><input type="number"  id="longitud" class="form-control  inputCustom" readonly></th>
+            <tr>
               <th class="centrar"><input type="number"  formControlName="jefes_turno"  class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_torre"  class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_polivalentes"   class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_acuatico" class="form-control  inputCustom" min="0" placeholder="0"></th>
-              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion"  class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_apie"  class="form-control  inputCustom" min="0" placeholder="0"></th>
+              <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion"  class="form-control  inputCustom" min="0" placeholder="0"></th>
               <th class="centrar"><input type="number"  formControlName="socorristas_embarcacion_per" class="form-control  inputCustom" min="0" placeholder="0"></th>
 
             </tr>
@@ -114,9 +111,8 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="materiales">
   <div class="modal-dialog modal-dialog-main modal-dialog-centered" role="document">
     <div class="modal-content">
-    <form [formGroup]="formMediosMateriales" (ngSubmit)="updateMediosMateriales()">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" (click)="default()">&times;</span></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
       </div>
   <div class="modal-body">
@@ -134,50 +130,53 @@ c) De zona segura (...)
 (...)
 3. Sin perjuicio de las futuras modificaciones del Anexo III, los Planes de Seguridad y Salvamento podrán contemplar otras banderas complementarias, en tanto no sustituyan a las generales y su significado figure de manera comprensiva en la cartelería y, al menos, en los idiomas español e inglés, así como un tercer idioma a determinar en el citado Plan de Seguridad y Salvamento.">
 Medios Materiales - Banderas y Cartelerías <i class="fa fa-calculator  pointer" style="font-size:20px !important;" aria-hidden="true" title="Valoración economica del equipo material" (click)="calculadora('materiales')"></i></h4>
+
+<form [formGroup]="formBanderas">
 <p-table>
 <ng-template pTemplate="header" >
     <tr>
-
       <th class="tamanhofont">Nº de Accesos</th>
       <th class="tamanhofont">Nº de Banderas</th>
       <th class="tamanhofont">Nº de Mástiles</th>
       <th class="tamanhofont">Nº de Carteles</th>
-      <th class="tamanhofont">Observaciones</th>
-
+      <th class="tamanhofont">Nº Banderas complementarias</th>
     </tr>
     <tr>
-
-      <th class="centrar"><input type="number"  formControlName="nacceso" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  formControlName="nbanderas" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  formControlName="nmastiles" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  formControlName="ncarteles" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><textarea class="form-control" rows="3" formControlName="observacionesBC" placeholder="Observaciones"></textarea></th>
+      <th class="centrar"><input type="number"  formControlName="accesos" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="banderas" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="mastiles" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="carteles" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="banderas_comp" class="form-control  inputCustom" min="0" placeholder="0"></th>
     </tr>
     </ng-template >
 </p-table>
-
+</form>
 <br>
  <h4 class="centrar text-color-grey-646464 font-weight-700" title="Anexo IV.II.A: Grado de Protección Bajo:(…). En todo caso, se dotará a las playas sin vigilancia con un grado de protección bajo, de elementos de seguridad pasiva como aros salvavidas y carretes, entre otros">
-                                                                  Medios Materiales - Seguridad Pasiva</h4>
+                                                            Medios Materiales - Seguridad Pasiva</h4>
+<form [formGroup]="formPasiva">
 <p-table >
   <ng-template pTemplate="header" >
     <tr>
 
       <th class="tamanhofont">Nº de Aros Salvavidas</th>
       <th class="tamanhofont">Nº de Carreteles / Malacate</th>
-      <th class="tamanhofont">Observaciones</th>
+
     </tr>
     <tr>
-      <th class="centrar"><input type="number"  formControlName="salvavidas" class="form-control  inputCustom" placeholder="0" ></th>
-      <th class="centrar"><input type="number"  formControlName="carretel" class="form-control  inputCustom" placeholder="0" ></th>
-      <th class="centrar"><textarea class="form-control" rows="3" formControlName="observacionesSP"></textarea></th>
+      <th class="centrar"><input type="number"  formControlName="carretes"  class="form-control  inputCustom" placeholder="0" ></th>
+      <th class="centrar"><input type="number"  formControlName="salvavidas"  class="form-control  inputCustom" placeholder="0" ></th>
+
     </ng-template >
 </p-table>
+</form>
 <br >
 <h4 class="centrar text-color-grey-646464 font-weight-700" title="Las Playas y ZBM con Grado de Protección Moderado y Alto deberán disponer de torres o sillas de vigilancia, de acuerdo a lo establecido en el Anexo IV. II. B y C del Decreto 116/2018.
 Anexo IV.II.3. Torre o silla de vigilancia:
 'Se situará al menos a no más de 20 metros de la pleamar recomendándose la instalación de una por cada 400 metros de playa, con un área de responsabilidad de 200 metros a cada lado.
 Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Además dispondrá de juego de banderas y un soporte para su izado hasta una altura mínima de 3 metros. Como equipamiento mínimo de las torres o sillas o vigilancia deberán disponer de un botiquín portátil y un desfibrilador semiautomático (DESA) por cada dos sillas o torres de vigilancia a excepción de playas donde sólo haya una, que dispondrá de tal equipamiento'. (*) El equipamiento de vigilancia, salvamento y megafonía se analiza más adelante.">Medios  - Torre o Silla de Vigilancia</h4>
+
+<form [formGroup]="formTorres">
 <p-table>
   <ng-template pTemplate="header" >
     <tr>
@@ -190,29 +189,25 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     </tr>
     <tr>
 
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="torres" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="botiquines" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="desfibriladores" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="banderas" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="sistemas_izado" class="form-control  inputCustom" min="0" placeholder="0"></th>
     </ng-template >
 </p-table>
+</form>
 <br>
 
 
 <h4 class="centrar text-color-grey-646464 font-weight-700" >Medios Materiales - Balizamiento</h4>
+<form [formGroup]="formBalizamiento">
 <p-table>
   <ng-template pTemplate="header">
     <tr>
-
-      <th colspan="3" class="tamanhofont">Balizamiento de Zonas de Baño</th>
-      <th colspan="4" class="tamanhofont">Balizamiento de Canales de Lanzamiento o Varada</th>
-      <th rowspan="2" class="tamanhofont">Observaciones</th>
+      <th colspan="4" class="tamanhofont">Balizamiento de Zonas de Baño / Balizamiento de Canales de Lanzamiento o Varada</th>
     </tr>
     <tr>
-      <th class="tamanhofont">Longitud cuerda (m)</th>
-      <th class="tamanhofont">Nº boyas amarillas</th>
-      <th class="tamanhofont">Nº señales prohibición</th>
       <th class="tamanhofont">Longitud cuerda (m)</th>
       <th class="tamanhofont">Nº boyas amarillas</th>
       <th class="tamanhofont">Nº boyas verdes</th>
@@ -220,22 +215,21 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     </tr>
     <tr>
 
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><input type="number"  id="jefatura" class="form-control  inputCustom" min="0" placeholder="0"></th>
-      <th class="centrar"><textarea class="form-control" rows="3" id="observacionesM"></textarea></th>
+
+      <th class="centrar"><input type="number"  formControlName="m_cuerda" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="boyas_amarillas" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="boyas_verdes" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="boyas_rojas" class="form-control  inputCustom" min="0" placeholder="0"></th>
+
 
     </ng-template >
 </p-table>
+</form>
 </div>
 <div class="modal-footer botonCentrado">
-  <button type="submit" class="btn btn-primary">Actualizar</button>
+  <button type="button" class="btn btn-primary" (click)="updateMediosMateriales()">Actualizar</button>
 </div>
-</form>
+
 </div><!-- /.modal-content -->
 
 </div><!-- /.modal-dialog -->
@@ -319,11 +313,11 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
           </p-table>
           </div>
           <div class="modal-header">
-              <h5 class="centrar text-color-grey-646464 font-weight-700" >Medios Materiales</h5>
+              <h5 class="centrar text-color-grey-646464 font-weight-700">Medios Materiales</h5>
           </div>
           <div class="modal-body">
             <p-table>
-              <ng-template pTemplate="header" >
+              <ng-template pTemplate="header">
                 <tr>
                   <th class="tamanhofont">Banderas (precio/unidad)</th>
                   <th class="tamanhofont">Mastiles (precio/unidad)</th>
@@ -374,58 +368,104 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
-          <h5 class="modal-title text-center">Calculadora de medios -{{medio | titlecase}}</h5>
+          <h5 class="modal-title text-center">Calculadora de medios - {{medio | titlecase}}</h5>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="jefatura">Jefura (Precio por hora(€))</label>
-            <input type="number" class="form-control  inputCustomCal"  id="jefatura" value="0">
-          </div>
-          <div class="form-group">
-            <label for="socorrista">Socorrista (Precio por hora(€))</label>
-            <input type="number" class="form-control  inputCustomCal" id="socorrista" value="0">
-          </div>
-          <div class="form-group">
-            <label for="sembarcación">Socorrista embarcación (Precio por hora(€))</label>
-            <input type="number" class="form-control  inputCustomCal" id="sembarcación" value="0">
-          </div>
-          <div class="form-group">
-            <label for="sper">Socorristas embarcación con PER (Precio por hora(€))</label>
-            <input type="number" class="form-control  inputCustomCal" id="sper" value="0">
-          </div>
-          <!-- <button type="submit" class="btn btn-default">Submit</button> -->
 
-        <p-table>
-          <ng-template pTemplate="header" >
+        <div class="row align-items-center">
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+            <div class="form-group ">
+              <label for="jefatura">Jefatura de playa (Precio por hora(€))</label>
+              <input type="number" class="form-control inputCustomCal"  id="jefatura" value="{{unitarios.jefe_turno_pvp}}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="socorrista">Socorrista (Precio por hora(€))</label>
+              <input type="number" class="form-control  inputCustomCal" id="socorrista" value="{{unitarios.socorrista_pvp}}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="sembarcación">Socorrista embarcación (Precio por hora(€))</label>
+              <input type="number" class="form-control  inputCustomCal" id="sembarcación" value="{{unitarios.socorrista_embarcacion_pvp}}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="sper">Socorristas embarcación con PER (Precio por hora(€))</label>
+              <input type="number" class="form-control  inputCustomCal" id="sper" value="{{unitarios.socorrista_embarcacion_per_pvp}}" readonly>
+            </div>
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 text-center">
+            <p-table >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th colspan="5" class="centrar">
+                    <span style="color:#239906">Totales anuales medios humanos</span>
+                  </th>
+                </tr>
+                <tr>
+                  <th colspan="5" class="centrar">
+
+                    <span>Año:  {{fechaActual | date:'yyyy'}}</span>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="tamanhofont">Jefatura playa o turno </th>
+                  <th class="tamanhofont">Socorristas </th>
+                  <th class="tamanhofont">Socorrista embarcación </th>
+                  <th class="tamanhofont">Socorrista PER </th>
+                  <th class="tamanhofont"> TOTAL </th>
+                </tr>
+                <tr *ngFor="let totales of calculoTotalHumanos; let i=index;">
+                  <th class="centrar"><span>{{totales.totaljefe | currency: 'EUR' | lowercase  }}</span></th>
+                  <th class="centrar"><span>{{totales.totalsoc | currency: 'EUR' | lowercase  }}</span></th>
+                  <th class="centrar"><span>{{totales.totalsocemb | currency: 'EUR' | lowercase }}</span></th>
+                  <th class="centrar"><span>{{totales.totalsocper | currency: 'EUR' | lowercase }}</span></th>
+                 <th class="centrar"><span class="totales">{{totales.costetotal | currency: 'EUR' | lowercase }}</span></th>
+               </tr>
+               <br>
+                </ng-template >
+
+            </p-table>
+
+          </div>
+
+        </div>
+
+        <p-table *ngFor="let periodoC of calculoTotalHumanosP; let i=index;">
+          <ng-template pTemplate="header" *ngIf="periodoC.periodos.nivel !=='B'">
             <tr>
-
-              <th class="tamanhofont">Periodo</th>
-              <th class="tamanhofont">Clasificación</th>
-              <th class="tamanhofont">G. de protección</th>
-              <th class="tamanhofont">Coste total anual jefatura playa o turno</th>
-              <th class="tamanhofont">Coste total anual socorristas</th>
-              <th class="tamanhofont">Coste total anual socorrista embarcación</th>
-              <th class="tamanhofont">Coste total anual socorrista PER</th>
-              <th class="tamanhofont">Coste total anual equipo humano</th>
+              <th colspan="5" class="centrar">
+                <span *ngIf="periodoC.periodos.nivel ==='A'" style="color:#f5160f">Grado de protección Alto</span>
+                <span *ngIf="periodoC.periodos.nivel ==='M'" style="color:#239906">Grado de protección Medio</span>
+              </th>
             </tr>
             <tr>
-
-              <th class="centrar"><input type="number"  id="longitudSP" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" value="{{clasificacion}}" readonly></th>
-              <th class="centrar"><input type="text"  id="gproteccionSP" class="form-control  inputCustom tamanhofontcal" readonly value="{{grado_proteccion}}"></th>
-              <th class="centrar"><input type="number"  id="salvavidasSP" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="number"  id="salvavidasSP" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="number"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
-             <th class="centrar"><input type="number"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
+              <th colspan="5" class="centrar">
+                <span *ngIf="periodoC.periodos.nivel ==='A'">Periodo: {{periodoC.periodos.fecha_inicio | date }} a {{periodoC.periodos.fecha_fin | date }}</span>
+                <span *ngIf="periodoC.periodos.nivel ==='M'">Periodo: {{periodoC.periodos.fecha_inicio | date }} a {{periodoC.periodos.fecha_fin | date }}</span>
+              </th>
+            </tr>
+            <tr>
+              <th class="tamanhofont">Coste periodo jefatura playa o turno</th>
+              <th class="tamanhofont">Coste periodo socorristas</th>
+              <th class="tamanhofont">Coste periodo socorrista embarcación</th>
+              <th class="tamanhofont">Coste periodo socorrista PER</th>
+              <th class="tamanhofont">Coste periodo equipo humano</th>
+            </tr>
+            <tr>
+              <th class="centrar"><span>{{periodoC.totaljefep | currency: 'EUR' | lowercase }}</span></th>
+              <th class="centrar"><span>{{periodoC.totalsocp | currency: 'EUR' | lowercase }}</span></th>
+              <th class="centrar"><span>{{periodoC.totalsocembp | currency: 'EUR' | lowercase }}</span></th>
+              <th class="centrar"><span>{{periodoC.totalsocperp | currency: 'EUR' | lowercase }}</span></th>
+             <th class="centrar"><span class="totales">{{periodoC.costetotalp | currency: 'EUR' | lowercase }}</span></th>
+           </tr>
+           <br>
             </ng-template >
+
         </p-table>
-        <br>
+        <!-- <br>
         <div class="modal-footer botonCentrado">
           <button type="button" class="btn btn-primary">Calcular</button>
-        </div>
-        </form>
+        </div> -->
+
       </div>
 
 
@@ -441,7 +481,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
-          <h5 class="modal-title text-center">Calculadora de medios -{{medio | titlecase}}</h5>
+          <h5 class="modal-title text-center">Calculadora de medios - {{medio | titlecase}}</h5>
       </div>
       <div class="modal-body">
         <h4 class="modal-title text-center" style="color:#8CBB28">Banderas y Cartelería.</h4>
@@ -459,49 +499,52 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th class="tamanhofont">Banderas</th>
               <th class="tamanhofont">Mastiles</th>
               <th class="tamanhofont">Carteles</th>
-              <th class="tamanhofont">BC(no sabmemos que es)</th>
+              <th class="tamanhofont">Banderas Compl.</th>
 
               <th class="tamanhofont">Banderas</th>
               <th class="tamanhofont">Mastiles</th>
               <th class="tamanhofont">Carteles</th>
-              <th class="tamanhofont">BC(no sabmemos que es)</th>
+              <th class="tamanhofont">Banderas Compl.</th>
 
               <th class="tamanhofont">Banderas</th>
               <th class="tamanhofont">Mastiles</th>
               <th class="tamanhofont">Carteles</th>
-              <th class="tamanhofont">BC(no sabmemos que es)</th>
+              <th class="tamanhofont">Banderas Compl.</th>
 
               <th class="tamanhofont">Banderas</th>
               <th class="tamanhofont">Mastiles</th>
               <th class="tamanhofont">Carteles</th>
-              <th class="tamanhofont">BC(no sabmemos que es)</th>
+              <th class="tamanhofont">Banderas Compl.</th>
 
             </tr>
           <tr>
 
 
-              <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" readonly></th>
-              <th class="centrar"><input type="text"  id="gproteccionSP" class="form-control  inputCustom tamanhofontcal" readonly ></th>
-              <th class="centrar"><input type="text"  id="salvavidasSP" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
-              <th class="centrar"><input type="text"  id="salvavidasSP" class="form-control  inputCustom" value="0" ></th>
-              <th class="centrar"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
-             <th class="centrar"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly ></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
 
-             <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" readonly></th>
-             <th class="centrar"><input type="text"  id="gproteccionSP" class="form-control  inputCustom tamanhofontcal" ></th>
-             <th class="centrar"><input type="text"  id="salvavidasSP" class="form-control  inputCustom" value="0" readonly></th>
-             <th class="centrar"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="0" readonly></th>
-             <th class="centrar"><input type="text"  id="salvavidasSP" class="form-control  inputCustom" value="0" readonly></th>
-             <th class="centrar" style="width:20% important;"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="123456,00" readonly ></th>
-
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly ></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
           </tr>
             </ng-template >
         </p-table>
         <br>
         <h4 class="modal-title text-center" style="color:#8CBB28">Seguridad Pasiva.</h4>
         <p-table>
-          <ng-template pTemplate="header" >
+          <ng-template pTemplate="header">
             <tr>
               <th colspan="2" class="tamanhofont">Numero</th>
               <th colspan="2" class="tamanhofont">PVP Unitario</th>
@@ -525,66 +568,64 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             </tr>
           <tr>
 
-              <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal"></th>
-              <th class="centrar"><input type="text"  id="gproteccionSP" class="form-control  inputCustom tamanhofontcal"></th>
-              <th class="centrar"><input type="text"  id="tramoSP" class="form-control inputCustom" ></th>
-              <th class="centrar"><input type="text"  id="longitudSP" class="form-control  inputCustom"></th>
-              <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" readonly></th>
-              <th class="centrar"><input type="text"  id="gproteccionSP" class="form-control  inputCustom tamanhofontcal" readonly ></th>
-              <th class="centrar"><input type="text"  id="tramoSP" class="form-control inputCustom"  readonly value="123456,00" ></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly ></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
           </tr>
             </ng-template >
         </p-table>
         <br>
           <h4 class="modal-title text-center" style="color:#8CBB28">Torre o silla de vigilancia - Balizamiento de Zonas de Baño Marítima</h4>
           <p-table>
-            <ng-template pTemplate="header" >
+            <ng-template pTemplate="header">
               <tr>
                 <th colspan="3" class="tamanhofont">Numero</th>
                 <th colspan="3" class="tamanhofont">PVP Unitario</th>
                 <th colspan="3" class="tamanhofont">Amortización Anual</th>
-                <th colspan="3"  class="tamanhofont">PVP €/año</th>
+                <th colspan="3" class="tamanhofont">PVP €/año</th>
                 <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
               </tr>
-
               <tr>
-
+                <th class="tamanhofont">Longitud</th>
                 <th class="tamanhofont">Boyas amarillas</th>
                 <th class="tamanhofont">Señales de prohibición</th>
-
-
+                <th class="tamanhofont">Longitud</th>
                 <th class="tamanhofont">Boyas amarillas</th>
                 <th class="tamanhofont">Señales de prohibición</th>
-
-
+                <th class="tamanhofont">Longitud</th>
                 <th class="tamanhofont">Boyas amarillas</th>
                 <th class="tamanhofont">Señales de prohibición</th>
-
-
+                <th class="tamanhofont">Longitud</th>
                 <th class="tamanhofont">Boyas amarillas</th>
                 <th class="tamanhofont">Señales de prohibición</th>
-
               </tr>
             <tr>
-
-                <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" readonly></th>
-                <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" readonly></th>
-
-
-                <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" readonly></th>
-                <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" readonly></th>
-
-
-                <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" readonly></th>
-                <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" readonly></th>
-                <th class="centrar"><input type="text"  id="tramoSP" class="form-control inputCustom"  readonly value="123456,00"></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
             </tr>
               </ng-template >
           </p-table>
           <br>
             <h4 class="modal-title text-center" style="color:#8CBB28">Balizamiento de canales de lanzamiento varada</h4>
             <p-table>
-              <ng-template pTemplate="header" >
+              <ng-template pTemplate="header">
                 <tr>
                   <th colspan="4" class="tamanhofont">Numero</th>
                   <th colspan="4" class="tamanhofont">PVP Unitario</th>
@@ -600,16 +641,19 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                   <th class="tamanhofont">Boyas rojas</th>
 
 
+                  <th class="tamanhofont">Longitud</th>
                   <th class="tamanhofont">Boyas amarillas</th>
                   <th class="tamanhofont">Boyas verdes</th>
                   <th class="tamanhofont">Boyas rojas</th>
 
 
+                  <th class="tamanhofont">Longitud</th>
                   <th class="tamanhofont">Boyas amarillas</th>
                   <th class="tamanhofont">Boyas verdes</th>
                   <th class="tamanhofont">Boyas rojas</th>
 
 
+                  <th class="tamanhofont">Longitud</th>
                   <th class="tamanhofont">Boyas amarillas</th>
                   <th class="tamanhofont">Boyas verdes</th>
                   <th class="tamanhofont">Boyas rojas</th>
@@ -617,30 +661,36 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                 </tr>
               <tr>
 
-                  <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" ></th>
-                  <th class="centrar"><input type="text"  id="gproteccionSP" class="form-control  inputCustom tamanhofontcal" ></th>
-                  <th class="centrar"><input type="text"  id="salvavidasSP" class="form-control  inputCustom" value="0" ></th>
-                  <th class="centrar"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
-                  <th class="centrar"><input type="text"  id="salvavidasSP" class="form-control  inputCustom" value="0" ></th>
-                  <th class="centrar"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
-                 <th class="centrar"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="0"></th>
+                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                 <th class="centrar"><input type="text"   class="form-control   inputCustom" readonly></th>
 
 
-                 <th class="centrar"><input type="text"  id="clasificacionSP" class="form-control  inputCustom  tamanhofontcal" value="0" ></th>
-                 <th class="centrar"><input type="text"  id="gproteccionSP" class="form-control  inputCustom tamanhofontcal" readonly value="0" ></th>
-                 <th class="centrar"><input type="text"  id="salvavidasSP" class="form-control  inputCustom" value="0" readonly></th>
-                 <th class="centrar"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="0" readonly></th>
-                 <th class="centrar"><input type="text"  id="salvavidasSP" class="form-control  inputCustom" value="0" readonly></th>
-                 <th class="centrar" style="width:20%"><input type="text"  id="carretesSP" class="form-control  inputCustom" value="123456,00" readonly ></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly ></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly ></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
 
               </tr>
                 </ng-template >
             </p-table>
 
       </div>
-      <div class="modal-footer botonCentrado">
+      <p></p>
+      <hr>
+      <!-- <div class="modal-footer botonCentrado">
         <button type="button" class="btn btn-primary">Calcular</button>
-      </div>
+      </div> -->
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -653,9 +703,10 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header modal-header-custom">
+      <div class="modal-header modal-header-custom text-center">
         <h4 class="modal-title text-color-grey-646464 font-weight-700 padding-bottom-20 position-relative text-capitalize text-center">Predicción del tiempo</h4>
         <h3 *ngIf="nombre_playa" class="modal-title  font-weight-700 padding-bottom-20 position-relative text-capitalize text-center" style="color:#FB9605">{{!nombre_playa ? 'Nombre sin asignar' : nombre_playa | titlecase}}</h3>
+        <h5> {{fechaActual | date:'dd-MM-yyyy'}}</h5>
       </div>
       <div class="modal-body text-center">
         <img class="tamanho_img text-center" src="{{urlimageweather}}{{datosclima.weather[0].icon}}.png" title="{{datosclima.weather[0].description}}"><br>
@@ -691,7 +742,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             </tr>
             <tr>
               <th scope="row">Inclinación del viento:</th>
-                <td>{{datosclima.wind.deg}}º</td>
+                <td >{{datosclima.wind.deg}}º</td>
             </tr>
           </tbody>
         </table>
