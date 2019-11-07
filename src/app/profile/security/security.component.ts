@@ -161,6 +161,7 @@ dinamicFormHorarios(periodos){
     this.g.controls = [];
       for (let i = 0; i < periodos.length; i++) {
         if(periodos[i].attributes.nivel!=='B'){
+          console.log(periodos[i].attributes);
           this.g.push(this.fb.group({
             objectid: new FormControl(periodos[i].attributes.objectid),
             hora_inicio: new FormControl(periodos[i].attributes.hora_inicio ? new Date(periodos[i].attributes.hora_inicio): null ),
@@ -310,7 +311,7 @@ readFeatures() {
               beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
               this.grados = beach.grados;
-            
+
               if(beach.relatedRecords4){ this.dinamicForm(this.grados,beach.relatedRecords4 );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
@@ -713,6 +714,7 @@ public updateHorarios(){
       },
   };
   bucleHorarios.push(this.formHorarios.value);
+  console.log(this.formHorarios.value);
   bucleHorarios.forEach(r => {
           r.horariosperiodos.forEach(x =>{
           pHorariosAdd.attributes = x;
