@@ -622,14 +622,6 @@ public updatePasiva(){
 }
 
 public updateGenerico(data, tabla, mode){
-        console.log()
-    const date = new Date(data[0].attributes.hora_inicio);
-    const now_utc =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
-        date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-    console.log(now_utc);
-    data[0].attributes.hora_inicio = now_utc;
-        console.log(data);
-
   this.service.updateEsriData(environment.infoplayas_catalogo_edicion_tablas_url + '/'+tabla+'/applyEdits',
     data, mode, this.currentUser.token).subscribe(
       (result: any) => {
@@ -718,8 +710,8 @@ public updateHorarios(){
   let bucleHorarios = [];
   let pHorariosAdd = {
       attributes: {
-        hora_inicio:'',
-        hora_fin:'',
+        hora_inicio: '',
+        hora_fin: '',
         ultimo_cambio : '',
         ultimo_editor: ''
       },
@@ -727,9 +719,11 @@ public updateHorarios(){
   bucleHorarios.push(this.formHorarios.value);
   bucleHorarios.forEach(r => {
           r.horariosperiodos.forEach(x =>{
-          pHorariosAdd.attributes = x;
-            pHorariosAdd.attributes.hora_inicio = moment(new Date(x.hora_inicio)).format('YYYY-MM-DD HH:mm:ss');
-            pHorariosAdd.attributes.hora_fin = moment(new Date(x.hora_fin)).format('YYYY-MM-DD HH:mm:ss');
+
+          const hora_inicio = this.getUTC0date(new Date(x.hora_inicio));
+          const hora_fin = this.getUTC0date(new Date(x.hora_inicio));
+            pHorariosAdd.attributes.hora_inicio = moment(hora_inicio).format('YYYY-MM-DD HH:mm:ss');
+            pHorariosAdd.attributes.hora_fin = moment(hora_fin).format('YYYY-MM-DD HH:mm:ss');
             pHorariosAdd.attributes.ultimo_cambio = this.toDateFormat(true);
             pHorariosAdd.attributes.ultimo_editor = this.currentUser.username;
         //copiamos el objeto
@@ -766,4 +760,9 @@ ngOnDestroy() {
   this.subscripcionFeatures.unsubscribe();
   this.service.clearfeaturesSource();
   }
+
+    private getUTC0date(date: Date) {
+        return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+            date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+    }
 }
