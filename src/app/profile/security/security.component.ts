@@ -710,8 +710,8 @@ public updateHorarios(){
   let bucleHorarios = [];
   let pHorariosAdd = {
       attributes: {
-        hora_inicio: '',
-        hora_fin: '',
+        hora_inicio: 0,
+        hora_fin: 0,
         ultimo_cambio : '',
         ultimo_editor: ''
       },
@@ -719,11 +719,9 @@ public updateHorarios(){
   bucleHorarios.push(this.formHorarios.value);
   bucleHorarios.forEach(r => {
           r.horariosperiodos.forEach(x =>{
-
-          const hora_inicio = this.getUTC0date(new Date(x.hora_inicio));
-          const hora_fin = this.getUTC0date(new Date(x.hora_inicio));
-            pHorariosAdd.attributes.hora_inicio = moment(hora_inicio).format('YYYY-MM-DD HH:mm:ss');
-            pHorariosAdd.attributes.hora_fin = moment(hora_fin).format('YYYY-MM-DD HH:mm:ss');
+          pHorariosAdd.attributes = x;
+            pHorariosAdd.attributes.hora_inicio = this.getUTC0date(x.hora_inicio);
+            pHorariosAdd.attributes.hora_fin = this.getUTC0date(x.hora_fin);
             pHorariosAdd.attributes.ultimo_cambio = this.toDateFormat(true);
             pHorariosAdd.attributes.ultimo_editor = this.currentUser.username;
         //copiamos el objeto
@@ -761,7 +759,8 @@ ngOnDestroy() {
   this.service.clearfeaturesSource();
   }
 
-    private getUTC0date(date: Date) {
+    private getUTC0date(datep) {
+        const date = new Date(datep);
         return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
             date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
     }
