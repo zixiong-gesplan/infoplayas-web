@@ -164,8 +164,8 @@ Medios Materiales - Banderas y Cartelerías <i class="fa fa-calculator  pointer"
 
     </tr>
     <tr>
-      <th class="centrar"><input type="number"  formControlName="carretes"  class="form-control  inputCustom" placeholder="0" ></th>
       <th class="centrar"><input type="number"  formControlName="salvavidas"  class="form-control  inputCustom" placeholder="0" ></th>
+      <th class="centrar"><input type="number"  formControlName="carretes"  class="form-control  inputCustom" placeholder="0" ></th>
 
     </ng-template >
 </p-table>
@@ -482,13 +482,16 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
           <h5 class="modal-title text-center">Calculadora de medios - {{medio | titlecase}}</h5>
+          <div class="row">
+          <h5 class="text-center">Longitud de la playa: {{longitudPlaya}} mts</h5>
+          </div>
       </div>
       <div class="modal-body">
         <h4 class="modal-title text-center" style="color:#8CBB28">Banderas y Cartelería.</h4>
         <p-table>
           <ng-template pTemplate="header" >
             <tr>
-              <th colspan="4" class="tamanhofont">Numero</th>
+              <th colspan="4" class="tamanhofont">Número</th>
               <th colspan="4" class="tamanhofont">PVP Unitario</th>
               <th colspan="4" class="tamanhofont">Amortización Anual</th>
               <th colspan="4"  class="tamanhofont">PVP €/año</th>
@@ -546,7 +549,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <p-table>
           <ng-template pTemplate="header">
             <tr>
-              <th colspan="2" class="tamanhofont">Numero</th>
+              <th colspan="2" class="tamanhofont">Número</th>
               <th colspan="2" class="tamanhofont">PVP Unitario</th>
               <th colspan="2" class="tamanhofont">Amortización Anual</th>
               <th colspan="2"  class="tamanhofont">PVP €/año</th>
@@ -582,78 +585,84 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         </p-table>
         <br>
           <h4 class="modal-title text-center" style="color:#8CBB28">Torre o silla de vigilancia - Balizamiento de Zonas de Baño Marítima</h4>
+          <form [formGroup]="formBalizamiento">
           <p-table>
             <ng-template pTemplate="header">
               <tr>
-                <th colspan="3" class="tamanhofont">Numero</th>
+                <th colspan="3" class="tamanhofont">Número</th>
                 <th colspan="3" class="tamanhofont">PVP Unitario</th>
                 <th colspan="3" class="tamanhofont">Amortización Anual</th>
                 <th colspan="3" class="tamanhofont">PVP €/año</th>
                 <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
               </tr>
               <tr>
-                <th class="tamanhofont">Longitud</th>
+                <th class="tamanhofont">Longitud cuerda(m)</th>
                 <th class="tamanhofont">Boyas amarillas</th>
                 <th class="tamanhofont">Señales de prohibición</th>
-                <th class="tamanhofont">Longitud</th>
+
+                <th class="tamanhofont">Longitud cuerda(m)</th>
                 <th class="tamanhofont">Boyas amarillas</th>
                 <th class="tamanhofont">Señales de prohibición</th>
-                <th class="tamanhofont">Longitud</th>
+
+                <th class="tamanhofont">Longitud cuerda(m)</th>
                 <th class="tamanhofont">Boyas amarillas</th>
                 <th class="tamanhofont">Señales de prohibición</th>
-                <th class="tamanhofont">Longitud</th>
+
+                <th class="tamanhofont">Longitud cuerda(m)</th>
                 <th class="tamanhofont">Boyas amarillas</th>
                 <th class="tamanhofont">Señales de prohibición</th>
               </tr>
             <tr>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+
+                <th class="centrar"><input type="text"   formControlName="m_cuerda"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="boyas_amarillas" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="boyas_rojas" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="m_cuerda"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="boyas_amarillas" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="boyas_rojas" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="m_cuerda"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="boyas_amarillas" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="boyas_rojas" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="m_cuerda"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="boyas_amarillas" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"   formControlName="boyas_rojas" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
             </tr>
               </ng-template >
           </p-table>
+        </form>
           <br>
             <h4 class="modal-title text-center" style="color:#8CBB28">Balizamiento de canales de lanzamiento varada</h4>
             <p-table>
               <ng-template pTemplate="header">
                 <tr>
-                  <th colspan="4" class="tamanhofont">Numero</th>
-                  <th colspan="4" class="tamanhofont">PVP Unitario</th>
-                  <th colspan="4" class="tamanhofont">Amortización Anual</th>
-                  <th colspan="4"  class="tamanhofont">PVP €/año</th>
+                  <th colspan="3" class="tamanhofont">Número</th>
+                  <th colspan="3" class="tamanhofont">PVP Unitario</th>
+                  <th colspan="3" class="tamanhofont">Amortización Anual</th>
+                  <th colspan="3"  class="tamanhofont">PVP €/año</th>
                   <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
                 </tr>
 
                 <tr>
-                  <th class="tamanhofont">Longitud</th>
+
                   <th class="tamanhofont">Boyas amarillas</th>
                   <th class="tamanhofont">Boyas verdes</th>
                   <th class="tamanhofont">Boyas rojas</th>
 
 
-                  <th class="tamanhofont">Longitud</th>
+
                   <th class="tamanhofont">Boyas amarillas</th>
                   <th class="tamanhofont">Boyas verdes</th>
                   <th class="tamanhofont">Boyas rojas</th>
 
 
-                  <th class="tamanhofont">Longitud</th>
+
                   <th class="tamanhofont">Boyas amarillas</th>
                   <th class="tamanhofont">Boyas verdes</th>
                   <th class="tamanhofont">Boyas rojas</th>
 
 
-                  <th class="tamanhofont">Longitud</th>
+
                   <th class="tamanhofont">Boyas amarillas</th>
                   <th class="tamanhofont">Boyas verdes</th>
                   <th class="tamanhofont">Boyas rojas</th>
@@ -661,10 +670,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                 </tr>
               <tr>
 
-                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+
                   <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
                   <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
                  <th class="centrar"><input type="text"   class="form-control   inputCustom" readonly></th>

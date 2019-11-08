@@ -161,7 +161,6 @@ dinamicFormHorarios(periodos){
     this.g.controls = [];
       for (let i = 0; i < periodos.length; i++) {
         if(periodos[i].attributes.nivel!=='B'){
-          console.log(periodos[i].attributes);
           this.g.push(this.fb.group({
             objectid: new FormControl(periodos[i].attributes.objectid),
             hora_inicio: new FormControl(periodos[i].attributes.hora_inicio ? new Date(periodos[i].attributes.hora_inicio): null ),
@@ -315,6 +314,7 @@ readFeatures() {
               if(beach.relatedRecords4){ this.dinamicForm(this.grados,beach.relatedRecords4 );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
+              console.log(this.datosPlayaRelacionada);
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedRecords3);
 
@@ -410,7 +410,7 @@ createRangeHumanos(unitarios){
 
   let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords3;
   let cantidad = this.datosPlayaRelacionada.relatedRecords4;
-  if(playasRelacionadas && cantidad){
+  if(playasRelacionadas && cantidad.length !==0){
     this.calculoTotalHumanosP = [];
     this.calculoTotalHumanos = [];
     let  calcHumanos = {
@@ -573,6 +573,7 @@ public updateMediosMateriales(){
 }
 
 public updateBanderas(){
+
   this.formBanderas.value.objectid ? '' : this.mode ='adds';
   const banderasSend = [];
   this.objetoGenerico.attributes = this.formBanderas.value;
@@ -582,8 +583,10 @@ public updateBanderas(){
   banderasSend.push(this.objetoGenerico);
   this.updateGenerico(banderasSend, 7 ,this.mode);
 
+
 }
 public updateBalizamiento(){
+
   this.formBalizamiento.value.objectid ? '' : this.mode ='adds';
   const balizamientoSend = [];
   this.objetoGenerico.attributes = this.formBalizamiento.value;
@@ -593,9 +596,11 @@ public updateBalizamiento(){
   balizamientoSend.push(this.objetoGenerico);
   this.updateGenerico(balizamientoSend, 6 ,this.mode);
 
+
 }
 
 public updateTorres(){
+
   this.formTorres.value.objectid ? '' : this.mode ='adds';
   const torrresSend = [];
   this.objetoGenerico.attributes = this.formTorres.value;
@@ -604,6 +609,7 @@ public updateTorres(){
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   torrresSend.push(this.objetoGenerico);
   this.updateGenerico(torrresSend, 8 ,this.mode);
+
 
 }
 public updatePasiva(){
@@ -615,7 +621,6 @@ public updatePasiva(){
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   pasivaSend.push(this.objetoGenerico);
   this.updateGenerico(pasivaSend, 9 ,this.mode);
-
 }
 
 public updateGenerico(data, tabla, mode){
@@ -631,7 +636,7 @@ public updateGenerico(data, tabla, mode){
               footer: ''
             });
           //bajamos todas las ventanas modales abiertas
-          $('#' + this.options).modal('hide');
+        //  $('#' + this.options).modal('hide');
           $('#configuracion').modal('hide');
           $('#horarios').modal('hide');
         } else {

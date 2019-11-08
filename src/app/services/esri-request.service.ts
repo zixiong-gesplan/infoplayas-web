@@ -86,6 +86,7 @@ export class EsriRequestService {
         forkJoin(httpRequests).subscribe(results => {
             const features = [];
             if (results) {
+              
                 beachs.forEach(f => {
                     const ob = {objectId: f.attributes.objectid_12, centroid: f.centroid ? f.centroid : null};
                     for (let i = 0; i < httpRequests.length; i++) {
