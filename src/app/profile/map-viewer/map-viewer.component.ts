@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {loadModules} from 'esri-loader';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
@@ -34,6 +34,7 @@ declare let features: any;
     styleUrls: ['./map-viewer.component.css']
 })
 export class MapViewerComponent implements OnInit, OnDestroy {
+    @ViewChild('GradesTable') gTable: ElementRef;
     @Input() zoom: number;
     @Input() mapHeight: string;
     @Input() SelectedDate: string;
@@ -157,7 +158,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                         grap.attributes = beach.periodos;
                                         grap.popupTemplate = {
                                             title: 'Tabla de grados',
-                                            content: document.getElementById('GradesTable') ? document.getElementById('GradesTable') : ''
+                                            content: this.gTable.nativeElement ? this.gTable.nativeElement : ''
                                         };
                                         grap.popupTemplate.overwriteActions = true;
                                     }
