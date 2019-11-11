@@ -16,39 +16,33 @@ var forms = {
     "playas_catalogo_edicion_5477": [
         {
             name: "nombre_municipio",
-            label: "Nombre según el municipio",
+            label: "Nombre Catálogo General de Canarias",
             description: "Nombre de la Playa o de la Zona de Baño Marítima, a definir por el Ayuntamiento."
         },
         {
-            name: "observaciones_infoplayas",
-            label: "Observaciones",
-            editorType: "text-area",
-            maxLength: 255
-        },
-        {
             name: "id_dgse",
-            label: "ID Catalago General de Canarias",
+            label: "ID Catálago General de Canarias",
             editable: false,
             hint: "Identificador de la Dirección General de Emergencias - Identificador prioritario"
         },
         {
+            name: "nombre_pilotaje_litoral",
+            label: "Nombre Pilotaje Litoral Canario",
+            editable: false
+        },
+        {
             name: "codigo_pilotaje_litoral",
-            label: "ID pilotaje litoral canario",
+            label: "ID Pilotaje Litoral Canario",
+            editable: false
+        },
+        {
+            name: "nombre_mapama",
+            label: "Nombre Guía de Playas Nacional",
             editable: false
         },
         {
             name: "codigo_mapama",
             label: "ID Guía de Playas Nacional",
-            editable: false
-        },
-        {
-            name: "nombre_pilotaje_litoral",
-            label: "Nombre pilotaje  Litoral canario",
-            editable: false
-        },
-        {
-            name: "nombre_mapama",
-            label: "Nombre Catalago nacional",
             editable: false
         }
     ]

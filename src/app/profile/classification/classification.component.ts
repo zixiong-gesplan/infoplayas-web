@@ -35,6 +35,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     visible: string;
     beachs: any[];
     viewResults: boolean;
+    viewPopulation: boolean;
     dateForGrades: Date;
     es: any;
 
@@ -224,6 +225,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
 
     setForm(opFilter: string) {
         this.viewResults = false;
+        this.viewPopulation = opFilter === 'protection';
         this.actualForm = opFilter === 'protection' ? this.selectedLayerProtection > 0 ?
             this.listOfLayersProtection[this.selectedLayerProtection] : this.listOfLayersProtection[0] : opFilter;
     }
