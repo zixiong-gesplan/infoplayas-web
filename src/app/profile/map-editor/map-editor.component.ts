@@ -105,7 +105,7 @@ export class MapEditorComponent implements OnInit {
             {label: 'Sólo accesible con medios aéreos o marítimos', value: 'AVAM'}
         ];
         this.additionalDangersOptions = [
-            {label: 'Selecciona el tipo de riesgo', value: null},
+            {label: 'Selecciona el tipo de peligro', value: null},
             {label: 'Desniveles bruscos y taludes, tanto en la zona de la playa como en su acceso al agua', value: 'DES'},
             {label: 'Riesgo de accidentes por desprendimiento de rocas', value: 'ROC'},
             {label: 'La abundancia de maleza que pudieran provocar caída de ramas o lesiones por transitar', value: 'MAL'},
@@ -154,8 +154,6 @@ export class MapEditorComponent implements OnInit {
             actividades_deportivas: new FormControl(''),
             balizamiento: new FormControl(''),
             actividades_acotadas: new FormControl(''),
-            incidentes_observaciones: new FormControl(''),
-            deportes_observaciones: new FormControl(''),
             id_dgse: new FormControl(''),
             // campos auxiliares o calculados que no pertenecen al modelo
             val_peligrosidad: new FormControl({value: '', disabled: true}),
@@ -168,7 +166,6 @@ export class MapEditorComponent implements OnInit {
             dangers: new FormArray([]),
             cobertura_telefonica: new FormControl('', Validators.required),
             accesos: new FormControl(''),
-            observaciones: new FormControl(''),
             id_dgse: new FormControl(''),
             // campos auxiliares o calculados que no pertenecen al modelo
             val_peligrosidad: new FormControl({value: '', disabled: true}),

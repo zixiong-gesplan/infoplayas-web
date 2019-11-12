@@ -158,7 +158,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <i style="color: #1f57ff; margin-top: 2px"
-                           pTooltip="Dichos datos podrán interesarse por los Ayuntamientos a la Dirección General de Seguridad y Emergencias, cuando no se dispongan de ellos, que los facilitará de conformidad con los recabados por el CECOES-112."
+                           pTooltip="Dichos datos podrán interesarse por los Ayuntamientos a la Dirección General de Seguridad y Emergencias, cuando no se dispongan de ellos, que los facilitará de conformidad con los recabados por el CECOES-112 (anexo 1 Decreto 116/2018)."
                            class="pull-left fa fa-info-circle"></i>
                         <label class="esri-font" style="font-weight: bolder">Histórico de Incidencias
                             registradas.</label>
@@ -184,14 +184,6 @@
                             graves</a>
                         <input class="esri-feature-form__input" pInputText type="number" min="0" pattern="^[0-9]+"
                                formControlName="incidentes_mgraves"/>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="esri-font">Observaciones</label>
-                        <textarea [rows]="4" [cols]="80" class="esri-feature-form__input" pInputTextarea
-                                  type="textarea" formControlName="incidentes_observaciones"
-                                  placeholder="Requerido - Min(4) - permite texto largo"></textarea>
                     </div>
                 </div>
                 <div class="form-row">
@@ -234,15 +226,7 @@
                         </div>
                     </div>
                 </p-overlayPanel>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="esri-font">Observaciones</label>
-                        <textarea [rows]="4" [cols]="80" class="esri-feature-form__input" pInputTextarea
-                                  type="textarea" formControlName="deportes_observaciones"
-                                  placeholder="Requerido - Min(4) - permite texto largo"></textarea>
-                    </div>
-                </div>
-                <div class="form-row">
+                <div [style.padding-top.px]="op1.visible ? '115' : '0'" class="form-row">
                     <div class="form-group">
                         <label class="esri-font">Valor de peligrosidad</label>
                         <input class="esri-feature-form__input" pInputText type="number"
@@ -325,7 +309,7 @@
                             </div>
                             <div style="background-color: darkblue; color: #ffffff !important; width: 50%"
                                  class="ui-g-6">
-                                <span>Entre semana</span>
+                                <span>días laborables</span>
                             </div>
                         </div>
                     </div>
