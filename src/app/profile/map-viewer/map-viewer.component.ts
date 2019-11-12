@@ -100,7 +100,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 IdentityManager.registerToken({
                     expires: this.currentUser.expires,
                     server: environment.urlserver,
-                    ssl: false,
+                    ssl: true,
                     token: this.currentUser.token,
                     userId: this.currentUser.username
                 });
