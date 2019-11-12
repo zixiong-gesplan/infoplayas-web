@@ -503,7 +503,7 @@ export class MapEditorComponent implements OnInit {
 
                 IdentityManager.registerToken({
                     expires: this.currentUser.expires,
-                    server: environment.urlserver,
+                    server: environment.urlAgolRest,
                     ssl: true,
                     token: this.currentUser.token,
                     userId: this.currentUser.username
