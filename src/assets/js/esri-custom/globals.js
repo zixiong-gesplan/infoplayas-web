@@ -44,6 +44,11 @@ var forms = {
             name: "codigo_mapama",
             label: "ID Guía de Playas Nacional",
             editable: false
+        },
+        {
+            name: "longitud_m",
+            label: "Longitud (m)",
+            editable: true
         }
     ]
 };
