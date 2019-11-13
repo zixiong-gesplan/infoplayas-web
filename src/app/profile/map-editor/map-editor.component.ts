@@ -165,7 +165,7 @@ export class MapEditorComponent implements OnInit {
             peligros_anadidos: new FormControl(''),
             dangers: new FormArray([]),
             cobertura_telefonica: new FormControl('', Validators.required),
-            accesos: new FormControl(''),
+            accesos: new FormControl('', Validators.required),
             id_dgse: new FormControl(''),
             // campos auxiliares o calculados que no pertenecen al modelo
             val_peligrosidad: new FormControl({value: '', disabled: true}),
@@ -299,15 +299,6 @@ export class MapEditorComponent implements OnInit {
                     break;
                 }
             }
-        });
-        // cambios en validaciones en tiempo de ejecucion
-        this.formEnvironment.get('peligros_anadidos').valueChanges.subscribe(value => {
-            if (value > 0) {
-                this.formEnvironment.get('accesos').setValidators([Validators.required]);
-            } else {
-                this.formEnvironment.get('accesos').setValidators(null);
-            }
-            this.formEnvironment.get('accesos').updateValueAndValidity();
         });
     }
 
@@ -500,7 +491,7 @@ export class MapEditorComponent implements OnInit {
 
                 IdentityManager.registerToken({
                     expires: this.currentUser.expires,
-                    server: environment.urlAgolRest,
+                    server: environment.urlPortalRest,
                     ssl: true,
                     token: this.currentUser.token,
                     userId: this.currentUser.username

@@ -402,7 +402,10 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Número de peligros añadidos</label>
+                        <i style="color: #1f57ff; margin-top: 2px"
+                           pTooltip="Se atenderá a la repercusión que sobre la seguridad de personas usuarias o la respuesta a la emergencia pueden tener el entorno en cuanto a peligros añadidos, dificultades en las comunicaciones, y en accesos para el socorro, auxilio y evacuación. (anexo 1 Decreto 116/2018)."
+                           class="pull-left fa fa-info-circle"></i>
+                        <label class="esri-font">Número de peligros añadidos</label>
                         <input class="esri-feature-form__input" pInputText type="number" min="0" pattern="^[0-6]"
                                formControlName="peligros_anadidos" (change)="onChangeAdditionalDangers($event)"/>
                     </div>
@@ -453,10 +456,12 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="esri-font">Valor de peligrosidad</label>
-                        <input class="esri-feature-form__input" pInputText type="number"
-                               [value]="formEnvironment.get('peligros_anadidos').value > 0 ?
+                        <input placeholder="Complete el formulario..." class="esri-feature-form__input" pInputText
+                               type="number"
+                               [value]="formEnvironment.valid && formEnvironment.get('peligros_anadidos').value > 0 ?
                                formEnvironment.get('accesos').value === 'SDIF' ? 1 :
-                               formEnvironment.get('accesos').value === 'AVHC' ? 3 : 5 : 0" disabled="true">
+                               formEnvironment.get('accesos').value === 'AVHC' ? 3 : 5 : formEnvironment.valid ? 0 : ''"
+                               disabled="true">
                     </div>
                 </div>
                 <div class="form-row">

@@ -47,7 +47,7 @@ var forms = {
         },
         {
             name: "longitud_m",
-            label: "Longitud (m)",
+            label: "Longitud (metros)",
             editable: true
         }
     ]
