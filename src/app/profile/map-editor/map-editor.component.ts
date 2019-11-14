@@ -491,7 +491,7 @@ export class MapEditorComponent implements OnInit {
 
                 IdentityManager.registerToken({
                     expires: this.currentUser.expires,
-                    server: environment.urlPortalRest,
+                    server: environment.urlServerRest,
                     ssl: true,
                     token: this.currentUser.token,
                     userId: this.currentUser.username
