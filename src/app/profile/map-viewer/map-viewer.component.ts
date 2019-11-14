@@ -3,7 +3,6 @@ import {loadModules} from 'esri-loader';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {GradesProtectionService} from '../../services/grades-protection.service';
-import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
 import {GradeRecord} from '../../models/grade-record';
@@ -43,8 +42,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     private lastGraphicLayerId: string;
     selectedPeriodos: GradeRecord[];
 
-    constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
-                private spinnerService: Ng4LoadingSpinnerService, private service: EsriRequestService) {
+    constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService, private service: EsriRequestService) {
     }
 
     ngOnInit() {
@@ -135,7 +133,6 @@ export class MapViewerComponent implements OnInit, OnDestroy {
 
                 this.subscripcionFeatures = this.service.features$.subscribe(
                     (results: any) => {
-                        this.spinnerService.show();
                         let beachs = (results as any[]);
                         if (results.length > 0) {
                             webmap.remove((webmap.findLayerById(this.lastGraphicLayerId)));
@@ -170,11 +167,9 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                             webmap.add(layer);
                             this.lastGraphicLayerId = layer.id;
                         }
-                        this.spinnerService.hide();
                     },
                     error => {
                         console.log(error.toString());
-                        this.spinnerService.hide();
                     });
 
                 const t = this;

@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 declare var $: any;
 declare var jQuery: any;
 import * as moment from 'moment';
+import {timestamp} from 'rxjs/operators';
 declare const aytos: any;
 declare var UTMXYToLatLon: any;
 declare var RadToDeg: any;
@@ -764,6 +765,8 @@ ngOnDestroy() {
 
     private getUTC0date(datep) {
         const date = new Date(datep);
+        // solo necesitamos la parte de la hora, fijo al comienzo de la unix timestamp
+        date.setFullYear(1970, 0, 1);
         return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
             date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
     }
