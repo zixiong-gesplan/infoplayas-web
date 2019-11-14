@@ -26,6 +26,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
 
     currentUser: Auth;
     fechaActual: Date = new Date();
+    defaultWorkdayInicio: Date;
+    defaultWorkdayFin: Date;
     filtermunicipio;
     datosPlaya: any = [];
     datosPlayaRelacionada: any = [];
@@ -177,6 +179,8 @@ formhorarios(){
   this.formHorarios = this.fb.group({
     horariosperiodos: new FormArray([])
   });
+  this.defaultWorkdayInicio = new Date(70, 0, 1, 9, 0, 0);
+  this.defaultWorkdayFin = new Date(70, 0, 1, 17, 0, 0);
 }
 
 formmedioshumanos(){
@@ -720,7 +724,6 @@ public updateHorarios(){
       },
   };
   bucleHorarios.push(this.formHorarios.value);
-  console.log(this.formHorarios.value);
   bucleHorarios.forEach(r => {
           r.horariosperiodos.forEach(x =>{
           pHorariosAdd.attributes = x;

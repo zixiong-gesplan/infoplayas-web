@@ -262,8 +262,8 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                 </th>
               </tr>
             <tr>
-              <th class="centrar"><p-calendar  [readonlyInput]="true" dateFormat="HH/mm" formControlName="hora_inicio"  [timeOnly]="true" placeholder="Hora inicio"></p-calendar></th>
-              <th class="centrar"><p-calendar  [readonlyInput]="true" dateFormat="HH/mm" formControlName="hora_fin" [timeOnly]="true" placeholder="Hora fin" ></p-calendar></th>
+              <th class="centrar"><p-calendar [defaultDate]="defaultWorkdayInicio" [readonlyInput]="true" dateFormat="HH/mm" formControlName="hora_inicio"  [timeOnly]="true" placeholder="Hora inicio"></p-calendar></th>
+              <th class="centrar"><p-calendar [defaultDate]="defaultWorkdayFin" [readonlyInput]="true" dateFormat="HH/mm" formControlName="hora_fin" [timeOnly]="true" placeholder="Hora fin" ></p-calendar></th>
             </tr>
             <tr>
             <td colspan="2">
@@ -272,6 +272,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             </tr>
           </ng-template >
         </p-table>
+        <p style="font-style:italic;padding-top: 15px;font-size: small">*El huso horario mostrado es del usuario web, pero hay que introducir la jornada del socorrista en la hora de Canarias</p>
         </div>
         <div class="modal-footer botonCentrado">
           <button type="submit" class="btn btn-primary" [disabled]="desabilitar">Actualizar</button>
