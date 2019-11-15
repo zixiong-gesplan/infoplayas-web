@@ -79,7 +79,13 @@ textarea {
 .resLink {
     font-size:0;
 }
-
+/*para agrandar la ventana emergente del mapa un poco*/
+.esri-view-width-xlarge .esri-popup__main-container,
+.esri-view-width-large .esri-popup__main-container,
+.esri-view-width-medium .esri-popup__main-container
+{
+    max-height: 400px !important;
+}
 
 /*-------------------------------WIDGET DE LISTADO DE PLAYAS-------------------------------------*/
 

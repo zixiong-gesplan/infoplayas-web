@@ -1,0 +1,21 @@
+/*para las filas de la tabla de grados de la ventana emergente*/
+.gradeHigh {
+    background-color: darkblue !important;
+    color: #ffffff !important;
+}
+.gradeMiddle {
+    background-color: green !important;
+    color: #ffffff !important;
+}
+.gradeLow {
+    background-color: #6d6d6d !important;
+    color: #ffffff !important;
+}
+.includeDatesFS {
+    background-color: darkorange !important;
+    color: #ffffff !important;
+}
+.includeDatesLB {
+    background-color: darkblue !important;
+    color: #ffffff !important;
+}

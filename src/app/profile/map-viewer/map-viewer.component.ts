@@ -182,7 +182,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     , 'esri-icon-layer-list', 'Listado de playas');
 
                 viewer.when(function () {
-                    viewer.popup.autoOpenEnabled = true; // enable popups
+                    // configuro el popup
+                    viewer.popup.autoOpenEnabled = true;
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerViewerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
@@ -220,6 +221,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                             const result = response.results.find(item => item.graphic.layer.id === t.lastGraphicLayerId);
                             if (result) {
                                 t.selectedPeriodos = result.graphic.attributes;
+                                t.selectedPeriodos.sort((a, b) => (a.fecha_inicio > b.fecha_inicio) ? 1 :
+                                    (a.fecha_inicio === b.fecha_inicio) ? ((a.fecha_fin > b.fecha_fin) ? 1 : -1) : -1);
                             }
                         });
                     });
@@ -256,7 +259,23 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     }
 
     getDifference(p: GradeRecord) {
-        const duration = moment.duration(moment(p.fecha_fin).diff(p.fecha_inicio));
-        return duration.asDays();
+        return p.incluir_dias === 'TD' ? moment.duration(moment(p.fecha_fin).diff(p.fecha_inicio)).asDays() + 1 :
+            this.getNumWorkDays(p.fecha_inicio, p.fecha_fin, p.incluir_dias);
+    }
+
+    getNumWorkDays(startDate, endDate, modo) {
+        let start = moment(startDate, 'YYYY-MM-DD').startOf('day'); // Pick any format
+        const end = moment(endDate, 'YYYY-MM-DD').startOf('day'); // right now (or define an end date yourself)
+        let weekdayCounter = 0;
+        let noweekdayCounter = 0;
+        while (start <= end) {
+            if (start.format('ddd') !== 'Sat' && start.format('ddd') !== 'Sun') {
+                weekdayCounter++; // add 1 to your counter if its not a weekend day
+            } else {
+                noweekdayCounter++;
+            }
+            start = moment(start, 'YYYY-MM-DD').add(1, 'days'); // increment by one day
+        }
+        return modo !== 'FS' ? weekdayCounter : noweekdayCounter;
     }
 }
