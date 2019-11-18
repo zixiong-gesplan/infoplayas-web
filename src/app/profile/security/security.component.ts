@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, OnDestroy} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {EsriRequestService} from '../../services/esri-request.service';
@@ -6,13 +6,12 @@ import {RequestService} from '../../services/request.service';
 import {GradesProtectionService} from '../../services/grades-protection.service';
 import {environment} from '../../../environments/environment';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
-import {FormBuilder, FormControl, FormGroup, Validators, FormArray} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import Swal from 'sweetalert2';
+import * as moment from 'moment';
 
 declare var $: any;
 declare var jQuery: any;
-import * as moment from 'moment';
-import {timestamp} from 'rxjs/operators';
 declare const aytos: any;
 declare var UTMXYToLatLon: any;
 declare var RadToDeg: any;
@@ -56,6 +55,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     grados: [] = [];
     periodos: any [] = [];
     subscripcionFeatures;
+    subscripcionSmunicipality;
     calculoTotalHumanosP;
     calculoTotalHumanos;
     urlimageweather =  environment.urlimageweather;
@@ -103,18 +103,24 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 {}
 
     ngOnInit() {
-      this.loadRecords();
-      this.formhorarios();
-      this.formbanderas();
-      this.formbalizamiento();
-      this.formtorres();
-      this.formpasiva();
-      this.formunitarios();
-      this.formmedioshumanos();
-                }
+        this.loadDataForms();
+        this.readFeatures();
+        this.readSmuncipality();
+    }
 
       get f() { return this.formMediosHumanos.controls; }
       get t() { return this.f.attributes as FormArray; }
+
+    loadDataForms() {
+        this.loadRecords();
+        this.formhorarios();
+        this.formbanderas();
+        this.formbalizamiento();
+        this.formtorres();
+        this.formpasiva();
+        this.formunitarios();
+        this.formmedioshumanos();
+    }
 
       dinamicForm(grados,related){
         this.t.controls = [];
@@ -341,13 +347,13 @@ readFeatures() {
     loadRecords() {
         this.spinnerService.show();
         this.currentUser = this.authService.getCurrentUser();
-        this.filtermunicipio = 'municipio = \'' + aytos[this.currentUser.username].municipio_minus + '\'';
-        this.nomMunicipio = aytos[this.currentUser.username].municipio_minus;
+        const name = this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username;
+        this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'';
+        this.nomMunicipio = aytos[name].municipio_minus;
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
             this.filtermunicipio, '*', false, this.currentUser.token, 'clasificacion', true).subscribe(
             (result: any) => {
                 if (result) {
-                    this.readFeatures();
                     this.datosPlaya = result;
                     this.codMunicipio(this.datosPlaya);
                     this.spinnerService.hide();
@@ -361,12 +367,28 @@ readFeatures() {
             console.log('end of request');
         });
     }
-  openConfiguration(){
-    this.loadUnitPrice()
-    $('#configuracion').modal({backdrop: 'static', keyboard: false});
-    $('#configuracion').modal('show');
 
-  }
+    readSmuncipality() {
+        this.subscripcionSmunicipality = this.authService.sMunicipality$.subscribe(
+            (result: any) => {
+                if (result) {
+                    console.log('cambio de municipio');
+                    this.currentUser = this.authService.getCurrentUser();
+                    // recargamos datos y formularios
+                    this.loadDataForms();
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
+    }
+
+    openConfiguration() {
+        this.loadUnitPrice();
+        $('#configuracion').modal({backdrop: 'static', keyboard: false});
+        $('#configuracion').modal('show');
+
+    }
 
     loadUnitPrice() {
         this.spinnerService.show();
@@ -379,6 +401,8 @@ readFeatures() {
                     this.mode = 'updates';
                     this.unitarios = result.features[0].attributes;
                     this.createRangeHumanos(this.unitarios);
+                    this.spinnerService.hide();
+                } else {
                     this.spinnerService.hide();
                 }
             },
@@ -763,6 +787,7 @@ dateLessThan(from: string, to: string) {
 
 ngOnDestroy() {
   this.subscripcionFeatures.unsubscribe();
+  this.subscripcionSmunicipality.unsubscribe();
   this.service.clearfeaturesSource();
   }
 
