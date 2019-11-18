@@ -5,6 +5,7 @@ import {GradesProtectionService} from '../../services/grades-protection.service'
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 declare var Swiper: any;
 declare var $: any;
@@ -37,9 +38,12 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     viewResults: boolean;
     dateForGrades: Date;
     es: any;
+    formVacational: FormGroup;
     private subscripcionMunicipality;
+    vacacional: boolean;
 
-    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService) {
+    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
+                private fb: FormBuilder) {
         this.es = {
             firstDayOfWeek: 1,
             dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
@@ -62,12 +66,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.municipio = JSON.parse(localStorage.getItem('municipality'));
         this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
         this.DangerPopulationLevel = this.getDangerPopulationLevel();
-        this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'vacacional', 'valoracion'];
+        this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'valoracion'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
             {label: 'Entorno', icon: 'fa fa-fw fa-thermometer'},
             {label: 'Incidencias & Usos', icon: 'fa fa-fw fa-medkit'},
-            {label: 'Población', icon: 'fa fa-fw fa-bed'},
             {label: 'Valoración final', icon: 'fa fa-fw fa-calculator '}
         ];
         this.mapHeightContainer = '78vh';
@@ -81,6 +84,13 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             {field: 'grado', header: 'Grado', width: '20%', type: 'text', orderBy: 'grado'},
             {field: 'grado_valor', header: 'Nivel', width: '20%', type: 'text', orderBy: 'grado_valor'}
         ];
+        this.formVacational = this.fb.group({
+            objectid: new FormControl(''),
+            plazas: new FormControl('', Validators.required),
+            ocupacion: new FormControl('', Validators.required),
+            id_ayuntamiento: new FormControl(''),
+            on_edit: new FormControl('')
+        });
         // cargamos los ids de las playas para usarlo posteriormente al mostrar los resultados
         this.loadBeachsIds();
         this.readSmunicipality();
@@ -90,6 +100,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.subscripcionMunicipality.unsubscribe();
     }
 
+    /* cargamos los datos del formulario de alquiler vacacional, que no
+  tiene relacion con una playa sino con el municipio y se carga una vez */
     // readFeatures() {
     //     this.service.features$.subscribe(
     //         (results: any) => {
@@ -250,6 +262,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     setForm(opFilter: string) {
         this.viewResults = false;
+        this.vacacional = opFilter === 'vacacional';
         this.actualForm = opFilter === 'protection' ? this.selectedLayerProtection > 0 ?
             this.listOfLayersProtection[this.selectedLayerProtection] : this.listOfLayersProtection[0] : opFilter;
     }
@@ -267,5 +280,15 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     calculateGradesProtection() {
         this.service.getMultipleRelatedData(this.beachs, ['1', '2', '3'], this.authService.getCurrentUser().token);
         this.viewResults = true;
+        this.vacacional = false;
+    }
+
+    resetForm() {
+        this.formVacational.reset();
+    }
+
+    onSubmitVacational() {
+        // TODO
+        console.log('submit vacacional');
     }
 }

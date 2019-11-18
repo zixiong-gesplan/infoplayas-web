@@ -371,45 +371,6 @@
                 </div>
             </form>
         </div>
-        <!--        formulario de poblacion vacacional-->
-        <div [hidden]="selectForm !=='vacacional'">
-            <form class="esri-pad" [formGroup]="formVacational" (ngSubmit)="onSubmitVacational()">
-                <div class="form-row">
-                    <div class="form-group">
-                        <i style="color: #1f57ff; margin-top: 2px" pTooltip="Viviendas de alquiler vacacional no contabilizadas como plazas hoteleras y extrahoteleras."
-                           class="pull-left fa fa-info-circle"></i>
-                        <a href="http://www.gobiernodecanarias.org/cmsgobcan/export/sites/turismo/downloads/Alquiler_vacacional/Vv-Canarias-2018-Informe-Grafico.pdf#page=30"
-                           class="esri-font" target="_blank"
-                           pTooltip="En caso de no disponer de este dato pinche en este enlace">Número de plazas alquiler vacacional</a>
-                        <input class="esri-feature-form__input" pInputText type="number" min="0" pattern="^[0-9]+"
-                               formControlName="plazas"/>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <i style="color: #1f57ff; margin-top: 2px"
-                           pTooltip="Porcentaje medio de ocupación a lo largo del año..."
-                           class="pull-left fa fa-info-circle"></i>
-                        <label class="esri-font">Ocupación media</label>
-                        <input class="esri-feature-form__input" pInputText type="number" min="0" pattern="^[0-9]+"
-                               formControlName="ocupacion"/>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <button [class]="!formVacational.valid ? 'esri-button esri-button--disabled' : 'esri-button'"
-                                class="esri-button" type="submit" [disabled]="!formVacational.valid">
-                            Guardar
-                        </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), 'PENDIENTE', dateNow)"
-                               onclick="unselectFeature()"
-                               type="button"
-                               class="esri-button esri-button--secondary"
-                               value="Cancelar"/>
-                    </div>
-                </div>
-            </form>
-        </div>
         <!--        formulario de entorno fisico y condiciones del mar-->
         <div [hidden]="selectForm !=='entorno'">
             <form class="esri-pad" [formGroup]="formEnvironment" (ngSubmit)="onSubmit(formEnvironment, '3')">
