@@ -62,6 +62,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     formEnvironment: FormGroup;
     formFlow: FormGroup;
     formEvaluation: FormGroup;
+    formVacational: FormGroup;
     noDangerOptions: SelectItem[];
     wavesOptions: SelectItem[];
     accessOptions: SelectItem[];
@@ -182,6 +183,13 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         this.formEvaluation = this.fb.group({
             objectid: new FormControl(''),
             dangerLevel: new FormControl('', Validators.required)
+        });
+        this.formVacational = this.fb.group({
+            objectid: new FormControl(''),
+            plazas: new FormControl('', Validators.required),
+            ocupacion: new FormControl('', Validators.required),
+            id_ayuntamiento: new FormControl(''),
+            on_edit: new FormControl('')
         });
         this.onChanges();
         // establecemos valores en espanol para el calendario
@@ -439,9 +447,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
 
     getCompleteState(): number {
         let percentage = 0;
-        percentage += this.formIncidents.get('on_edit').value ? 30 : 0;
-        percentage += this.formEnvironment.get('on_edit').value ? 30 : 0;
-        percentage += this.periods.length > 0 ? 30 : 0;
+        percentage += this.formIncidents.get('on_edit').value ? 25 : 0;
+        percentage += this.formEnvironment.get('on_edit').value ? 25 : 0;
+        percentage += this.formVacational.get('on_edit').value ? 15 : 0;
+        percentage += this.periods.length > 0 ? 25 : 0;
         percentage += this.formEvaluation.valid ? 10 : 0;
         return percentage;
     }
@@ -919,5 +928,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
                 + '/applyEdits', 'none');
         }
+    }
+
+    onSubmitVacational() {
+        // TODO
+        console.log('submit vacacional');
     }
 }

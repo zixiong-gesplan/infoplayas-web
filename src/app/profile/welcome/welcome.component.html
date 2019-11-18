@@ -9,7 +9,7 @@
                         {{municipalityName}}</h2>
                 </div>
                 <div class="col-xs-2">
-                    <img [src]="authService.getCurrentUser().selectedusername ? 'assets/images/escudos/icon_gesplan.png' :
+                    <img pTooltip="Imágenes sin modificar creadas por José Manuel Erbez. Islas Canarias, España - Esta obra está bajo una licencia de Creative Commons - simbolosdecanarias" [src]="authService.getCurrentUser().selectedusername ? 'assets/images/escudos/icon_gesplan.png' :
                      'assets/images/escudos/' + authService.getCurrentUser().username + '.png'"
                          alt="escudo ayuntamiento" class="img-responsive" style="max-height: 100px; max-width: 90px">
                 </div>

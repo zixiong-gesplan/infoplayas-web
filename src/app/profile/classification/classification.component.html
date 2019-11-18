@@ -535,7 +535,7 @@
                 [selectForm]="actualForm"
                 [urlInfoMap]="'https://gesplangis.es/arcgis/apps/webappviewer/index.html?id=d570f2faba45491d9d0927fc29f97dc2'">
             </app-map-editor>
-            <div [hidden]="!viewPopulation" class="panel panel-default">
+            <div [hidden]="listOfLayersProtection[selectedLayerProtection] !== 'vacacional'" class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion1"
                                                href="#collapsePopulation"

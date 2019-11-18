@@ -35,7 +35,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     visible: string;
     beachs: any[];
     viewResults: boolean;
-    viewPopulation: boolean;
     dateForGrades: Date;
     es: any;
     private subscripcionMunicipality;
@@ -63,12 +62,13 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.municipio = JSON.parse(localStorage.getItem('municipality'));
         this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
         this.DangerPopulationLevel = this.getDangerPopulationLevel();
-        this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'valoracion'];
+        this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'vacacional', 'valoracion'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
             {label: 'Entorno', icon: 'fa fa-fw fa-thermometer'},
             {label: 'Incidencias & Usos', icon: 'fa fa-fw fa-medkit'},
-            {label: 'Valoración final', icon: 'fa fa-fw fa-calculator'}
+            {label: 'Población', icon: 'fa fa-fw fa-bed'},
+            {label: 'Valoración final', icon: 'fa fa-fw fa-calculator '}
         ];
         this.mapHeightContainer = '78vh';
         this.mapZoomLevel = 12;
@@ -250,7 +250,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     setForm(opFilter: string) {
         this.viewResults = false;
-        this.viewPopulation = opFilter === 'protection';
         this.actualForm = opFilter === 'protection' ? this.selectedLayerProtection > 0 ?
             this.listOfLayersProtection[this.selectedLayerProtection] : this.listOfLayersProtection[0] : opFilter;
     }
