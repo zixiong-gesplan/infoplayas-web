@@ -4,6 +4,7 @@ import {AuthGuardService} from '../../services/auth-guard.service';
 declare var Swiper: any;
 declare var $: any;
 declare var jquery: any;
+declare const aytos: any;
 
 @Component({
     selector: 'app-welcome',
@@ -11,7 +12,8 @@ declare var jquery: any;
     styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent implements OnInit, AfterViewInit {
-    escudo: string;
+
+    municipalityName: string;
 
     constructor(private authService: AuthGuardService) {
     }
@@ -21,6 +23,8 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+        this.municipalityName = this.authService.getCurrentUser().selectedusername ? this.authService.getCurrentUser().username :
+            aytos[this.authService.getCurrentUser().username].municipio_minus;
     }
 
     initSwiper() {
