@@ -3,8 +3,8 @@ export class Auth {
         public token: string,
         public expires: number,
         public username: string,
-        public persist: boolean,
-        public error: string,
+        public selectedusername: string,
+        public persist: boolean
     ) {
     }
 }

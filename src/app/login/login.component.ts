@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Auth} from '../models/auth';
 import {ActivatedRoute, Router} from '@angular/router';
 
+declare const aytos: any;
+
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -22,17 +24,17 @@ export class LoginComponent implements OnInit {
     setCurrentUser() {
         return this.route.fragment.subscribe(fragment => {
             if (fragment) {
+                if (new URLSearchParams(fragment).get('error') === 'access_denied') {
+                    this.router.navigate(['home']);
+                    return false;
+                }
                 const current_user: Auth = {
                     token: new URLSearchParams(fragment).get('access_token'),
                     expires: Number(new URLSearchParams(fragment).get('expires_in')),
                     username: new URLSearchParams(fragment).get('username'),
-                    persist: this.getBoolean(new URLSearchParams(fragment).get('persist')),
-                    error: new URLSearchParams(fragment).get('error')
+                    selectedusername: aytos[new URLSearchParams(fragment).get('username')].isSuperUser ? Object.keys(aytos)[0] : null,
+                    persist: this.getBoolean(new URLSearchParams(fragment).get('persist'))
                 };
-                if (current_user.error === 'access_denied') {
-                    this.router.navigate(['home']);
-                    return false;
-                }
                 // timestamp + expires token
                 const currentDate = new Date();
                 current_user.expires = current_user.persist ? this.DEFAULT_TIME_KEEP_SIGN_IN
