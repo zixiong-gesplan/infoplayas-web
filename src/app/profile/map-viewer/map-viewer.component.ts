@@ -39,6 +39,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     @Input() SelectedDate: string;
     private currentUser: Auth;
     private subscripcionFeatures;
+    private subscripcionMunicipality;
     private lastGraphicLayerId: string;
     selectedPeriodos: GradeRecord[];
 
@@ -63,6 +64,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscripcionFeatures.unsubscribe();
+        this.subscripcionMunicipality.unsubscribe();
         this.service.clearfeaturesSource();
     }
 
@@ -100,8 +102,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     server: environment.urlServerRest,
                     ssl: true,
                     token: this.currentUser.token,
-                    userId: this.currentUser.username
-                });
+                    userId: this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username
+            });
                 // then we load a web map from an id
                 const webmap = new WebMap({
                     portalItem: {
@@ -130,7 +132,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     height: '32px',
                     yoffset: '-18px'
                 };
-
+                // cambiamos la capa grafica en funcion de los cambios de las entidades desde los formularios de clasificacion
                 this.subscripcionFeatures = this.service.features$.subscribe(
                     (results: any) => {
                         let beachs = (results as any[]);
@@ -143,12 +145,17 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                 && x.relatedRecords3.length > 0);
                             beachs.forEach(beach => {
                                 // si se ha seleccionado una fecha entonces los periodos se filtraran por esa fecha para mostrar el grado
+                                const sDate = moment(this.SelectedDate, 'YYYY-MM-DD').startOf('day');
+                                const incDias = sDate.format('ddd') !== 'Sat' && sDate.format('ddd') !== 'Sun' ? 'LB' : 'FS';
                                 beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
                                     this.SelectedDate ? beach.relatedRecords3
-                                        .filter(b => b.attributes.fecha_inicio <= new Date(this.SelectedDate)
-                                            && b.attributes.fecha_fin >= new Date(this.SelectedDate)) : beach.relatedRecords3);
+                                            .filter(b => b.attributes.fecha_inicio <= new Date(this.SelectedDate).setHours(23)
+                                                && b.attributes.fecha_fin >= new Date(this.SelectedDate).setHours(0) &&
+                                                (b.attributes.incluir_dias === incDias || b.attributes.incluir_dias === 'TD'))
+                                        : beach.relatedRecords3);
                                 if (beach.periodos.length > 0) {
-                                    beach.grado_maximo = this.SelectedDate ? beach.periodos[0].grado : this.gradeService.getMaximunGrade(beach.periodos);
+                                    beach.grado_maximo = this.SelectedDate ? beach.periodos[0].grado :
+                                        this.gradeService.getMaximunGrade(beach.periodos);
                                     beach = this.convertCentroidDataToGraphic(beach);
                                     const grap = Graphic.fromJSON(beach);
                                     if (!this.SelectedDate) {
@@ -173,7 +180,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     });
 
                 const t = this;
-                let playasLayer, municipiosLayer;
+                let playasLayer, municipiosLayer, home;
                 // Create widgets
                 const scaleBar = createScaleBar(ScaleBar, viewer);
                 const basemapToggle = createBaseMapToggle(BasemapToggle, viewer, 'streets-vector');
@@ -205,7 +212,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         const longitude = results.features[0].geometry.centroid.longitude;
                         viewer.center = [longitude, latitude];
                         // Default Home value is current extent
-                        const home = createHomeButton(Home, viewer);
+                        home = createHomeButton(Home, viewer);
                         // Add widgets to the view
                         viewer.ui.add([home, expandList], 'top-left');
                         viewer.ui.add(scaleBar, 'bottom-left');
@@ -232,7 +239,6 @@ export class MapViewerComponent implements OnInit, OnDestroy {
 
                     loadList(viewer, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas).then(function (nBeachs) {
                         // TODO
-
                     });
 
                     function onListClickHandler(event) {
@@ -251,6 +257,37 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         }
                     }
                 });
+                // recargamos el filtro de municipio y de playas cuando se selecciona un nuevo municipio desde un superusuario
+                this.subscripcionMunicipality = this.authService.sMunicipality$.subscribe(
+                    (result: any) => {
+                        if (result && municipiosLayer) {
+                            this.currentUser = this.authService.getCurrentUser();
+                            IdentityManager.credentials[0].userId = this.currentUser.selectedusername;
+                            filterMunicipios = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_mayus + '\'';
+                            municipiosLayer.definitionExpression = filterMunicipios;
+                            const filter = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_minus + '\'';
+                            playasLayer.definitionExpression = filter;
+                            loadList(viewer, playasLayer, ['nombre_municipio', 'objectid_12'], filter).then(function (nBeachs) {
+                                // TODO
+                            });
+                            municipiosLayer.queryFeatures({
+                                outFields: ['*'],
+                                where: filterMunicipios,
+                                geometry: viewer.initialExtent,
+                                returnGeometry: true
+                            }).then(function (results) {
+                                const latitude = results.features[0].geometry.centroid.latitude;
+                                const longitude = results.features[0].geometry.centroid.longitude;
+                                viewer.center = [longitude, latitude];
+                                // cambiamos el valor al nuevo municipio para el boton de home
+                                home.viewpoint.targetGeometry.latitude = latitude;
+                                home.viewpoint.targetGeometry.longitude = longitude;
+                            });
+                        }
+                    },
+                    error => {
+                        console.log(error.toString());
+                    });
             })
             .catch(err => {
                 // handle any errors

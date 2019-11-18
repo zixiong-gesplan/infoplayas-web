@@ -5,6 +5,7 @@ import {Auth} from '../models/auth';
 import {RequestService} from '../services/request.service';
 import {Municipality} from '../models/municipality';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
+import {SelectItem} from 'primeng/api';
 
 declare const aytos: any;
 
@@ -14,10 +15,17 @@ declare const aytos: any;
     styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+    municipalities: SelectItem[];
     private current_user: Auth;
 
     constructor(private service: RequestService, private authService: AuthGuardService, private spinnerService: Ng4LoadingSpinnerService,
                 public router: Router) {
+        this.municipalities = [];
+        Object.keys(aytos).forEach(key => {
+            if (!aytos[key].isSuperUser) {
+                this.municipalities.push({label: aytos[key].municipio_minus, value: key});
+            }
+        });
     }
 
     ngOnInit() {
@@ -26,6 +34,22 @@ export class ProfileComponent implements OnInit {
             this.spinnerService.show();
             this.getLastYearIstacData();
         }
+        this.readSmuncipality();
+    }
+
+    readSmuncipality() {
+        this.authService.sMunicipality$.subscribe(
+            (result: any) => {
+                if (result) {
+                    this.current_user = this.authService.getCurrentUser();
+                    // recalcular carga poblacional
+                    this.spinnerService.show();
+                    this.getLastYearIstacData();
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
     }
 
     userLogOut() {
@@ -44,6 +68,7 @@ export class ProfileComponent implements OnInit {
             },
             error => {
                 console.log(error.toString());
+                this.spinnerService.hide();
                 this.blockEditProteccionData();
             });
     }
@@ -59,6 +84,7 @@ export class ProfileComponent implements OnInit {
 
     getLastYearIstacData2(popYear: number) {
         const representation = 'MEASURE[ABSOLUTE]';
+        const name = this.current_user.selectedusername ? this.current_user.selectedusername : this.current_user.username;
         this.service.getIstacData('ALOJATUR_PLAZAS_OCUPACION/data', representation).subscribe(
             (result: any) => {
                 if (result) {
@@ -68,31 +94,35 @@ export class ProfileComponent implements OnInit {
                     const mun: Municipality = this.authService.getMunicipality();
                     if (mun && lastYear > Number(mun.year)) {
                         this.setIstacData(lastYear);
-                    } else if (mun && this.current_user.username !== mun.user) {
+                    } else if (mun && name !== mun.user) {
                         this.setIstacData(lastYear);
                     } else if (!mun) {
                         this.setIstacData(lastYear);
+                    } else {
+                        this.spinnerService.hide();
                     }
                 }
             },
             error => {
                 console.log(error.toString());
+                this.spinnerService.hide();
                 this.blockEditProteccionData();
             });
     }
 
     setIstacData(year: number) {
+        const name = this.current_user.selectedusername ? this.current_user.selectedusername : this.current_user.username;
         const mun: Municipality = {
-            user: this.current_user.username,
+            user: name,
             year: year,
-            ayuntamiento: aytos[this.current_user.username].municipio_mayus
+            ayuntamiento: aytos[name].municipio_mayus
         };
         const representation = 'GEOGRAPHICAL[' + aytos[mun.user].istac_code + '],MEASURE[ABSOLUTE],TIME[' + year + ']';
         this.service.getIstacData('POBLACION/data', representation).subscribe(
             (result: any) => {
                 if (result) {
                     mun.population = Number(result.observation[0]);
-                    this.setBeds(mun, year, representation);
+                    this.setBeds(mun, representation);
                 }
             },
             error => {
@@ -107,12 +137,12 @@ export class ProfileComponent implements OnInit {
     ponderada de la población de ese resto de municipios de la isla en tenerife. Usaremos el mismo valor para el mismo caso de otras islas
     ya que a esos valores de municipios con poco peso turistico el valor aportado por la población turistica es despreciable respecto a los rangos del valor de
      peligrosidad por carga poblacional */
-    private setBeds(pop: Municipality, year: number, representation: string) {
+    private setBeds(pop: Municipality, representation: string) {
         this.service.getIstacData('ALOJATUR_PLAZAS_OFERTADAS/data', representation).subscribe(
             (result: any) => {
                 if (result) {
                     pop.beds = result.observation.length > 0 ? Number(result.observation[0]) : Math.trunc(5 * 0.001 * pop.population);
-                    this.setOccupation(pop, year, representation);
+                    this.setOccupation(pop, representation);
                 }
             },
             error => {
@@ -126,7 +156,7 @@ export class ProfileComponent implements OnInit {
     determinado y el producto de las plazas hoteleras y extrahoteleras, excluyendo las camas supletorias, por el número de días que ese mes
     tiene. Para los municipios de poco peso turistico se aplicara el 65 % de tasa de ocupacion debido al escaso impacto de la poblacion
     turistica en el computo total y las escalas en el valor de peligrosidad */
-    private setOccupation(pop: Municipality, year: number, representation: string) {
+    private setOccupation(pop: Municipality, representation: string) {
         this.service.getIstacData('ALOJATUR_PLAZAS_OCUPACION/data', representation).subscribe(
             (result: any) => {
                 if (result) {

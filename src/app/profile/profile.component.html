@@ -29,8 +29,27 @@
                         <li class="nav-tab">
                             <a [routerLink]="['informes']" class="font-style-1 nav-item">informes</a>
                         </li>
-                        <li class="nav-tab">
+                        <li *ngIf="!current_user.selectedusername" class="nav-tab">
                             <a [routerLink]="['contacto']" class="font-style-1 nav-item ">contáctanos</a>
+                        </li>
+                        <li *ngIf="current_user.selectedusername" class="navbar-toggle">
+                            <p-dropdown [style]="{'min-width':'140%'}" [options]="municipalities" filter="true"
+                                        (onChange)="authService.updateFilterUser($event)">
+                                <ng-template let-item pTemplate="selectedItem">
+                                    <img src="assets/images/escudos/{{item.value}}.png"
+                                         onError="this.src='assets/images/escudos/icon_gesplan.png';"
+                                         style="width:16px;vertical-align:middle"/>
+                                    <span style="vertical-align:middle; margin-left: .5em">{{item.label}}</span>
+                                </ng-template>
+                                <ng-template let-mun pTemplate="item">
+                                    <div class="ui-helper-clearfix" style="position: relative;height: 35px;">
+                                        <img src="assets/images/escudos/{{mun.value}}.png"
+                                             onError="this.src='assets/images/escudos/icon_gesplan.png';"
+                                             style="width:24px;position:absolute;top:1px;left:5px"/>
+                                        <div style="font-size:14px;float:right;margin-top:4px">{{mun.label}}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
                         </li>
                         <li class="nav-tab">
                             <a [routerLink]="['/']" (click)="userLogOut()" class="font-style-1 nav-item">log out</a>
@@ -45,8 +64,8 @@
             <div id="menu_bars" class="left"><span></span> <span></span> <span></span></div>
             <nav class="side-nav side-nav-left slide-nav static-nav">
                 <a class="sidenav-logo" [routerLink]="['bienvenida']"><img
-                        src="assets/images/logos/Gobierno-color-HORIZONTAL.jpg"
-                        alt="logo"></a>
+                    src="assets/images/logos/Gobierno-color-HORIZONTAL.jpg"
+                    alt="logo"></a>
                 <div class="side-nav-inner-setting">
                     <ul class="side-nav-list font-style-1">
                         <li class="nav-item active clearfix">
@@ -100,18 +119,18 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 col-sm-12 text-center">
-<!--                    <ul class="social-icons bottom25 wow" data-wow-delay="300ms">-->
-<!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-facebook"></i> </a></li>-->
-<!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-twitter"></i> </a></li>-->
-<!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-whatsapp"></i> </a></li>-->
-<!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-google"></i> </a></li>-->
-<!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-pinterest-p"></i> </a></li>-->
-<!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-instagram"></i> </a></li>-->
-<!--                    </ul>-->
+                    <!--                    <ul class="social-icons bottom25 wow" data-wow-delay="300ms">-->
+                    <!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-facebook"></i> </a></li>-->
+                    <!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-twitter"></i> </a></li>-->
+                    <!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-whatsapp"></i> </a></li>-->
+                    <!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-google"></i> </a></li>-->
+                    <!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-pinterest-p"></i> </a></li>-->
+                    <!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-instagram"></i> </a></li>-->
+                    <!--                    </ul>-->
                     <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
-                            class="copyrights">© 2019 Gesplan S.A.</span></p>
+                        class="copyrights">© 2019 Gesplan S.A.</span></p>
                     <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
-                            class="copyrights">Área de Innovación <a href="javascript:void(0)">y Desarrollo</a> </span>
+                        class="copyrights">Área de Innovación <a href="javascript:void(0)">y Desarrollo</a> </span>
                     </p>
                 </div>
             </div>

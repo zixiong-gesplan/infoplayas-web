@@ -4,6 +4,7 @@ import {Auth} from '../models/auth';
 import {Municipality} from '../models/municipality';
 import {RequestService} from './request.service';
 import {environment} from '../../environments/environment';
+import {BehaviorSubject} from 'rxjs';
 
 declare function init_plugins();
 
@@ -11,9 +12,11 @@ declare function init_plugins();
     providedIn: 'root'
 })
 export class AuthGuardService implements CanActivate {
-
     urlAuthorize: string = environment.urlAuthorize + '?client_id=' + environment.client_id + '&response_type=token&redirect_uri='
         + environment.redirectUri;
+
+    private sMunicipalitySource = new BehaviorSubject<string>('');
+    sMunicipality$ = this.sMunicipalitySource.asObservable();
 
     constructor(private service: RequestService) {
     }
@@ -62,5 +65,16 @@ export class AuthGuardService implements CanActivate {
     public logOut() {
         sessionStorage.clear();
         localStorage.removeItem('current_user');
+    }
+
+    updateFilterUser($event) {
+        const currentUser: Auth = this.getCurrentUser();
+        currentUser.selectedusername = $event.value;
+        if (currentUser.persist) {
+            localStorage.setItem('current_user', JSON.stringify(currentUser));
+        } else {
+            sessionStorage.setItem('current_user', JSON.stringify(currentUser));
+        }
+        this.sMunicipalitySource.next($event.value);
     }
 }

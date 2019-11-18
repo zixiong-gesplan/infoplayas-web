@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AuthGuardService} from '../../services/auth-guard.service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -10,8 +11,9 @@ declare var jquery: any;
     styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent implements OnInit, AfterViewInit {
+    escudo: string;
 
-    constructor() {
+    constructor(private authService: AuthGuardService) {
     }
 
     ngAfterViewInit() {

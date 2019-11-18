@@ -3,7 +3,17 @@
          style="background-image: url('assets/images/play.jpg'); background-size: cover; background-position: center center;">
     <div class="container">
         <div class="padding-top-30 padding-bottom-70">
-            <h2 class="font-size-72px top20 bottom10 text-color-white text-center text-capitalize">Bienvenidos</h2>
+            <div class="row">
+                <div class="col-xs-4 col-xs-offset-4">
+                    <h2 class="font-size-72px top20 bottom10 text-color-white text-capitalize">
+                        Bienvenidos</h2>
+                </div>
+                <div class="col-xs-2">
+                    <img [src]="authService.getCurrentUser().selectedusername ? 'assets/images/escudos/icon_gesplan.png' :
+                     'assets/images/escudos/' + authService.getCurrentUser().username + '.png'"
+                         alt="escudo ayuntamiento" class="img-responsive" style="max-height: 100px; max-width: 90px">
+                </div>
+            </div>
         </div>
     </div>
 </section>

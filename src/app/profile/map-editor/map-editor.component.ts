@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
 import {loadModules} from 'esri-loader';
@@ -46,7 +46,7 @@ declare let unselectedMessage: any;
     templateUrl: './map-editor.component.html',
     styleUrls: ['./map-editor.component.css']
 })
-export class MapEditorComponent implements OnInit {
+export class MapEditorComponent implements OnInit, OnDestroy {
     // decoradores entrada salida
     @Output() beachId = new EventEmitter<string>();
     @Output() localName = new EventEmitter<string>();
@@ -84,6 +84,7 @@ export class MapEditorComponent implements OnInit {
     colsFlow: any;
     dateNow: Date;
     private currentUser: Auth;
+    private subscripcionMunicipality;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService) {
@@ -201,6 +202,10 @@ export class MapEditorComponent implements OnInit {
             {subfield: 'nivel', header: 'Nivel', width: '29%', type: 'text', orderBy: 'attributes.nivel'}
         ];
         this.initCalendarDates();
+    }
+
+    ngOnDestroy() {
+        this.subscripcionMunicipality.unsubscribe();
     }
 
     onChangeAdditionalDangers(e) {
@@ -494,7 +499,7 @@ export class MapEditorComponent implements OnInit {
                     server: environment.urlServerRest,
                     ssl: true,
                     token: this.currentUser.token,
-                    userId: this.currentUser.username
+                    userId: this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username
                 });
                 // then we load a web map from an id
                 const webmap = new WebMap({
@@ -510,7 +515,7 @@ export class MapEditorComponent implements OnInit {
                 });
 
                 const t = this;
-                let form, playasLayer, municipiosLayer, queryTask;
+                let form, playasLayer, municipiosLayer, queryTask, home;
                 // Create widgets
                 const scaleBar = createScaleBar(ScaleBar, view);
                 const basemapToggle = createBaseMapToggle(BasemapToggle, view, 'streets-vector');
@@ -550,7 +555,7 @@ export class MapEditorComponent implements OnInit {
                         t.centroidOption = false;
                         view.center = [longitude, latitude];
                         // Default Home value is current extent
-                        const home = createHomeButton(Home, view);
+                        home = createHomeButton(Home, view);
                         form = createForm(FeatureForm, 'form', playasLayer, forms[playasLayerId]);
                         // Add widgets to the view
                         view.ui.add([home, expandList], 'top-left');
@@ -674,6 +679,45 @@ export class MapEditorComponent implements OnInit {
                         t.spinnerService.hide();
                     });
                 };
+                // recargamos el filtro de municipio y de playas cuando se selecciona un nuevo municipio desde un superusuario
+                this.subscripcionMunicipality = this.authService.sMunicipality$.subscribe(
+                    (result: any) => {
+                        if (result && municipiosLayer) {
+                            this.currentUser = this.authService.getCurrentUser();
+                            IdentityManager.credentials[0].userId = this.currentUser.selectedusername;
+                            filterMunicipios = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_mayus + '\'';
+                            municipiosLayer.definitionExpression = filterMunicipios;
+                            let filter = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_minus + '\'';
+                            filter = playasLayer.definitionExpression.indexOf(' AND ') !== -1 ? filter +
+                                playasLayer.definitionExpression.substr(playasLayer.definitionExpression.indexOf(' AND ')) : filter;
+                            playasLayer.definitionExpression = filter;
+                            t.spinnerService.show();
+                            loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter).then(function (nBeachs) {
+                                t.nZones.emit(nBeachs);
+                                t.spinnerService.hide();
+                            });
+                            municipiosLayer.queryFeatures({
+                                outFields: ['*'],
+                                where: filterMunicipios,
+                                geometry: view.initialExtent,
+                                returnGeometry: true
+                            }).then(function (results) {
+                                const latitude = results.features[0].geometry.centroid.latitude;
+                                const longitude = results.features[0].geometry.centroid.longitude;
+                                // guardamos los datos de geometria del municipio para componentes externos
+                                t.selectLatitude = latitude;
+                                t.selectLongitude = longitude;
+                                t.centroidOption = false;
+                                view.center = [longitude, latitude];
+                                // cambiamos el valor al nuevo municipio para el boton de home
+                                home.viewpoint.targetGeometry.latitude = latitude;
+                                home.viewpoint.targetGeometry.longitude = longitude;
+                            });
+                        }
+                    },
+                    error => {
+                        console.log(error.toString());
+                    });
             })
             .catch(err => {
                 // handle any errors

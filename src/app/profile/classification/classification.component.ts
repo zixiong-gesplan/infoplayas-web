@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {Municipality} from '../../models/municipality';
 import {GradesProtectionService} from '../../services/grades-protection.service';
@@ -16,7 +16,7 @@ declare const aytos: any;
     templateUrl: './classification.component.html',
     styleUrls: ['./classification.component.css']
 })
-export class ClassificationComponent implements OnInit, AfterViewInit {
+export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy {
     itemsProtection: MenuItem[];
     beachObjectId: string;
     numberOfBeachs: number;
@@ -38,6 +38,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     viewPopulation: boolean;
     dateForGrades: Date;
     es: any;
+    private subscripcionMunicipality;
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService) {
         this.es = {
@@ -82,6 +83,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
         ];
         // cargamos los ids de las playas para usarlo posteriormente al mostrar los resultados
         this.loadBeachsIds();
+        this.readSmunicipality();
+    }
+
+    ngOnDestroy() {
+        this.subscripcionMunicipality.unsubscribe();
     }
 
     // readFeatures() {
@@ -165,12 +171,31 @@ export class ClassificationComponent implements OnInit, AfterViewInit {
     }
 
     loadBeachsIds() {
-        const filtermunicipio = 'municipio = \'' + aytos[this.authService.getCurrentUser().username].municipio_minus + '\'';
+        const current_user = this.authService.getCurrentUser();
+        const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
+        const filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'';
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filtermunicipio,
             'objectid_12', false, this.authService.getCurrentUser().token, 'objectid_12', true).subscribe(
             (result: any) => {
                 if (result.features.length > 0) {
                     this.beachs = result.features;
+                    // si es visible el mapa de resultados entonces es que se ha cambiado de municipio y hay que recalcular los grados
+                    if (this.viewResults) {
+                        this.service.getMultipleRelatedData(this.beachs, ['1', '2', '3'], current_user.token);
+                    }
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
+    }
+
+    readSmunicipality() {
+        this.subscripcionMunicipality = this.authService.sMunicipality$.subscribe(
+            (result: any) => {
+                if (result) {
+                    // recalcular el listado de playas al cambiar el municipio
+                    this.loadBeachsIds();
                 }
             },
             error => {
