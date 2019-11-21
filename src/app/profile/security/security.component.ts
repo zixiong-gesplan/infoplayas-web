@@ -709,25 +709,25 @@ public update() {
 }
 
 private anhadir_medios(playa, option) {
-  let relationIds;
-  switch (option) {
-    case 'humanos': {
-      relationIds = ['1', '2', '3', '4'];
-      break;
+    let relationIds;
+    switch (option) {
+        case 'humanos': {
+            relationIds = ['1', '2', '3', '4'];
+            break;
+        }
+        case 'materiales': {
+            this.formbanderas();
+            this.formtorres();
+            this.formpasiva();
+            this.formbalizamiento();
+            relationIds = ['1', '2', '3', '4', '5', '6', '7', '8'];
+            break;
+        }
+        default: {
+            relationIds = ['1', '3', '4'];
+            break;
+        }
     }
-    case 'materiales': {
-      this.formbanderas();
-      this.formtorres();
-      this.formpasiva();
-      this.formbalizamiento();
-      relationIds = ['1', '2', '3', '5', '6', '7','8','9'];
-      break;
-    }
-    default: {
-      relationIds = ['1', '2', '3'];
-      break;
-    }
-  }
       this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token);
       this.options = option;
       this.nombre_playa = playa.attributes.nombre_municipio;

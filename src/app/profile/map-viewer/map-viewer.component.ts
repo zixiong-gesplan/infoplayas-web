@@ -141,18 +141,18 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                             const layer = new GraphicsLayer({
                                 graphics: []
                             });
-                            beachs = [...beachs].filter(x => x.relatedRecords1.length > 0 && x.relatedRecords2.length > 0
-                                && x.relatedRecords3.length > 0);
+                            beachs = [...beachs].filter(x => x.relatedRecords1.length > 0 && x.relatedRecords3.length > 0
+                                && x.relatedRecords4.length > 0);
                             beachs.forEach(beach => {
                                 // si se ha seleccionado una fecha entonces los periodos se filtraran por esa fecha para mostrar el grado
                                 const sDate = moment(this.SelectedDate, 'YYYY-MM-DD').startOf('day');
                                 const incDias = sDate.format('ddd') !== 'Sat' && sDate.format('ddd') !== 'Sun' ? 'LB' : 'FS';
-                                beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
-                                    this.SelectedDate ? beach.relatedRecords3
+                                beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords3,
+                                    this.SelectedDate ? beach.relatedRecords4
                                             .filter(b => b.attributes.fecha_inicio <= new Date(this.SelectedDate).setHours(23)
                                                 && b.attributes.fecha_fin >= new Date(this.SelectedDate).setHours(0) &&
                                                 (b.attributes.incluir_dias === incDias || b.attributes.incluir_dias === 'TD'))
-                                        : beach.relatedRecords3);
+                                        : beach.relatedRecords4);
                                 if (beach.periodos.length > 0) {
                                     beach.grado_maximo = this.SelectedDate ? beach.periodos[0].grado :
                                         this.gradeService.getMaximunGrade(beach.periodos);
