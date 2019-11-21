@@ -19,19 +19,19 @@
     <p-table *ngFor="let playa of datosPlaya.features">
       <ng-template pTemplate="header" >
           <tr>
-              <th colspan="3" class="centrar"><span style="color:#8CBB28">IDGSE: {{playa.attributes.id_dgse}} - {{!playa.attributes.nombre_municipio ? 'Nombre sin asignar' : playa.attributes.nombre_municipio}} </span> <span class="font-style-1  blue-color">{{playa.attributes.clasificacion}} </span>
-               <i style="color:#F96054" *ngIf="playa.attributes.clasificacion==='USO PROHIBIDO'" class="fa fa-ban" aria-hidden="true" title="Playa de USO PROHIBIDO {{playa.attributes.objectid_12}}"></i>
+              <th colspan="3" class="centrar"><span style="color:#8CBB28">IDGSE: {{playa.attributes.id_dgse}} - {{!playa.attributes.nombre_municipio ? 'Nombre sin asignar' : playa.attributes.nombre_municipio}} </span> <span class="font-style-1  blue-color">{{playa.attributes.clasificacion === 'L' ? 'LIBRE' : playa.attributes.clasificacion === 'UP' ? 'USO PROHIBIDO' : 'PELIGROSA'}} </span>
+               <i style="color:#F96054" *ngIf="playa.attributes.clasificacion==='UP'" class="fa fa-ban" aria-hidden="true" title="Playa de USO PROHIBIDO {{playa.attributes.objectid}}"></i>
                <i style="color:#F96054" *ngIf="playa.attributes.clasificacion==='PENDIENTE'" class="fa fa-info" aria-hidden="true" title="Clasificación PENDIENTE"></i>
-               <i style="color:#FA924A" *ngIf="playa.attributes.clasificacion==='PELIGROSA'" class="fa fa-exclamation-triangle" aria-hidden="true" title="Playa PELIGROSA"></i>
-               <i style="color:#54A777" *ngIf="playa.attributes.clasificacion==='LIBRE'" class="fa fa-check" aria-hidden="true" title="Playa LIBRE"></i>
+               <i style="color:#FA924A" *ngIf="playa.attributes.clasificacion==='P'" class="fa fa-exclamation-triangle" aria-hidden="true" title="Playa PELIGROSA"></i>
+               <i style="color:#54A777" *ngIf="playa.attributes.clasificacion==='L'" class="fa fa-check" aria-hidden="true" title="Playa LIBRE"></i>
               </th>
           </tr>
-          <tr *ngIf="playa.attributes.clasificacion!='USO PROHIBIDO'">
+          <tr *ngIf="playa.attributes.clasificacion!='UP'">
               <th class="centrar">Añadir medios humanos <i *ngIf="playa.attributes.clasificacion!='PENDIENTE'" class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'humanos')" title="Añadir medios humano y medios materiales"></i><br></th>
               <th class="centrar">Añadir medios materiales <i *ngIf="playa.attributes.clasificacion!='PENDIENTE'" class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'materiales')" title="Añadir medios humano y medios materiales"></i> <br></th>
               <th class="centrar">Horarios salvamento <i *ngIf="playa.attributes.clasificacion!='PENDIENTE'" class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'horarios')" title="Añadir medios humano y medios materiales"></i> <br></th>
           </tr>
-          <!-- <tr *ngIf="playa.attributes.clasificacion==='USO PROHIBIDO'">
+          <!-- <tr *ngIf="playa.attributes.clasificacion==='UP'">
               <th colspan="3" class="centrar">Añadir Medios <i class="fa fa-plus-circle pointer" aria-hidden="true" (click)="anhadir_medios(playa,'bajo')" title="Añadir medios humano y medios materiales"></i><br><span style="font-size: 0.7em;">(Sin servicio de salvamento)</span>
               </th>
             </tr> -->

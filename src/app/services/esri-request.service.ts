@@ -10,7 +10,7 @@ export class EsriRequestService {
     features$ = this.featuresSource.asObservable();
 
 
-    constructor(private http: HttpClient, private spinnerService: Ng4LoadingSpinnerService,) {
+    constructor(private http: HttpClient, private spinnerService: Ng4LoadingSpinnerService) {
     }
 
     getEsriDataLayer(featureEndPoint: string, cWhere: string, outFields: string, geometry: boolean, token: string, order: string,
@@ -75,7 +75,7 @@ export class EsriRequestService {
 
         relationsIds.forEach(value => {
             const params = new HttpParams().set('token', token).append('f', 'json')
-                .append('objectIds', beachs.map(a => a.attributes.objectid_12).join(','))
+                .append('objectIds', beachs.map(a => a.attributes.objectid).join(','))
                 .append('outFields', '*')
                 .append('returnGeometry', 'false')
                 .append('relationshipId', value);
@@ -86,12 +86,12 @@ export class EsriRequestService {
         forkJoin(httpRequests).subscribe(results => {
             const features = [];
             if (results) {
-              
+
                 beachs.forEach(f => {
-                    const ob = {objectId: f.attributes.objectid_12, centroid: f.centroid ? f.centroid : null};
+                    const ob = {objectId: f.attributes.objectid, centroid: f.centroid ? f.centroid : null};
                     for (let i = 0; i < httpRequests.length; i++) {
-                        ob['relatedRecords' + relationsIds[i]] = results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid_12)
-                            ? results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid_12).relatedRecords : [];
+                        ob['relatedRecords' + relationsIds[i]] = results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid)
+                            ? results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid).relatedRecords : [];
                         delete ob['relatedRecords' + relationsIds[i]].objectId;
                     }
                     features.push(ob);

@@ -187,7 +187,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
         const filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'';
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filtermunicipio,
-            'objectid_12', false, this.authService.getCurrentUser().token, 'objectid_12', true).subscribe(
+            'objectid', false, this.authService.getCurrentUser().token, 'objectid', true).subscribe(
             (result: any) => {
                 if (result.features.length > 0) {
                     this.beachs = result.features;
@@ -248,7 +248,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     receiveLastChangeTracking($event: Date) {
         this.lastChangeOnselectedBeach = $event;
-        if ($event || this.localClasification === 'USO PROHIBIDO') {
+        if ($event || this.localClasification === 'UP') {
             $('#resultsFilterMenu').show();
         } else {
             $('#resultsFilterMenu').hide();

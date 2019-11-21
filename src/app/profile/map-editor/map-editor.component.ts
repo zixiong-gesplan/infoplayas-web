@@ -90,8 +90,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService) {
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
-            {label: 'Peligrosa o susceptible de producir daño', value: 'PELIGROSA'},
-            {label: 'Playa libre para el baño', value: 'LIBRE'}
+            {label: 'Peligrosa o susceptible de producir daño', value: 'P'},
+            {label: 'Playa libre para el baño', value: 'L'}
         ];
         this.wavesOptions = [
             {label: 'Selecciona estado de la mar', value: null},
@@ -450,7 +450,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         const updateObj = new Array();
         updateObj.push({
             attributes: {
-                objectid_12: this.selectedId,
+                objectid: this.selectedId,
                 clasificacion: clasification,
                 ultimo_cambio: updateTime ? moment().format('YYYY-MM-DD HH:mm:ss') : null,
                 ultimo_editor: updateTime ? this.currentUser.username : null
@@ -572,7 +572,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     listNode = $('#ulPlaya')[0];
                     listNode.addEventListener('click', onListClickHandler);
 
-                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas).then(function (nBeachs) {
+                    loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (nBeachs) {
                         t.nZones.emit(nBeachs);
                         t.spinnerService.hide();
                     });
@@ -591,9 +591,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             }
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
-                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
-                            t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 2);
-                            t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 3);
+                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
+                            t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
+                            t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 1);
                             // guardamos los datos de geometria de la playa para componentes externos
                             t.coordX = output.coordX;
                             t.coordY = output.coordY;
@@ -627,9 +627,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                     }
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
-                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 1, t.formIncidents);
-                                    t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 2);
-                                    t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 3);
+                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
+                                    t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
+                                    t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 1);
                                     // guardamos los datos de geometria de la playa para componentes externos
                                     t.coordX = output.coordX;
                                     t.coordY = output.coordY;
@@ -644,7 +644,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 });
 
                 $('#btnSave')[0].onclick = function () {
-                    if (submitForm(playasLayer, form, ['nombre_municipio', 'objectid_12'], filterPlayas)) {
+                    if (submitForm(playasLayer, form, ['nombre_municipio', 'objectid'], filterPlayas)) {
                         Swal.fire({
                             type: 'success',
                             title: 'Éxito',
@@ -674,7 +674,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                 : filter;
                     playasLayer.definitionExpression = filter;
                     t.spinnerService.show();
-                    loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter).then(function (nBeachs) {
+                    loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
                         t.nZones.emit(nBeachs);
                         t.spinnerService.hide();
                     });
@@ -692,7 +692,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                 playasLayer.definitionExpression.substr(playasLayer.definitionExpression.indexOf(' AND ')) : filter;
                             playasLayer.definitionExpression = filter;
                             t.spinnerService.show();
-                            loadList(view, playasLayer, ['nombre_municipio', 'objectid_12'], filter).then(function (nBeachs) {
+                            loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
                                 t.nZones.emit(nBeachs);
                                 t.spinnerService.hide();
                             });
@@ -808,7 +808,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             this.updateClasification('PENDIENTE', false);
                             break;
                         case 'prohibido':
-                            this.updateClasification('PROHIBIDO', true);
+                            this.updateClasification('UP', true);
                             break;
                         case 'update_dangers':
                             this.updateAdditionalDangers();
@@ -892,7 +892,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
 
     private updateAdditionalDangers() {
         // borramos los registros que han sido eliminados por el usuario
-        if (this.deleteAddtionalDangers.length > 0) {
+        if (this.deleteAddtionalDangers && this.deleteAddtionalDangers.length > 0) {
             this.removeRelatedData(this.deleteAddtionalDangers, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
                 + '/deleteFeatures', false);
         }

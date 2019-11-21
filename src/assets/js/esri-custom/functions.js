@@ -19,7 +19,7 @@ function selectFeature(view, objectId, featureLayer, form) {
         };
         highlight = layerView.highlight(editFeature);
         resize(1);
-        outPutData.beachId = editFeature.attributes.objectid_12;
+        outPutData.beachId = editFeature.attributes.objectid;
         outPutData.id_dgse = editFeature.attributes.id_dgse;
         outPutData.localName = editFeature.attributes.nombre_municipio ? editFeature.attributes.nombre_municipio : 'Nombre por definir';
         outPutData.clasificacion = editFeature.attributes.clasificacion;
@@ -62,9 +62,9 @@ function submitForm(featureLayer, form, fields, filter) {
 
 function applyAttributeUpdates(params, featureLayer, view, fields, filter) {
   $('#btnSave')[0].style.cursor = "progress";
-  if(checkNull(params.updateFeatures[0].attributes.nombre_municipio) === false) {
-    params.updateFeatures[0].attributes.nombre_municipio = params.updateFeatures[0].attributes.nombre_municipio.toUpperCase();
-  };
+  // if(checkNull(params.updateFeatures[0].attributes.nombre_municipio) === false) {
+  //   params.updateFeatures[0].attributes.nombre_municipio = params.updateFeatures[0].attributes.nombre_municipio.toUpperCase();
+  // };
   return featureLayer.applyEdits(params).then(function(editsResult) {
     $('#btnSave')[0].style.cursor = "pointer";
     loadList(view, featureLayer, fields, filter);
@@ -147,7 +147,7 @@ function loadList(view, featureLayer, fields, filter) {
 
       li.tabIndex = 0;
       li.setAttribute("data-result-id", index);
-      li.setAttribute("oid", attributes.objectid_12);
+      li.setAttribute("oid", attributes.objectid);
       li.textContent = name;
 
       fragment.appendChild(li);

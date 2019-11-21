@@ -237,7 +237,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     listNode = $('#ulPlayaViewer')[0];
                     listNode.addEventListener('click', onListClickHandler);
 
-                    loadList(viewer, playasLayer, ['nombre_municipio', 'objectid_12'], filterPlayas).then(function (nBeachs) {
+                    loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (nBeachs) {
                         // TODO
                     });
 
@@ -267,7 +267,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                             municipiosLayer.definitionExpression = filterMunicipios;
                             const filter = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_minus + '\'';
                             playasLayer.definitionExpression = filter;
-                            loadList(viewer, playasLayer, ['nombre_municipio', 'objectid_12'], filter).then(function (nBeachs) {
+                            loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
                                 // TODO
                             });
                             municipiosLayer.queryFeatures({

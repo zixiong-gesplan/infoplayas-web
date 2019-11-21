@@ -732,7 +732,7 @@ private anhadir_medios(playa, option) {
       this.options = option;
       this.nombre_playa = playa.attributes.nombre_municipio;
       this.iddgse = playa.attributes.id_dgse;
-      this.longitudPlaya = playa.attributes.longitud_m;
+      this.longitudPlaya = playa.attributes.longitud_metros;
       this.clasificacion = playa.attributes.clasificacion;
 }
 

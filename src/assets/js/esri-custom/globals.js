@@ -31,7 +31,7 @@ var forms = {
             editable: false
         },
         {
-            name: "codigo_pilotaje_litoral",
+            name: "id_pilotaje_litoral",
             label: "ID Pilotaje Litoral Canario",
             editable: false
         },
@@ -41,12 +41,12 @@ var forms = {
             editable: false
         },
         {
-            name: "codigo_mapama",
+            name: "id_mapama",
             label: "ID Guía de Playas Nacional",
             editable: false
         },
         {
-            name: "longitud_m",
+            name: "longitud_metros",
             label: "Longitud (metros)",
             editable: true
         }
