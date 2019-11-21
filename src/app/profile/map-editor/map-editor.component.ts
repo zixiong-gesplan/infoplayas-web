@@ -52,7 +52,6 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     @Output() localName = new EventEmitter<string>();
     @Output() nZones = new EventEmitter<number>();
     @Output() clasification = new EventEmitter<string>();
-    @Output() lastChangeTracking = new EventEmitter<Date>();
     @Input() mapHeight: string;
     @Input() zoom: number;
     @Input() selectForm: string;
@@ -254,11 +253,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         this.invalidDates = [];
     }
 
-    sendMessage(id: string, name: string, clasification: string, lastChange: Date) {
+    sendMessage(id: string, name: string, clasification: string) {
         this.beachId.emit(id);
         this.localName.emit(name);
         this.clasification.emit(clasification);
-        this.lastChangeTracking.emit(lastChange);
     }
 
     getUnselectedMessage() {
@@ -434,7 +432,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     }
 
     onSubmitEvaluation() {
-        this.updateClasification(this.formEvaluation.get('dangerLevel').value, true);
+        this.updateClasification(this.formEvaluation.get('dangerLevel').value);
     }
 
     getCompleteState(): number {
@@ -446,14 +444,14 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         return percentage;
     }
 
-    private updateClasification(clasification: string, updateTime: boolean) {
+    private updateClasification(clasification: string) {
         const updateObj = new Array();
         updateObj.push({
             attributes: {
                 objectid: this.selectedId,
                 clasificacion: clasification,
-                ultimo_cambio: updateTime ? moment().format('YYYY-MM-DD HH:mm:ss') : null,
-                ultimo_editor: updateTime ? this.currentUser.username : null
+                ultimo_cambio: moment().format('YYYY-MM-DD HH:mm:ss'),
+                ultimo_editor: this.currentUser.username
             }
         });
         this.editDataLayer(updateObj, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_url + '/applyEdits');
@@ -583,10 +581,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                         const objectId = target.getAttribute('oid');
 
                         selectFeature(view, objectId, playasLayer, form).then(function (output) {
-                            t.sendMessage(output.beachId, output.localName, output.clasificacion, output.ultimo_cambio);
+                            t.sendMessage(output.beachId, output.localName, output.clasificacion);
                             t.selectedId = output.beachId;
                             t.formEvaluation.reset();
-                            if (output.clasificacion !== 'PENDIENTE') {
+                            if (output.clasificacion) {
                                 t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
                             }
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
@@ -619,10 +617,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                         if (result) {
                             selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature)
                                 .then(function (output) {
-                                    t.sendMessage(output.beachId, output.localName, output.clasificacion, output.ultimo_cambio);
+                                    t.sendMessage(output.beachId, output.localName, output.clasificacion);
                                     t.selectedId = output.beachId;
                                     t.formEvaluation.reset();
-                                    if (output.clasificacion !== 'PENDIENTE') {
+                                    if (output.clasificacion) {
                                         t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
                                     }
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
@@ -637,7 +635,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                     t.centroidOption = true;
                                 });
                         } else {
-                            t.sendMessage('noid', unselectFeature(), 'PENDIENTE', new Date());
+                            t.sendMessage('noid', unselectFeature(), null);
                             t.centroidOption = false;
                         }
                     });
@@ -664,14 +662,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 // aplicamos distintos filtros al mapa en funcion de lo que se quiera mostrar en cada apartado
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
                     let filter = 'municipio = \'' + aytos[IdentityManager.credentials[0].userId].municipio_minus + '\'';
-                    const cadMunicipioSinNombre = ' AND nombre_municipio <> \'\' AND nombre_municipio IS NOT NULL';
                     filter = event.target.dataset.filter === '.protection' ? filter +
-                        ' AND clasificacion <> \'USO PROHIBIDO\'' + cadMunicipioSinNombre
-                        : event.target.dataset.filter === '.clasification' ? filter + cadMunicipioSinNombre
-                            : event.target.dataset.filter === '.result' ? filter
-                                + ' AND ultimo_cambio IS NOT NULL AND clasificacion IS NOT NULL AND clasificacion <> \'PENDIENTE\''
-                                + cadMunicipioSinNombre + ' OR (clasificacion = \'USO PROHIBIDO\'' + cadMunicipioSinNombre + ' AND ' + filter + ')'
-                                : filter;
+                        ' AND clasificacion <> \'UP\''
+                        : event.target.dataset.filter === '.result' ? filter
+                                + ' AND clasificacion IS NOT NULL' : filter;
                     playasLayer.definitionExpression = filter;
                     t.spinnerService.show();
                     loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
@@ -805,10 +799,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     console.log(result);
                     switch (postExecute) {
                         case 'no_prohibido':
-                            this.updateClasification('PENDIENTE', false);
+                            this.updateClasification(null);
                             break;
                         case 'prohibido':
-                            this.updateClasification('UP', true);
+                            this.updateClasification('UP');
                             break;
                         case 'update_dangers':
                             this.updateAdditionalDangers();

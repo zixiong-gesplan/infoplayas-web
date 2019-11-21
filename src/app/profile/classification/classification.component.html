@@ -442,7 +442,7 @@
                 <h2
                     class="border-color-blue-3 no-margin text-color-grey ">
                     {{(localName ? localName : 'seleccione playa') }}
-                    <br> <span [hidden]="localName && localName.length > 16"
+                    <br> <span [hidden]="localName && localName.length > 23"
                                class="green-color font-style-1">Editor</span></h2>
             </div>
         </div>
@@ -536,7 +536,6 @@
                 (localName)="receiveLocalName($event)"
                 (nZones)="receiveNzones($event)"
                 (clasification)="receiveClasification($event)"
-                (lastChangeTracking)="receiveLastChangeTracking($event)"
                 [zoom]="mapZoomLevel"
                 [mapHeight]="mapHeightContainer"
                 [selectForm]="actualForm"

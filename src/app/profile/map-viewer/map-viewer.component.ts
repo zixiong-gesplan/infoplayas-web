@@ -147,12 +147,12 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                 // si se ha seleccionado una fecha entonces los periodos se filtraran por esa fecha para mostrar el grado
                                 const sDate = moment(this.SelectedDate, 'YYYY-MM-DD').startOf('day');
                                 const incDias = sDate.format('ddd') !== 'Sat' && sDate.format('ddd') !== 'Sun' ? 'LB' : 'FS';
-                                beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords3,
-                                    this.SelectedDate ? beach.relatedRecords4
+                                beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords4, beach.relatedRecords3,
+                                    this.SelectedDate ? beach.relatedRecords1
                                             .filter(b => b.attributes.fecha_inicio <= new Date(this.SelectedDate).setHours(23)
                                                 && b.attributes.fecha_fin >= new Date(this.SelectedDate).setHours(0) &&
                                                 (b.attributes.incluir_dias === incDias || b.attributes.incluir_dias === 'TD'))
-                                        : beach.relatedRecords4);
+                                        : beach.relatedRecords1);
                                 if (beach.periodos.length > 0) {
                                     beach.grado_maximo = this.SelectedDate ? beach.periodos[0].grado :
                                         this.gradeService.getMaximunGrade(beach.periodos);

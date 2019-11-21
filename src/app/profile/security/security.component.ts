@@ -311,23 +311,23 @@ readFeatures() {
 
     }
 
-        if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords2.length > 0
-          && beach.relatedRecords3.length > 0) {
+        if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords3.length > 0
+          && beach.relatedRecords4.length > 0) {
             // inicializamos desactivado el esc y el click fuera de la modal
             $('#' + this.options).modal({backdrop: 'static', keyboard: false});
             $('#' + this.options).modal('show');
-              beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords1, beach.relatedRecords2,
-              beach.relatedRecords3);
+              beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords4, beach.relatedRecords3,
+              beach.relatedRecords1);
               beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
               this.grados = beach.grados;
 
-              if(beach.relatedRecords4){ this.dinamicForm(this.grados,beach.relatedRecords4 );}
+              if(beach.relatedRecords2){ this.dinamicForm(this.grados,beach.relatedRecords2 );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
               console.log(this.datosPlayaRelacionada);
               this.selectObjectId = beach.objectId;
-              this.dinamicFormHorarios(beach.relatedRecords3);
+              this.dinamicFormHorarios(beach.relatedRecords1);
 
             } else {
               Swal.fire({
@@ -437,8 +437,8 @@ readFeatures() {
 
 createRangeHumanos(unitarios){
 
-  let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords3;
-  let cantidad = this.datosPlayaRelacionada.relatedRecords4;
+  let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords1;
+  let cantidad = this.datosPlayaRelacionada.relatedRecords2;
   if(playasRelacionadas && cantidad.length !==0){
     this.calculoTotalHumanosP = [];
     this.calculoTotalHumanos = [];
@@ -709,25 +709,25 @@ public update() {
 }
 
 private anhadir_medios(playa, option) {
-    let relationIds;
-    switch (option) {
-        case 'humanos': {
-            relationIds = ['1', '2', '3', '4'];
-            break;
-        }
-        case 'materiales': {
-            this.formbanderas();
-            this.formtorres();
-            this.formpasiva();
-            this.formbalizamiento();
-            relationIds = ['1', '2', '3', '4', '5', '6', '7', '8'];
-            break;
-        }
-        default: {
-            relationIds = ['1', '3', '4'];
-            break;
-        }
+  let relationIds;
+  switch (option) {
+    case 'humanos': {
+      relationIds = ['1', '2', '3', '4'];
+      break;
     }
+    case 'materiales': {
+      this.formbanderas();
+      this.formtorres();
+      this.formpasiva();
+      this.formbalizamiento();
+      relationIds = ['1', '3', '4', '5', '6', '7','8','9'];
+      break;
+    }
+    default: {
+      relationIds = ['1', '3', '4'];
+      break;
+    }
+  }
       this.service.getMultipleRelatedData([playa], relationIds, this.currentUser.token);
       this.options = option;
       this.nombre_playa = playa.attributes.nombre_municipio;

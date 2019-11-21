@@ -239,19 +239,10 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     receiveClasification($event: string) {
         this.localClasification = $event;
-        if ($event === 'USO PROHIBIDO' || this.localName.toUpperCase() === 'NOMBRE POR DEFINIR') {
+        if ($event === 'UP' || this.localName.toUpperCase() === 'NOMBRE POR DEFINIR') {
             $('#protectionFilterMenu').hide();
         } else {
             $('#protectionFilterMenu').show();
-        }
-    }
-
-    receiveLastChangeTracking($event: Date) {
-        this.lastChangeOnselectedBeach = $event;
-        if ($event || this.localClasification === 'UP') {
-            $('#resultsFilterMenu').show();
-        } else {
-            $('#resultsFilterMenu').hide();
         }
     }
 
