@@ -6,6 +6,7 @@ import {AuthGuardService} from '../../services/auth-guard.service';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import Swal from 'sweetalert2';
 
 declare var Swiper: any;
 declare var $: any;
@@ -39,8 +40,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     dateForGrades: Date;
     es: any;
     formVacational: FormGroup;
-    private subscripcionMunicipality;
     vacacional: boolean;
+    private subscripcionMunicipality;
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
                 private fb: FormBuilder) {
@@ -189,12 +190,19 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filtermunicipio,
             'objectid', false, this.authService.getCurrentUser().token, 'objectid', true).subscribe(
             (result: any) => {
-                if (result.features.length > 0) {
+                if (result) {
                     this.beachs = result.features;
                     // si es visible el mapa de resultados entonces es que se ha cambiado de municipio y hay que recalcular los grados
-                    if (this.viewResults) {
+                    if (this.viewResults && result.features.length > 0) {
                         this.service.getMultipleRelatedData(this.beachs, ['1', '3', '4'], current_user.token);
                     }
+                } else if (result.error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Error ' + result.error.code,
+                        text: result.error.message,
+                        footer: ''
+                    });
                 }
             },
             error => {

@@ -9,9 +9,13 @@
                         {{municipalityName}}</h2>
                 </div>
                 <div class="col-xs-2">
-                    <img pTooltip="Imágenes sin modificar creadas por José Manuel Erbez. Islas Canarias, España - Esta obra está bajo una licencia de Creative Commons - simbolosdecanarias" [src]="authService.getCurrentUser().selectedusername ? 'assets/images/escudos/icon_gesplan.png' :
+                    <img
+                        pTooltip="Imágenes sin modificar creadas por José Manuel Erbez. Islas Canarias, España - Esta obra está bajo una licencia de Creative Commons - simbolosdecanarias"
+                        [src]="authService.getCurrentUser().selectedusername ? 'assets/images/logos/Logotipo_del_Gobierno_de_Canarias.png' :
                      'assets/images/escudos/' + authService.getCurrentUser().username + '.png'"
-                         alt="escudo ayuntamiento" class="img-responsive" style="max-height: 100px; max-width: 90px">
+                        alt="escudo ayuntamiento" class="img-responsive" [style.max-height.px]="100"
+                        [style.max-width.px]="authService.getCurrentUser().selectedusername ? 200 : 90"
+                        [style.padding-top.px]="authService.getCurrentUser().selectedusername ? 12 : 0">
                 </div>
             </div>
         </div>
