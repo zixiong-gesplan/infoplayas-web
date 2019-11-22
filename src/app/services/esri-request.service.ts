@@ -68,7 +68,7 @@ export class EsriRequestService {
     }
 
     getMultipleRelatedData(beachs: any[], relationsIds: string[][], token: string) {
-        this.spinnerService.show();
+        //this.spinnerService.show();
         const httpRequests = [];
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
@@ -97,7 +97,7 @@ export class EsriRequestService {
                     features.push(ob);
                 });
                 this.featuresSource.next(features);
-                this.spinnerService.hide();
+                //this.spinnerService.hide();
             }
         });
     }
