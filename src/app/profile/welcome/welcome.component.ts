@@ -15,7 +15,7 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
 
     municipalityName: string;
 
-    constructor(private authService: AuthGuardService) {
+    constructor(public authService: AuthGuardService) {
     }
 
     ngAfterViewInit() {

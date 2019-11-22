@@ -16,7 +16,7 @@ declare const aytos: any;
 })
 export class ProfileComponent implements OnInit {
     municipalities: SelectItem[];
-    private current_user: Auth;
+    current_user: Auth;
 
     constructor(private service: RequestService, private authService: AuthGuardService, private spinnerService: Ng4LoadingSpinnerService,
                 public router: Router) {
