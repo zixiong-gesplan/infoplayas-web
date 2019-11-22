@@ -11,6 +11,7 @@ import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Attribute} from '../../models/attribute';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
+import {Tableids} from '../../models/tableids';
 
 declare var $: any;
 declare var jquery: any;
@@ -84,6 +85,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     dateNow: Date;
     private currentUser: Auth;
     private subscripcionMunicipality;
+    tableIds: Tableids;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService) {
@@ -121,6 +123,11 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             {label: 'Media', value: 'M', icon: 'fa fa-fw fa-arrows-h'},
             {label: 'Baja', value: 'B', icon: 'fa fa-fw fa-level-down'}
         ];
+        this.tableIds = {
+            tbDanger: environment.tbClasificacion.toString(),
+            tbIncidencias: environment.tbIncidencias.toString(),
+            tbEntorno: environment.tbEntorno.toString()
+        };
     }
 
     get fEnv() {
@@ -362,7 +369,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             const addvalues = JSON.parse(JSON.stringify(this.periods[count - 1]));
             addvalues.attributes.fecha_fin = moment(addvalues.attributes.fecha_fin).format('YYYY-MM-DD');
             addvalues.attributes.fecha_inicio = moment(addvalues.attributes.fecha_inicio).format('YYYY-MM-DD');
-            this.editRelatedData([addvalues], this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
+            this.editRelatedData([addvalues], this.currentUser, 'adds',
+                environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbAfluencia
                 + '/applyEdits', 'message');
         });
         // actualizamos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
@@ -423,7 +431,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         tableB = tableB.filter(s => s.attributes.fecha_inicio.getTime() === rowData.attributes.fecha_inicio.getTime());
         // borramos los periodos de la bbdd si los hay
         if (tableB.length > 0) {
-            this.removeRelatedData(tableB.map(a => a.attributes.objectid), this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 4
+            this.removeRelatedData(tableB.map(a => a.attributes.objectid), this.currentUser,
+                environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbAfluencia
                 + '/deleteFeatures', true);
         }
         // actualizamos los dias ya seleccionados en el calendario
@@ -887,7 +896,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     private updateAdditionalDangers() {
         // borramos los registros que han sido eliminados por el usuario
         if (this.deleteAddtionalDangers && this.deleteAddtionalDangers.length > 0) {
-            this.removeRelatedData(this.deleteAddtionalDangers, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+            this.removeRelatedData(this.deleteAddtionalDangers, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbRiesgos
                 + '/deleteFeatures', false);
         }
         const addvalues = [...this.tEnv.value].filter(s => !s.objectid).map(value => {
@@ -901,7 +910,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             value.attributes.ultimo_editor = this.currentUser.username;
         });
         if (updatesvalues.length > 0) {
-            this.editRelatedData(updatesvalues, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+            this.editRelatedData(updatesvalues, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbRiesgos
                 + '/applyEdits', 'none');
         }
         addvalues.forEach(value => {
@@ -910,7 +919,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             value.attributes.ultimo_editor = this.currentUser.username;
         });
         if (addvalues.length > 0) {
-            this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + 11
+            this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbRiesgos
                 + '/applyEdits', 'none');
         }
     }

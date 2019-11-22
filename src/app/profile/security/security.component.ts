@@ -279,55 +279,55 @@ readFeatures() {
       const beach = (results[0] as any);
       if (results.length > 0) {
         if(this.options==='materiales'){
-          if(beach.relatedRecords6.length !== 0){
-            this.formBanderas.get('objectid').setValue(beach.relatedRecords6[0].attributes.objectid);
-            this.formBanderas.get('accesos').setValue(beach.relatedRecords6[0].attributes.accesos);
-            this.formBanderas.get('banderas').setValue(beach.relatedRecords6[0].attributes.banderas);
-            this.formBanderas.get('mastiles').setValue(beach.relatedRecords6[0].attributes.mastiles);
-            this.formBanderas.get('carteles').setValue(beach.relatedRecords6[0].attributes.carteles);
-            this.formBanderas.get('banderas_comp').setValue(beach.relatedRecords6[0].attributes.banderas_comp);
+          if(beach.relatedInformativo.length !== 0){
+            this.formBanderas.get('objectid').setValue(beach.relatedInformativo[0].attributes.objectid);
+            this.formBanderas.get('accesos').setValue(beach.relatedInformativo[0].attributes.accesos);
+            this.formBanderas.get('banderas').setValue(beach.relatedInformativo[0].attributes.banderas);
+            this.formBanderas.get('mastiles').setValue(beach.relatedInformativo[0].attributes.mastiles);
+            this.formBanderas.get('carteles').setValue(beach.relatedInformativo[0].attributes.carteles);
+            this.formBanderas.get('banderas_comp').setValue(beach.relatedInformativo[0].attributes.banderas_comp);
           };
-          if(beach.relatedRecords5.length !==0){
-            this.formBalizamiento.get('objectid').setValue(beach.relatedRecords5[0].attributes.objectid);
-            this.formBalizamiento.get('m_cuerda').setValue(beach.relatedRecords5[0].attributes.m_cuerda);
-            this.formBalizamiento.get('boyas_amarillas').setValue(beach.relatedRecords5[0].attributes.boyas_amarillas);
-            this.formBalizamiento.get('boyas_verdes').setValue(beach.relatedRecords5[0].attributes.boyas_verdes);
-            this.formBalizamiento.get('boyas_rojas').setValue(beach.relatedRecords5[0].attributes.boyas_rojas);
+          if(beach.relatedBalizamiento.length !==0){
+            this.formBalizamiento.get('objectid').setValue(beach.relatedBalizamiento[0].attributes.objectid);
+            this.formBalizamiento.get('m_cuerda').setValue(beach.relatedBalizamiento[0].attributes.m_cuerda);
+            this.formBalizamiento.get('boyas_amarillas').setValue(beach.relatedBalizamiento[0].attributes.boyas_amarillas);
+            this.formBalizamiento.get('boyas_verdes').setValue(beach.relatedBalizamiento[0].attributes.boyas_verdes);
+            this.formBalizamiento.get('boyas_rojas').setValue(beach.relatedBalizamiento[0].attributes.boyas_rojas);
           }
 
-          if(beach.relatedRecords7.length !==0){
-            this.formTorres.get('objectid').setValue(beach.relatedRecords7[0].attributes.objectid);
-            this.formTorres.get('torres').setValue(beach.relatedRecords7[0].attributes.torres);
-            this.formTorres.get('desfibriladores').setValue(beach.relatedRecords7[0].attributes.desfibriladores);
-            this.formTorres.get('botiquines').setValue(beach.relatedRecords7[0].attributes.botiquines);
-            this.formTorres.get('banderas').setValue(beach.relatedRecords7[0].attributes.banderas);
-            this.formTorres.get('sistemas_izado').setValue(beach.relatedRecords7[0].attributes.sistemas_izado);
+          if(beach.relatedPuesto.length !==0){
+            this.formTorres.get('objectid').setValue(beach.relatedPuesto[0].attributes.objectid);
+            this.formTorres.get('torres').setValue(beach.relatedPuesto[0].attributes.torres);
+            this.formTorres.get('desfibriladores').setValue(beach.relatedPuesto[0].attributes.desfibriladores);
+            this.formTorres.get('botiquines').setValue(beach.relatedPuesto[0].attributes.botiquines);
+            this.formTorres.get('banderas').setValue(beach.relatedPuesto[0].attributes.banderas);
+            this.formTorres.get('sistemas_izado').setValue(beach.relatedPuesto[0].attributes.sistemas_izado);
           }
-          if(beach.relatedRecords8.length !==0){
-            this.formPasiva.get('objectid').setValue(beach.relatedRecords8[0].attributes.objectid);
-            this.formPasiva.get('carretes').setValue(beach.relatedRecords8[0].attributes.carretes);
-            this.formPasiva.get('salvavidas').setValue(beach.relatedRecords8[0].attributes.salvavidas);
+          if(beach.relatedPasiva.length !==0){
+            this.formPasiva.get('objectid').setValue(beach.relatedPasiva[0].attributes.objectid);
+            this.formPasiva.get('carretes').setValue(beach.relatedPasiva[0].attributes.carretes);
+            this.formPasiva.get('salvavidas').setValue(beach.relatedPasiva[0].attributes.salvavidas);
           }
 
     }
 
-        if (beach && beach.relatedRecords1.length > 0 && beach.relatedRecords3.length > 0
-          && beach.relatedRecords4.length > 0) {
+        if (beach && beach.relatedAfluencia.length > 0 && beach.relatedEntorno.length > 0
+          && beach.relatedIncidencias.length > 0) {
             // inicializamos desactivado el esc y el click fuera de la modal
             $('#' + this.options).modal({backdrop: 'static', keyboard: false});
             $('#' + this.options).modal('show');
-              beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedRecords4, beach.relatedRecords3,
-              beach.relatedRecords1);
+              beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedIncidencias, beach.relatedEntorno,
+              beach.relatedAfluencia);
               beach.grado_maximo = this.gradeService.getMaximunGrade(beach.periodos);
               beach.grados = this.gradeService.getDistinctGrades(beach.periodos);
               this.grados = beach.grados;
 
-              if(beach.relatedRecords2){ this.dinamicForm(this.grados,beach.relatedRecords2 );}
+              if(beach.relatedHumanos){ this.dinamicForm(this.grados,beach.relatedHumanos );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
               console.log(this.datosPlayaRelacionada);
               this.selectObjectId = beach.objectId;
-              this.dinamicFormHorarios(beach.relatedRecords1);
+              this.dinamicFormHorarios(beach.relatedAfluencia);
 
             } else {
               Swal.fire({
@@ -393,7 +393,7 @@ readFeatures() {
     loadUnitPrice() {
         this.spinnerService.show();
         // inicializamos desactivado el esc y el click fuera de la modal
-        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/10/query',
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbUnitarios + '/query',
             'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token, 'id_ayuntamiento', false).subscribe(
             (result: any) => {
                 if (result.features.length !== 0) {
@@ -437,8 +437,8 @@ readFeatures() {
 
 createRangeHumanos(unitarios){
 
-  let playasRelacionadas = this.datosPlayaRelacionada.relatedRecords1;
-  let cantidad = this.datosPlayaRelacionada.relatedRecords2;
+  let playasRelacionadas = this.datosPlayaRelacionada.relatedAfluencia;
+  let cantidad = this.datosPlayaRelacionada.relatedHumanos;
   if(playasRelacionadas && cantidad.length !==0){
     this.calculoTotalHumanosP = [];
     this.calculoTotalHumanos = [];
@@ -592,7 +592,7 @@ public updateMediosHumanos() {
       preciosMediosHumanos.push(preciosMediosCopia);
     });
   });
-    this.updateGenerico(preciosMediosHumanos, 5 ,this.mode);
+    this.updateGenerico(preciosMediosHumanos, environment.tbHumanos ,this.mode);
 }
 public updateMediosMateriales(){
     this.updateBanderas();
@@ -610,7 +610,7 @@ public updateBanderas(){
   this.objetoGenerico.attributes.ultimo_cambio = this.toDateFormat(true);
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   banderasSend.push(this.objetoGenerico);
-  this.updateGenerico(banderasSend, 7 ,this.mode);
+  this.updateGenerico(banderasSend, environment.tbInformativo ,this.mode);
 
 
 }
@@ -623,7 +623,7 @@ public updateBalizamiento(){
   this.objetoGenerico.attributes.ultimo_cambio = this.toDateFormat(true);
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   balizamientoSend.push(this.objetoGenerico);
-  this.updateGenerico(balizamientoSend, 6 ,this.mode);
+  this.updateGenerico(balizamientoSend, environment.tbBalizamiento ,this.mode);
 
 
 }
@@ -637,7 +637,7 @@ public updateTorres(){
   this.objetoGenerico.attributes.ultimo_cambio = this.toDateFormat(true);
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   torrresSend.push(this.objetoGenerico);
-  this.updateGenerico(torrresSend, 8 ,this.mode);
+  this.updateGenerico(torrresSend, environment.tbPuesto ,this.mode);
 
 
 }
@@ -649,7 +649,7 @@ public updatePasiva(){
   this.objetoGenerico.attributes.ultimo_cambio = this.toDateFormat(true);
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   pasivaSend.push(this.objetoGenerico);
-  this.updateGenerico(pasivaSend, 9 ,this.mode);
+  this.updateGenerico(pasivaSend, environment.tbPasiva ,this.mode);
 }
 
 public updateGenerico(data, tabla, mode){
@@ -705,14 +705,14 @@ public update() {
   preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
   preciosUnitarios.attributes.id_ayuntamiento = this.codMun;
   preciosUnitariosSend.push(preciosUnitarios);
-  this.updateGenerico(preciosUnitariosSend, 10 ,this.mode);
+  this.updateGenerico(preciosUnitariosSend, environment.tbUnitarios ,this.mode);
 }
 
 private anhadir_medios(playa, option) {
   let relationIds;
   switch (option) {
     case 'humanos': {
-      relationIds = ['1', '2', '3', '4'];
+      relationIds = [environment.relAfluencia, environment.relHumanos, environment.relEntorno, environment.relIncidencias];
       break;
     }
     case 'materiales': {
@@ -720,11 +720,12 @@ private anhadir_medios(playa, option) {
       this.formtorres();
       this.formpasiva();
       this.formbalizamiento();
-      relationIds = ['1', '3', '4', '5', '6', '7','8','9'];
+      relationIds = [environment.relAfluencia, environment.relEntorno, environment.relIncidencias,
+            environment.relBalizamiento, environment.relInformativo, environment.relPuesto, environment.relPasiva];
       break;
     }
     default: {
-      relationIds = ['1', '3', '4'];
+      relationIds = [environment.relAfluencia, environment.relEntorno, environment.relIncidencias];
       break;
     }
   }
@@ -761,7 +762,7 @@ public updateHorarios(){
 
       });
   });
-  this.updateGenerico(pHorarios, 4 ,'updates');
+  this.updateGenerico(pHorarios, environment.tbAfluencia ,'updates');
  }
 
 dateLessThan(from: string, to: string) {

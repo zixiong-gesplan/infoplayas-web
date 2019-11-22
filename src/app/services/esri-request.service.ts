@@ -67,7 +67,7 @@ export class EsriRequestService {
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 
-    getMultipleRelatedData(beachs: any[], relationsIds: string[], token: string) {
+    getMultipleRelatedData(beachs: any[], relationsIds: string[][], token: string) {
         this.spinnerService.show();
         const httpRequests = [];
         const headers = new HttpHeaders();
@@ -78,7 +78,7 @@ export class EsriRequestService {
                 .append('objectIds', beachs.map(a => a.attributes.objectid).join(','))
                 .append('outFields', '*')
                 .append('returnGeometry', 'false')
-                .append('relationshipId', value);
+                .append('relationshipId', value[0]);
             httpRequests.push(this.http.post(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
                 params, {headers: headers}));
         });
@@ -90,9 +90,9 @@ export class EsriRequestService {
                 beachs.forEach(f => {
                     const ob = {objectId: f.attributes.objectid, centroid: f.centroid ? f.centroid : null};
                     for (let i = 0; i < httpRequests.length; i++) {
-                        ob['relatedRecords' + relationsIds[i]] = results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid)
+                        ob['related' + relationsIds[i][1]] = results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid)
                             ? results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid).relatedRecords : [];
-                        delete ob['relatedRecords' + relationsIds[i]].objectId;
+                        delete ob['related' + relationsIds[i][1]].objectId;
                     }
                     features.push(ob);
                 });
