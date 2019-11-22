@@ -194,7 +194,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                     this.beachs = result.features;
                     // si es visible el mapa de resultados entonces es que se ha cambiado de municipio y hay que recalcular los grados
                     if (this.viewResults && result.features.length > 0) {
-                        this.service.getMultipleRelatedData(this.beachs, ['1', '3', '4'], current_user.token);
+                        this.service.getMultipleRelatedData(this.beachs, [environment.relAfluencia, environment.relEntorno,
+                            environment.relIncidencias], current_user.token);
                     }
                 } else if (result.error) {
                     Swal.fire({
@@ -277,7 +278,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     calculateGradesProtection() {
-        this.service.getMultipleRelatedData(this.beachs, ['1', '3', '4'], this.authService.getCurrentUser().token);
+        this.service.getMultipleRelatedData(this.beachs, [environment.relAfluencia, environment.relEntorno,
+            environment.relIncidencias], this.authService.getCurrentUser().token);
         this.viewResults = true;
         this.vacacional = false;
     }
