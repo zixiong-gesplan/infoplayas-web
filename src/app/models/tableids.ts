@@ -1,4 +1,3 @@
-import {Flow} from './flow';
 
 export interface Tableids {
     tbDanger?: string;
