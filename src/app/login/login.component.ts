@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Auth} from '../models/auth';
 import {ActivatedRoute, Router} from '@angular/router';
 
+import Swal from 'sweetalert2';
 declare const aytos: any;
 
 @Component({
@@ -25,6 +26,16 @@ export class LoginComponent implements OnInit {
         return this.route.fragment.subscribe(fragment => {
             if (fragment) {
                 if (new URLSearchParams(fragment).get('error') === 'access_denied') {
+                    this.router.navigate(['home']);
+                    return false;
+                }
+                if (!aytos.hasOwnProperty(new URLSearchParams(fragment).get('username'))) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Usuario no permitido',
+                        text: 'El usuario que itenta acceder no está registrado para el uso de esta aplicación. Contacte con el administrador.',
+                        footer: ''
+                    });
                     this.router.navigate(['home']);
                     return false;
                 }

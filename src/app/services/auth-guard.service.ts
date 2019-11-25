@@ -2,9 +2,11 @@ import {Injectable} from '@angular/core';
 import {CanActivate} from '@angular/router/src/interfaces';
 import {Auth} from '../models/auth';
 import {Municipality} from '../models/municipality';
-import {RequestService} from './request.service';
 import {environment} from '../../environments/environment';
 import {BehaviorSubject} from 'rxjs';
+import {Router} from '@angular/router';
+
+declare const aytos: any;
 
 declare function init_plugins();
 
@@ -18,7 +20,7 @@ export class AuthGuardService implements CanActivate {
     private sMunicipalitySource = new BehaviorSubject<string>('');
     sMunicipality$ = this.sMunicipalitySource.asObservable();
 
-    constructor(private service: RequestService) {
+    constructor(public router: Router) {
     }
 
     canActivate(): boolean {
@@ -65,6 +67,7 @@ export class AuthGuardService implements CanActivate {
     public logOut() {
         sessionStorage.clear();
         localStorage.removeItem('current_user');
+        localStorage.removeItem('municipality');
     }
 
     updateFilterUser($event) {
