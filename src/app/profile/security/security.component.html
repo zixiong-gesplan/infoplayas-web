@@ -15,26 +15,26 @@
     <div class="section-title text-center">
         <h2 class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: {{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="Añada los precios unitarios" (click)="openConfiguration()"></i></h2>
     </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="form-group">
+            <label for="sel1"><h4>Filtrar por clasificación:</h4></label>
+            <select class="form-control" [(ngModel)]="clasificacionData"  (change)="clasificacionSelect()">
+              <option value="T">Todas</option>
+              <option value="L">Libres</option>
+              <option value="P">Peligrosas</option>
+              <option value="UP">Prohibidas</option>
+            </select>
+          </div>
+        </div>
+        <!-- <div class="col-md-4">
+            <label for="sel1"><h4>Buscar por nombre de playa:</h4></label>
+           <input type="text" class="form-control" placeholder="Nombre de playa" aria-describedby="basic-addon1" (change)="prueba($event)">
+        </div> -->
+      </div>
+    </div>
 
-      <!-- <li class="dropdown">
-         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clasificación <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-           <li class="pointer menuclasificacion" (click)="clasificacionSelect('T')">Todas</li>
-           <li class="pointer menuclasificacion" (click)="clasificacionSelect('L')">Libres</li>
-           <li class="pointer menuclasificacion" (click)="clasificacionSelect('P')">Peligrosas</li>
-           <li class="pointer menuclasificacion" (click)="clasificacionSelect('UP')">Prohibidas</li>
-         </ul>
-       </li> -->
-
-       <div class="form-group d-flex float-center">
-         <label for="sel1">Filtrar por clasificación:</label>
-         <select class="form-control" [(ngModel)]="clasificacionData"  (change)="clasificacionSelect()">
-           <option value="T" selected>Todas</option>
-           <option value="L">Libres</option>
-           <option value="P">Peligrosas</option>
-           <option value="UP">Prohibidas</option>
-         </select>
-       </div>
     <p-table *ngFor="let playa of datosPlaya.features">
       <ng-template pTemplate="header" >
           <tr>
@@ -154,14 +154,12 @@ Medios Materiales - Banderas y Cartelerías <i class="fa fa-calculator  pointer"
 <p-table>
 <ng-template pTemplate="header" >
     <tr>
-      <th class="tamanhofont">Nº de Accesos</th>
       <th class="tamanhofont">Nº de Banderas</th>
       <th class="tamanhofont">Nº de Mástiles</th>
       <th class="tamanhofont">Nº de Carteles</th>
       <th class="tamanhofont">Nº Banderas complementarias</th>
     </tr>
     <tr>
-      <th class="centrar"><input type="number"  formControlName="accesos" class="form-control  inputCustom" min="0" placeholder="0"></th>
       <th class="centrar"><input type="number"  formControlName="banderas" class="form-control  inputCustom" min="0" placeholder="0"></th>
       <th class="centrar"><input type="number"  formControlName="mastiles" class="form-control  inputCustom" min="0" placeholder="0"></th>
       <th class="centrar"><input type="number"  formControlName="carteles" class="form-control  inputCustom" min="0" placeholder="0"></th>
@@ -634,19 +632,19 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               </tr>
             <tr>
 
-                <th class="centrar"><input type="text"   formControlName="m_cuerda"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   formControlName="boyas_amarillas" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   formControlName="boyas_rojas" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   formControlName="m_cuerda"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   formControlName="boyas_amarillas" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   formControlName="boyas_rojas" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   formControlName="m_cuerda"  class="form-control  inputCustom"></th>
-                <th class="centrar"><input type="text"   formControlName="boyas_amarillas" class="form-control  inputCustom"></th>
-                <th class="centrar"><input type="text"   formControlName="boyas_rojas" class="form-control  inputCustom"></th>
-                <th class="centrar"><input type="text"   formControlName="m_cuerda"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   formControlName="boyas_amarillas" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   formControlName="boyas_rojas" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom"></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom"></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom"></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
             </tr>
               </ng-template >
           </p-table>

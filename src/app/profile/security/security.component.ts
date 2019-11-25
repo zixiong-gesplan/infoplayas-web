@@ -227,7 +227,6 @@ formbanderas(){
     this.formBanderas = this.fb.group({
       objectid: new FormControl(),
       id_dgse:  new FormControl(),
-      accesos: new FormControl(),
       banderas: new FormControl(),
       mastiles: new FormControl(),
       carteles: new FormControl(),
@@ -280,10 +279,10 @@ readFeatures() {
     (results: any) => {
       const beach = (results[0] as any);
       if (results.length > 0) {
+        console.log(results);
         if(this.options==='materiales'){
           if(beach.relatedInformativo.length !== 0){
             this.formBanderas.get('objectid').setValue(beach.relatedInformativo[0].attributes.objectid);
-            this.formBanderas.get('accesos').setValue(beach.relatedInformativo[0].attributes.accesos);
             this.formBanderas.get('banderas').setValue(beach.relatedInformativo[0].attributes.banderas);
             this.formBanderas.get('mastiles').setValue(beach.relatedInformativo[0].attributes.mastiles);
             this.formBanderas.get('carteles').setValue(beach.relatedInformativo[0].attributes.carteles);
@@ -327,7 +326,6 @@ readFeatures() {
               if(beach.relatedHumanos){ this.dinamicForm(this.grados,beach.relatedHumanos );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
-              console.log(this.datosPlayaRelacionada);
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedAfluencia);
 
@@ -347,7 +345,6 @@ readFeatures() {
     }
 
     clasificacionSelect(){
-      console.log(this.clasificacionData);
       if(this.clasificacionData!=='T'){
           this.filterClasificacion = 'and clasificacion = \'' + this.clasificacionData+ '\'';
       }else{
@@ -360,7 +357,6 @@ readFeatures() {
         this.spinnerService.show();
         this.currentUser = this.authService.getCurrentUser();
         const name = this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username;
-        console.log
         if(this.filterClasificacion){
           this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'' + this.filterClasificacion;
         }else{
@@ -372,7 +368,6 @@ readFeatures() {
             (result: any) => {
                 if (result) {
                     this.datosPlaya = result;
-                    console.log(this.datosPlaya);
                     this.codMunicipio(this.datosPlaya);
                     this.spinnerService.hide();
                 }
@@ -402,13 +397,13 @@ readFeatures() {
     }
 
     openConfiguration() {
-        this.loadUnitPrice();
+        this.loadUnitPrice('empty');
         $('#configuracion').modal({backdrop: 'static', keyboard: false});
         $('#configuracion').modal('show');
 
     }
 
-    loadUnitPrice() {
+    loadUnitPrice(calculadora) {
         this.spinnerService.show();
         // inicializamos desactivado el esc y el click fuera de la modal
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbUnitarios + '/query',
@@ -418,7 +413,11 @@ readFeatures() {
                     this.formUnitarios.patchValue(result.features[0].attributes);
                     this.mode = 'updates';
                     this.unitarios = result.features[0].attributes;
-                    this.createRangeHumanos(this.unitarios);
+                    console.log(this.unitarios);
+                    if(calculadora==='humanos'){
+                        this.createRangeHumanos(this.unitarios);
+                    }
+
                     this.spinnerService.hide();
                 } else {
                     this.spinnerService.hide();
@@ -454,10 +453,11 @@ readFeatures() {
   }
 
 createRangeHumanos(unitarios){
-
   let playasRelacionadas = this.datosPlayaRelacionada.relatedAfluencia;
   let cantidad = this.datosPlayaRelacionada.relatedHumanos;
-  if(playasRelacionadas && cantidad.length !==0){
+  let totaldias;
+  console.log(playasRelacionadas);
+  if(playasRelacionadas){
     this.calculoTotalHumanosP = [];
     this.calculoTotalHumanos = [];
     let  calcHumanos = {
@@ -480,8 +480,7 @@ createRangeHumanos(unitarios){
 
       calcHumanos.periodos = playasRelacionadas[i].attributes;
       var fecha2 = moment(new Date(playasRelacionadas[i].attributes.fecha_inicio),'YYYY-DD-MMM');
-      var fecha1 = moment(new Date(playasRelacionadas[i].attributes.fecha_fin),'YYYY-DD-MMM').add(1,'day');//sumanos un dias para realizar el calculo de la totalidad de dias
-      var totaldias;
+      var fecha1 = moment(new Date(playasRelacionadas[i].attributes.fecha_fin),'YYYY-DD-MMM');
       switch (playasRelacionadas[i].attributes.incluir_dias) {
 
         case 'TD': {
@@ -517,6 +516,7 @@ createRangeHumanos(unitarios){
   }
     costeTotales.costetotal= costeTotales.totaljefe + costeTotales.totalsoc + costeTotales.totalsocemb + costeTotales.totalsocper;
     this.calculoTotalHumanos.push(costeTotales);
+    console.log(this.calculoTotalHumanosP);
 
   }
 
@@ -536,11 +536,10 @@ calculoTotalSocorristas(data){
 calculadora(medio) {
   this.spinnerService.show();
   this.medio = medio;
-  if(medio ==='humanos'){
-    this.loadUnitPrice();
-  }
+  console.log(this.medio);
   $('#calculadora' + medio).modal('show');
   $('#calculadora' + medio).modal({backdrop: 'static', keyboard: false});
+  this.loadUnitPrice(medio);
   this.spinnerService.hide();
 
 }
