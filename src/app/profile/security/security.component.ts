@@ -9,6 +9,8 @@ import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
+import {Municipality} from '../../models/municipality';
+import {PopulationService} from '../../services/population.service';
 
 declare var $: any;
 declare var jQuery: any;
@@ -99,7 +101,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 private elementRef: ElementRef,
                 private fb: FormBuilder,
                 private serviceMeteo: RequestService,
-                private gradeService: GradesProtectionService,)
+                private gradeService: GradesProtectionService,
+                private popService: PopulationService)
                 {}
 
     ngOnInit() {
@@ -369,8 +372,8 @@ readFeatures() {
     }
 
     readSmuncipality() {
-        this.subscripcionSmunicipality = this.authService.sMunicipality$.subscribe(
-            (result: any) => {
+        this.subscripcionSmunicipality = this.popService.sMunicipality$.subscribe(
+            (result: Municipality) => {
                 if (result) {
                     this.currentUser = this.authService.getCurrentUser();
                     // recargamos datos y formularios

@@ -3,6 +3,8 @@ import {Auth} from '../models/auth';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import Swal from 'sweetalert2';
+import {AuthGuardService} from '../services/auth-guard.service';
+
 declare const aytos: any;
 
 @Component({
@@ -15,7 +17,7 @@ export class LoginComponent implements OnInit {
      en caso de cambiarlo en el portal poner ese valor*/
     private readonly DEFAULT_TIME_KEEP_SIGN_IN: number = 1209600000;
 
-    constructor(public route: ActivatedRoute, public router: Router) {
+    constructor(public route: ActivatedRoute, public router: Router, private authService: AuthGuardService) {
     }
 
     ngOnInit() {
@@ -51,11 +53,7 @@ export class LoginComponent implements OnInit {
                 current_user.expires = current_user.persist ? this.DEFAULT_TIME_KEEP_SIGN_IN
                     + currentDate.getTime() + current_user.expires * 1000 :
                     currentDate.getTime() + current_user.expires * 1000;
-                if (current_user.persist) {
-                    localStorage.setItem('current_user', JSON.stringify(current_user));
-                } else {
-                    sessionStorage.setItem('current_user', JSON.stringify(current_user));
-                }
+                this.authService.setUser(current_user);
             }
             this.router.navigate(['tecnicos']);
         });

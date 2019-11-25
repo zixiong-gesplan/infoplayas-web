@@ -12,6 +12,8 @@ import {Attribute} from '../../models/attribute';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import {Tableids} from '../../models/tableids';
+import {PopulationService} from '../../services/population.service';
+import {Municipality} from '../../models/municipality';
 
 declare var $: any;
 declare var jquery: any;
@@ -88,7 +90,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     tableIds: Tableids;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
-                private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService) {
+                private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
+                private popService: PopulationService) {
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
             {label: 'Peligrosa o susceptible de producir daño', value: 'P'},
@@ -683,19 +686,20 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     });
                 };
                 // recargamos el filtro de municipio y de playas cuando se selecciona un nuevo municipio desde un superusuario
-                this.subscripcionMunicipality = this.authService.sMunicipality$.subscribe(
-                    (result: any) => {
+                this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
+                    (result: Municipality) => {
                         if (result && municipiosLayer) {
+                            console.log(result);
                             // cierro formularios por si estan abiertos cuando se cambia de municipios
                             t.sendMessage('noid', unselectFeature(), null);
                             t.centroidOption = false;
                             view.zoom = this.zoom;
 
                             this.currentUser = this.authService.getCurrentUser();
-                            IdentityManager.credentials[0].userId = this.currentUser.selectedusername;
-                            filterMunicipios = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_mayus + '\'';
+                            IdentityManager.credentials[0].userId = this.currentUser.username;
+                            filterMunicipios = 'municipio = \'' + aytos[result.ayuntamiento].municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            let filter = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_minus + '\'';
+                            let filter = 'municipio = \'' + aytos[result.ayuntamiento].municipio_minus + '\'';
                             filter = playasLayer.definitionExpression.indexOf(' AND ') !== -1 ? filter +
                                 playasLayer.definitionExpression.substr(playasLayer.definitionExpression.indexOf(' AND ')) : filter;
                             playasLayer.definitionExpression = filter;

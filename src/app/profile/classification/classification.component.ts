@@ -7,6 +7,7 @@ import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import Swal from 'sweetalert2';
+import {PopulationService} from '../../services/population.service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -44,7 +45,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     private subscripcionMunicipality;
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
-                private fb: FormBuilder) {
+                private fb: FormBuilder, private popService: PopulationService) {
         this.es = {
             firstDayOfWeek: 1,
             dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
@@ -64,9 +65,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     ngOnInit() {
-        this.municipio = JSON.parse(localStorage.getItem('municipality'));
-        this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
-        this.DangerPopulationLevel = this.getDangerPopulationLevel();
+        this.setPopulationByMuncipality(this.popService.getMunicipality());
         this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'valoracion'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
@@ -76,7 +75,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         ];
         this.mapHeightContainer = '78vh';
         this.mapZoomLevel = 12;
-        this.localClasification = 'PENDIENTE';
+        this.localClasification = null;
 
         this.colsGrade = [
             {field: 'fecha_inicio', header: 'Inicio', width: '20%', orderBy: 'fecha_inicio'},
@@ -183,6 +182,12 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         });
     }
 
+    setPopulationByMuncipality(mun: Municipality) {
+        this.municipio = mun;
+        this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
+        this.DangerPopulationLevel = this.getDangerPopulationLevel();
+    }
+
     loadBeachsIds() {
         const current_user = this.authService.getCurrentUser();
         const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
@@ -212,11 +217,14 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     readSmunicipality() {
-        this.subscripcionMunicipality = this.authService.sMunicipality$.subscribe(
-            (result: any) => {
+        this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
+            (result: Municipality) => {
                 if (result) {
                     // recalcular el listado de playas al cambiar el municipio
                     this.loadBeachsIds();
+                    // actualizar las variables para el nuevo municipio y resetear el formulario vacacional
+                    this.setPopulationByMuncipality(result);
+                    this.formVacational.reset();
                 }
             },
             error => {
