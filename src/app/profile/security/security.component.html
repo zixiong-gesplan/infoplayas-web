@@ -16,6 +16,25 @@
         <h2 class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: {{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="Añada los precios unitarios" (click)="openConfiguration()"></i></h2>
     </div>
 
+      <!-- <li class="dropdown">
+         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clasificación <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+           <li class="pointer menuclasificacion" (click)="clasificacionSelect('T')">Todas</li>
+           <li class="pointer menuclasificacion" (click)="clasificacionSelect('L')">Libres</li>
+           <li class="pointer menuclasificacion" (click)="clasificacionSelect('P')">Peligrosas</li>
+           <li class="pointer menuclasificacion" (click)="clasificacionSelect('UP')">Prohibidas</li>
+         </ul>
+       </li> -->
+
+       <div class="form-group d-flex float-center">
+         <label for="sel1">Filtrar por clasificación:</label>
+         <select class="form-control" [(ngModel)]="clasificacionData"  (change)="clasificacionSelect()">
+           <option value="T" selected>Todas</option>
+           <option value="L">Libres</option>
+           <option value="P">Peligrosas</option>
+           <option value="UP">Prohibidas</option>
+         </select>
+       </div>
     <p-table *ngFor="let playa of datosPlaya.features">
       <ng-template pTemplate="header" >
           <tr>
@@ -694,7 +713,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 
       </div>
       <p></p>
-      <hr>
+
       <div class="modal-footer botonCentrado">
         <button type="button" class="btn btn-primary">Calcular</button>
       </div>

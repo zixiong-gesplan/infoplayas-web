@@ -28,6 +28,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
     defaultWorkdayInicio: Date;
     defaultWorkdayFin: Date;
     filtermunicipio;
+    filterClasificacion: string;
+    clasificacionData:string = 'T';
     datosPlaya: any = [];
     datosPlayaRelacionada: any = [];
     nomMunicipio;
@@ -344,17 +346,33 @@ readFeatures() {
         });
     }
 
+    clasificacionSelect(){
+      console.log(this.clasificacionData);
+      if(this.clasificacionData!=='T'){
+          this.filterClasificacion = 'and clasificacion = \'' + this.clasificacionData+ '\'';
+      }else{
+        this.filterClasificacion = "";
+      }
+       this.loadRecords();
+    }
+
     loadRecords() {
         this.spinnerService.show();
         this.currentUser = this.authService.getCurrentUser();
         const name = this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username;
-        this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'';
+        console.log
+        if(this.filterClasificacion){
+          this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'' + this.filterClasificacion;
+        }else{
+            this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'';
+        }
         this.nomMunicipio = aytos[name].municipio_minus;
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
             this.filtermunicipio, '*', false, this.currentUser.token, 'clasificacion', true).subscribe(
             (result: any) => {
                 if (result) {
                     this.datosPlaya = result;
+                    console.log(this.datosPlaya);
                     this.codMunicipio(this.datosPlaya);
                     this.spinnerService.hide();
                 }

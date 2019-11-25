@@ -17,9 +17,10 @@ export class EsriRequestService {
                      centro: boolean) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
+      
 
         const params = new HttpParams().set('token', token).append('f', 'json')
-            .append('where', cWhere)
+             .append('where', cWhere)
             .append('orderByFields', order)
             .append('outFields', outFields)
             .append('returnCentroid', centro ? 'true' : 'false')
