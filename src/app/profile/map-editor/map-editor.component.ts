@@ -686,6 +686,11 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 this.subscripcionMunicipality = this.authService.sMunicipality$.subscribe(
                     (result: any) => {
                         if (result && municipiosLayer) {
+                            // cierro formularios por si estan abiertos cuando se cambia de municipios
+                            t.sendMessage('noid', unselectFeature(), null);
+                            t.centroidOption = false;
+                            view.zoom = this.zoom;
+
                             this.currentUser = this.authService.getCurrentUser();
                             IdentityManager.credentials[0].userId = this.currentUser.selectedusername;
                             filterMunicipios = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_mayus + '\'';

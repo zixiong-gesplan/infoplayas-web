@@ -372,7 +372,6 @@ readFeatures() {
         this.subscripcionSmunicipality = this.authService.sMunicipality$.subscribe(
             (result: any) => {
                 if (result) {
-                    console.log('cambio de municipio');
                     this.currentUser = this.authService.getCurrentUser();
                     // recargamos datos y formularios
                     this.loadDataForms();
