@@ -1,4 +1,4 @@
-var view, viewer, highlight, editFeature, listNode, features;
+var view, viewer, highlight, editFeature, listNode, listNodeViewer, features;
 
 //mensaje playa no seleccionada
 var unselectedMessage = "seleccione playa";

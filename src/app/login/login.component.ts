@@ -2,6 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {Auth} from '../models/auth';
 import {ActivatedRoute, Router} from '@angular/router';
 
+import Swal from 'sweetalert2';
+import {AuthGuardService} from '../services/auth-guard.service';
+
 declare const aytos: any;
 
 @Component({
@@ -14,7 +17,7 @@ export class LoginComponent implements OnInit {
      en caso de cambiarlo en el portal poner ese valor*/
     private readonly DEFAULT_TIME_KEEP_SIGN_IN: number = 1209600000;
 
-    constructor(public route: ActivatedRoute, public router: Router) {
+    constructor(public route: ActivatedRoute, public router: Router, private authService: AuthGuardService) {
     }
 
     ngOnInit() {
@@ -25,6 +28,16 @@ export class LoginComponent implements OnInit {
         return this.route.fragment.subscribe(fragment => {
             if (fragment) {
                 if (new URLSearchParams(fragment).get('error') === 'access_denied') {
+                    this.router.navigate(['home']);
+                    return false;
+                }
+                if (!aytos.hasOwnProperty(new URLSearchParams(fragment).get('username'))) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Usuario no permitido',
+                        text: 'El usuario que itenta acceder no está registrado para el uso de esta aplicación. Contacte con el administrador.',
+                        footer: ''
+                    });
                     this.router.navigate(['home']);
                     return false;
                 }
@@ -40,11 +53,7 @@ export class LoginComponent implements OnInit {
                 current_user.expires = current_user.persist ? this.DEFAULT_TIME_KEEP_SIGN_IN
                     + currentDate.getTime() + current_user.expires * 1000 :
                     currentDate.getTime() + current_user.expires * 1000;
-                if (current_user.persist) {
-                    localStorage.setItem('current_user', JSON.stringify(current_user));
-                } else {
-                    sessionStorage.setItem('current_user', JSON.stringify(current_user));
-                }
+                this.authService.setUser(current_user);
             }
             this.router.navigate(['tecnicos']);
         });

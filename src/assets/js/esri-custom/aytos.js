@@ -381,9 +381,10 @@ var aytos = {
     },
     // superusuarios
     gesplansa: {
-        "isSuperUser": true,
-        "municipio_minus": "Adeje",
-        "municipio_mayus": "ADEJE",
-        "istac_code": "38001"
+        "isSuperUser": true
+    },
+    infoplayas: {
+        "isSuperUser": true
     }
 }
+

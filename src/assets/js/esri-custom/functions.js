@@ -152,8 +152,13 @@ function loadList(view, featureLayer, fields, filter) {
       fragment.appendChild(li);
     });
     // Empty the current list
-    listNode.innerHTML = "";
-    listNode.appendChild(fragment);
+      if (view.container.id === 'viewDivViewer'){
+          listNodeViewer.innerHTML = "";
+          listNodeViewer.appendChild(fragment);
+      } else {
+          listNode.innerHTML = "";
+          listNode.appendChild(fragment);
+      };
     return results.features.length;
   })
   .catch(function(error) {

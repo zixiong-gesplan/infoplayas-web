@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {CanActivate} from '@angular/router/src/interfaces';
 import {Auth} from '../models/auth';
-import {Municipality} from '../models/municipality';
-import {RequestService} from './request.service';
 import {environment} from '../../environments/environment';
-import {BehaviorSubject} from 'rxjs';
+import {Router} from '@angular/router';
+import {PopulationService} from './population.service';
+
+declare const aytos: any;
 
 declare function init_plugins();
 
@@ -15,10 +16,7 @@ export class AuthGuardService implements CanActivate {
     urlAuthorize: string = environment.urlAuthorize + '?client_id=' + environment.client_id + '&response_type=token&redirect_uri='
         + environment.redirectUri;
 
-    private sMunicipalitySource = new BehaviorSubject<string>('');
-    sMunicipality$ = this.sMunicipalitySource.asObservable();
-
-    constructor(private service: RequestService) {
+    constructor(public router: Router, private popService: PopulationService) {
     }
 
     canActivate(): boolean {
@@ -39,42 +37,23 @@ export class AuthGuardService implements CanActivate {
         return !!currentUser;
     }
 
-    public isMunicipalityStore(current_user: Auth): boolean {
-        const mun: Municipality = this.getMunicipality();
-        const currentDate = new Date();
-        if (mun && current_user.username !== mun.user) {
-            return false;
-        }
-        if (mun && currentDate.getFullYear() - 1 > Number(mun.year)) {
-            return false;
-        } else {
-            return !!mun;
-        }
-    }
-
     getCurrentUser(): Auth {
         return JSON.parse(localStorage.getItem('current_user')) ?
             JSON.parse(localStorage.getItem('current_user')) :
             JSON.parse(sessionStorage.getItem('current_user'));
     }
 
-    getMunicipality(): Municipality {
-        return JSON.parse(localStorage.getItem('municipality'));
+    setUser(user: Auth) {
+        if (user.persist) {
+            localStorage.setItem('current_user', JSON.stringify(user));
+        } else {
+            sessionStorage.setItem('current_user', JSON.stringify(user));
+        }
     }
 
     public logOut() {
         sessionStorage.clear();
         localStorage.removeItem('current_user');
-    }
-
-    updateFilterUser($event) {
-        const currentUser: Auth = this.getCurrentUser();
-        currentUser.selectedusername = $event.value;
-        if (currentUser.persist) {
-            localStorage.setItem('current_user', JSON.stringify(currentUser));
-        } else {
-            sessionStorage.setItem('current_user', JSON.stringify(currentUser));
-        }
-        this.sMunicipalitySource.next($event.value);
+        localStorage.removeItem('municipality');
     }
 }

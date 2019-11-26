@@ -7,6 +7,8 @@ import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
 import {GradeRecord} from '../../models/grade-record';
 import * as moment from 'moment';
+import {PopulationService} from '../../services/population.service';
+import {Municipality} from '../../models/municipality';
 
 declare var $: any;
 declare var jquery: any;
@@ -23,7 +25,7 @@ declare let filterPlayas: any;
 declare let filterMunicipios: any;
 declare const aytos: any;
 declare const createHomeButton: any;
-declare let listNode: any;
+declare let listNodeViewer: any;
 declare const loadList: any;
 declare let features: any;
 
@@ -43,7 +45,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     private lastGraphicLayerId: string;
     selectedPeriodos: GradeRecord[];
 
-    constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService, private service: EsriRequestService) {
+    constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
+                private service: EsriRequestService, private popService: PopulationService) {
     }
 
     ngOnInit() {
@@ -234,8 +237,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         });
                     });
                     const listID = 'ulPlayaViewer';
-                    listNode = $('#ulPlayaViewer')[0];
-                    listNode.addEventListener('click', onListClickHandler);
+                    listNodeViewer = $('#ulPlayaViewer')[0];
+                    listNodeViewer.addEventListener('click', onListClickHandler);
 
                     loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (nBeachs) {
                         // TODO
@@ -258,14 +261,16 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     }
                 });
                 // recargamos el filtro de municipio y de playas cuando se selecciona un nuevo municipio desde un superusuario
-                this.subscripcionMunicipality = this.authService.sMunicipality$.subscribe(
-                    (result: any) => {
+                this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
+                    (result: Municipality) => {
                         if (result && municipiosLayer) {
+                            viewer.zoom = this.zoom;
+
                             this.currentUser = this.authService.getCurrentUser();
-                            IdentityManager.credentials[0].userId = this.currentUser.selectedusername;
-                            filterMunicipios = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_mayus + '\'';
+                            IdentityManager.credentials[0].userId = result.user;
+                            filterMunicipios = 'municipio = \'' + aytos[result.user].municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            const filter = 'municipio = \'' + aytos[this.currentUser.selectedusername].municipio_minus + '\'';
+                            const filter = 'municipio = \'' + aytos[result.user].municipio_minus + '\'';
                             playasLayer.definitionExpression = filter;
                             loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
                                 // TODO
