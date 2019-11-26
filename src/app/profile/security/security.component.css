@@ -12,6 +12,9 @@
 .pointer{
   cursor: pointer !important;
 }
+.menuclasificacion{
+  margin-left: 5px !important;
+}
 .tamanho_img{
   height: 50px !important;
   width: 50px!important;

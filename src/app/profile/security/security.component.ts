@@ -30,6 +30,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
     defaultWorkdayInicio: Date;
     defaultWorkdayFin: Date;
     filtermunicipio;
+    filterClasificacion: string;
+    clasificacionData:string = 'T';
     datosPlaya: any = [];
     datosPlayaRelacionada: any = [];
     nomMunicipio;
@@ -45,6 +47,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     formPasiva: FormGroup;
     formTorres: FormGroup;
     formHorarios: FormGroup;
+    formCalcMateriales: FormGroup;
     codMun;
     mode: string = 'updates';
     latitud: number = 0;
@@ -123,6 +126,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
         this.formpasiva();
         this.formunitarios();
         this.formmedioshumanos();
+        this.formCalculadoraMateriales();
     }
 
       dinamicForm(grados,related){
@@ -228,7 +232,6 @@ formbanderas(){
     this.formBanderas = this.fb.group({
       objectid: new FormControl(),
       id_dgse:  new FormControl(),
-      accesos: new FormControl(),
       banderas: new FormControl(),
       mastiles: new FormControl(),
       carteles: new FormControl(),
@@ -275,16 +278,65 @@ formpasiva(){
     ultimo_cambio: new FormControl(this.toDateFormat(true))
   });
 }
+formCalculadoraMateriales(){
+  this.formCalcMateriales = this.fb.group({
+    banderas: new FormControl(0),
+    mastiles: new FormControl(0),
+    carteles: new FormControl(0),
+    banderas_compl: new FormControl(0),
+
+    banderas_pvp: new FormControl(0),
+    mastiles_pvp: new FormControl(0),
+    carteles_pvp: new FormControl(0),
+    banderas_compl_pvp: new FormControl(0),
+
+    banderas_amort: new FormControl(),
+    mastiles_amort: new FormControl(),
+    carteles_amort: new FormControl(),
+    banderas_compl_amort: new FormControl(),
+
+    aros: new FormControl(0),
+    carretes: new FormControl(0),
+    aros_pvp: new FormControl(0),
+    carretes_pvp : new FormControl(0),
+
+    aros_amort: new FormControl(),
+    carretes_amort: new FormControl(),
+
+    long_cuerda: new FormControl(0),
+    boyas_amar: new FormControl(0),
+    senales_proh: new FormControl(0),
+    long_cuerda_pvp: new FormControl(0),
+    boyas_amar_pvp: new FormControl(0),
+    senales_proh_pvp: new FormControl(0),
+
+    long_cuerda_amort: new FormControl(),
+    boyas_amar_amort: new FormControl(),
+    senales_proh_amort: new FormControl(),
+
+    boyas_amar_ba: new FormControl(0),
+    boyas_verd_ba: new FormControl(0),
+    boyas_roj_ba: new FormControl(0),
+
+    boyas_amar_ba_pvp: new FormControl(0),
+    boyas_verd_ba_pvp: new FormControl(0),
+    boyas_roj_ba_pvp: new FormControl(0),
+
+    boyas_amar_ba_amort: new FormControl(),
+    boyas_verd_ba_amort: new FormControl(),
+    boyas_roj_ba_amort: new FormControl(),
+  })
+}
 
 readFeatures() {
   this.subscripcionFeatures = this.service.features$.subscribe(
     (results: any) => {
       const beach = (results[0] as any);
       if (results.length > 0) {
+        console.log(results);
         if(this.options==='materiales'){
           if(beach.relatedInformativo.length !== 0){
             this.formBanderas.get('objectid').setValue(beach.relatedInformativo[0].attributes.objectid);
-            this.formBanderas.get('accesos').setValue(beach.relatedInformativo[0].attributes.accesos);
             this.formBanderas.get('banderas').setValue(beach.relatedInformativo[0].attributes.banderas);
             this.formBanderas.get('mastiles').setValue(beach.relatedInformativo[0].attributes.mastiles);
             this.formBanderas.get('carteles').setValue(beach.relatedInformativo[0].attributes.carteles);
@@ -328,7 +380,6 @@ readFeatures() {
               if(beach.relatedHumanos){ this.dinamicForm(this.grados,beach.relatedHumanos );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
-              console.log(this.datosPlayaRelacionada);
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedAfluencia);
 
@@ -347,11 +398,24 @@ readFeatures() {
         });
     }
 
+    clasificacionSelect(){
+      if(this.clasificacionData!=='T'){
+          this.filterClasificacion = 'and clasificacion = \'' + this.clasificacionData+ '\'';
+      }else{
+        this.filterClasificacion = "";
+      }
+       this.loadRecords();
+    }
+
     loadRecords() {
         this.spinnerService.show();
         this.currentUser = this.authService.getCurrentUser();
         const name = this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username;
-        this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'';
+        if(this.filterClasificacion){
+          this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'' + this.filterClasificacion;
+        }else{
+            this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'';
+        }
         this.nomMunicipio = aytos[name].municipio_minus;
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
             this.filtermunicipio, '*', false, this.currentUser.token, 'clasificacion', true).subscribe(
@@ -386,13 +450,13 @@ readFeatures() {
     }
 
     openConfiguration() {
-        this.loadUnitPrice();
+        this.loadUnitPrice('empty');
         $('#configuracion').modal({backdrop: 'static', keyboard: false});
         $('#configuracion').modal('show');
 
     }
 
-    loadUnitPrice() {
+    loadUnitPrice(calculadora) {
         this.spinnerService.show();
         // inicializamos desactivado el esc y el click fuera de la modal
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbUnitarios + '/query',
@@ -402,7 +466,11 @@ readFeatures() {
                     this.formUnitarios.patchValue(result.features[0].attributes);
                     this.mode = 'updates';
                     this.unitarios = result.features[0].attributes;
-                    this.createRangeHumanos(this.unitarios);
+                    console.log(this.unitarios);
+                    if(calculadora==='humanos'){
+                        this.createRangeHumanos(this.unitarios);
+                    }
+
                     this.spinnerService.hide();
                 } else {
                     this.spinnerService.hide();
@@ -438,10 +506,11 @@ readFeatures() {
   }
 
 createRangeHumanos(unitarios){
-
   let playasRelacionadas = this.datosPlayaRelacionada.relatedAfluencia;
   let cantidad = this.datosPlayaRelacionada.relatedHumanos;
-  if(playasRelacionadas && cantidad.length !==0){
+  let totaldias;
+  console.log(playasRelacionadas);
+  if(playasRelacionadas){
     this.calculoTotalHumanosP = [];
     this.calculoTotalHumanos = [];
     let  calcHumanos = {
@@ -464,8 +533,7 @@ createRangeHumanos(unitarios){
 
       calcHumanos.periodos = playasRelacionadas[i].attributes;
       var fecha2 = moment(new Date(playasRelacionadas[i].attributes.fecha_inicio),'YYYY-DD-MMM');
-      var fecha1 = moment(new Date(playasRelacionadas[i].attributes.fecha_fin),'YYYY-DD-MMM').add(1,'day');//sumanos un dias para realizar el calculo de la totalidad de dias
-      var totaldias;
+      var fecha1 = moment(new Date(playasRelacionadas[i].attributes.fecha_fin),'YYYY-DD-MMM');
       switch (playasRelacionadas[i].attributes.incluir_dias) {
 
         case 'TD': {
@@ -501,6 +569,7 @@ createRangeHumanos(unitarios){
   }
     costeTotales.costetotal= costeTotales.totaljefe + costeTotales.totalsoc + costeTotales.totalsocemb + costeTotales.totalsocper;
     this.calculoTotalHumanos.push(costeTotales);
+    console.log(this.calculoTotalHumanosP);
 
   }
 
@@ -520,11 +589,10 @@ calculoTotalSocorristas(data){
 calculadora(medio) {
   this.spinnerService.show();
   this.medio = medio;
-  if(medio ==='humanos'){
-    this.loadUnitPrice();
-  }
+  console.log(this.medio);
   $('#calculadora' + medio).modal('show');
   $('#calculadora' + medio).modal({backdrop: 'static', keyboard: false});
+  this.loadUnitPrice(medio);
   this.spinnerService.hide();
 
 }
@@ -794,11 +862,15 @@ ngOnDestroy() {
   this.service.clearfeaturesSource();
   }
 
-    private getUTC0date(datep) {
+private getUTC0date(datep) {
         const date = new Date(datep);
         // solo necesitamos la parte de la hora, fijo al comienzo de la unix timestamp
         date.setFullYear(1970, 0, 1);
         return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
             date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
     }
+
+calculoMateriales(){
+  console.log(this.formCalcMateriales.get('senales_proh_amort').value);
+}
 }
