@@ -49,17 +49,23 @@ var aytos = {
         "municipio_mayus": "ARONA",
         "istac_code": "38006"
     },
-    ayto_artenara: {
-        "isSuperUser": false,
-        "municipio_minus": "Artenara",
-        "municipio_mayus": "ARTENARA",
-        "istac_code": "35005"
-    },
     ayto_arucas: {
         "isSuperUser": false,
         "municipio_minus": "Arucas",
         "municipio_mayus": "ARUCAS",
         "istac_code": "35006"
+    },
+    ayto_antigua: {
+        "isSuperUser": false,
+        "municipio_minus": "Antigua",
+        "municipio_mayus": "ANTIGUA",
+        "istac_code": "35003"
+    },
+    ayto_arrecife: {
+        "isSuperUser": false,
+        "municipio_minus": "Arrecife",
+        "municipio_mayus": "ARRECIFE",
+        "istac_code": "35004"
     },
     ayto_barlovento: {
         "isSuperUser": false,
@@ -67,10 +73,16 @@ var aytos = {
         "municipio_mayus": "BARLOVENTO",
         "istac_code": "38007"
     },
+    ayto_betancuria: {
+        "isSuperUser": false,
+        "municipio_minus": "Betancuria",
+        "municipio_mayus": "BETANCURIA",
+        "istac_code": "35007"
+    },
     ayto_brenaalta: {
         "isSuperUser": false,
         "municipio_minus": "Breña Alta",
-        "municipio_mayus": "Breña Baja",
+        "municipio_mayus": "BREÑA ALTA",
         "istac_code": "38008"
     },
     ayto_brenabaja: {
@@ -97,6 +109,12 @@ var aytos = {
         "municipio_mayus": "EL SAUZAL",
         "istac_code": "38041"
     },
+    ayto_elrosario: {
+        "isSuperUser": false,
+        "municipio_minus": "El Rosario",
+        "municipio_mayus": "EL ROSARIO",
+        "istac_code": "38032"
+    },
     ayto_elpinar: {
         "isSuperUser": false,
         "municipio_minus": "El Pinar de El Hierro",
@@ -121,11 +139,65 @@ var aytos = {
         "municipio_mayus": "GRANADILLA DE ABONA",
         "istac_code": "38017"
     },
+    ayto_haria: {
+        "isSuperUser": false,
+        "municipio_minus": "Haría",
+        "municipio_mayus": "HARÍA",
+        "istac_code": "35010"
+    },
     ayto_valverde: {
         "isSuperUser": false,
         "municipio_minus": "Valverde",
         "municipio_mayus": "VALVERDE",
         "istac_code": "38048"
+    },
+    ayto_laoliva: {
+        "isSuperUser": false,
+        "municipio_minus": "La Oliva",
+        "municipio_mayus": "LA OLIVA",
+        "istac_code": "35014"
+    },
+    ayto_pajara: {
+        "isSuperUser": false,
+        "municipio_minus": "Pájara",
+        "municipio_mayus": "PÁJARA",
+        "istac_code": "35015"
+    },
+    ayto_puertodelrosario: {
+        "isSuperUser": false,
+        "municipio_minus": "Puerto del Rosario",
+        "municipio_mayus": "PUERTO DEL ROSARIO",
+        "istac_code": "35017"
+    },
+    ayto_sanbartolome: {
+        "isSuperUser": false,
+        "municipio_minus": "San Bartolomé",
+        "municipio_mayus": "SAN BARTOLOMÉ",
+        "istac_code": "35018"
+    },
+    ayto_teguise: {
+        "isSuperUser": false,
+        "municipio_minus": "Teguise",
+        "municipio_mayus": "TEGUISE",
+        "istac_code": "35024"
+    },
+    ayto_tias: {
+        "isSuperUser": false,
+        "municipio_minus": "Tías",
+        "municipio_mayus": "TÍAS",
+        "istac_code": "35028"
+    },
+    ayto_tuineje: {
+        "isSuperUser": false,
+        "municipio_minus": "Tuineje",
+        "municipio_mayus": "TUINEJE",
+        "istac_code": "35030"
+    },
+    ayto_tinajo: {
+        "isSuperUser": false,
+        "municipio_minus": "Tinajo",
+        "municipio_mayus": "TINAJO",
+        "istac_code": "35029"
     },
     ayto_frontera: {
         "isSuperUser": false,
@@ -135,7 +207,7 @@ var aytos = {
     },
     ayto_fuencaliente: {
         "isSuperUser": false,
-        "municipio_minus": "Fuencaliente",
+        "municipio_minus": "Fuencaliente de la Palma",
         "municipio_mayus": "FUENCALIENTE",
         "istac_code": "38014"
     },
@@ -159,7 +231,7 @@ var aytos = {
     },
     ayto_guimar: {
         "isSuperUser": false,
-        "municipio_minus": "Güimár",
+        "municipio_minus": "Güímar",
         "municipio_mayus": "GÜÍMAR",
         "istac_code": "38020"
     },
@@ -352,7 +424,7 @@ var aytos = {
     ayto_puntagorda: {
         "isSuperUser": false,
         "municipio_minus": "Puntagorda",
-        "municipio_mayus": "Puntagorda",
+        "municipio_mayus": "PUNTAGORDA",
         "istac_code": "38029"
     },
     ayto_puntallana: {
