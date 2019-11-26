@@ -1,10 +1,11 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
+import {AppSetting} from '../../models/app-setting';
+import {AppSettingsService} from '../../services/app-settings.service';
 
 declare var Swiper: any;
 declare var $: any;
 declare var jquery: any;
-declare const aytos: any;
 
 @Component({
     selector: 'app-welcome',
@@ -15,7 +16,7 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
 
     municipalityName: string;
 
-    constructor(public authService: AuthGuardService) {
+    constructor(public authService: AuthGuardService, private appSettingsService: AppSettingsService) {
     }
 
     ngAfterViewInit() {
@@ -23,8 +24,11 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.municipalityName = this.authService.getCurrentUser().selectedusername ? this.authService.getCurrentUser().username :
-            aytos[this.authService.getCurrentUser().username].municipio_minus;
+        this.appSettingsService.getJSON().subscribe(data => {
+            const aytos: AppSetting[] = data;
+            this.municipalityName = this.authService.getCurrentUser().selectedusername ? this.authService.getCurrentUser().username :
+                aytos.find(i => i.username === this.authService.getCurrentUser().username).municipio_minus;
+        });
     }
 
     initSwiper() {

@@ -6,8 +6,8 @@ import {RequestService} from '../services/request.service';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {SelectItem} from 'primeng/api';
 import {PopulationService} from '../services/population.service';
-
-declare const aytos: any;
+import {AppSettingsService} from '../services/app-settings.service';
+import {AppSetting} from '../models/app-setting';
 
 @Component({
     selector: 'app-profile',
@@ -19,12 +19,15 @@ export class ProfileComponent implements OnInit {
     current_user: Auth;
 
     constructor(private service: RequestService, private authService: AuthGuardService, private spinnerService: Ng4LoadingSpinnerService,
-                public router: Router, private popService: PopulationService) {
+                public router: Router, private popService: PopulationService, private appSettingsService: AppSettingsService) {
         this.municipalities = [];
-        Object.keys(aytos).forEach(key => {
-            if (!aytos[key].isSuperUser) {
-                this.municipalities.push({label: aytos[key].municipio_minus, value: key});
-            }
+        this.appSettingsService.getJSON().subscribe(data => {
+            const aytos: AppSetting[] = data;
+            aytos.map(v => {
+                if (!v.isSuperUser) {
+                    this.municipalities.push({label: v.municipio_minus, value: v.username});
+                }
+            });
         });
     }
 

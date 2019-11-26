@@ -8,11 +8,12 @@ import {environment} from '../../../environments/environment';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import Swal from 'sweetalert2';
 import {PopulationService} from '../../services/population.service';
+import {AppSettingsService} from '../../services/app-settings.service';
+import {AppSetting} from '../../models/app-setting';
 
 declare var Swiper: any;
 declare var $: any;
 declare var jquery: any;
-declare const aytos: any;
 
 @Component({
     selector: 'app-classification',
@@ -33,7 +34,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     cargaPoblacional: number;
     municipio: Municipality;
     DangerPopulationLevel: number;
-    lastChangeOnselectedBeach: Date;
+    aytos: AppSetting[];
     colsGrade: any;
     visible: string;
     beachs: any[];
@@ -45,7 +46,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     private subscripcionMunicipality;
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
-                private fb: FormBuilder, private popService: PopulationService) {
+                private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService) {
         this.es = {
             firstDayOfWeek: 1,
             dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
@@ -76,7 +77,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.mapHeightContainer = '78vh';
         this.mapZoomLevel = 12;
         this.localClasification = null;
-
         this.colsGrade = [
             {field: 'fecha_inicio', header: 'Inicio', width: '20%', orderBy: 'fecha_inicio'},
             {field: 'fecha_fin', header: 'Fin', width: '20%', orderBy: 'fecha_fin'},
@@ -84,6 +84,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             {field: 'grado', header: 'Grado', width: '20%', type: 'text', orderBy: 'grado'},
             {field: 'grado_valor', header: 'Nivel', width: '20%', type: 'text', orderBy: 'grado_valor'}
         ];
+
         this.formVacational = this.fb.group({
             objectid: new FormControl(''),
             plazas: new FormControl('', Validators.required),
@@ -92,8 +93,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             on_edit: new FormControl('')
         });
         // cargamos los ids de las playas para usarlo posteriormente al mostrar los resultados
-        this.loadBeachsIds();
-        this.readSmunicipality();
+        this.appSettingsService.getJSON().subscribe(data => {
+            this.aytos = data;
+            this.loadBeachsIds();
+            this.readSmunicipality();
+        });
     }
 
     ngOnDestroy() {
@@ -191,7 +195,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     loadBeachsIds() {
         const current_user = this.authService.getCurrentUser();
         const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
-        const filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'';
+        const filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.username === name).municipio_minus + '\'';
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filtermunicipio,
             'objectid', false, this.authService.getCurrentUser().token, 'objectid', true).subscribe(
             (result: any) => {
@@ -219,7 +223,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     readSmunicipality() {
         this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
             (result: Municipality) => {
-                if (result) {
+                if (result.user) {
                     // recalcular el listado de playas al cambiar el municipio
                     this.loadBeachsIds();
                     // actualizar las variables para el nuevo municipio y resetear el formulario vacacional

@@ -4,8 +4,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import Swal from 'sweetalert2';
 import {AuthGuardService} from '../services/auth-guard.service';
-
-declare const aytos: any;
+import {AppSettingsService} from '../services/app-settings.service';
+import {AppSetting} from '../models/app-setting';
 
 @Component({
     selector: 'app-login',
@@ -16,12 +16,17 @@ export class LoginComponent implements OnInit {
     /*Si el usuario ha solicitado mantenerse logueado se establece este valor por defecto,
      en caso de cambiarlo en el portal poner ese valor*/
     private readonly DEFAULT_TIME_KEEP_SIGN_IN: number = 1209600000;
+    private aytos: AppSetting[];
 
-    constructor(public route: ActivatedRoute, public router: Router, private authService: AuthGuardService) {
+    constructor(public route: ActivatedRoute, public router: Router, private authService: AuthGuardService,
+                private appSettingsService: AppSettingsService) {
     }
 
     ngOnInit() {
-        this.setCurrentUser();
+        this.appSettingsService.getJSON().subscribe(data => {
+            this.aytos = data;
+            this.setCurrentUser();
+        });
     }
 
     setCurrentUser() {
@@ -31,7 +36,8 @@ export class LoginComponent implements OnInit {
                     this.router.navigate(['home']);
                     return false;
                 }
-                if (!aytos.hasOwnProperty(new URLSearchParams(fragment).get('username'))) {
+
+                if (!this.aytos.find(i => i.username === new URLSearchParams(fragment).get('username'))) {
                     Swal.fire({
                         type: 'error',
                         title: 'Usuario no permitido',
@@ -45,7 +51,7 @@ export class LoginComponent implements OnInit {
                     token: new URLSearchParams(fragment).get('access_token'),
                     expires: Number(new URLSearchParams(fragment).get('expires_in')),
                     username: new URLSearchParams(fragment).get('username'),
-                    selectedusername: aytos[new URLSearchParams(fragment).get('username')].isSuperUser ? Object.keys(aytos)[0] : null,
+                    selectedusername: this.aytos.find(i => i.username === new URLSearchParams(fragment).get('username')).isSuperUser ? this.aytos[0].username : null,
                     persist: this.getBoolean(new URLSearchParams(fragment).get('persist'))
                 };
                 // timestamp + expires token

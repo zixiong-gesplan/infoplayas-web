@@ -34,7 +34,7 @@
                         </li>
                         <li *ngIf="current_user.selectedusername" class="navbar-toggle">
                             <p-dropdown [options]="municipalities" filter="true"
-                                        (onChange)="updateFilterUser($event)">
+                                        (onChange)="updateFilterUser($event)" placeholder="Seleccione un municipio">
                                 <ng-template let-item pTemplate="selectedItem">
                                     <img src="assets/images/escudos/{{item.value}}.png"
                                          onError="this.src='assets/images/escudos/icon_gesplan.png';"

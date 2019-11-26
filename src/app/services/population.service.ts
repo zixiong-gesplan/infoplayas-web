@@ -4,8 +4,8 @@ import {Municipality} from '../models/municipality';
 import {RequestService} from './request.service';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {BehaviorSubject} from 'rxjs';
-
-declare const aytos: any;
+import {AppSetting} from '../models/app-setting';
+import {AppSettingsService} from './app-settings.service';
 
 @Injectable({
     providedIn: 'root'
@@ -15,8 +15,13 @@ export class PopulationService {
     private sMunicipalitySource = new BehaviorSubject<Municipality>({});
     sMunicipality$ = this.sMunicipalitySource.asObservable();
     private populationName: string;
+    private aytos: AppSetting[];
 
-    constructor(private service: RequestService, private spinnerService: Ng4LoadingSpinnerService) {
+    constructor(private service: RequestService, private spinnerService: Ng4LoadingSpinnerService,
+                private appSettingsService: AppSettingsService) {
+        this.appSettingsService.getJSON().subscribe(data => {
+            this.aytos = data;
+        });
     }
 
     getMunicipality(): Municipality {
@@ -99,9 +104,11 @@ export class PopulationService {
         const mun: Municipality = {
             user: this.populationName,
             year: year,
-            ayuntamiento: aytos[this.populationName].municipio_mayus
+            ayuntamiento: this.aytos.find(i => i.username === this.populationName).municipio_mayus
         };
-        const representation = 'GEOGRAPHICAL[' + aytos[mun.user].istac_code + '],MEASURE[ABSOLUTE],TIME[' + year + ']';
+
+        const representation = 'GEOGRAPHICAL[' + this.aytos.find(i => i.username === mun.user)
+            .istac_code + '],MEASURE[ABSOLUTE],TIME[' + year + ']';
         this.service.getIstacData('POBLACION/data', representation).subscribe(
             (result: any) => {
                 if (result) {
