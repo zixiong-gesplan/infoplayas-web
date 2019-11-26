@@ -25,7 +25,7 @@ declare let filterPlayas: any;
 declare let filterMunicipios: any;
 declare const aytos: any;
 declare const createHomeButton: any;
-declare let listNode: any;
+declare let listNodeViewer: any;
 declare const loadList: any;
 declare let features: any;
 
@@ -237,8 +237,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         });
                     });
                     const listID = 'ulPlayaViewer';
-                    listNode = $('#ulPlayaViewer')[0];
-                    listNode.addEventListener('click', onListClickHandler);
+                    listNodeViewer = $('#ulPlayaViewer')[0];
+                    listNodeViewer.addEventListener('click', onListClickHandler);
 
                     loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (nBeachs) {
                         // TODO
@@ -264,11 +264,13 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
                     (result: Municipality) => {
                         if (result && municipiosLayer) {
+                            viewer.zoom = this.zoom;
+
                             this.currentUser = this.authService.getCurrentUser();
-                            IdentityManager.credentials[0].userId = this.currentUser.username;
-                            filterMunicipios = 'municipio = \'' + aytos[result.ayuntamiento].municipio_mayus + '\'';
+                            IdentityManager.credentials[0].userId = result.user;
+                            filterMunicipios = 'municipio = \'' + aytos[result.user].municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            const filter = 'municipio = \'' + aytos[result.ayuntamiento].municipio_minus + '\'';
+                            const filter = 'municipio = \'' + aytos[result.user].municipio_minus + '\'';
                             playasLayer.definitionExpression = filter;
                             loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
                                 // TODO

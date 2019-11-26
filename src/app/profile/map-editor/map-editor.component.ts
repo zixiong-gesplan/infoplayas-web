@@ -689,17 +689,16 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
                     (result: Municipality) => {
                         if (result && municipiosLayer) {
-                            console.log(result);
                             // cierro formularios por si estan abiertos cuando se cambia de municipios
                             t.sendMessage('noid', unselectFeature(), null);
                             t.centroidOption = false;
                             view.zoom = this.zoom;
 
                             this.currentUser = this.authService.getCurrentUser();
-                            IdentityManager.credentials[0].userId = this.currentUser.username;
-                            filterMunicipios = 'municipio = \'' + aytos[result.ayuntamiento].municipio_mayus + '\'';
+                            IdentityManager.credentials[0].userId = result.user;
+                            filterMunicipios = 'municipio = \'' + aytos[result.user].municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            let filter = 'municipio = \'' + aytos[result.ayuntamiento].municipio_minus + '\'';
+                            let filter = 'municipio = \'' + aytos[result.user].municipio_minus + '\'';
                             filter = playasLayer.definitionExpression.indexOf(' AND ') !== -1 ? filter +
                                 playasLayer.definitionExpression.substr(playasLayer.definitionExpression.indexOf(' AND ')) : filter;
                             playasLayer.definitionExpression = filter;
