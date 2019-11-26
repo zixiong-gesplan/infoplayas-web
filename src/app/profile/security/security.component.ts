@@ -295,12 +295,12 @@ formCalculadoraMateriales(){
     carteles_amort: new FormControl(),
     banderas_compl_amort: new FormControl(),
 
-    aros: new FormControl(0),
+    salvavidas: new FormControl(0),
     carretes: new FormControl(0),
-    aros_pvp: new FormControl(0),
+    salvavidas_pvp: new FormControl(0),
     carretes_pvp : new FormControl(0),
 
-    aros_amort: new FormControl(),
+    salvavidas_amort: new FormControl(),
     carretes_amort: new FormControl(),
 
     long_cuerda: new FormControl(0),
@@ -331,9 +331,9 @@ formCalculadoraMateriales(){
 readFeatures() {
   this.subscripcionFeatures = this.service.features$.subscribe(
     (results: any) => {
+      console.log(results);
       const beach = (results[0] as any);
       if (results.length > 0) {
-        console.log(results);
         if(this.options==='materiales'){
           if(beach.relatedInformativo.length !== 0){
             this.formBanderas.get('objectid').setValue(beach.relatedInformativo[0].attributes.objectid);
@@ -589,16 +589,16 @@ calculoTotalSocorristas(data){
 calculadora(medio) {
   this.spinnerService.show();
   this.medio = medio;
-  console.log(this.medio);
   $('#calculadora' + medio).modal('show');
   $('#calculadora' + medio).modal({backdrop: 'static', keyboard: false});
   this.loadUnitPrice(medio);
   this.spinnerService.hide();
 
 }
-    public codMunicipio(datosPlaya) {
-        this.codMun = this.datosPlaya.features[0].attributes.id_dgse.substring(0, 3);
-        return this.codMun;
+
+codMunicipio(datosPlaya) {
+    this.codMun = this.datosPlaya.features[0].attributes.id_dgse.substring(0, 3);
+      return this.codMun;
     }
     // 2016-06-22 19:10:25 postgres format Date type
     public toDateFormat(timePart: boolean): string {
@@ -818,7 +818,7 @@ public updateHorarios(){
         ultimo_editor: ''
       },
   };
-  bucleHorarios.push(this.formHorarios.value);
+
   bucleHorarios.forEach(r => {
           r.horariosperiodos.forEach(x =>{
           pHorariosAdd.attributes = x;
@@ -869,8 +869,4 @@ private getUTC0date(datep) {
         return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
             date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
     }
-
-calculoMateriales(){
-  console.log(this.formCalcMateriales.get('senales_proh_amort').value);
-}
 }

@@ -496,7 +496,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 <div class="modal fade" tabindex="-1" role="dialog" id="calculadoramateriales">
   <div class="modal-dialog modal-dialog-calculadora" role="document">
     <div class="modal-content">
-  <form [formGroup]="formCalcMateriales" (ngSubmit)="calculoMateriales()">
+  <form [formGroup]="formCalcMateriales">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
@@ -542,25 +542,29 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
           <tr>
 
 
-              <th class="centrar"><input type="text"   formControlName="banderas" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   formControlName="mastiles" class="form-control  inputCustom" readonly ></th>
-              <th class="centrar"><input type="text"   formControlName="carteles" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   formControlName="banderas_compl" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formBanderas.value.banderas}}" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formBanderas.value.mastiles}}"  class="form-control  inputCustom" readonly ></th>
+              <th class="centrar"><input type="text"   value="{{formBanderas.value.carteles}}"  class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formBanderas.value.banderas_comp}}"  class="form-control  inputCustom" readonly></th>
 
-              <th class="centrar"><input type="text"   formControlName="banderas_pvp" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   formControlName="mastiles_pvp" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   formControlName="carteles_pvp" class="form-control  inputCustom" readonly></th>
-             <th class="centrar"><input type="text"    formControlName="banderas_compl_pvp" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formUnitarios.value.bandera_pvp}}"  class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formUnitarios.value.mastil_pvp}}"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formUnitarios.value.cartel_pvp}}"  class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"    value="{{formUnitarios.value.bandera_comp_pvp}}"  class="form-control  inputCustom" readonly></th>
 
              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="banderas_amort"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="mastiles_amort"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="carteles_amort"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="banderas_compl_amort"></th>
-             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly ></th>
-             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.banderas * formUnitarios.value.bandera_pvp * formCalcMateriales.value.banderas_amort / 100 }}"></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.mastiles * formUnitarios.value.mastil_pvp * formCalcMateriales.value.mastiles_amort / 100 }}"></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.carteles * formUnitarios.value.cartel_pvp * formCalcMateriales.value.carteles_amort / 100 }}"></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.banderas_comp * formUnitarios.value.bandera_comp_pvp * formCalcMateriales.value.banderas_compl_amort / 100 }}"></th>
+
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formBanderas.value.banderas_comp * formUnitarios.value.bandera_comp_pvp * formCalcMateriales.value.banderas_compl_amort / 100) +
+                                                                                                          (formBanderas.value.mastiles * formUnitarios.value.mastil_pvp * formCalcMateriales.value.mastiles_amort / 100) +
+                                                                                                          (formBanderas.value.carteles * formUnitarios.value.cartel_pvp * formCalcMateriales.value.carteles_amort / 100) +
+                                                                                                          (formBanderas.value.banderas_comp * formUnitarios.value.bandera_comp_pvp * formCalcMateriales.value.banderas_compl_amort / 100 )}}"></th>
           </tr>
             </ng-template >
         </p-table>
@@ -591,15 +595,15 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             </tr>
           <tr>
 
-              <th class="centrar"><input type="text"   formControlName="aros" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   formControlName="carretes" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   formControlName="aros_pvp" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   formControlName="carretes_pvp" class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" ></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" ></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly ></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formPasiva.value.salvavidas}}"  class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formPasiva.value.carretes}}" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formUnitarios.value.salvavidas_pvp}}" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formUnitarios.value.carrete_pvp}}" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="salvavidas_amort"></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="carretes_amort"></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formPasiva.value.salvavidas * formUnitarios.value.salvavidas_pvp * formCalcMateriales.value.salvavidas_amort / 100}}"></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formPasiva.value.salvavidas * formUnitarios.value.salvavidas_pvp * formCalcMateriales.value.carretes_amort / 100}}"></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formPasiva.value.salvavidas * formUnitarios.value.salvavidas_pvp * formCalcMateriales.value.salvavidas_amort / 100) + (formPasiva.value.carretes * formUnitarios.value.carrete_pvp * formCalcMateriales.value.carretes_amort / 100)}}"></th>
           </tr>
             </ng-template >
         </p-table>
@@ -633,16 +637,16 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               </tr>
             <tr>
 
-                <th class="centrar"><input type="text"  formControlName="long_cuerda" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  formControlName="boyas_amar" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  value="{{formBalizamiento.value.m_cuerda}}" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  value="{{formBalizamiento.value.boyas_amarillas}}"  class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  formControlName="senales_proh" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  formControlName="long_cuerda_pvp" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  value="{{formUnitarios.value.m_cuerda_pvp}}" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  formControlName="boyas_amar_pvp" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  formControlName="senales_proh_pvp" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="long_cuerda_amort"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="boyas_amar_amort"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="senales_proh_amort"></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formBalizamiento.value.m_cuerda * formUnitarios.value.m_cuerda_pvp * formCalcMateriales.value.long_cuerda_amort / 100}}"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
@@ -690,33 +694,36 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <tr>
 
 
-                  <th class="centrar"><input type="text"  formControlName="boyas_amar_ba" class="form-control  inputCustom" readonly></th>
-                  <th class="centrar"><input type="text"  formControlName="boyas_verd_ba" class="form-control  inputCustom" readonly></th>
-                 <th class="centrar"><input type="text"   formControlName="boyas_roj_ba" class="form-control   inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  value="{{formBalizamiento.value.boyas_amarillas}}"  class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  value="{{formBalizamiento.value.boyas_verdes}}"  class="form-control  inputCustom" readonly></th>
+                 <th class="centrar"><input type="text"   value="{{formBalizamiento.value.boyas_rojas}}"  class="form-control   inputCustom" readonly></th>
 
 
-                 <th class="centrar"><input type="text"   formControlName="boyas_amar_ba_pvp" class="form-control  inputCustom"  readonly></th>
-                 <th class="centrar"><input type="text"   formControlName="boyas_verd_ba_pvp" class="form-control  inputCustom"  readonly ></th>
-                 <th class="centrar"><input type="text"   formControlName="boyas_roj_ba_pvp" class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   value="{{formUnitarios.value.boya_pvp}}"  class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   value="{{formUnitarios.value.boya_pvp}}"  class="form-control  inputCustom"  readonly ></th>
+                 <th class="centrar"><input type="text"   value="{{formUnitarios.value.boya_pvp}}"  class="form-control  inputCustom"  readonly></th>
 
                  <th class="centrar"><input type="text"   class="form-control  inputCustom"  placeholder="%" formControlName="boyas_amar_ba_amort"></th>
                  <th class="centrar"><input type="text"   class="form-control  inputCustom"  placeholder="%" formControlName="boyas_verd_ba_amort"></th>
                  <th class="centrar"><input type="text"   class="form-control  inputCustom"  placeholder="%" formControlName="boyas_roj_ba_amort"></th>
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly value="{{formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_amar_ba_amort / 100}}"></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly value="{{formBalizamiento.value.boyas_verdes * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_verd_ba_amort / 100}}"></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly value="{{formBalizamiento.value.boyas_rojas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_roj_ba_amort / 100}}"></th>
+
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_amar_ba_amort / 100) +
+                                                                                                            (formBalizamiento.value.boyas_verdes * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_verd_ba_amort / 100) +
+                                                                                                            (formBalizamiento.value.boyas_rojas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_roj_ba_amort / 100) }}"></th>
 
               </tr>
                 </ng-template >
             </p-table>
 
       </div>
-      <p></p>
+    <br><br>
 
-      <div class="modal-footer botonCentrado">
+      <!-- <div class="modal-footer botonCentrado">
         <button type="submit" class="btn btn-primary">Calcular</button>
-      </div>
+      </div> -->
   </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
