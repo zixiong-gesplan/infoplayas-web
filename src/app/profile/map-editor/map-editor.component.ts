@@ -14,6 +14,8 @@ import Swal from 'sweetalert2';
 import {Tableids} from '../../models/tableids';
 import {PopulationService} from '../../services/population.service';
 import {Municipality} from '../../models/municipality';
+import {AppSetting} from '../../models/app-setting';
+import {AppSettingsService} from '../../services/app-settings.service';
 
 declare var $: any;
 declare var jquery: any;
@@ -35,7 +37,6 @@ declare let filterPlayas: any;
 declare let filterMunicipios: any;
 declare const playasLayerId: any;
 declare const municipiosLayerId: any;
-declare const aytos: any;
 declare const forms: any;
 declare let editFeature: any;
 declare let listNode: any;
@@ -88,10 +89,11 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     private currentUser: Auth;
     private subscripcionMunicipality;
     tableIds: Tableids;
+    private aytos: AppSetting[];
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
-                private popService: PopulationService) {
+                private popService: PopulationService, private appSettingsService: AppSettingsService) {
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
             {label: 'Peligrosa o susceptible de producir daño', value: 'P'},
@@ -143,8 +145,11 @@ export class MapEditorComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.spinnerService.show();
-        this.currentUser = this.authService.getCurrentUser();
-        this.setMap();
+        this.appSettingsService.getJSON().subscribe(data => {
+            this.aytos = data;
+            this.currentUser = this.authService.getCurrentUser();
+            this.setMap();
+        });
         this.formDanger = this.fb.group({
             objectid: new FormControl(''),
             corrientes_mareas: new FormControl(''),
@@ -546,8 +551,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     const user = IdentityManager.credentials[0].userId;
 
                     // Filter by changing runtime params
-                    filterPlayas = 'municipio = \'' + aytos[user].municipio_minus + '\'';
-                    filterMunicipios = 'municipio = \'' + aytos[user].municipio_mayus + '\'';
+                    filterPlayas = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_minus + '\'';
+                    filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_mayus + '\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
 
@@ -673,7 +678,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
 
                 // aplicamos distintos filtros al mapa en funcion de lo que se quiera mostrar en cada apartado
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
-                    let filter = 'municipio = \'' + aytos[IdentityManager.credentials[0].userId].municipio_minus + '\'';
+                    let filter = 'municipio = \'' + t.aytos.find(i => i.username === IdentityManager.credentials[0].userId).municipio_minus + '\'';
                     filter = event.target.dataset.filter === '.protection' ? filter +
                         ' AND clasificacion <> \'UP\''
                         : event.target.dataset.filter === '.result' ? filter
@@ -696,9 +701,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
 
                             this.currentUser = this.authService.getCurrentUser();
                             IdentityManager.credentials[0].userId = result.user;
-                            filterMunicipios = 'municipio = \'' + aytos[result.user].municipio_mayus + '\'';
+                            filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            let filter = 'municipio = \'' + aytos[result.user].municipio_minus + '\'';
+                            let filter = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_minus + '\'';
                             filter = playasLayer.definitionExpression.indexOf(' AND ') !== -1 ? filter +
                                 playasLayer.definitionExpression.substr(playasLayer.definitionExpression.indexOf(' AND ')) : filter;
                             playasLayer.definitionExpression = filter;

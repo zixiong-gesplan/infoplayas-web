@@ -5,8 +5,6 @@ import {environment} from '../../environments/environment';
 import {Router} from '@angular/router';
 import {PopulationService} from './population.service';
 
-declare const aytos: any;
-
 declare function init_plugins();
 
 @Injectable({

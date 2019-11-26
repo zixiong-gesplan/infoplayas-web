@@ -9,6 +9,8 @@ import {GradeRecord} from '../../models/grade-record';
 import * as moment from 'moment';
 import {PopulationService} from '../../services/population.service';
 import {Municipality} from '../../models/municipality';
+import {AppSettingsService} from '../../services/app-settings.service';
+import {AppSetting} from '../../models/app-setting';
 
 declare var $: any;
 declare var jquery: any;
@@ -23,7 +25,6 @@ declare const playasLayerViewerId: any;
 declare const municipiosLayerId: any;
 declare let filterPlayas: any;
 declare let filterMunicipios: any;
-declare const aytos: any;
 declare const createHomeButton: any;
 declare let listNodeViewer: any;
 declare const loadList: any;
@@ -44,14 +45,19 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     private subscripcionMunicipality;
     private lastGraphicLayerId: string;
     selectedPeriodos: GradeRecord[];
+    private aytos: AppSetting[];
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
-                private service: EsriRequestService, private popService: PopulationService) {
+                private service: EsriRequestService, private popService: PopulationService,
+                private appSettingsService: AppSettingsService) {
     }
 
     ngOnInit() {
-        this.currentUser = this.authService.getCurrentUser();
-        this.setMap();
+        this.appSettingsService.getJSON().subscribe(data => {
+            this.aytos = data;
+            this.currentUser = this.authService.getCurrentUser();
+            this.setMap();
+        });
     }
 
     // preparamos una lista de features provenientes del REST API para que tenga la estructura para añadir a la capa grafica de un mapa.
@@ -106,7 +112,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     ssl: true,
                     token: this.currentUser.token,
                     userId: this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username
-            });
+                });
                 // then we load a web map from an id
                 const webmap = new WebMap({
                     portalItem: {
@@ -200,8 +206,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     const user = IdentityManager.credentials[0].userId;
 
                     // Filter by changing runtime params
-                    filterPlayas = 'municipio = \'' + aytos[user].municipio_minus + '\'';
-                    filterMunicipios = 'municipio = \'' + aytos[user].municipio_mayus + '\'';
+                    filterPlayas = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_minus + '\'';
+                    filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_mayus + '\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
 
@@ -263,14 +269,14 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 // recargamos el filtro de municipio y de playas cuando se selecciona un nuevo municipio desde un superusuario
                 this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
                     (result: Municipality) => {
-                        if (result && municipiosLayer) {
+                        if (result.user && municipiosLayer) {
                             viewer.zoom = this.zoom;
 
                             this.currentUser = this.authService.getCurrentUser();
                             IdentityManager.credentials[0].userId = result.user;
-                            filterMunicipios = 'municipio = \'' + aytos[result.user].municipio_mayus + '\'';
+                            filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            const filter = 'municipio = \'' + aytos[result.user].municipio_minus + '\'';
+                            const filter = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_minus + '\'';
                             playasLayer.definitionExpression = filter;
                             loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
                                 // TODO
