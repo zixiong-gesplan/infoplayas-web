@@ -45,6 +45,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     formPasiva: FormGroup;
     formTorres: FormGroup;
     formHorarios: FormGroup;
+    formCalcMateriales: FormGroup;
     codMun;
     mode: string = 'updates';
     latitud: number = 0;
@@ -122,6 +123,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
         this.formpasiva();
         this.formunitarios();
         this.formmedioshumanos();
+        this.formCalculadoraMateriales();
     }
 
       dinamicForm(grados,related){
@@ -272,6 +274,55 @@ formpasiva(){
     ultimo_editor: new FormControl(this.currentUser.username),
     ultimo_cambio: new FormControl(this.toDateFormat(true))
   });
+}
+formCalculadoraMateriales(){
+  this.formCalcMateriales = this.fb.group({
+    banderas: new FormControl(0),
+    mastiles: new FormControl(0),
+    carteles: new FormControl(0),
+    banderas_compl: new FormControl(0),
+
+    banderas_pvp: new FormControl(0),
+    mastiles_pvp: new FormControl(0),
+    carteles_pvp: new FormControl(0),
+    banderas_compl_pvp: new FormControl(0),
+
+    banderas_amort: new FormControl(),
+    mastiles_amort: new FormControl(),
+    carteles_amort: new FormControl(),
+    banderas_compl_amort: new FormControl(),
+
+    aros: new FormControl(0),
+    carretes: new FormControl(0),
+    aros_pvp: new FormControl(0),
+    carretes_pvp : new FormControl(0),
+
+    aros_amort: new FormControl(),
+    carretes_amort: new FormControl(),
+
+    long_cuerda: new FormControl(0),
+    boyas_amar: new FormControl(0),
+    senales_proh: new FormControl(0),
+    long_cuerda_pvp: new FormControl(0),
+    boyas_amar_pvp: new FormControl(0),
+    senales_proh_pvp: new FormControl(0),
+
+    long_cuerda_amort: new FormControl(),
+    boyas_amar_amort: new FormControl(),
+    senales_proh_amort: new FormControl(),
+
+    boyas_amar_ba: new FormControl(0),
+    boyas_verd_ba: new FormControl(0),
+    boyas_roj_ba: new FormControl(0),
+
+    boyas_amar_ba_pvp: new FormControl(0),
+    boyas_verd_ba_pvp: new FormControl(0),
+    boyas_roj_ba_pvp: new FormControl(0),
+
+    boyas_amar_ba_amort: new FormControl(),
+    boyas_verd_ba_amort: new FormControl(),
+    boyas_roj_ba_amort: new FormControl(),
+  })
 }
 
 readFeatures() {
@@ -809,11 +860,15 @@ ngOnDestroy() {
   this.service.clearfeaturesSource();
   }
 
-    private getUTC0date(datep) {
+private getUTC0date(datep) {
         const date = new Date(datep);
         // solo necesitamos la parte de la hora, fijo al comienzo de la unix timestamp
         date.setFullYear(1970, 0, 1);
         return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
             date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
     }
+
+calculoMateriales(){
+  console.log(this.formCalcMateriales.get('senales_proh_amort').value);
+}
 }

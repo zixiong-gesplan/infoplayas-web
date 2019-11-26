@@ -496,6 +496,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 <div class="modal fade" tabindex="-1" role="dialog" id="calculadoramateriales">
   <div class="modal-dialog modal-dialog-calculadora" role="document">
     <div class="modal-content">
+  <form [formGroup]="formCalcMateriales" (ngSubmit)="calculoMateriales()">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
@@ -512,7 +513,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th colspan="4" class="tamanhofont">Número</th>
               <th colspan="4" class="tamanhofont">PVP Unitario</th>
               <th colspan="4" class="tamanhofont">Amortización Anual</th>
-              <th colspan="4"  class="tamanhofont">PVP €/año</th>
+              <th colspan="4" class="tamanhofont">PVP €/año</th>
               <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
             </tr>
 
@@ -541,19 +542,20 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
           <tr>
 
 
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly ></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   formControlName="banderas" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   formControlName="mastiles" class="form-control  inputCustom" readonly ></th>
+              <th class="centrar"><input type="text"   formControlName="carteles" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   formControlName="banderas_compl" class="form-control  inputCustom" readonly></th>
 
-             <th class="centrar"><input type="text"   class="form-control  inputCustom"></th>
-             <th class="centrar"><input type="text"   class="form-control  inputCustom"></th>
-             <th class="centrar"><input type="text"   class="form-control  inputCustom"></th>
-             <th class="centrar"><input type="text"   class="form-control  inputCustom"></th>
-             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   formControlName="banderas_pvp" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   formControlName="mastiles_pvp" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   formControlName="carteles_pvp" class="form-control  inputCustom" readonly></th>
+             <th class="centrar"><input type="text"    formControlName="banderas_compl_pvp" class="form-control  inputCustom" readonly></th>
+
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="banderas_amort"></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="mastiles_amort"></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="carteles_amort"></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="banderas_compl_amort"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly ></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
@@ -589,12 +591,12 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             </tr>
           <tr>
 
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom"></th>
-              <th class="centrar"><input type="text"   class="form-control  inputCustom"></th>
+              <th class="centrar"><input type="text"   formControlName="aros" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   formControlName="carretes" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   formControlName="aros_pvp" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   formControlName="carretes_pvp" class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" ></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" ></th>
               <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly ></th>
               <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
               <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
@@ -603,7 +605,6 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         </p-table>
         <br>
           <h4 class="modal-title text-center" style="color:#8CBB28">Torre o silla de vigilancia - Balizamiento de Zonas de Baño Marítima</h4>
-          <form [formGroup]="formBalizamiento">
           <p-table>
             <ng-template pTemplate="header">
               <tr>
@@ -632,15 +633,15 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               </tr>
             <tr>
 
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom"></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom"></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom"></th>
+                <th class="centrar"><input type="text"  formControlName="long_cuerda" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  formControlName="boyas_amar" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  formControlName="senales_proh" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  formControlName="long_cuerda_pvp" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  formControlName="boyas_amar_pvp" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  formControlName="senales_proh_pvp" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="long_cuerda_amort"></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="boyas_amar_amort"></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="senales_proh_amort"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
@@ -648,7 +649,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             </tr>
               </ng-template >
           </p-table>
-        </form>
+
           <br>
             <h4 class="modal-title text-center" style="color:#8CBB28">Balizamiento de canales de lanzamiento varada</h4>
             <p-table>
@@ -689,17 +690,18 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <tr>
 
 
-                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                  <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly></th>
-                 <th class="centrar"><input type="text"   class="form-control   inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  formControlName="boyas_amar_ba" class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  formControlName="boyas_verd_ba" class="form-control  inputCustom" readonly></th>
+                 <th class="centrar"><input type="text"   formControlName="boyas_roj_ba" class="form-control   inputCustom" readonly></th>
 
 
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly ></th>
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  ></th>
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  ></th>
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  ></th>
+                 <th class="centrar"><input type="text"   formControlName="boyas_amar_ba_pvp" class="form-control  inputCustom"  readonly></th>
+                 <th class="centrar"><input type="text"   formControlName="boyas_verd_ba_pvp" class="form-control  inputCustom"  readonly ></th>
+                 <th class="centrar"><input type="text"   formControlName="boyas_roj_ba_pvp" class="form-control  inputCustom"  readonly></th>
+
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  placeholder="%" formControlName="boyas_amar_ba_amort"></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  placeholder="%" formControlName="boyas_verd_ba_amort"></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom"  placeholder="%" formControlName="boyas_roj_ba_amort"></th>
                  <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
                  <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
                  <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly></th>
@@ -713,8 +715,9 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
       <p></p>
 
       <div class="modal-footer botonCentrado">
-        <button type="button" class="btn btn-primary">Calcular</button>
+        <button type="submit" class="btn btn-primary">Calcular</button>
       </div>
+  </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
