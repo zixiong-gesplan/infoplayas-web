@@ -280,47 +280,17 @@ formpasiva(){
 }
 formCalculadoraMateriales(){
   this.formCalcMateriales = this.fb.group({
-    banderas: new FormControl(0),
-    mastiles: new FormControl(0),
-    carteles: new FormControl(0),
-    banderas_compl: new FormControl(0),
-
-    banderas_pvp: new FormControl(0),
-    mastiles_pvp: new FormControl(0),
-    carteles_pvp: new FormControl(0),
-    banderas_compl_pvp: new FormControl(0),
-
     banderas_amort: new FormControl(),
     mastiles_amort: new FormControl(),
     carteles_amort: new FormControl(),
     banderas_compl_amort: new FormControl(),
 
-    salvavidas: new FormControl(0),
-    carretes: new FormControl(0),
-    salvavidas_pvp: new FormControl(0),
-    carretes_pvp : new FormControl(0),
-
     salvavidas_amort: new FormControl(),
     carretes_amort: new FormControl(),
-
-    long_cuerda: new FormControl(0),
-    boyas_amar: new FormControl(0),
-    senales_proh: new FormControl(0),
-    long_cuerda_pvp: new FormControl(0),
-    boyas_amar_pvp: new FormControl(0),
-    senales_proh_pvp: new FormControl(0),
 
     long_cuerda_amort: new FormControl(),
     boyas_amar_amort: new FormControl(),
     senales_proh_amort: new FormControl(),
-
-    boyas_amar_ba: new FormControl(0),
-    boyas_verd_ba: new FormControl(0),
-    boyas_roj_ba: new FormControl(0),
-
-    boyas_amar_ba_pvp: new FormControl(0),
-    boyas_verd_ba_pvp: new FormControl(0),
-    boyas_roj_ba_pvp: new FormControl(0),
 
     boyas_amar_ba_amort: new FormControl(),
     boyas_verd_ba_amort: new FormControl(),
@@ -331,7 +301,6 @@ formCalculadoraMateriales(){
 readFeatures() {
   this.subscripcionFeatures = this.service.features$.subscribe(
     (results: any) => {
-      console.log(results);
       const beach = (results[0] as any);
       if (results.length > 0) {
         if(this.options==='materiales'){
@@ -466,7 +435,6 @@ readFeatures() {
                     this.formUnitarios.patchValue(result.features[0].attributes);
                     this.mode = 'updates';
                     this.unitarios = result.features[0].attributes;
-                    console.log(this.unitarios);
                     if(calculadora==='humanos'){
                         this.createRangeHumanos(this.unitarios);
                     }

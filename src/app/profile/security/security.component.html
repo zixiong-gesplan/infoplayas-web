@@ -77,7 +77,7 @@
       <form [formGroup]="formMediosHumanos" (ngSubmit)="updateMediosHumanos()">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" >&times;</span></button>
-        <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}  </h4>
+        <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion === 'L' ? 'LIBRE' : clasificacion === 'UP' ? 'USO PROHIBIDO' : 'PELIGROSA'}}  </h4>
           <div class="container">
             <div class="row">
             <h5 class="text-center">Longitud de la playa: {{longitudPlaya}} mts</h5>
@@ -132,7 +132,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
+        <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion === 'L' ? 'LIBRE' : clasificacion === 'UP' ? 'USO PROHIBIDO' : 'PELIGROSA'}}</h4>
       </div>
   <div class="modal-body">
  <h4 class="centrar text-color-grey-646464 font-weight-700"  title="Artículo 9, 10 y Anexo III del Decreto 116/2018: Artículo 9. Banderas.
@@ -385,7 +385,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
+          <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion === 'L' ? 'LIBRE' : clasificacion === 'UP' ? 'USO PROHIBIDO' : 'PELIGROSA'}}</h4>
           <h5 class="modal-title text-center">Calculadora de medios - {{medio | titlecase}}</h5>
       </div>
       <div class="modal-body">
@@ -499,7 +499,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
   <form [formGroup]="formCalcMateriales">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion | titlecase}}</h4>
+          <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion === 'L' ? 'LIBRE' : clasificacion === 'UP' ? 'USO PROHIBIDO' : 'PELIGROSA'}}</h4>
           <h5 class="modal-title text-center">Calculadora de medios - {{medio | titlecase}}</h5>
           <div class="row">
           <h5 class="text-center">Longitud de la playa: {{longitudPlaya}} mts</h5>
@@ -639,10 +639,10 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 
                 <th class="centrar"><input type="text"  value="{{formBalizamiento.value.m_cuerda}}" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  value="{{formBalizamiento.value.boyas_amarillas}}"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  formControlName="senales_proh" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  value="" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  value="{{formUnitarios.value.m_cuerda_pvp}}" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  formControlName="boyas_amar_pvp" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  formControlName="senales_proh_pvp" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  value="{{formUnitarios.value.boya_pvp}}" class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  value="" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="long_cuerda_amort"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="boyas_amar_amort"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="senales_proh_amort"></th>
