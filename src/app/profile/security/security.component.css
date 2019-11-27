@@ -88,7 +88,11 @@
     -webkit-border-top-right-radius: 6px;
     -moz-border-radius-topleft: 6px;
     -moz-border-radius-topright: 6px;
-      background-color: #ABF0AF;
+    background-color: #ABF0AF;
+}
+.totalCalculadora{
+  color: #D6072D !important;
+  font-size: 0.8em !important;
 }
 
 

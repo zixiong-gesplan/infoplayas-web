@@ -13,11 +13,11 @@
 <section id="shop" class="paddingtopbottom100px">
   <div class="container">
     <div class="section-title text-center">
-        <h2 class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: {{nomMunicipio | titlecase}} <i class="fa fa-cog  pointer" aria-hidden="true" title="Añada los precios unitarios" (click)="openConfiguration()"></i></h2>
+        <h2 class=" font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize text-center">Playas del municipio de: <span style="color: #4AC205 !important;">{{nomMunicipio | titlecase}}</span></h2>
     </div>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-8">
           <div class="form-group">
             <label for="sel1"><h4>Filtrar por clasificación:</h4></label>
             <select class="form-control" [(ngModel)]="clasificacionData"  (change)="clasificacionSelect()">
@@ -28,10 +28,10 @@
             </select>
           </div>
         </div>
-        <!-- <div class="col-md-4">
-            <label for="sel1"><h4>Buscar por nombre de playa:</h4></label>
-           <input type="text" class="form-control" placeholder="Nombre de playa" aria-describedby="basic-addon1" (change)="prueba($event)">
-        </div> -->
+        <div class="col-md-4 text-right">
+            <label for="sel1"><h6>Introduzca los precios unitarios</h6></label>
+           <button type="button" class="btn btn-info" (click)="openConfiguration()">Precios por unidad</button>
+        </div>
       </div>
     </div>
 
@@ -498,7 +498,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
     <div class="modal-content">
   <form [formGroup]="formCalcMateriales">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reset_calculadora()"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title text-center" style="color:#8CBB28">IDGSE: {{iddgse}} - {{!nombre_playa ? 'Nombre sin asignar' : nombre_playa}} - {{clasificacion === 'L' ? 'LIBRE' : clasificacion === 'UP' ? 'USO PROHIBIDO' : 'PELIGROSA'}}</h4>
           <h5 class="modal-title text-center">Calculadora de medios - {{medio | titlecase}}</h5>
           <div class="row">
@@ -514,7 +514,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th colspan="4" class="tamanhofont">PVP Unitario</th>
               <th colspan="4" class="tamanhofont">Amortización Anual</th>
               <th colspan="4" class="tamanhofont">PVP €/año</th>
-              <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
+              <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
             </tr>
 
             <tr>
@@ -577,7 +577,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th colspan="2" class="tamanhofont">PVP Unitario</th>
               <th colspan="2" class="tamanhofont">Amortización Anual</th>
               <th colspan="2"  class="tamanhofont">PVP €/año</th>
-              <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
+              <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
             </tr>
             <tr>
               <th class="tamanhofont">Aros Salvavidas</th>
@@ -616,7 +616,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                 <th colspan="3" class="tamanhofont">PVP Unitario</th>
                 <th colspan="3" class="tamanhofont">Amortización Anual</th>
                 <th colspan="3" class="tamanhofont">PVP €/año</th>
-                <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
+                <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
               </tr>
               <tr>
                 <th class="tamanhofont">Longitud cuerda(m)</th>
@@ -663,7 +663,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                   <th colspan="3" class="tamanhofont">PVP Unitario</th>
                   <th colspan="3" class="tamanhofont">Amortización Anual</th>
                   <th colspan="3"  class="tamanhofont">PVP €/año</th>
-                  <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
+                  <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
                 </tr>
 
                 <tr>
@@ -726,7 +726,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                   <th colspan="4" class="tamanhofont">PVP Unitario</th>
                   <th colspan="4" class="tamanhofont">Amortización Anual</th>
                   <th colspan="4" class="tamanhofont">PVP €/año</th>
-                  <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
+                  <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
                 </tr>
                 <tr>
                   <th class="tamanhofont">Torres - Sillas de vigilancia</th>
