@@ -12,6 +12,6 @@ export class AppSettingsService {
     }
 
     public getJSON(): Observable<any> {
-        return this.http.get('./assets/js/esri-custom/aytos.json');
+        return this.http.get('assets/js/esri-custom/aytos.json');
     }
 }
