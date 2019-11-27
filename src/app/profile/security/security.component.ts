@@ -118,9 +118,9 @@ export class SecurityComponent implements OnInit, OnDestroy {
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
             this.loadRecords();
+            this.readSmuncipality();
         });
         this.readFeatures();
-        this.readSmuncipality();
     }
 
       get f() { return this.formMediosHumanos.controls; }
