@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import {Municipality} from '../../models/municipality';
 import {PopulationService} from '../../services/population.service';
+import {AppSettingsService} from '../../services/app-settings.service';
+import {AppSetting} from '../../models/app-setting';
 
 declare var $: any;
 declare var jQuery: any;
@@ -35,6 +37,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     datosPlaya: any = [];
     datosPlayaRelacionada: any = [];
     nomMunicipio;
+    private aytos: AppSetting[];
     nombre_playa;
     longitudPlaya;
     clasificacion;
@@ -105,11 +108,17 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 private fb: FormBuilder,
                 private serviceMeteo: RequestService,
                 private gradeService: GradesProtectionService,
-                private popService: PopulationService)
+                private popService: PopulationService,
+                private appSettingsService: AppSettingsService)
                 {}
 
     ngOnInit() {
+        this.currentUser = this.authService.getCurrentUser();
         this.loadDataForms();
+        this.appSettingsService.getJSON().subscribe(data => {
+            this.aytos = data;
+            this.loadRecords();
+        });
         this.readFeatures();
         this.readSmuncipality();
     }
@@ -118,7 +127,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
       get t() { return this.f.attributes as FormArray; }
 
     loadDataForms() {
-        this.loadRecords();
         this.formhorarios();
         this.formbanderas();
         this.formbalizamiento();
@@ -409,14 +417,13 @@ readFeatures() {
 
     loadRecords() {
         this.spinnerService.show();
-        this.currentUser = this.authService.getCurrentUser();
         const name = this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username;
         if(this.filterClasificacion){
-          this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'' + this.filterClasificacion;
+          this.filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.username === name).municipio_minus + '\'' + this.filterClasificacion;
         }else{
-            this.filtermunicipio = 'municipio = \'' + aytos[name].municipio_minus + '\'';
+            this.filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.username === name).municipio_minus + '\'';
         }
-        this.nomMunicipio = aytos[name].municipio_minus;
+        this.nomMunicipio = this.aytos.find(i => i.username === name).municipio_minus;
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
             this.filtermunicipio, '*', false, this.currentUser.token, 'clasificacion', true).subscribe(
             (result: any) => {
@@ -438,10 +445,11 @@ readFeatures() {
     readSmuncipality() {
         this.subscripcionSmunicipality = this.popService.sMunicipality$.subscribe(
             (result: Municipality) => {
-                if (result) {
+                if (result.user) {
                     this.currentUser = this.authService.getCurrentUser();
                     // recargamos datos y formularios
                     this.loadDataForms();
+                    this.loadRecords();
                 }
             },
             error => {
