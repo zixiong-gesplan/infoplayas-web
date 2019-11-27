@@ -288,58 +288,32 @@ formpasiva(){
 }
 formCalculadoraMateriales(){
   this.formCalcMateriales = this.fb.group({
-    banderas: new FormControl(0),
-    mastiles: new FormControl(0),
-    carteles: new FormControl(0),
-    banderas_compl: new FormControl(0),
-
-    banderas_pvp: new FormControl(0),
-    mastiles_pvp: new FormControl(0),
-    carteles_pvp: new FormControl(0),
-    banderas_compl_pvp: new FormControl(0),
-
     banderas_amort: new FormControl(),
     mastiles_amort: new FormControl(),
     carteles_amort: new FormControl(),
     banderas_compl_amort: new FormControl(),
 
-    salvavidas: new FormControl(0),
-    carretes: new FormControl(0),
-    salvavidas_pvp: new FormControl(0),
-    carretes_pvp : new FormControl(0),
-
     salvavidas_amort: new FormControl(),
     carretes_amort: new FormControl(),
-
-    long_cuerda: new FormControl(0),
-    boyas_amar: new FormControl(0),
-    senales_proh: new FormControl(0),
-    long_cuerda_pvp: new FormControl(0),
-    boyas_amar_pvp: new FormControl(0),
-    senales_proh_pvp: new FormControl(0),
 
     long_cuerda_amort: new FormControl(),
     boyas_amar_amort: new FormControl(),
     senales_proh_amort: new FormControl(),
 
-    boyas_amar_ba: new FormControl(0),
-    boyas_verd_ba: new FormControl(0),
-    boyas_roj_ba: new FormControl(0),
-
-    boyas_amar_ba_pvp: new FormControl(0),
-    boyas_verd_ba_pvp: new FormControl(0),
-    boyas_roj_ba_pvp: new FormControl(0),
-
     boyas_amar_ba_amort: new FormControl(),
     boyas_verd_ba_amort: new FormControl(),
     boyas_roj_ba_amort: new FormControl(),
+
+    torre_amort: new FormControl(),
+    botiquin_amort: new FormControl(),
+    desfibrilador_amort: new FormControl(),
+    bandera_torre_amort: new FormControl()
   })
 }
 
 readFeatures() {
   this.subscripcionFeatures = this.service.features$.subscribe(
     (results: any) => {
-      console.log(results);
       const beach = (results[0] as any);
       if (results.length > 0) {
         if(this.options==='materiales'){
@@ -474,7 +448,6 @@ readFeatures() {
                     this.formUnitarios.patchValue(result.features[0].attributes);
                     this.mode = 'updates';
                     this.unitarios = result.features[0].attributes;
-                    console.log(this.unitarios);
                     if(calculadora==='humanos'){
                         this.createRangeHumanos(this.unitarios);
                     }
@@ -828,40 +801,40 @@ public updateHorarios(){
   };
 
   bucleHorarios.forEach(r => {
-          r.horariosperiodos.forEach(x =>{
-          pHorariosAdd.attributes = x;
-            pHorariosAdd.attributes.hora_inicio = this.getUTC0date(x.hora_inicio);
-            pHorariosAdd.attributes.hora_fin = this.getUTC0date(x.hora_fin);
-            pHorariosAdd.attributes.ultimo_cambio = this.toDateFormat(true);
-            pHorariosAdd.attributes.ultimo_editor = this.currentUser.username;
-        //copiamos el objeto
-        let horariosCopia = Object.assign({} , pHorariosAdd);
-         pHorarios.push(horariosCopia);
+    r.horariosperiodos.forEach(x =>{
+      pHorariosAdd.attributes = x;
+      pHorariosAdd.attributes.hora_inicio = this.getUTC0date(x.hora_inicio);
+      pHorariosAdd.attributes.hora_fin = this.getUTC0date(x.hora_fin);
+      pHorariosAdd.attributes.ultimo_cambio = this.toDateFormat(true);
+      pHorariosAdd.attributes.ultimo_editor = this.currentUser.username;
+      //copiamos el objeto
+      let horariosCopia = Object.assign({} , pHorariosAdd);
+      pHorarios.push(horariosCopia);
 
-      });
+    });
   });
   this.updateGenerico(pHorarios, environment.tbAfluencia ,'updates');
  }
 
 dateLessThan(from: string, to: string) {
-    return (group: FormGroup): {[key: string]: any} => {
-      let f = group.controls['hora_inicio'];
-      let t = group.controls['hora_fin'];
-      let m = moment(new Date(f.value)).format('HH:mm');
-      let p = moment(new Date(t.value)).format('HH:mm');
+  return (group: FormGroup): {[key: string]: any} => {
+    let f = group.controls['hora_inicio'];
+    let t = group.controls['hora_fin'];
+    let m = moment(new Date(f.value)).format('HH:mm');
+    let p = moment(new Date(t.value)).format('HH:mm');
 
-      if(m!="00:00" && p !="00:00"){
-        if (parseInt(m) >= parseInt(p) || p=='') {
-          this.desabilitar = true;
-          return {}
-        }else{
-          this.desabilitar = false;
-        }
-      }else{
+    if(m!="00:00" && p !="00:00"){
+      if (parseInt(m) >= parseInt(p) || p=='') {
         this.desabilitar = true;
+        return {}
+      }else{
+        this.desabilitar = false;
       }
-      return {};
+    }else{
+      this.desabilitar = true;
     }
+    return {};
+  }
 }
 
 ngOnDestroy() {
@@ -871,10 +844,13 @@ ngOnDestroy() {
   }
 
 private getUTC0date(datep) {
-        const date = new Date(datep);
-        // solo necesitamos la parte de la hora, fijo al comienzo de la unix timestamp
-        date.setFullYear(1970, 0, 1);
-        return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
-            date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+  const date = new Date(datep);
+  // solo necesitamos la parte de la hora, fijo al comienzo de la unix timestamp
+  date.setFullYear(1970, 0, 1);
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
     }
+reset_calculadora(){
+  this.formCalculadoraMateriales();
+}
 }
