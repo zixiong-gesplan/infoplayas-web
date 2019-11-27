@@ -20,15 +20,13 @@
         <div class="col-md-8">
           <div class="form-group">
             <label for="sel1"><h4>Filtrar por clasificación:</h4></label>
-            <select class="form-control" [(ngModel)]="clasificacionData"  (change)="clasificacionSelect()">
-              <option value="T">Todas</option>
-              <option value="L">Libres</option>
-              <option value="P">Peligrosas</option>
-              <option value="UP">Prohibidas</option>
+            <select class="form-control" [(ngModel)]="clasificacionData"  (change)="clasificacionSelect()" >
+              <option value="T">TODAS</option>
+              <option value="{{clasif.attributes.clasificacion}}" *ngFor="let clasif of clasificacionUnico">{{clasif.attributes.clasificacion === 'L' ? 'LIBRE' : clasif.attributes.clasificacion === 'UP' ? 'USO PROHIBIDO' : 'PELIGROSA'}} </option>
             </select>
           </div>
         </div>
-        <div class="col-md-4 text-right">
+        <div class="col-md-4 text-right mx-auto">
             <label for="sel1"><h6>Introduzca los precios unitarios</h6></label>
            <button type="button" class="btn btn-info" (click)="openConfiguration()">Precios por unidad</button>
         </div>

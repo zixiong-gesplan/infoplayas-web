@@ -41,6 +41,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     nombre_playa;
     longitudPlaya;
     clasificacion;
+    clasificacionUnico:[] = [];
     medio;
     iddgse;
     formUnitarios: FormGroup;
@@ -362,6 +363,7 @@ readFeatures() {
               if(beach.relatedHumanos){ this.dinamicForm(this.grados,beach.relatedHumanos );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
+              console.log(this.datosPlayaRelacionada);
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedAfluencia);
 
@@ -404,6 +406,14 @@ readFeatures() {
                 if (result) {
                     this.datosPlaya = result;
                     this.codMunicipio(this.datosPlaya);
+                    console.log(this.clasificacionUnico.length);
+                    if(this.clasificacionUnico.length ===0){
+                      var categoriasFiltrar = {};
+                      this.clasificacionUnico = this.datosPlaya.features.filter(function (e) {
+                        return categoriasFiltrar[e.attributes.clasificacion] ? false : (categoriasFiltrar[e.attributes.clasificacion] = true);
+                      });
+                    }
+
                     this.spinnerService.hide();
                 }
             },
@@ -414,6 +424,7 @@ readFeatures() {
             }).add(() => {
             console.log('end of request');
         });
+
     }
 
     readSmuncipality() {
@@ -438,29 +449,28 @@ readFeatures() {
 
     }
 
-    loadUnitPrice(calculadora) {
+    loadUnitPrice(calculadora){
         this.spinnerService.show();
         // inicializamos desactivado el esc y el click fuera de la modal
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbUnitarios + '/query',
-            'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token, 'id_ayuntamiento', false).subscribe(
-            (result: any) => {
-                if (result.features.length !== 0) {
-                    this.formUnitarios.patchValue(result.features[0].attributes);
-                    this.mode = 'updates';
-                    this.unitarios = result.features[0].attributes;
-                    if(calculadora==='humanos'){
-                        this.createRangeHumanos(this.unitarios);
-                    }
-
-                    this.spinnerService.hide();
-                } else {
-                    this.spinnerService.hide();
-                }
-            },
-            error => {
-                this.spinnerService.hide();
-            }).add(() => {
-        });
+        'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token, 'id_ayuntamiento', false).subscribe(
+          (result: any) => {
+            if (result.features.length !== 0) {
+              this.formUnitarios.patchValue(result.features[0].attributes);
+              this.mode = 'updates';
+              this.unitarios = result.features[0].attributes;
+              if(calculadora==='humanos'){
+                this.createRangeHumanos(this.unitarios);
+              }
+              this.spinnerService.hide();
+            } else {
+              this.spinnerService.hide();
+            }
+          },
+          error => {
+            this.spinnerService.hide();
+          }).add(() => {
+          });
     }
 
   getNumWorkDays(startDate, endDate, modo) {
@@ -850,7 +860,8 @@ private getUTC0date(datep) {
   return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
   date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
     }
+
 reset_calculadora(){
   this.formCalculadoraMateriales();
-}
+  }
 }
