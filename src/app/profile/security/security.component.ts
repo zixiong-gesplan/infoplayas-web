@@ -295,6 +295,11 @@ formCalculadoraMateriales(){
     boyas_amar_ba_amort: new FormControl(),
     boyas_verd_ba_amort: new FormControl(),
     boyas_roj_ba_amort: new FormControl(),
+
+    torre_amort: new FormControl(),
+    botiquin_amort: new FormControl(),
+    desfibrilador_amort: new FormControl(),
+    bandera_torre_amort: new FormControl()
   })
 }
 

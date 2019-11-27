@@ -2,7 +2,7 @@
   text-align: center !important;
 }
 .tamanhofont{
-  font-size: 0.9em !important;
+  font-size: 0.8em !important;
   text-align: center !important;
 }
 .tamanhofontcal{
@@ -30,7 +30,7 @@
 .inputCustom{
   height: 30px !important;
   width: 100% !important;
-  font-size: 1.0em !important;
+  font-size: 0.9em !important;
   text-align: center !important;
 
 }
@@ -133,7 +133,7 @@
 @media (max-width: 1610px) {
   /* Bump up size of carousel content */
   .tamanhofont  {
-    font-size: 0.7em !important;
+    font-size: 0.6em !important;
   }
 
 }

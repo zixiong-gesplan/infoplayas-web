@@ -608,7 +608,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             </ng-template >
         </p-table>
         <br>
-          <h4 class="modal-title text-center" style="color:#8CBB28">Torre o silla de vigilancia - Balizamiento de Zonas de Baño Marítima</h4>
+          <h4 class="modal-title text-center" style="color:#8CBB28">Balizamiento de Zonas de Baño Marítima</h4>
           <p-table>
             <ng-template pTemplate="header">
               <tr>
@@ -717,6 +717,65 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               </tr>
                 </ng-template >
             </p-table>
+              <br>
+            <h4 class="modal-title text-center" style="color:#8CBB28">Torre o silla de vigilancia </h4>
+            <p-table>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th colspan="4" class="tamanhofont">Número</th>
+                  <th colspan="4" class="tamanhofont">PVP Unitario</th>
+                  <th colspan="4" class="tamanhofont">Amortización Anual</th>
+                  <th colspan="4" class="tamanhofont">PVP €/año</th>
+                  <th rowspan="2" class="tamanhofont">PVP Total Anual</th>
+                </tr>
+                <tr>
+                  <th class="tamanhofont">Torres - Sillas de vigilancia</th>
+                  <th class="tamanhofont">Botiquín portátil</th>
+                  <th class="tamanhofont">Desfibrilador (DESA)</th>
+                  <th class="tamanhofont">Banderas</th>
+
+                  <th class="tamanhofont">Torres - Sillas de vigilancia</th>
+                  <th class="tamanhofont">Botiquín portátil</th>
+                  <th class="tamanhofont">Desfibrilador (DESA)</th>
+                  <th class="tamanhofont">Banderas</th>
+
+                  <th class="tamanhofont">Torres - Sillas de vigilancia</th>
+                  <th class="tamanhofont">Botiquín portátil</th>
+                  <th class="tamanhofont">Desfibrilador (DESA)</th>
+                  <th class="tamanhofont">Banderas</th>
+
+                  <th class="tamanhofont">Torres - Sillas de vigilancia</th>
+                  <th class="tamanhofont">Botiquín portátil</th>
+                  <th class="tamanhofont">Desfibrilador (DESA)</th>
+                  <th class="tamanhofont">Banderas</th>
+                </tr>
+              <tr>
+
+                  <th class="centrar"><input type="text"  value="{{formTorres.value.torres}}"  class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  value="{{formTorres.value.botiquines}}"  class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  value="{{formTorres.value.desfibriladores}}" class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  value="{{formTorres.value.banderas}}"  class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  value="{{formUnitarios.value.torre_pvp}}"  class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  value="{{formUnitarios.value.botiquin_pvp}}" class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  value="{{formUnitarios.value.desfibrilador_pvp}}" class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  value="{{formUnitarios.value.bandera_pvp}}" class="form-control  inputCustom" readonly></th>
+                  <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="torre_amort"></th>
+                  <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="botiquin_amort"></th>
+                  <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="desfibrilador_amort"></th>
+                  <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="bandera_torre_amort"></th>
+                  <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formTorres.value.torres * formUnitarios.value.torre_pvp * formCalcMateriales.value.torre_amort / 100}}"></th>
+                  <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formTorres.value.botiquines * formUnitarios.value.botiquin_pvp * formCalcMateriales.value.botiquin_amort / 100}}"></th>
+                  <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formTorres.value.desfibriladores * formUnitarios.value.desfibrilador_pvp * formCalcMateriales.value.desfibrilador_amort / 100}}"></th>
+                  <th class="centrar"><input type="text"  value="" class="form-control  inputCustom" readonly value="{{formTorres.value.banderas * formUnitarios.value.bandera_pvp * formCalcMateriales.value.bandera_torre_amort/ 100}}"></th>
+                  <th class="centrar"><input type="text"  value="" class="form-control  inputCustom" readonly value="{{(formTorres.value.torres * formUnitarios.value.torre_pvp * formCalcMateriales.value.torre_amort / 100) +
+                                                                                                             (formTorres.value.botiquines * formUnitarios.value.botiquin_pvp * formCalcMateriales.value.botiquin_amort / 100) +
+                                                                                                             (formTorres.value.desfibriladores * formUnitarios.value.desfibrilador_pvp * formCalcMateriales.value.desfibrilador_amort / 100) +
+                                                                                                             (formTorres.value.banderas * formUnitarios.value.bandera_pvp * formCalcMateriales.value.bandera_torre_amort/ 100)}}"></th>
+              </tr>
+                </ng-template >
+            </p-table>
+
+            <br>
 
       </div>
     <br><br>
