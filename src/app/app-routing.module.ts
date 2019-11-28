@@ -34,7 +34,7 @@ const routes: Routes = [
                 path: 'seguridad', component: SecurityComponent, canActivate: [AuthGuardService]
             },
             {
-                path: 'informes', component: ReportComponent, canActivate: [AuthGuardService]
+                path: 'planos', component: ReportComponent, canActivate: [AuthGuardService]
             },
             {
                 path: 'contacto', component: ContactUsComponent, canActivate: [AuthGuardService]

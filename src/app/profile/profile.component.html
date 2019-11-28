@@ -27,10 +27,13 @@
                             <a [routerLink]="['seguridad']" class="font-style-1 nav-item ">seguridad y salvamento</a>
                         </li>
                         <li class="nav-tab">
-                            <a [routerLink]="['informes']" class="font-style-1 nav-item">informes</a>
+                            <a [routerLink]="['planos']" class="font-style-1 nav-item"
+                                  pTooltip="Generador de planos de asistencia técnica" tooltipPosition="top"
+                                  data-filter=".none"
+                                 class="cbp-filter-item text-capitalize">Planos</a>
                         </li>
                         <li *ngIf="!current_user.selectedusername" class="nav-tab">
-                            <a [routerLink]="['contacto']" class="font-style-1 nav-item ">contáctanos</a>
+                            <a [routerLink]="['contacto']" class="font-style-1 nav-item ">Informes</a>
                         </li>
                         <li *ngIf="current_user.selectedusername" class="navbar-toggle">
                             <p-dropdown [options]="municipalities" filter="true"
@@ -81,7 +84,7 @@
                             <a [routerLink]="['seguridad']"><span><i class="fa fa-user-secret"></i></span> seguridad</a>
                         </li>
                         <li class="clearfix">
-                            <a [routerLink]="['informes']"><span><i class="fa fa-sticky-note-o"></i></span> informes</a>
+                            <a [routerLink]="['planos']"><span><i class="fa fa-sticky-note-o"></i></span> Planos</a>
                         </li>
                         <li class="clearfix">
                             <a [routerLink]="['contacto']"><span><i class="fa fa-envelope-square"></i></span>
