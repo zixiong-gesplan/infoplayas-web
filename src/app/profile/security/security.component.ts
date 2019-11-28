@@ -114,6 +114,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 {}
 
     ngOnInit() {
+
         this.currentUser = this.authService.getCurrentUser();
         this.loadDataForms();
         this.appSettingsService.getJSON().subscribe(data => {
