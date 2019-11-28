@@ -37,7 +37,7 @@ const routes: Routes = [
                 path: 'planos', component: ReportComponent, canActivate: [AuthGuardService]
             },
             {
-                path: 'contacto', component: ContactUsComponent, canActivate: [AuthGuardService]
+                path: 'informes', component: ContactUsComponent, canActivate: [AuthGuardService]
             }
         ]
     },
