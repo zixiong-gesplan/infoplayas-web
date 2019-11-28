@@ -7,6 +7,7 @@ import {GradesProtectionService} from '../../services/grades-protection.service'
 import {environment} from '../../../environments/environment';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { Location} from '@angular/common';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import {Municipality} from '../../models/municipality';
@@ -110,11 +111,11 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 private serviceMeteo: RequestService,
                 private gradeService: GradesProtectionService,
                 private popService: PopulationService,
-                private appSettingsService: AppSettingsService)
+                private appSettingsService: AppSettingsService,
+                private location: Location)
                 {}
 
     ngOnInit() {
-
         this.currentUser = this.authService.getCurrentUser();
         this.loadDataForms();
         this.appSettingsService.getJSON().subscribe(data => {
