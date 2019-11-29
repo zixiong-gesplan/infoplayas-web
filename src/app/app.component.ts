@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+declare var $: any;
+declare var jQuery: any;
 declare function init_plugins();
 
 @Component({
