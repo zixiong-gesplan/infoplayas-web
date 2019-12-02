@@ -24,7 +24,7 @@ import {
 } from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
 import {EsriRequestService} from './services/esri-request.service';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {CalendarModule} from 'primeng/calendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WelcomeComponent } from './profile/welcome/welcome.component';
@@ -33,6 +33,7 @@ import {registerLocaleData} from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import {ToastModule} from 'primeng/toast';
 import { MapViewerComponent } from './profile/map-viewer/map-viewer.component';
+import {TokenInterceptorService} from './services/token-interceptor.service';
 
 registerLocaleData(localeEs, 'es');
 
@@ -81,7 +82,12 @@ registerLocaleData(localeEs, 'es');
     providers: [EsriRequestService, MessageService, ConfirmationService, {
         provide: LOCALE_ID,
         useValue: 'es'
-    }],
+    },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptorService,
+            multi: true
+        }],
     bootstrap: [AppComponent]
 })
 export class AppModule {

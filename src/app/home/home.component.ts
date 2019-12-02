@@ -1,13 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+declare var jQuery: any;
+declare function init_plugins();
 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
     title = 'infoplayascanarias';
     ContactForm: FormGroup;
 
@@ -15,6 +17,7 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
+        init_plugins();
         this.ContactForm = this.fb.group({
             email: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6),
                 Validators.pattern('[a-z]*')])),
@@ -30,7 +33,9 @@ export class HomeComponent implements OnInit {
         // TODO formulario de contacto
     }
 
-    login() {
-        this.router.navigate(['home']);
+    ngAfterViewInit() {
+        setTimeout(function () {
+            jQuery('#loader-fade').hide();
+        }, 800);
     }
 }
