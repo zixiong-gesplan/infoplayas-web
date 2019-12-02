@@ -20,7 +20,7 @@ export class EsriRequestService {
 
 
         const params = new HttpParams().set('token', token).append('f', 'json')
-             .append('where', cWhere)
+            .append('where', cWhere)
             .append('orderByFields', order)
             .append('outFields', outFields)
             .append('returnCentroid', centro ? 'true' : 'false')
@@ -66,6 +66,13 @@ export class EsriRequestService {
             .append('where', cWhere)
             .append('returnIdsOnly', 'true');
         return this.http.post(featureEndPoint, params, {headers: headers});
+    }
+
+    revokeToken(token: string) {
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'application/X-www-form-urlencoded');
+        const params = new HttpParams().set('auth_token', token).append('client_id', environment.client_id);
+        return this.http.post(environment.urlRevokeToken, params, {headers: headers});
     }
 
     getMultipleRelatedData(beachs: any[], relationsIds: string[][], token: string) {

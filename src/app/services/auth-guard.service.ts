@@ -4,6 +4,8 @@ import {Auth} from '../models/auth';
 import {environment} from '../../environments/environment';
 import {Router} from '@angular/router';
 import {PopulationService} from './population.service';
+import {EsriRequestService} from './esri-request.service';
+import Swal from 'sweetalert2';
 
 declare function init_plugins();
 
@@ -14,7 +16,7 @@ export class AuthGuardService implements CanActivate {
     urlAuthorize: string = environment.urlAuthorize + '?client_id=' + environment.client_id + '&response_type=token&redirect_uri='
         + environment.redirectUri;
 
-    constructor(public router: Router, private popService: PopulationService) {
+    constructor(public router: Router, private service: EsriRequestService) {
     }
 
     canActivate(): boolean {
@@ -50,8 +52,21 @@ export class AuthGuardService implements CanActivate {
     }
 
     public logOut() {
+        // this.destroyCredentials();
         sessionStorage.clear();
         localStorage.removeItem('current_user');
         localStorage.removeItem('municipality');
+    }
+
+    destroyCredentials() {
+        this.service.revokeToken(this.getCurrentUser().token).subscribe(
+            (result: any) => {
+                if (result) {
+                    console.log(result);
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
     }
 }
