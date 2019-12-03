@@ -9,9 +9,6 @@ import {PopulationService} from '../services/population.service';
 import {AppSettingsService} from '../services/app-settings.service';
 import {AppSetting} from '../models/app-setting';
 
-declare var $: any;
-declare var jQuery: any;
-
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.component.html',
