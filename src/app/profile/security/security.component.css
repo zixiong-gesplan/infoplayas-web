@@ -1,6 +1,11 @@
 .centrar{
   text-align: center !important;
 }
+.selectAltura {
+  display:block;
+  height:29px;
+
+}
 .tamanhofont{
   font-size: 0.8em !important;
   text-align: center !important;

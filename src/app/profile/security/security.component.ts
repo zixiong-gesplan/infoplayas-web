@@ -35,8 +35,10 @@ export class SecurityComponent implements OnInit, OnDestroy {
     filtermunicipio;
     filterClasificacion: string;
     clasificacionData:string = 'T';
+    buscadorPlaya;
     datosPlaya: any = [];
     datosPlayaRelacionada: any = [];
+    totalDiasGradoProteccion: any = [];
     nomMunicipio;
     private aytos: AppSetting[];
     nombre_playa;
@@ -102,6 +104,13 @@ export class SecurityComponent implements OnInit, OnDestroy {
             speed: ''
         }
     };
+
+  totalDiasGrado = {
+      grado:'',
+      fechainicio:'',
+      fechafin:'',
+      totalDias:0
+  }
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -365,7 +374,8 @@ readFeatures() {
               if(beach.relatedHumanos){ this.dinamicForm(this.grados,beach.relatedHumanos );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
-              console.log(this.datosPlayaRelacionada);
+
+              this.getNumWorkDays(this.datosPlayaRelacionada.periodos.fecha_inicio, this.datosPlayaRelacionada.periodos.fecha_fin, 'FS');
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedAfluencia);
 
@@ -408,7 +418,6 @@ readFeatures() {
                 if (result) {
                     this.datosPlaya = result;
                     this.codMunicipio(this.datosPlaya);
-                    console.log(this.clasificacionUnico.length);
                     if(this.clasificacionUnico.length ===0){
                       var categoriasFiltrar = {};
                       this.clasificacionUnico = this.datosPlaya.features.filter(function (e) {
@@ -490,9 +499,11 @@ readFeatures() {
     }
 
     if(modo!='FS'){
+
       return weekdayCounter;
     }
     else{
+
       return noweekdayCounter;
     }
 
@@ -541,6 +552,7 @@ createRangeHumanos(unitarios){
           totaldias =  this.getNumWorkDays(new Date(playasRelacionadas[i].attributes.fecha_inicio),new Date(playasRelacionadas[i].attributes.fecha_fin),'LB');
           break;
         }
+
       }
       var hora_inicio = moment(new Date(playasRelacionadas[i].attributes.hora_inicio),'hh:mm');
       var hora_fin = moment(new Date(playasRelacionadas[i].attributes.hora_fin),'hh:mm');//sumanos un dias para realizar el calculo de la totalidad de dias
@@ -578,9 +590,26 @@ calculoTotalSocorristas(data){
 
   return total;
 }
+totaldiasGrado(playasRelacionadas){
+
+  for (let i = 0; i < playasRelacionadas.relatedAfluencia.length; i++) {
+    if(playasRelacionadas.relatedAfluencia[i].attributes.nivel !='B'){
+    var fecha2 = moment(new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_inicio),'YYYY-DD-MMM');
+    var fecha1 = moment(new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_fin),'YYYY-DD-MMM');
+           this.totalDiasGrado.grado = playasRelacionadas.relatedAfluencia[i].attributes.nivel;
+           this.totalDiasGrado.fechainicio = moment(new Date(playasRelacionadas.relatedAfluencia[0].attributes.fecha_inicio),'YYYY-DD-MMM').format('D-M-Y');
+           this.totalDiasGrado.fechafin = moment(new Date(playasRelacionadas.relatedAfluencia[0].attributes.fecha_fin),'YYYY-DD-MMM').format('D-M-Y');
+           this.totalDiasGrado.totalDias = fecha1.diff(fecha2, 'days');
+           let copia = Object.assign({} ,  this.totalDiasGrado);
+           this.totalDiasGradoProteccion.push(copia);
+    }
+  }
+
+}
 
 calculadora(medio) {
   this.spinnerService.show();
+  this.totaldiasGrado(this.datosPlayaRelacionada);
   this.medio = medio;
   $('#calculadora' + medio).modal('show');
   $('#calculadora' + medio).modal({backdrop: 'static', keyboard: false});
