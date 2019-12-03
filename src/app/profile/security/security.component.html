@@ -160,16 +160,18 @@ Medios Materiales - Banderas y Cartelerías <i class="fa fa-calculator  pointer"
 <p-table>
 <ng-template pTemplate="header" >
     <tr>
-      <th class="tamanhofont">Nº de Banderas</th>
-      <th class="tamanhofont">Nº de Mástiles</th>
-      <th class="tamanhofont">Nº de Carteles</th>
+      <th class="tamanhofont">Nº Banderas</th>
+      <th class="tamanhofont">Nº Mástiles</th>
+      <th class="tamanhofont">Nº Carteles</th>
       <th class="tamanhofont">Nº Banderas complementarias</th>
+      <th class="tamanhofont">Nº Señales de prohibición</th>
     </tr>
     <tr>
       <th class="centrar"><input type="number"  formControlName="banderas" class="form-control  inputCustom" min="0" placeholder="0"></th>
       <th class="centrar"><input type="number"  formControlName="mastiles" class="form-control  inputCustom" min="0" placeholder="0"></th>
       <th class="centrar"><input type="number"  formControlName="carteles" class="form-control  inputCustom" min="0" placeholder="0"></th>
       <th class="centrar"><input type="number"  formControlName="banderas_comp" class="form-control  inputCustom" min="0" placeholder="0"></th>
+      <th class="centrar"><input type="number"  formControlName="senales_prohibicion" class="form-control  inputCustom" min="0" placeholder="0"></th>
     </tr>
     </ng-template >
 </p-table>
@@ -367,7 +369,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                   <th class="centrar"><input type="number" formControlName="carrete_pvp" name="carrete_pvp" id="carrete_pvp" class="form-control  inputCustom" min="0" pattern="^[0-9]+" ></th>
                   <th class="centrar"><input type="number" formControlName="m_cuerda_pvp" name="m_cuerda_pvp" id="m_cuerda_pvp" class="form-control  inputCustom" min="0" pattern="^[0-9]+"></th>
                   <th class="centrar"><input type="number" formControlName="boya_pvp" name="boya_pvp" id="boya_pvp" class="form-control  inputCustom" min="0" pattern="^[0-9]+" ></th>
-                  <th class="centrar"><input type="number" formControlName="senales_prohibicion" name="senales_prohibicion" id="senales_prohibicion" class="form-control  inputCustom" min="0" pattern="^[0-9]+"></th>
+                  <th class="centrar"><input type="number" formControlName="senal_prohibicion_pvp" name="senal_prohibicion_pvp" id="senal_prohibicion_pvp" class="form-control  inputCustom" min="0" pattern="^[0-9]+"></th>
                   <th class="centrar"><input type="number" formControlName="sistemas_izado_pvp" name="sistemas_izado_pvp" id="sistemas_izado_pvp" class="form-control  inputCustom" min="0" pattern="^[0-9]+"></th>
                   <th class="centrar"><input type="number" formControlName="torre_pvp" name="torre_pvp" id="torre_pvp" class="form-control  inputCustom" min="0" pattern="^[0-9]+"></th>
                   <th class="centrar"><input type="number" formControlName="desfibrilador_pvp" name="desfibrilador_pvp" id="desfibrilador_pvp" class="form-control  inputCustom" min="0" pattern="^[0-9]+"></th>
@@ -510,7 +512,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
           <div class="row">
           <h5 class="text-center">Longitud de la playa: {{longitudPlaya}} mts</h5>
           </div>
-          <p-table *ngFor="let totalDiasperiodo of totalDiasGradoProteccion; let i=index;">
+          <!-- <p-table *ngFor="let totalDiasperiodo of totalDiasGradoProteccion; let i=index;">
             <ng-template pTemplate="header">
               <tr>
                 <th colspan="2" class="centrar">
@@ -522,7 +524,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                 <th colspan="2" class="tamanhofont">Dias Totales: {{totalDiasperiodo.totalDias}}</th>
               </tr>
           </ng-template>
-            </p-table>
+            </p-table> -->
       </div>
       <div class="modal-body">
         <h4 class="modal-title text-center" style="color:#8CBB28">Banderas y Cartelería.</h4>
@@ -530,10 +532,10 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <p-table>
           <ng-template pTemplate="header" >
             <tr>
-              <th colspan="4" class="tamanhofont">Número</th>
-              <th colspan="4" class="tamanhofont">PVP Unitario</th>
-              <th colspan="4" class="tamanhofont">Amortización Anual</th>
-              <th colspan="4" class="tamanhofont">PVP €/año</th>
+              <th colspan="5" class="tamanhofont">Número</th>
+              <th colspan="5" class="tamanhofont">PVP Unitario</th>
+              <th colspan="5" class="tamanhofont">Amortización Anual</th>
+              <th colspan="5" class="tamanhofont">PVP €/año</th>
               <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
             </tr>
 
@@ -542,21 +544,25 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th class="tamanhofont">Mastiles</th>
               <th class="tamanhofont">Carteles</th>
               <th class="tamanhofont">Banderas Compl.</th>
+              <th class="tamanhofont">Señales de prohibición</th>
 
               <th class="tamanhofont">Banderas</th>
               <th class="tamanhofont">Mastiles</th>
               <th class="tamanhofont">Carteles</th>
               <th class="tamanhofont">Banderas Compl.</th>
+              <th class="tamanhofont">Señales de prohibición</th>
 
               <th class="tamanhofont">Banderas</th>
               <th class="tamanhofont">Mastiles</th>
               <th class="tamanhofont">Carteles</th>
               <th class="tamanhofont">Banderas Compl.</th>
+              <th class="tamanhofont">Señales de prohibición</th>
 
               <th class="tamanhofont">Banderas</th>
               <th class="tamanhofont">Mastiles</th>
               <th class="tamanhofont">Carteles</th>
               <th class="tamanhofont">Banderas Compl.</th>
+              <th class="tamanhofont">Señales de prohibición</th>
 
             </tr>
           <tr>
@@ -566,25 +572,30 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th class="centrar"><input type="text"   value="{{formBanderas.value.mastiles}}"  class="form-control  inputCustom" readonly ></th>
               <th class="centrar"><input type="text"   value="{{formBanderas.value.carteles}}"  class="form-control  inputCustom" readonly></th>
               <th class="centrar"><input type="text"   value="{{formBanderas.value.banderas_comp}}"  class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formBanderas.value.senales_prohibicion}}"  class="form-control  inputCustom" readonly></th>
 
               <th class="centrar"><input type="text"   value="{{formUnitarios.value.bandera_pvp}}"  class="form-control  inputCustom" readonly></th>
               <th class="centrar"><input type="text"   value="{{formUnitarios.value.mastil_pvp}}"   class="form-control  inputCustom" readonly></th>
               <th class="centrar"><input type="text"   value="{{formUnitarios.value.cartel_pvp}}"  class="form-control  inputCustom" readonly></th>
-             <th class="centrar"><input type="text"    value="{{formUnitarios.value.bandera_comp_pvp}}"  class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formUnitarios.value.bandera_comp_pvp}}"  class="form-control  inputCustom" readonly></th>
+              <th class="centrar"><input type="text"   value="{{formUnitarios.value.senal_prohibicion_pvp}}"  class="form-control  inputCustom" readonly></th>
 
              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="banderas_amort"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="mastiles_amort"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="carteles_amort"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="banderas_compl_amort"></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="senales_proh_amort"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.banderas * formUnitarios.value.bandera_pvp * formCalcMateriales.value.banderas_amort / 100 }}"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.mastiles * formUnitarios.value.mastil_pvp * formCalcMateriales.value.mastiles_amort / 100 }}"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.carteles * formUnitarios.value.cartel_pvp * formCalcMateriales.value.carteles_amort / 100 }}"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.banderas_comp * formUnitarios.value.bandera_comp_pvp * formCalcMateriales.value.banderas_compl_amort / 100 }}"></th>
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.senales_prohibicion * formUnitarios.value.senal_prohibicion_pvp * formCalcMateriales.value.senales_proh_amort / 100 }}"></th>
 
-             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formBanderas.value.banderas_comp * formUnitarios.value.bandera_comp_pvp * formCalcMateriales.value.banderas_compl_amort / 100) +
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formBanderas.value.banderas * formUnitarios.value.bandera_pvp * formCalcMateriales.value.banderas_amort / 100) +
                                                                                                           (formBanderas.value.mastiles * formUnitarios.value.mastil_pvp * formCalcMateriales.value.mastiles_amort / 100) +
                                                                                                           (formBanderas.value.carteles * formUnitarios.value.cartel_pvp * formCalcMateriales.value.carteles_amort / 100) +
-                                                                                                          (formBanderas.value.banderas_comp * formUnitarios.value.bandera_comp_pvp * formCalcMateriales.value.banderas_compl_amort / 100 )}}"></th>
+                                                                                                          (formBanderas.value.banderas_comp * formUnitarios.value.bandera_comp_pvp * formCalcMateriales.value.banderas_compl_amort / 100 ) +
+                                                                                                          (formBanderas.value.senales_prohibicion * formUnitarios.value.senal_prohibicion_pvp * formCalcMateriales.value.senales_proh_amort / 100) }}"></th>
           </tr>
             </ng-template >
         </p-table>
@@ -632,44 +643,43 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
           <p-table>
             <ng-template pTemplate="header">
               <tr>
-                <th colspan="3" class="tamanhofont">Número</th>
-                <th colspan="3" class="tamanhofont">PVP Unitario</th>
-                <th colspan="3" class="tamanhofont">Amortización Anual</th>
-                <th colspan="3" class="tamanhofont">PVP €/año</th>
+                <th colspan="2" class="tamanhofont">Número</th>
+                <th colspan="2" class="tamanhofont">PVP Unitario</th>
+                <th colspan="2" class="tamanhofont">Amortización Anual</th>
+                <th colspan="2" class="tamanhofont">PVP €/año</th>
                 <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
               </tr>
               <tr>
                 <th class="tamanhofont">Longitud cuerda(m)</th>
                 <th class="tamanhofont">Boyas amarillas</th>
-                <th class="tamanhofont">Señales de prohibición</th>
+
 
                 <th class="tamanhofont">Longitud cuerda(m)</th>
                 <th class="tamanhofont">Boyas amarillas</th>
-                <th class="tamanhofont">Señales de prohibición</th>
+
 
                 <th class="tamanhofont">Longitud cuerda(m)</th>
                 <th class="tamanhofont">Boyas amarillas</th>
-                <th class="tamanhofont">Señales de prohibición</th>
+
 
                 <th class="tamanhofont">Longitud cuerda(m)</th>
                 <th class="tamanhofont">Boyas amarillas</th>
-                <th class="tamanhofont">Señales de prohibición</th>
+
               </tr>
             <tr>
 
                 <th class="centrar"><input type="text"  value="{{formBalizamiento.value.m_cuerda}}" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  value="{{formBalizamiento.value.boyas_amarillas}}"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  value="" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  value="{{formUnitarios.value.m_cuerda_pvp}}" class="form-control  inputCustom" readonly></th>
                 <th class="centrar"><input type="text"  value="{{formUnitarios.value.boya_pvp}}" class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  value="" class="form-control  inputCustom" readonly></th>
+
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="long_cuerda_amort"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="boyas_amar_amort"></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="senales_proh_amort"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formBalizamiento.value.m_cuerda * formUnitarios.value.m_cuerda_pvp * formCalcMateriales.value.long_cuerda_amort / 100}}"></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
-                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_amar_amort/ 100}}"></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{(formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_amar_amort/ 100 +
+                                                                                                             formBalizamiento.value.m_cuerda * formUnitarios.value.m_cuerda_pvp * formCalcMateriales.value.long_cuerda_amort / 100)}}"></th>
+
             </tr>
               </ng-template >
           </p-table>

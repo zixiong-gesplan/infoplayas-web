@@ -241,7 +241,7 @@ formunitarios(){
     botiquin_pvp: new FormControl(0),
     sistemas_izado_pvp: new FormControl(0),
     salvavidas_pvp: new FormControl(0),
-    senales_prohibicion: new FormControl(0),
+    senal_prohibicion_pvp: new FormControl(0),
     id_ayuntamiento: new FormControl(0),
     ultimo_editor: new FormControl(this.currentUser.username),
     ultimo_cambio: new FormControl(this.toDateFormat(true))
@@ -256,6 +256,7 @@ formbanderas(){
       mastiles: new FormControl(),
       carteles: new FormControl(),
       banderas_comp: new FormControl(),
+      senales_prohibicion: new FormControl(),
       ultimo_editor: new FormControl(this.currentUser.username),
       ultimo_cambio: new FormControl(this.toDateFormat(true))
     });
@@ -334,6 +335,7 @@ readFeatures() {
             this.formBanderas.get('banderas').setValue(beach.relatedInformativo[0].attributes.banderas);
             this.formBanderas.get('mastiles').setValue(beach.relatedInformativo[0].attributes.mastiles);
             this.formBanderas.get('carteles').setValue(beach.relatedInformativo[0].attributes.carteles);
+            this.formBanderas.get('senales_prohibicion').setValue(beach.relatedInformativo[0].attributes.senales_prohibicion);
             this.formBanderas.get('banderas_comp').setValue(beach.relatedInformativo[0].attributes.banderas_comp);
           };
           if(beach.relatedBalizamiento.length !==0){
@@ -374,7 +376,7 @@ readFeatures() {
               if(beach.relatedHumanos){ this.dinamicForm(this.grados,beach.relatedHumanos );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
-
+              console.log(this.datosPlayaRelacionada);
               this.getNumWorkDays(this.datosPlayaRelacionada.periodos.fecha_inicio, this.datosPlayaRelacionada.periodos.fecha_fin, 'FS');
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedAfluencia);
