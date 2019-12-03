@@ -1,10 +1,10 @@
 {
   "name": "infoplayascanarias",
-  "version": "1.3.1",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
-    "build": "ng build",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

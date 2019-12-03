@@ -18,7 +18,6 @@ import {AppSetting} from '../../models/app-setting';
 import {AppSettingsService} from '../../services/app-settings.service';
 
 declare var $: any;
-declare var jquery: any;
 
 
 // variables javascript esri maps

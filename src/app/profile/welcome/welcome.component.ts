@@ -2,10 +2,10 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {AppSetting} from '../../models/app-setting';
 import {AppSettingsService} from '../../services/app-settings.service';
+declare function init_plugins();
 
 declare var Swiper: any;
-declare var $: any;
-declare var jquery: any;
+declare var jQuery: any;
 
 @Component({
     selector: 'app-welcome',
@@ -21,9 +21,13 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         this.initSwiper();
+        setTimeout(function () {
+            jQuery('#loader-fade').hide();
+        }, 800);
     }
 
     ngOnInit() {
+        init_plugins();
         this.appSettingsService.getJSON().subscribe(data => {
             const aytos: AppSetting[] = data;
             this.municipalityName = this.authService.getCurrentUser().selectedusername ? this.authService.getCurrentUser().username :

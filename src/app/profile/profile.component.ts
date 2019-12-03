@@ -47,6 +47,6 @@ export class ProfileComponent implements OnInit {
 
     userLogOut() {
         this.authService.logOut();
-        window.location.href = '/';
+        this.router.navigate(['/home']);
     }
 }
