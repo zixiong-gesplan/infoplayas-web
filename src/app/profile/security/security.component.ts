@@ -20,6 +20,7 @@ declare var jQuery: any;
 declare const aytos: any;
 declare var UTMXYToLatLon: any;
 declare var RadToDeg: any;
+declare function navbar_load();
 
 @Component({
     selector: 'app-security',
@@ -121,6 +122,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
                 {}
 
     ngOnInit() {
+        navbar_load();
         this.currentUser = this.authService.getCurrentUser();
         this.loadDataForms();
         this.appSettingsService.getJSON().subscribe(data => {
