@@ -141,6 +141,13 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     height: '32px',
                     yoffset: '-18px'
                 };
+                const symbolLow = {
+                    type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
+                    url: environment.dataSvgGradeLow,
+                    width: '32px',
+                    height: '32px',
+                    yoffset: '-18px'
+                };
                 // cambiamos la capa grafica en funcion de los cambios de las entidades desde los formularios de clasificacion
                 this.subscripcionFeatures = this.service.features$.subscribe(
                     (results: any) => {
@@ -175,8 +182,9 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                         };
                                         grap.popupTemplate.overwriteActions = true;
                                     }
-                                    grap.symbol = beach.grado_maximo === 'A' ? symbolHigh : symbolMedium;
-                                    beach.grado_maximo === 'A' || beach.grado_maximo === 'M' ? layer.graphics.add(grap) : layer.graphics.add(null);
+                                    grap.symbol = beach.grado_maximo === 'A' ? symbolHigh : beach.grado_maximo === 'M' ?
+                                        symbolMedium : symbolLow;
+                                    beach.grado_maximo ? layer.graphics.add(grap) : layer.graphics.add(null);
                                 }
                             });
                             layer.minScale = 20000;
