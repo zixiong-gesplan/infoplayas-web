@@ -38,7 +38,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
     buscadorPlaya;
     datosPlaya: any = [];
     datosPlayaRelacionada: any = [];
-    totalDiasGradoProteccion: any = [];
     nomMunicipio;
     private aytos: AppSetting[];
     nombre_playa;
@@ -70,6 +69,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
     subscripcionSmunicipality;
     calculoTotalHumanosP;
     calculoTotalHumanos;
+    totalGAlto:number = 0;
+    totalGMedio: number = 0;
     urlimageweather =  environment.urlimageweather;
     unitarios = {
       jefe_turno_pvp:'',
@@ -105,12 +106,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
         }
     };
 
-  totalDiasGrado = {
-      grado:'',
-      fechainicio:'',
-      fechafin:'',
-      totalDias:0
-  }
+
 
     constructor(private authService: AuthGuardService,
                 private service: EsriRequestService,
@@ -598,15 +594,16 @@ totaldiasGrado(playasRelacionadas){
     if(playasRelacionadas.relatedAfluencia[i].attributes.nivel !='B'){
     var fecha2 = moment(new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_inicio),'YYYY-DD-MMM');
     var fecha1 = moment(new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_fin),'YYYY-DD-MMM');
-           this.totalDiasGrado.grado = playasRelacionadas.relatedAfluencia[i].attributes.nivel;
-           this.totalDiasGrado.fechainicio = moment(new Date(playasRelacionadas.relatedAfluencia[0].attributes.fecha_inicio),'YYYY-DD-MMM').format('D-M-Y');
-           this.totalDiasGrado.fechafin = moment(new Date(playasRelacionadas.relatedAfluencia[0].attributes.fecha_fin),'YYYY-DD-MMM').format('D-M-Y');
-           this.totalDiasGrado.totalDias = fecha1.diff(fecha2, 'days');
-           let copia = Object.assign({} ,  this.totalDiasGrado);
-           this.totalDiasGradoProteccion.push(copia);
+
+      if(playasRelacionadas.relatedAfluencia[i].attributes.nivel!=='A'){
+        this.totalGMedio = fecha1.diff(fecha2, 'days') + this.totalGMedio;
+      }else{
+        this.totalGAlto = fecha1.diff(fecha2, 'days') + this.totalGAlto;
+      }
     }
   }
-
+  console.log('Total Grado Medio: '+this.totalGMedio);
+  console.log('Total Grado Alto: '+this.totalGAlto);
 }
 
 calculadora(medio) {
