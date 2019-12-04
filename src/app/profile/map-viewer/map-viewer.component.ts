@@ -158,7 +158,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                 graphics: []
                             });
                             beachs = [...beachs].filter(x => x.relatedAfluencia.length > 0 && x.relatedEntorno.length > 0
-                                && x.relatedIncidencias.length > 0);
+                                && x.relatedIncidencias.length > 0 &&  x.clasificacion !== 'UP');
                             beachs.forEach(beach => {
                                 // si se ha seleccionado una fecha entonces los periodos se filtraran por esa fecha para mostrar el grado
                                 const sDate = moment(this.SelectedDate, 'YYYY-MM-DD').startOf('day');

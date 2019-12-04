@@ -47,7 +47,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
                 private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService) {
-                  
+
         this.es = {
             firstDayOfWeek: 1,
             dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
@@ -198,7 +198,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
         const filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.username === name).municipio_minus + '\'';
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filtermunicipio,
-            'objectid', false, this.authService.getCurrentUser().token, 'objectid', true).subscribe(
+            'objectid, clasificacion', false, this.authService.getCurrentUser().token, 'objectid', true).subscribe(
             (result: any) => {
                 if (result) {
                     this.beachs = result.features;

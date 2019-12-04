@@ -96,7 +96,10 @@ export class EsriRequestService {
             if (results) {
 
                 beachs.forEach(f => {
-                    const ob = {objectId: f.attributes.objectid, centroid: f.centroid ? f.centroid : null};
+                    const ob = {
+                        objectId: f.attributes.objectid,
+                        centroid: f.centroid ? f.centroid : null, clasificacion: f.attributes.clasificacion
+                    };
                     for (let i = 0; i < httpRequests.length; i++) {
                         ob['related' + relationsIds[i][1]] = results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid)
                             ? results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid).relatedRecords : [];
