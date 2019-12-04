@@ -14,6 +14,7 @@ import {AppSetting} from '../../models/app-setting';
 declare var Swiper: any;
 declare var $: any;
 declare var jquery: any;
+declare function init_plugins();
 
 @Component({
     selector: 'app-classification',
@@ -67,6 +68,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     ngOnInit() {
+      init_plugins();
         this.setPopulationByMuncipality(this.popService.getMunicipality());
         this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'valoracion'];
         this.itemsProtection = [

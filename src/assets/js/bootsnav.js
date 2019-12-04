@@ -1,3 +1,4 @@
+function navbar_load(){
 (function (a) {
     var b = {
         initialize: function () {
@@ -356,3 +357,4 @@
         a(".navbar-collapse").removeClass("bounceIn")
     })
 }(jQuery));
+}

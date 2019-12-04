@@ -8,6 +8,8 @@ import {SelectItem} from 'primeng/api';
 import {PopulationService} from '../services/population.service';
 import {AppSettingsService} from '../services/app-settings.service';
 import {AppSetting} from '../models/app-setting';
+declare function init_plugins();
+declare function navbar_load();
 
 @Component({
     selector: 'app-profile',
@@ -32,6 +34,8 @@ export class ProfileComponent implements OnInit {
     }
 
     ngOnInit() {
+        init_plugins();
+        navbar_load();
         this.current_user = this.authService.getCurrentUser();
         if (!this.popService.isMunicipalityStore(this.current_user)) {
             this.popService.updateMunicipality(this.current_user.selectedusername
