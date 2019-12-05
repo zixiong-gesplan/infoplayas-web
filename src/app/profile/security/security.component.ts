@@ -589,6 +589,8 @@ calculoTotalSocorristas(data){
   return total;
 }
 totaldiasGrado(playasRelacionadas){
+  this.totalGAlto = 0;
+  this.totalGMedio = 0;
 
   for (let i = 0; i < playasRelacionadas.relatedAfluencia.length; i++) {
     if(playasRelacionadas.relatedAfluencia[i].attributes.nivel !='B'){
