@@ -6,6 +6,7 @@ import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {BehaviorSubject} from 'rxjs';
 import {AppSetting} from '../models/app-setting';
 import {AppSettingsService} from './app-settings.service';
+import Swal from 'sweetalert2';
 
 @Injectable({
     providedIn: 'root'
@@ -32,7 +33,9 @@ export class PopulationService {
     public isMunicipalityStore(current_user: Auth): boolean {
         const mun: Municipality = this.getMunicipality();
         const currentDate = new Date();
-        if (mun && current_user.username !== mun.user) {
+        if (mun && current_user.selectedusername && current_user.selectedusername !== mun.user) {
+            return false;
+        } else if (mun && !current_user.selectedusername && current_user.username !== mun.user) {
             return false;
         }
         if (mun && currentDate.getFullYear() - 1 > Number(mun.year)) {
@@ -64,13 +67,14 @@ export class PopulationService {
             });
     }
 
-    /* En caso de error de los servicios del ISTAC ajeno a la pagina, comprobamos que hay datos en la localStorage, sino bloqueamos edicion
-     en los sitios donde se use el valor de peligrosidad por carga poblacional */
+    /* En caso de error de los servicios del ISTAC ajeno a la pagina, advertimos y solicitamos recargar la página*/
     blockEditProteccionData() {
-        const mun: Municipality = this.getMunicipality();
-        if (!mun) {
-            // TODO bloqueamos
-        }
+        Swal.fire({
+            type: 'error',
+            title: 'NO se ha podido contactar con el ISTAC',
+            text: 'Los cálculos no serán correctos, trate de recargar la página, si persiste inténtelo más tarde.',
+            footer: ''
+        });
     }
 
     getLastYearIstacData2(popYear: number) {
@@ -158,9 +162,9 @@ export class PopulationService {
             },
             error => {
                 console.log(error);
+                this.blockEditProteccionData();
             }).add(() => {
             this.spinnerService.hide();
-            this.blockEditProteccionData();
             console.log('end of request');
         });
     }
