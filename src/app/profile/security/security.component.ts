@@ -69,8 +69,8 @@ export class SecurityComponent implements OnInit, OnDestroy {
     subscripcionSmunicipality;
     calculoTotalHumanosP;
     calculoTotalHumanos;
-    totalGAlto:number = 0;
-    totalGMedio: number = 0;
+    totalGAlto:number;
+    totalGMedio: number;
     urlimageweather =  environment.urlimageweather;
     unitarios = {
       jefe_turno_pvp:'',
@@ -591,21 +591,38 @@ calculoTotalSocorristas(data){
 totaldiasGrado(playasRelacionadas){
   this.totalGAlto = 0;
   this.totalGMedio = 0;
-
   for (let i = 0; i < playasRelacionadas.relatedAfluencia.length; i++) {
     if(playasRelacionadas.relatedAfluencia[i].attributes.nivel !='B'){
     var fecha2 = moment(new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_inicio),'YYYY-DD-MMM');
     var fecha1 = moment(new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_fin),'YYYY-DD-MMM');
-
-      if(playasRelacionadas.relatedAfluencia[i].attributes.nivel!=='A'){
-        this.totalGMedio = fecha1.diff(fecha2, 'days') + this.totalGMedio;
-      }else{
-        this.totalGAlto = fecha1.diff(fecha2, 'days') + this.totalGAlto;
-      }
+        switch (playasRelacionadas.relatedAfluencia[i].attributes.incluir_dias) {
+          case 'TD': {
+            if(playasRelacionadas.relatedAfluencia[i].attributes.nivel!=='A'){
+                this.totalGMedio = fecha1.diff(fecha2, 'days') + this.totalGMedio;
+           }else{
+                this.totalGAlto = fecha1.diff(fecha2, 'days') + this.totalGAlto + this.totalGAlto ;
+             }
+            break;
+          }
+          case 'FS': {
+              if(playasRelacionadas.relatedAfluencia[i].attributes.nivel!=='A'){
+                  this.totalGMedio = this.getNumWorkDays(new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_inicio),new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_fin),'FS') + this.totalGMedio;
+             }else{
+                  this.totalGAlto = this.getNumWorkDays(new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_inicio),new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_fin),'FS') + this.totalGAlto;
+          }
+            break;
+          }
+          default: {
+              if(playasRelacionadas.relatedAfluencia[i].attributes.nivel!=='A'){
+                  this.totalGMedio =  this.getNumWorkDays(new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_inicio),new Date(playasRelacionadas.relatedAfluencia[i].attributes.fecha_fin),'LB') + this.totalGMedio;
+             }else{
+                this.totalGAlto = fecha1.diff(fecha2, 'days') + this.totalGAlto + this.totalGAlto ;
+          }
+          break;
+          }
+        }
     }
   }
-  console.log('Total Grado Medio: '+this.totalGMedio);
-  console.log('Total Grado Alto: '+this.totalGAlto);
 }
 
 calculadora(medio) {
