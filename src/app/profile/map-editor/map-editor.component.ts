@@ -328,6 +328,11 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             this.urlInfoMap + '&zoom=' + this.zoom + '&center=' + this.selectLongitude + ',' + this.selectLatitude;
     }
 
+    setUrlCatalogue() {
+        return this.centroidOption ? environment.urlCatalogue + '&zoom=18&center=' + this.coordX + ',' + this.coordY + ',' + this.wkid :
+            environment.urlCatalogue + '&zoom=' + this.zoom + '&center=' + this.selectLongitude + ',' + this.selectLatitude;
+    }
+
     loadRelatedAdditionalDangers(parentId: string) {
         this.service.getEsriRelatedData(environment.infoplayas_catalogo_edicion_url + '/queryRelatedRecords',
             parentId, '9', '*', true, this.currentUser.token).subscribe(
