@@ -11,6 +11,7 @@ import {PopulationService} from '../../services/population.service';
 import {Municipality} from '../../models/municipality';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
+import Swal from 'sweetalert2';
 
 declare var $: any;
 declare var jquery: any;
@@ -46,6 +47,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     private lastGraphicLayerId: string;
     selectedPeriodos: GradeRecord[];
     private aytos: AppSetting[];
+    private beachsWgrades: any;
+    private selectedBeachId: number;
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
                 private service: EsriRequestService, private popService: PopulationService,
@@ -158,7 +161,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                 graphics: []
                             });
                             beachs = [...beachs].filter(x => x.relatedAfluencia.length > 0 && x.relatedEntorno.length > 0
-                                && x.relatedIncidencias.length > 0 &&  x.clasificacion !== 'UP');
+                                && x.relatedIncidencias.length > 0 && x.clasificacion !== 'UP');
+                            this.beachsWgrades = beachs;
                             beachs.forEach(beach => {
                                 // si se ha seleccionado una fecha entonces los periodos se filtraran por esa fecha para mostrar el grado
                                 const sDate = moment(this.SelectedDate, 'YYYY-MM-DD').startOf('day');
@@ -234,6 +238,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         viewer.ui.add([home, expandList], 'top-left');
                         viewer.ui.add(scaleBar, 'bottom-left');
                         viewer.ui.add(['infoViewer', legend], 'top-right');
+                        viewer.ui.add(['pdfbutton'], 'bottom-right');
 
                         // Some elements are hidden by default. We show them when the view is loaded
                         $('#infoViewer')[0].classList.remove('esri-hidden');
@@ -243,10 +248,16 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         // Listen for when the user clicks on the view
                         viewer.hitTest(event).then(function (response) {
                             const result = response.results.find(item => item.graphic.layer.id === t.lastGraphicLayerId);
+                            const resultBeach = response.results.find(item => item.graphic.layer.id === playasLayerViewerId);
                             if (result) {
                                 t.selectedPeriodos = result.graphic.attributes;
                                 t.selectedPeriodos.sort((a, b) => (a.fecha_inicio > b.fecha_inicio) ? 1 :
                                     (a.fecha_inicio === b.fecha_inicio) ? ((a.fecha_fin > b.fecha_fin) ? 1 : -1) : -1);
+                            }
+                            if (resultBeach && t.beachsWgrades.find(b => b.objectId === resultBeach.graphic.attributes.objectid)) {
+                                t.selectedBeachId = resultBeach.graphic.attributes.objectid;
+                            } else {
+                                t.selectedBeachId = null;
                             }
                         });
                     });
@@ -261,8 +272,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     function onListClickHandler(event) {
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
-                        const objectId = target.getAttribute('oid');
-
+                        t.selectedBeachId = target.getAttribute('oid');
                         expandList.collapse();
 
                         const result = resultId && features && features[parseInt(resultId, 10)];
@@ -333,5 +343,38 @@ export class MapViewerComponent implements OnInit, OnDestroy {
             start = moment(start, 'YYYY-MM-DD').add(1, 'days'); // increment by one day
         }
         return modo !== 'FS' ? weekdayCounter : noweekdayCounter;
+    }
+
+    loadCatalogueInfoByid() {
+        const current_user = this.authService.getCurrentUser();
+        const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
+        const filterbeach = 'objectid = \'' + this.selectedBeachId + '\'';
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filterbeach,
+            '*', false, this.currentUser.token, 'objectid', false).subscribe(
+            (result: any) => {
+                if (result && result.features.length > 0) {
+                    this.printPdf(result.features[0]);
+                } else if (result.error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Error ' + result.error.code,
+                        text: result.error.message,
+                        footer: ''
+                    });
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
+    }
+
+    checkReport() {
+        this.loadCatalogueInfoByid();
+    }
+
+    private printPdf(beach) {
+        // TODO desarrollar el metodo con js2pdf
+        beach = {...beach, ...this.beachsWgrades.find(b => b.objectId === this.selectedBeachId)};
+        console.log(beach);
     }
 }
