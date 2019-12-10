@@ -144,6 +144,16 @@ export class SecurityComponent implements OnInit, OnDestroy {
         this.formmedioshumanos();
         this.formCalculadoraMateriales();
     }
+  calculoPlaceHolder(grado,longitudPlaya){
+    let placeHolderFinal;
+    if(grado ==='M'){
+      placeHolderFinal = Math.ceil(( longitudPlaya / 400));
+    }else{
+      placeHolderFinal = Math.ceil((longitudPlaya / 400));
+    }
+
+    return placeHolderFinal ;
+  }
 
       dinamicForm(grados,related){
         this.t.controls = [];
@@ -572,8 +582,6 @@ createRangeHumanos(unitarios){
   }
     costeTotales.costetotal= costeTotales.totaljefe + costeTotales.totalsoc + costeTotales.totalsocemb + costeTotales.totalsocper;
     this.calculoTotalHumanos.push(costeTotales);
-    console.log(this.calculoTotalHumanosP);
-
   }
 
 }
