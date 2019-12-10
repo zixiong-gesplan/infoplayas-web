@@ -153,8 +153,7 @@
         </div>
         <!--        formulario de incidencias y usos-->
         <div [hidden]="selectForm !=='incidencias'">
-            <form class="esri-pad" [formGroup]="formIncidents"
-                  (ngSubmit)="onSubmit(formIncidents, tableIds.tbIncidencias)">
+            <form class="esri-pad" [formGroup]="formIncidents" (ngSubmit)="onSubmit(formIncidents, tableIds.tbIncidencias)">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
@@ -374,8 +373,7 @@
         </div>
         <!--        formulario de entorno fisico y condiciones del mar-->
         <div [hidden]="selectForm !=='entorno'">
-            <form class="esri-pad" [formGroup]="formEnvironment"
-                  (ngSubmit)="onSubmit(formEnvironment, tableIds.tbEntorno)">
+            <form class="esri-pad" [formGroup]="formEnvironment" (ngSubmit)="onSubmit(formEnvironment, tableIds.tbEntorno)">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
@@ -481,22 +479,7 @@
                 </div>
             </form>
         </div>
-        <!--        formulario para superusuario - modificar el catalogo-->
-        <div [hidden]="selectForm !=='inventario' || (currentUser && !currentUser.selectedusername)">
-            <div class="form-row margin-top25px">
-                <div class="form-group">
-                    <a role="button" class="esri-button" data-fancybox data-type="iframe" [href]="setUrlCatalogue()">Abrir
-                        catálogo</a>
-                    <input (click)="sendMessage('noid',getUnselectedMessage(), null)"
-                           onclick="unselectFeature()"
-                           type="button"
-                           class="esri-button esri-button--secondary"
-                           value="Cancelar"/>
-                </div>
-            </div>
-        </div>
-        <!--        formulario propio del api para inventario - datos del catalogo para tecnicos de ayuntamiento-->
-        <div [hidden]="selectForm !=='inventario' || (currentUser && currentUser.selectedusername)">
+        <div [hidden]="selectForm !=='inventario'">
             <div id="form" class="esri-component"></div>
             <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
             <input (click)="sendMessage('noid',getUnselectedMessage(), null)"
