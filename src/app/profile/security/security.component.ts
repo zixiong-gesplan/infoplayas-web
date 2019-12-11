@@ -19,7 +19,7 @@ declare var jQuery: any;
 declare const aytos: any;
 declare var UTMXYToLatLon: any;
 declare var RadToDeg: any;
-
+declare function navbar_load();
 
 @Component({
     selector: 'app-security',
@@ -865,6 +865,7 @@ public updateHorarios(){
         ultimo_editor: ''
       },
   };
+  bucleHorarios.push(this.formHorarios.value);
 
   bucleHorarios.forEach(r => {
     r.horariosperiodos.forEach(x =>{
@@ -879,6 +880,7 @@ public updateHorarios(){
 
     });
   });
+
   this.updateGenerico(pHorarios, environment.tbAfluencia ,'updates');
  }
 
