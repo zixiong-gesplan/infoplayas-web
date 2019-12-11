@@ -497,12 +497,12 @@
             </div>
         </div>
         <!--        tabla con los campos del catalogo de una playa-->
-        <p-dialog header="Campos del catálogo" [(visible)]="openCatalogue" [modal]="false" [responsive]="true"
+        <p-dialog header="Campos del catálogo" [(visible)]="openCatalogue" [modal]="true" [responsive]="true"
                   [style]="{width: '850px', minWidth: '640px'}" [minY]="180"
-                  [maximizable]="true" [baseZIndex]="10000">
+                  [maximizable]="true">
             <p-accordion>
                 <p-accordionTab header="Sección General">
-                    <p-table [style]="{marginBottom: '100px'}" [columns]="colsCatalogue1" [value]="beachsCatalogue" [scrollable]="true">
+                    <p-table [style]="{marginBottom: '20px'}" [columns]="colsCatalogue1" [value]="beachsCatalogue" [scrollable]="true">
                         <ng-template pTemplate="colgroup" let-columns>
                             <colgroup>
                                 <col *ngFor="let col of columns" [width]="col.width">
@@ -574,7 +574,7 @@
                                     <div *ngSwitchCase="'drop'">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <p-dropdown [options]="getArrayOps(col.codvalues)"
+                                                <p-dropdown appendTo="body" [options]="getArrayOps(col.codvalues)"
                                                             [(ngModel)]="rowData.attributes[col.field]"
                                                             [style]="{'width':'100%'}">
                                                 </p-dropdown>
@@ -627,7 +627,7 @@
                                     <div *ngSwitchCase="'drop'">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <p-dropdown [options]="getArrayOps(col.codvalues)"
+                                                <p-dropdown appendTo="body" [options]="getArrayOps(col.codvalues)"
                                                             [(ngModel)]="rowData.attributes[col.field]"
                                                             [style]="{'width':'100%'}">
                                                 </p-dropdown>

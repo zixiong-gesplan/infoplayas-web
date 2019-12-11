@@ -113,8 +113,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             {field: 'tipo_de_arena', type: 'text', alias: 'Tipo de arena', width: '120px'},
             {field: 'condiciones_baño', type: 'text', alias: 'Condiciones_baño', width: '200px'},
             {field: 'forma_de_acceso', type: 'text', alias: 'Forma de acceso', width: '200px'},
-            {field: 'auxilio_y_salvamento_desc', type: 'text', alias: 'Salvamento', width: '100px'},
-            {field: 'clasificacion', type: 'drop', alias: 'Clasificacion', codvalues: 'clasificacion', width: '100px'}
+            {field: 'clasificacion', type: 'drop', alias: 'Clasificacion', codvalues: 'clasificacion', width: '100px'},
+            {field: 'auxilio_y_salvamento_desc', type: 'text', alias: 'Salvamento', width: '100px'}
         ];
         this.colsCatalogue2 = [
             {field: 'requiere_pss', type: 'bol', alias: 'Requiere PSS'},
