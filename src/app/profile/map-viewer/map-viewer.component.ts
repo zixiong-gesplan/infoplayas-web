@@ -48,7 +48,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     private lastGraphicLayerId: string;
     private aytos: AppSetting[];
     private beachsWgrades: any;
-    private selectedBeachId: number;
+    selectedBeachId: number;
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
                 private service: EsriRequestService, private popService: PopulationService,

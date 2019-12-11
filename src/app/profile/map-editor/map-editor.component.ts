@@ -85,12 +85,12 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     deleteAddtionalDangers: number[];
     colsFlow: any;
     dateNow: Date;
-    private currentUser: Auth;
+    currentUser: Auth;
     private subscripcionMunicipality;
     tableIds: Tableids;
     private aytos: AppSetting[];
-    private openCatalogue: boolean;
-    private beachFieldsCatalogue: any;
+    openCatalogue: boolean;
+    beachFieldsCatalogue: any;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
