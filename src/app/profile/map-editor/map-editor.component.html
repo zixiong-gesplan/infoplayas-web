@@ -497,40 +497,175 @@
             </div>
         </div>
         <!--        tabla con los campos del catalogo de una playa-->
-        <p-dialog header="Campos del catálogo" [(visible)]="openCatalogue" [modal]="true" [responsive]="true"
-                  [style]="{width: '650px', minWidth: '450px'}" [minY]="140"
+        <p-dialog header="Campos del catálogo" [(visible)]="openCatalogue" [modal]="false" [responsive]="true"
+                  [style]="{width: '850px', minWidth: '640px'}" [minY]="180"
                   [maximizable]="true" [baseZIndex]="10000">
-            <p>en construcción!</p>
-            <p-table [columns]="colsCatalogue" [value]="beachsCatalogue">
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns">
-                            {{col.alias}}
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-rowData let-columns="columns">
-                    <!--                    <tr>-->
-                    <!--                        <td *ngFor="let col of columns">-->
-                    <!--                            {{rowData[col.name]}}-->
-                    <!--                        </td>-->
-                    <!--                    </tr>-->
-                    <tr>
-                        <td *ngFor="let col of columns" pEditableColumn>
-                            <p-cellEditor>
-                                <ng-template pTemplate="input">
-                                    <input pInputText
-                                           [type]="col.type === 'esriFieldTypeOID' ? 'number' : col.type === 'esriFieldTypeDate' ? 'date' : 'text'"
-                                           [(ngModel)]="rowData[col.name]">
-                                </ng-template>
-                                <ng-template pTemplate="output">
-                                    {{rowData[col.name]}}
-                                </ng-template>
-                            </p-cellEditor>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
+            <p-accordion>
+                <p-accordionTab header="Sección General">
+                    <p-table [style]="{marginBottom: '100px'}" [columns]="colsCatalogue1" [value]="beachsCatalogue" [scrollable]="true">
+                        <ng-template pTemplate="colgroup" let-columns>
+                            <colgroup>
+                                <col *ngFor="let col of columns" [width]="col.width">
+                            </colgroup>
+                        </ng-template>
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns">
+                                    {{col.alias}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-columns="columns">
+                            <tr>
+                                <td *ngFor="let col of columns" pEditableColumn [ngSwitch]="col.type">
+                                    <div *ngSwitchCase="'drop'">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <p-dropdown appendTo="body" [options]="getArrayOps(col.codvalues)"
+                                                            [(ngModel)]="rowData.attributes[col.field]"
+                                                            [style]="{'width':'100%'}">
+                                                </p-dropdown>
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{rowData.attributes[col.field]}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </div>
+                                    <div *ngSwitchCase="'bol'" class="text-center">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <p-checkbox [(ngModel)]="rowData.attributes[col.field]"
+                                                            binary="true"></p-checkbox>
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{rowData.attributes[col.field]}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </div>
+                                    <div *ngSwitchDefault>
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <input pInputText
+                                                       [type]="col.type"
+                                                       [(ngModel)]="rowData.attributes[col.field]">
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{rowData.attributes[col.field]}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+                <p-accordionTab header="Sección Gestión">
+                    <p-table [columns]="colsCatalogue2" [value]="beachsCatalogue">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns">
+                                    {{col.alias}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-columns="columns">
+                            <tr>
+                                <td *ngFor="let col of columns" pEditableColumn [ngSwitch]="col.type">
+                                    <div *ngSwitchCase="'drop'">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <p-dropdown [options]="getArrayOps(col.codvalues)"
+                                                            [(ngModel)]="rowData.attributes[col.field]"
+                                                            [style]="{'width':'100%'}">
+                                                </p-dropdown>
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{rowData.attributes[col.field]}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </div>
+                                    <div *ngSwitchCase="'bol'" class="text-center">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <p-checkbox [(ngModel)]="rowData.attributes[col.field]"
+                                                            binary="true"></p-checkbox>
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{rowData.attributes[col.field]}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </div>
+                                    <div *ngSwitchDefault>
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <input pInputText
+                                                       [type]="col.type"
+                                                       [(ngModel)]="rowData.attributes[col.field]">
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{rowData.attributes[col.field]}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+                <p-accordionTab header="Sección auxiliar">
+                    <p-table [columns]="colsCatalogue3" [value]="beachsCatalogue">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns">
+                                    {{col.alias}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-columns="columns">
+                            <tr>
+                                <td *ngFor="let col of columns" pEditableColumn [ngSwitch]="col.type">
+                                    <div *ngSwitchCase="'drop'">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <p-dropdown [options]="getArrayOps(col.codvalues)"
+                                                            [(ngModel)]="rowData.attributes[col.field]"
+                                                            [style]="{'width':'100%'}">
+                                                </p-dropdown>
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{rowData.attributes[col.field]}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </div>
+                                    <div *ngSwitchCase="'bol'" class="text-center">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <p-checkbox [(ngModel)]="rowData.attributes[col.field]"
+                                                            binary="true"></p-checkbox>
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{rowData.attributes[col.field]}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </div>
+                                    <div *ngSwitchDefault>
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <input pInputText
+                                                       [type]="col.type"
+                                                       [(ngModel)]="rowData.attributes[col.field]">
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{rowData.attributes[col.field]}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+            </p-accordion>
             <p-footer>
                 <button type="button" pButton icon="pi pi-check" (click)="save()" label="Guardar"></button>
                 <button type="button" pButton icon="pi pi-close" (click)="openCatalogue=false" label="Cancelar"

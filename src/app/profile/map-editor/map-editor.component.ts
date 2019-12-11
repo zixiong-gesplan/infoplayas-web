@@ -91,13 +91,70 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     private aytos: AppSetting[];
     openCatalogue: boolean;
     beachsCatalogue: any[];
-    colsCatalogue: any[];
+    colsCatalogue1: any[];
+    colsCatalogue2: any[];
+    colsCatalogue3: any[];
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
                 private popService: PopulationService, private appSettingsService: AppSettingsService) {
         this.beachsCatalogue = [];
-        this.colsCatalogue = [];
+        this.colsCatalogue1 = [
+            {field: 'provincia', type: 'text', alias: 'Provincia', width: '120px'},
+            {field: 'isla', type: 'text', alias: 'Isla', width: '120px'},
+            {field: 'municipio', type: 'text', alias: 'Municipio', width: '250px'},
+            {field: 'nombre_municipio', type: 'text', alias: 'Nombre Municipio', width: '250px'},
+            {field: 'nombre_mapama', type: 'text', alias: 'Nombre MAPAMA', width: '250px'},
+            {field: 'nombre_ss', type: 'text', alias: 'Nombre SS', width: '200px'},
+            {field: 'nombre_pilotaje_litoral', type: 'text', alias: 'Nombre Pilotaje Litoral', width: '200px'},
+            {field: 'interlocutor', type: 'text', alias: 'Interlocutor', width: '300px'},
+            {field: 'tecnico_redactor', type: 'text', alias: 'Técnico redactor', width: '300px'},
+            {field: 'riesgo', type: 'text', alias: 'Riesgo', width: '100px'},
+            {field: 'tipo_de_arena', type: 'text', alias: 'Tipo de arena', width: '120px'},
+            {field: 'condiciones_baño', type: 'text', alias: 'Condiciones_baño', width: '200px'},
+            {field: 'forma_de_acceso', type: 'text', alias: 'Forma de acceso', width: '200px'},
+            {field: 'auxilio_y_salvamento_desc', type: 'text', alias: 'Salvamento', width: '100px'},
+            {field: 'clasificacion', type: 'drop', alias: 'Clasificacion', codvalues: 'clasificacion', width: '100px'}
+        ];
+        this.colsCatalogue2 = [
+            {field: 'requiere_pss', type: 'bol', alias: 'Requiere PSS'},
+            {field: 'registro_dgse', type: 'bol', alias: 'Registro DGSE'},
+            {field: 'presentado_gesplan', type: 'bol', alias: 'Presentado Gesplan'},
+            {field: 'revisado_gesplan', type: 'bol', alias: 'revisado_gesplan'},
+            {field: 'corregido_ayto', type: 'bol', alias: 'corregido_ayto'},
+            {field: 'apto', type: 'bol', alias: 'Apto'},
+            {field: 'nueva_catalogo', type: 'text', alias: 'Nueva en el catalogo'},
+            {field: 'zona_surf', type: 'text', alias: 'Zona_Surf'},
+            {field: 'fachada_litoral', type: 'text', alias: 'Fachada_Litoral'},
+            {field: 'playa_zbm', type: 'text', alias: 'Playa o ZBM'},
+            {field: 'aux_y_salvamento', type: 'bol', alias: 'aux_y_salvamento'},
+            {field: 'longitud_metros', type: 'bol', alias: 'longitud_metros'},
+            {field: 'anchura_metros', type: 'bol', alias: 'anchura_metros'},
+            {field: 'carretera_mas_proxima', type: 'text', alias: 'carretera_mas_proxima'},
+            {field: 'autobus', type: 'bol', alias: 'autobus'},
+            {field: 'grado_urbanizacion', type: 'text', alias: 'Grado urbanización'},
+            {field: 'composicion', type: 'text', alias: 'Composición'}
+        ];
+        this.colsCatalogue3 = [
+            {field: 'autobus_tipo', type: 'text', alias: 'autobus_tipo'},
+            {field: 'acceso_discapacitado', type: 'bol', alias: 'acceso_discapacitado'},
+            {field: 'bandera_azul', type: 'bol', alias: 'Bandera azul'},
+            {field: 'aparcamientos', type: 'bol', alias: 'aparcamientos'},
+            {field: 'paseo_maritimo', type: 'bol', alias: 'paseo_maritimo'},
+            {field: 'aseo', type: 'bol', alias: 'aseo'},
+            {field: 'lavapie', type: 'bol', alias: 'lavapie'},
+            {field: 'ducha', type: 'bol', alias: 'ducha'},
+            {field: 'telefono', type: 'bol', alias: 'telefono'},
+            {field: 'papeleras', type: 'bol', alias: 'papeleras'},
+            {field: 'alquiler_sombrilla', type: 'bol', alias: 'alquiler_sombrilla'},
+            {field: 'alquiler_hamaca', type: 'bol', alias: 'alquiler_hamaca'},
+            {field: 'alquiler_nautico', type: 'bol', alias: 'alquiler_nautico'},
+            {field: 'turismo_oficina', type: 'bol', alias: 'turismo_oficina'},
+            {field: 'area_infantil', type: 'bol', alias: 'area_infantil'},
+            {field: 'area_deportiva', type: 'bol', alias: 'area_deportiva'},
+            {field: 'submarinismo_', type: 'bol', alias: 'submarinismo_'},
+            {field: 'kiosko', type: 'bol', alias: 'kiosko'}
+        ];
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
             {label: 'Peligrosa o susceptible de producir daño', value: 'P'},
@@ -961,8 +1018,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             '*', false, this.currentUser.token, 'objectid', false).subscribe(
             (result: any) => {
                 if (result && result.features.length > 0) {
-                    this.beachsCatalogue = result.features[0].attributes;
+                    this.beachsCatalogue = result.features;
                     console.log(this.beachsCatalogue);
+                    console.log(result);
                 } else if (result.error) {
                     Swal.fire({
                         type: 'error',
@@ -977,5 +1035,21 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 console.log(error.toString());
                 this.spinnerService.hide();
             });
+    }
+
+    getArrayOps(codvalues) {
+        switch (codvalues) {
+            case 'clasificacion': {
+                return  [
+                    {label: 'LIBRE', value: 'L'},
+                    {label: 'PELIGROSA', value: 'P'},
+                    {label: 'USO PROHIBIDO', value: 'UP'}
+                ];
+            }
+            default: {
+                // statements;
+                break;
+            }
+        }
     }
 }
