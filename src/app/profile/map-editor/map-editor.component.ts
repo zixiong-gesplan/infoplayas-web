@@ -89,6 +89,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     private subscripcionMunicipality;
     tableIds: Tableids;
     private aytos: AppSetting[];
+    private openCatalogue: boolean;
+    private beachFieldsCatalogue: any;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
@@ -586,8 +588,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     listNode = $('#ulPlaya')[0];
                     listNode.addEventListener('click', onListClickHandler);
 
-                    loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (nBeachs) {
-                        t.nZones.emit(nBeachs);
+                    loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (Beachs) {
+                        t.nZones.emit(Beachs.length);
+                        features = Beachs;
                         t.spinnerService.hide();
                     });
 
@@ -677,15 +680,19 @@ export class MapEditorComponent implements OnInit, OnDestroy {
 
                 // aplicamos distintos filtros al mapa en funcion de lo que se quiera mostrar en cada apartado
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
-                    let filter = 'municipio = \'' + t.aytos.find(i => i.username === IdentityManager.credentials[0].userId).municipio_minus + '\'';
+                    t.spinnerService.show();
+                    let filter = 'municipio = \'' + t.aytos.find(i => i.username === IdentityManager.credentials[0].userId)
+                        .municipio_minus + '\'';
                     filter = event.target.dataset.filter === '.protection' ? filter +
                         ' AND clasificacion <> \'UP\''
                         : event.target.dataset.filter === '.result' ? filter
                                 + ' AND clasificacion IS NOT NULL' : filter;
                     playasLayer.definitionExpression = filter;
-                    t.spinnerService.show();
-                    loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
-                        t.nZones.emit(nBeachs);
+                    loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (Beachs) {
+                        t.nZones.emit(Beachs.length);
+                        if (event.target.dataset.filter !== '.result') {
+                            features = Beachs;
+                        }
                         t.spinnerService.hide();
                     });
                 };
@@ -707,8 +714,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                 playasLayer.definitionExpression.substr(playasLayer.definitionExpression.indexOf(' AND ')) : filter;
                             playasLayer.definitionExpression = filter;
                             t.spinnerService.show();
-                            loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
-                                t.nZones.emit(nBeachs);
+                            loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (Beachs) {
+                                t.nZones.emit(Beachs.length);
+                                features = Beachs;
                                 t.spinnerService.hide();
                             });
                             municipiosLayer.queryFeatures({
@@ -934,5 +942,37 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbRiesgos
                 + '/applyEdits', 'none');
         }
+    }
+
+    save() {
+        // TODO guardar la tabla
+        console.log('guardando');
+        this.openCatalogue = false;
+    }
+
+    loadCatalogueInfoByid() {
+        this.openCatalogue = true;
+        this.spinnerService.show();
+        const filterbeach = 'objectid = \'' + this.selectedId + '\'';
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filterbeach,
+            '*', false, this.currentUser.token, 'objectid', false).subscribe(
+            (result: any) => {
+                if (result && result.features.length > 0) {
+                    this.beachFieldsCatalogue = result;
+                    console.log(this.beachFieldsCatalogue);
+                } else if (result.error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Error ' + result.error.code,
+                        text: result.error.message,
+                        footer: ''
+                    });
+                }
+                this.spinnerService.hide();
+            },
+            error => {
+                console.log(error.toString());
+                this.spinnerService.hide();
+            });
     }
 }

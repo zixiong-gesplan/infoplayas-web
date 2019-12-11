@@ -14,6 +14,7 @@ import {AppSetting} from '../../models/app-setting';
 declare var Swiper: any;
 declare var $: any;
 declare var jquery: any;
+
 declare function init_plugins();
 
 @Component({
@@ -68,7 +69,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     ngOnInit() {
-      init_plugins();
+        init_plugins();
         this.setPopulationByMuncipality(this.popService.getMunicipality());
         this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'valoracion'];
         this.itemsProtection = [
@@ -190,9 +191,18 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     setPopulationByMuncipality(mun: Municipality) {
-        this.municipio = mun;
-        this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
-        this.DangerPopulationLevel = this.getDangerPopulationLevel();
+        if (!mun) {
+            Swal.fire({
+                type: 'error',
+                title: 'NO se ha podido contactar con el ISTAC',
+                text: 'Los cálculos no serán correctos, trate de recargar la página, si persiste inténtelo más tarde.',
+                footer: ''
+            });
+        } else {
+            this.municipio = mun;
+            this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
+            this.DangerPopulationLevel = this.getDangerPopulationLevel();
+        }
     }
 
     loadBeachsIds() {

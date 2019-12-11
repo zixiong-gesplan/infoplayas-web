@@ -128,9 +128,8 @@ function loadList(view, featureLayer, fields, filter) {
     returnGeometry: true
   })
   .then(function(results) {
-    features = results.features;
     const fragment = document.createDocumentFragment();
-    features.forEach(function(result, index) {
+      results.features.forEach(function(result, index) {
       const attributes = result.attributes;
       var name = attributes.nombre_municipio;
 
@@ -159,7 +158,7 @@ function loadList(view, featureLayer, fields, filter) {
           listNode.innerHTML = "";
           listNode.appendChild(fragment);
       };
-    return results.features.length;
+    return results.features;
   })
   .catch(function(error) {
     console.error("query failed: ", error);

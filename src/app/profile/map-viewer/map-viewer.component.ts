@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {loadModules} from 'esri-loader';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
@@ -29,7 +29,7 @@ declare let filterMunicipios: any;
 declare const createHomeButton: any;
 declare let listNodeViewer: any;
 declare const loadList: any;
-declare let features: any;
+declare let featuresViewer: any;
 
 @Component({
     selector: 'app-map-viewer',
@@ -41,11 +41,11 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     @Input() zoom: number;
     @Input() mapHeight: string;
     @Input() SelectedDate: string;
+    selectedPeriodos: GradeRecord[];
     private currentUser: Auth;
     private subscripcionFeatures;
     private subscripcionMunicipality;
     private lastGraphicLayerId: string;
-    selectedPeriodos: GradeRecord[];
     private aytos: AppSetting[];
     private beachsWgrades: any;
     private selectedBeachId: number;
@@ -219,6 +219,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
 
                     // Filter by changing runtime params
                     filterPlayas = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_minus + '\'';
+                    filterPlayas = filterPlayas + ' AND clasificacion IS NOT NULL';
                     filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_mayus + '\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
@@ -265,17 +266,18 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     listNodeViewer = $('#ulPlayaViewer')[0];
                     listNodeViewer.addEventListener('click', onListClickHandler);
 
-                    loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (nBeachs) {
-                        // TODO
+                    loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (Beachs) {
+                        featuresViewer = Beachs;
                     });
 
                     function onListClickHandler(event) {
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
-                        t.selectedBeachId = target.getAttribute('oid');
+                        t.selectedBeachId = t.beachsWgrades.find(b => b.objectId === target.getAttribute('oid')) ?
+                            target.getAttribute('oid') : null;
                         expandList.collapse();
 
-                        const result = resultId && features && features[parseInt(resultId, 10)];
+                        const result = resultId && featuresViewer && featuresViewer[parseInt(resultId, 10)];
 
                         try {
                             viewer.goTo(result.geometry.extent.expand(2));
@@ -284,6 +286,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         }
                     }
                 });
+
                 // recargamos el filtro de municipio y de playas cuando se selecciona un nuevo municipio desde un superusuario
                 this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
                     (result: Municipality) => {
@@ -294,10 +297,11 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                             IdentityManager.credentials[0].userId = result.user;
                             filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            const filter = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_minus + '\'';
+                            const filter = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_minus + '\''
+                                + ' AND clasificacion IS NOT NULL';
                             playasLayer.definitionExpression = filter;
-                            loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (nBeachs) {
-                                // TODO
+                            loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (Beachs) {
+                                featuresViewer = Beachs;
                             });
                             municipiosLayer.queryFeatures({
                                 outFields: ['*'],
@@ -346,8 +350,6 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     }
 
     loadCatalogueInfoByid() {
-        const current_user = this.authService.getCurrentUser();
-        const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
         const filterbeach = 'objectid = \'' + this.selectedBeachId + '\'';
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filterbeach,
             '*', false, this.currentUser.token, 'objectid', false).subscribe(

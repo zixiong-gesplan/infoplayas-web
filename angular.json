@@ -48,7 +48,6 @@
               "src/assets/js/jquery-ui.js",
               "src/assets/js/aos.js",
               "src/assets/js/wow.js",
-              "src/assets/js/esri-custom/aytos.js",
               "src/assets/js/esri-custom/constructors.js",
               "src/assets/js/esri-custom/functions.js",
               "src/assets/js/esri-custom/globals.js",

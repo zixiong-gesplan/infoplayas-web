@@ -153,7 +153,8 @@
         </div>
         <!--        formulario de incidencias y usos-->
         <div [hidden]="selectForm !=='incidencias'">
-            <form class="esri-pad" [formGroup]="formIncidents" (ngSubmit)="onSubmit(formIncidents, tableIds.tbIncidencias)">
+            <form class="esri-pad" [formGroup]="formIncidents"
+                  (ngSubmit)="onSubmit(formIncidents, tableIds.tbIncidencias)">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
@@ -373,7 +374,8 @@
         </div>
         <!--        formulario de entorno fisico y condiciones del mar-->
         <div [hidden]="selectForm !=='entorno'">
-            <form class="esri-pad" [formGroup]="formEnvironment" (ngSubmit)="onSubmit(formEnvironment, tableIds.tbEntorno)">
+            <form class="esri-pad" [formGroup]="formEnvironment"
+                  (ngSubmit)="onSubmit(formEnvironment, tableIds.tbEntorno)">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
@@ -479,7 +481,63 @@
                 </div>
             </form>
         </div>
-        <div [hidden]="selectForm !=='inventario'">
+        <!--        formulario para superusuario - modificar el catalogo-->
+        <div [hidden]="selectForm !=='inventario' || (currentUser && !currentUser.selectedusername)">
+            <div class="form-row margin-top25px">
+                <div class="form-group">
+                    <button role="button" class="esri-button" (click)="loadCatalogueInfoByid()">Abrir
+                        catálogo
+                    </button>
+                    <input (click)="sendMessage('noid',getUnselectedMessage(), null)"
+                           onclick="unselectFeature()"
+                           type="button"
+                           class="esri-button esri-button--secondary"
+                           value="Cancelar"/>
+                </div>
+            </div>
+        </div>
+        <!--        tabla con los campos del catalogo de una playa-->
+        <p-dialog header="Campos del catálogo" [(visible)]="openCatalogue" [modal]="true" [responsive]="true"
+                  [style]="{width: '650px', minWidth: '450px'}" [minY]="140"
+                  [maximizable]="true" [baseZIndex]="10000">
+            <p-table [columns]="beachFieldsCatalogue.fields" [value]="beachFieldsCatalogue.features[0].attributes">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns">
+                            {{col.alias}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <!--                    <tr>-->
+                    <!--                        <td *ngFor="let col of columns">-->
+                    <!--                            {{rowData[col.name]}}-->
+                    <!--                        </td>-->
+                    <!--                    </tr>-->
+                    <tr>
+                        <td *ngFor="let col of columns" pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText
+                                           [type]="col.type === 'esriFieldTypeOID' ? 'number' : col.type === 'esriFieldTypeDate' ? 'date' : 'text'"
+                                           [(ngModel)]="rowData[col.name]">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{rowData[col.name]}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <p-footer>
+                <button type="button" pButton icon="pi pi-check" (click)="save()" label="Guardar"></button>
+                <button type="button" pButton icon="pi pi-close" (click)="openCatalogue=false" label="Cancelar"
+                        class="ui-button-secondary"></button>
+            </p-footer>
+        </p-dialog>
+        <!--        formulario propio del api para inventario - datos del catalogo para tecnicos de ayuntamiento-->
+        <div [hidden]="selectForm !=='inventario' || (currentUser && currentUser.selectedusername)">
             <div id="form" class="esri-component"></div>
             <input type="button" class="esri-button" value="Guardar" id="btnSave"/>
             <input (click)="sendMessage('noid',getUnselectedMessage(), null)"
