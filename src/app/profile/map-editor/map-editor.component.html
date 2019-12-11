@@ -501,7 +501,7 @@
                   [style]="{width: '650px', minWidth: '450px'}" [minY]="140"
                   [maximizable]="true" [baseZIndex]="10000">
             <p>en construcción!</p>
-            <!--<p-table [columns]="beachFieldsCatalogue.fields" [value]="beachFieldsCatalogue.features[0].attributes">
+            <p-table [columns]="colsCatalogue" [value]="beachsCatalogue">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns">
@@ -510,11 +510,11 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
-                    &lt;!&ndash;                    <tr>&ndash;&gt;
-                    &lt;!&ndash;                        <td *ngFor="let col of columns">&ndash;&gt;
-                    &lt;!&ndash;                            {{rowData[col.name]}}&ndash;&gt;
-                    &lt;!&ndash;                        </td>&ndash;&gt;
-                    &lt;!&ndash;                    </tr>&ndash;&gt;
+                    <!--                    <tr>-->
+                    <!--                        <td *ngFor="let col of columns">-->
+                    <!--                            {{rowData[col.name]}}-->
+                    <!--                        </td>-->
+                    <!--                    </tr>-->
                     <tr>
                         <td *ngFor="let col of columns" pEditableColumn>
                             <p-cellEditor>
@@ -530,7 +530,7 @@
                         </td>
                     </tr>
                 </ng-template>
-            </p-table>-->
+            </p-table>
             <p-footer>
                 <button type="button" pButton icon="pi pi-check" (click)="save()" label="Guardar"></button>
                 <button type="button" pButton icon="pi pi-close" (click)="openCatalogue=false" label="Cancelar"

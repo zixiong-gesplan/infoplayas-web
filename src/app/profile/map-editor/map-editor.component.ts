@@ -90,11 +90,14 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     tableIds: Tableids;
     private aytos: AppSetting[];
     openCatalogue: boolean;
-    beachFieldsCatalogue: any;
+    beachsCatalogue: any[];
+    colsCatalogue: any[];
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
                 private popService: PopulationService, private appSettingsService: AppSettingsService) {
+        this.beachsCatalogue = [];
+        this.colsCatalogue = [];
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
             {label: 'Peligrosa o susceptible de producir daño', value: 'P'},
@@ -958,8 +961,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             '*', false, this.currentUser.token, 'objectid', false).subscribe(
             (result: any) => {
                 if (result && result.features.length > 0) {
-                    this.beachFieldsCatalogue = result;
-                    console.log(this.beachFieldsCatalogue);
+                    this.beachsCatalogue = result.features[0].attributes;
+                    console.log(this.beachsCatalogue);
                 } else if (result.error) {
                     Swal.fire({
                         type: 'error',
