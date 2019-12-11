@@ -46,7 +46,7 @@
         <div class="row paddingtopbottom10px">
             <div class="col-md-12">
                 <button [disabled]="!selectedBeachId" (click)="checkReport()">
-                    <i style="color: red" class="pull-left fa fa-file-pdf-o fa-2x"></i><b>Ficha Playa</b></button>
+                <i style="color: red"  [ngClass]="!selectedBeachId ? 'pull-left fa fa-file-pdf-o fa-2x desabilitar' : 'pull-left fa fa-file-pdf-o fa-2x'"></i><b>Ficha Playa</b></button>
             </div>
         </div>
     </div>

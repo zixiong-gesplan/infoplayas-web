@@ -19,3 +19,7 @@
     background-color: darkblue !important;
     color: #ffffff !important;
 }
+.fa.fa-file-pdf-o.fa-2x.desabilitar{
+   opacity: 0.25 !important;
+   color: #444 !important;
+}
