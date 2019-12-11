@@ -273,8 +273,10 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     function onListClickHandler(event) {
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
-                        t.selectedBeachId = t.beachsWgrades.find(b => b.objectId === target.getAttribute('oid')) ?
-                            target.getAttribute('oid') : null;
+                        const resultBeachId = Number(target.getAttribute('oid'));
+                        t.selectedBeachId = {...t.beachsWgrades.find(b => b.objectId === resultBeachId)} ?
+                            resultBeachId : null;
+
                         expandList.collapse();
 
                         const result = resultId && featuresViewer && featuresViewer[parseInt(resultId, 10)];
