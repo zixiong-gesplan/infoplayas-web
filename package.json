@@ -1,6 +1,6 @@
 {
   "name": "infoplayascanarias",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
@@ -26,6 +26,8 @@
     "esri-loader": "^2.10.0",
     "jquery": "~3.1.1",
     "moment": "^2.24.0",
+    "jspdf": "^1.5.3",
+    "jspdf-autotable": "^3.2.11",
     "ng4-loading-spinner": "^1.2.3",
     "primeicons": "^1.0.0",
     "primeng": "~7.0.1",

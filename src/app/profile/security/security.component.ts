@@ -27,7 +27,6 @@ declare function navbar_load();
     styleUrls: ['./security.component.css'],
 })
 export class SecurityComponent implements OnInit, OnDestroy {
-
     currentUser: Auth;
     fechaActual: Date = new Date();
     defaultWorkdayInicio: Date;
