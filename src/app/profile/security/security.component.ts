@@ -19,7 +19,7 @@ declare var jQuery: any;
 declare const aytos: any;
 declare var UTMXYToLatLon: any;
 declare var RadToDeg: any;
-
+declare function navbar_load();
 
 @Component({
     selector: 'app-security',
@@ -27,6 +27,7 @@ declare var RadToDeg: any;
     styleUrls: ['./security.component.css'],
 })
 export class SecurityComponent implements OnInit, OnDestroy {
+
     currentUser: Auth;
     fechaActual: Date = new Date();
     defaultWorkdayInicio: Date;
