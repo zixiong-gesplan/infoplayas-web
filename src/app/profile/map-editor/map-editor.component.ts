@@ -70,6 +70,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     FlowOptions: SelectItem[];
     additionalDangersOptions: SelectItem[];
     viewNoDanger: boolean;
+    onClickDangerForm: boolean;
     selectedId: string;
     selectLongitude: number;
     selectLatitude: number;
@@ -562,7 +563,6 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         this.spinnerService.show();
         this.beachsCatalogue[0].attributes.ultimo_cambio = moment(new Date()).format('YYYY-MM-DD hh:mm:ss');
         this.beachsCatalogue[0].attributes.ultimo_editor = this.currentUser.username;
-        // TODO revisar si introduce -1 como true
         for (let [key, value] of Object.entries(this.beachsCatalogue[0].attributes)) {
             if (value === true || value === -1) {
                 this.beachsCatalogue[0].attributes[key] = 1;
@@ -598,6 +598,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     }
 
     private updateClasification(clasification: string) {
+        // cerramos el formulario para evitar incongruencias entre el formulario abierto y el mapa
+        this.sendMessage('noid', unselectFeature(), null);
+        this.centroidOption = false;
+
         const updateObj = new Array();
         updateObj.push({
             attributes: {
@@ -742,6 +746,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                 t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
                             }
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
+                            t.onClickDangerForm = false;
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
                             t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
@@ -778,6 +783,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                         t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
                                     }
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
+                                    t.onClickDangerForm = false;
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
                                     t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
@@ -820,7 +826,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     let filter = 'municipio = \'' + t.aytos.find(i => i.username === IdentityManager.credentials[0].userId)
                         .municipio_minus + '\'';
                     filter = event.target.dataset.filter === '.protection' ? filter +
-                        ' AND clasificacion <> \'UP\''
+                        ' AND (clasificacion <> \'UP\' OR clasificacion IS NULL)'
                         : event.target.dataset.filter === '.result' ? filter
                             + ' AND clasificacion IS NOT NULL' : filter;
                     playasLayer.definitionExpression = filter;

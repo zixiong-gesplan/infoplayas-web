@@ -25,7 +25,7 @@
     <div id="formContainer" class="esri-hidden scroller">
         <!--        formulario de peligrosidad-->
         <div [hidden]="selectForm !=='clasificacion'">
-            <form class="esri-pad" [formGroup]="formDanger" (ngSubmit)="onSubmit(formDanger, tableIds.tbDanger)">
+            <form class="esri-pad" (click)="onClickDangerForm = true" [formGroup]="formDanger" (ngSubmit)="onSubmit(formDanger, tableIds.tbDanger)">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
@@ -76,14 +76,24 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label [hidden]="viewNoDanger" class="esri-font" style="color: red; font-weight : bolder">Clasificada
-                            USO PROHIBIDO</label>
-                        <!--                        <p-dropdown [hidden]="!viewNoDanger" [options]="noDangerOptions" [style]="{'width':'100%'}"-->
-                        <!--                                    formControlName="dangerLevel" [required]="viewNoDanger"></p-dropdown>-->
-                        <label pTooltip="Valoración definitiva al final del proceso de introducción de datos"
-                               [hidden]="!viewNoDanger" class="esri-font"
-                               style="color: darkorange; font-weight : bolder">Clasificación provisional LIBRE O
-                            PELIGROSA</label>
+                        <div [hidden]="onClickDangerForm" [ngSwitch]="formEvaluation.get('dangerLevel').value">
+                            <label *ngSwitchCase="'L'" style="color: green; font-weight : bolder">CLASIFICACIÓN LIBRE</label>
+                            <label *ngSwitchCase="'P'" style="color: yellow; font-weight : bolder">CLASIFICACIÓN PELIGROSA</label>
+                            <label *ngSwitchCase="'UP'" class="esri-font" style="color: red; font-weight : bolder">CLASIFICACIÓN USO
+                                PROHIBIDO</label>
+                            <label *ngSwitchDefault
+                                   pTooltip="Valoración definitiva al final del proceso de introducción de datos"
+                                   class="esri-font"
+                                   style="color: darkorange; font-weight : bolder">¡SIN Clasificación!, Continúe con el
+                                resto de formularios y clasifique al final en Protección/Valoración final</label>
+                        </div>
+                        <label *ngIf="onClickDangerForm && !viewNoDanger" class="esri-font" style="color: red; font-weight : bolder">CLASIFICACIÓN USO
+                            PROHIBIDO</label>
+                        <label *ngIf="onClickDangerForm && viewNoDanger"
+                               pTooltip="Valoración definitiva al final del proceso de introducción de datos"
+                               class="esri-font"
+                               style="color: darkorange; font-weight : bolder">¡SIN Clasificación!, Continúe con el
+                            resto de formularios y clasifique al final en Protección/Valoración final</label>
                     </div>
                 </div>
                 <div class="form-row">
@@ -558,7 +568,8 @@
         <!--        formulario propio del api para inventario - datos del catalogo para tecnicos de ayuntamiento-->
         <div [hidden]="selectForm !=='inventario'">
             <div id="form" class="esri-component"></div>
-            <input *ngIf="currentUser && !currentUser.selectedusername" type="button" class="esri-button" value="Guardar" id="btnSave"/>
+            <input *ngIf="currentUser && !currentUser.selectedusername" type="button" class="esri-button"
+                   value="Guardar" id="btnSave"/>
             <!--        botón para superusuario - modificar el catalogo-->
             <button *ngIf="currentUser && currentUser.selectedusername" role="button" class="esri-button"
                     (click)="loadCatalogueInfoByid()">Abrir
