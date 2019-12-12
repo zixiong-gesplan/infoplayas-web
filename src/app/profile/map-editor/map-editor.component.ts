@@ -562,7 +562,6 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         this.spinnerService.show();
         this.beachsCatalogue[0].attributes.ultimo_cambio = moment(new Date()).format('YYYY-MM-DD hh:mm:ss');
         this.beachsCatalogue[0].attributes.ultimo_editor = this.currentUser.username;
-        // TODO revisar si introduce -1 como true
         for (let [key, value] of Object.entries(this.beachsCatalogue[0].attributes)) {
             if (value === true || value === -1) {
                 this.beachsCatalogue[0].attributes[key] = 1;
