@@ -546,7 +546,7 @@
             <div class="col-md-12 padding-top-10">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion1"
+                        <h4 class="panel-title"><a *ngIf="municipio" data-toggle="collapse" data-parent="#accordion1"
                                                    href="#collapsePopulation"
                                                    aria-expanded="false" class="collapsed">carga poblacional
                             de {{municipio.ayuntamiento}} {{cargaPoblacional | number:'':'es-ES'}}</a></h4>
@@ -568,7 +568,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
+                                        <tr *ngIf="municipio">
                                             <td>
                                                 <h6 class="font-style-2 text-color-grey text-center">{{municipio.population | number:'1.0-0'}}</h6>
                                             </td>
