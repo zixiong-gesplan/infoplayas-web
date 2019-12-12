@@ -218,6 +218,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                     // recalcular el listado de playas al cambiar el municipio
                     this.loadBeachsIds();
                     // actualizar las variables para el nuevo municipio y resetear el formulario vacacional
+                    this.resetForm();
                     this.setPopulationByMuncipality(result);
                 }
             },
