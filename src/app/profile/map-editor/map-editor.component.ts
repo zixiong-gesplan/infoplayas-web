@@ -86,15 +86,111 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     colsFlow: any;
     dateNow: Date;
     currentUser: Auth;
-    private subscripcionMunicipality;
     tableIds: Tableids;
-    private aytos: AppSetting[];
     openCatalogue: boolean;
-    beachFieldsCatalogue: any;
+    beachsCatalogue: any[];
+    tableColsCatalogue: any[];
+    sectionNames: string[];
+    private subscripcionMunicipality;
+    private aytos: AppSetting[];
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
                 private popService: PopulationService, private appSettingsService: AppSettingsService) {
+        this.beachsCatalogue = [];
+        this.sectionNames = ['Sección General', 'Sección de Gestión', 'Sección de Equipamiento'];
+        // TODO implementar los dominios con la llamada al api /queryDomains en vez de en modo estatico
+        this.tableColsCatalogue = [[
+            {field: 'provincia', type: 'text', alias: 'Provincia', width: '120px'},
+            {
+                field: 'isla', type: 'drop', alias: 'Isla', items: [
+                    {
+                        label: 'Gran Canaria',
+                        value: 'GC'
+                    },
+                    {
+                        label: 'Fuerteventura',
+                        value: 'FV'
+                    },
+                    {
+                        label: 'Lanzarote',
+                        value: 'LZ'
+                    },
+                    {
+                        label: 'Tenerife',
+                        value: 'TF'
+                    },
+                    {
+                        label: 'La Gomera',
+                        value: 'LG'
+                    },
+                    {
+                        label: 'La Palma',
+                        value: 'LP'
+                    },
+                    {
+                        label: 'El Hierro',
+                        value: 'EH'
+                    }
+                ], width: '200px'
+            },
+            {field: 'municipio', type: 'text', alias: 'Municipio', width: '250px'},
+            {field: 'nombre_municipio', type: 'text', alias: 'Nombre Municipio', width: '250px'},
+            {field: 'nombre_mapama', type: 'text', alias: 'Nombre MAPAMA', width: '250px'},
+            {field: 'nombre_ss', type: 'text', alias: 'Nombre SS', width: '200px'},
+            {field: 'nombre_pilotaje_litoral', type: 'text', alias: 'Nombre Pilotaje Litoral', width: '200px'},
+            {field: 'interlocutor', type: 'text', alias: 'Interlocutor', width: '300px'},
+            {field: 'tecnico_redactor', type: 'text', alias: 'Técnico redactor', width: '300px'},
+            {field: 'riesgo', type: 'text', alias: 'Riesgo', width: '100px'},
+            {field: 'tipo_de_arena', type: 'text', alias: 'Tipo de arena', width: '120px'},
+            {field: 'aux_y_salvamento', type: 'bol', alias: 'Salvamento', width: '100px'},
+            {field: 'auxilio_y_salvamento_desc', type: 'text', alias: 'Salvamento desc', width: '300px'},
+            {field: 'condiciones_baño', type: 'text', alias: 'Condiciones_baño', width: '200px'},
+            {field: 'forma_de_acceso', type: 'text', alias: 'Forma de acceso', width: '200px'},
+            {
+                field: 'clasificacion', type: 'drop', alias: 'Clasificacion', items: [
+                    {label: 'LIBRE', value: 'L'},
+                    {label: 'PELIGROSA', value: 'P'},
+                    {label: 'USO PROHIBIDO', value: 'UP'}
+                ], width: '200px'
+            }
+        ], [
+            {field: 'requiere_pss', type: 'bol', alias: 'Requiere PSS', width: '100px'},
+            {field: 'registro_dgse', type: 'bol', alias: 'Registro DGSE', width: '100px'},
+            {field: 'presentado_gesplan', type: 'bol', alias: 'Presentado Gesplan', width: '120px'},
+            {field: 'revisado_gesplan', type: 'bol', alias: 'Revisado gesplan', width: '120px'},
+            {field: 'corregido_ayto', type: 'bol', alias: 'Corregido ayto', width: '120px'},
+            {field: 'apto', type: 'bol', alias: 'Apto', width: '100px'},
+            {field: 'nueva_catalogo', type: 'text', alias: 'Nueva en el catalogo', width: '200px'},
+            {field: 'zona_surf', type: 'text', alias: 'Zona Surf', width: '350px'},
+            {field: 'fachada_litoral', type: 'text', alias: 'Fachada Litoral', width: '300px'},
+            {field: 'playa_zbm', type: 'text', alias: 'Playa o ZBM', width: '350px'},
+            {field: 'longitud_metros', type: 'number', alias: 'longitud metros', width: '200px'},
+            {field: 'anchura_metros', type: 'number', alias: 'anchura metros', width: '200px'},
+            {field: 'carretera_mas_proxima', type: 'text', alias: 'Carretera próxima', width: '300px'},
+            {field: 'autobus', type: 'bol', alias: 'Línea autobus', width: '200px'},
+            {field: 'autobus_tipo', type: 'text', alias: 'Autobús tipo', width: '400px'},
+            {field: 'acceso_discapacitado', type: 'bol', alias: 'acceso discapacitado', width: '150px'},
+            {field: 'grado_urbanizacion', type: 'text', alias: 'Grado urbanización', width: '300px'},
+            {field: 'composicion', type: 'text', alias: 'Composición', width: '300px'}
+        ], [
+            {field: 'bandera_azul', type: 'bol', alias: 'Bandera azul', width: '100px'},
+            {field: 'aparcamientos', type: 'bol', alias: 'aparcamientos', width: '200px'},
+            {field: 'paseo_maritimo', type: 'bol', alias: 'paseo marítimo', width: '100px'},
+            {field: 'aseo', type: 'bol', alias: 'aseo', width: '100px'},
+            {field: 'lavapie', type: 'bol', alias: 'lavapie', width: '100px'},
+            {field: 'ducha', type: 'bol', alias: 'ducha', width: '100px'},
+            {field: 'telefono', type: 'bol', alias: 'telefono', width: '100px'},
+            {field: 'papeleras', type: 'bol', alias: 'papeleras', width: '100px'},
+            {field: 'alquiler_sombrilla', type: 'bol', alias: 'alquiler sombrilla', width: '100px'},
+            {field: 'alquiler_hamaca', type: 'bol', alias: 'alquiler hamaca', width: '100px'},
+            {field: 'alquiler_nautico', type: 'bol', alias: 'alquiler náutico', width: '100px'},
+            {field: 'turismo_oficina', type: 'bol', alias: 'turismo oficina', width: '100px'},
+            {field: 'area_infantil', type: 'bol', alias: 'area infantil', width: '100px'},
+            {field: 'area_deportiva', type: 'bol', alias: 'area deportiva', width: '100px'},
+            {field: 'submarinismo_', type: 'bol', alias: 'submarinismo', width: '200px'},
+            {field: 'kiosko', type: 'bol', alias: 'kiosko', width: '100px'}
+        ]];
         this.noDangerOptions = [
             {label: 'Selecciona nivel de peligrosidad', value: null},
             {label: 'Peligrosa o susceptible de producir daño', value: 'P'},
@@ -462,6 +558,45 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         return percentage;
     }
 
+    saveBeach() {
+        this.spinnerService.show();
+        this.beachsCatalogue[0].attributes.ultimo_cambio = moment(new Date()).format('YYYY-MM-DD hh:mm:ss');
+        this.beachsCatalogue[0].attributes.ultimo_editor = this.currentUser.username;
+        // TODO revisar si introduce -1 como true
+        for (let [key, value] of Object.entries(this.beachsCatalogue[0].attributes)) {
+            if (value === true || value === -1) {
+                this.beachsCatalogue[0].attributes[key] = 1;
+            }
+        }
+        this.editDataLayer(this.beachsCatalogue, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_url + '/applyEdits');
+        this.openCatalogue = false;
+    }
+
+    loadCatalogueInfoByid() {
+        this.openCatalogue = true;
+        this.spinnerService.show();
+        const filterbeach = 'objectid = \'' + this.selectedId + '\'';
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filterbeach,
+            '*', false, this.currentUser.token, 'objectid', false).subscribe(
+            (result: any) => {
+                if (result && result.features.length > 0) {
+                    this.beachsCatalogue = result.features;
+                } else if (result.error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Error ' + result.error.code,
+                        text: result.error.message,
+                        footer: ''
+                    });
+                }
+                this.spinnerService.hide();
+            },
+            error => {
+                console.log(error.toString());
+                this.spinnerService.hide();
+            });
+    }
+
     private updateClasification(clasification: string) {
         const updateObj = new Array();
         updateObj.push({
@@ -659,24 +794,25 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                         }
                     });
                 });
-
-                $('#btnSave')[0].onclick = function () {
-                    if (submitForm(playasLayer, form, ['nombre_municipio', 'objectid'], filterPlayas)) {
-                        Swal.fire({
-                            type: 'success',
-                            title: 'Éxito',
-                            text: 'La actualización ha sido correcta.',
-                            footer: ''
-                        });
-                    } else {
-                        Swal.fire({
-                            type: 'error',
-                            title: 'Error',
-                            text: 'No se ha guardado el cambio.',
-                            footer: ''
-                        });
-                    }
-                };
+                if (this.currentUser && !this.currentUser.selectedusername) {
+                    $('#btnSave')[0].onclick = function () {
+                        if (submitForm(playasLayer, form, ['nombre_municipio', 'objectid'], filterPlayas)) {
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Éxito',
+                                text: 'La actualización ha sido correcta.',
+                                footer: ''
+                            });
+                        } else {
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Error',
+                                text: 'No se ha guardado el cambio.',
+                                footer: ''
+                            });
+                        }
+                    };
+                }
 
                 // aplicamos distintos filtros al mapa en funcion de lo que se quiera mostrar en cada apartado
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
@@ -686,7 +822,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     filter = event.target.dataset.filter === '.protection' ? filter +
                         ' AND clasificacion <> \'UP\''
                         : event.target.dataset.filter === '.result' ? filter
-                                + ' AND clasificacion IS NOT NULL' : filter;
+                            + ' AND clasificacion IS NOT NULL' : filter;
                     playasLayer.definitionExpression = filter;
                     loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (Beachs) {
                         t.nZones.emit(Beachs.length);
@@ -891,9 +1027,17 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 }
             },
             error => {
+                Swal.fire({
+                    type: 'error',
+                    title: 'NO se han guardado los datos',
+                    text: error.toString(),
+                    footer: ''
+                });
                 console.log(error.toString());
+                this.spinnerService.hide();
             }).add(() => {
             console.log('end of request');
+            this.spinnerService.hide();
         });
     }
 
@@ -942,37 +1086,5 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbRiesgos
                 + '/applyEdits', 'none');
         }
-    }
-
-    save() {
-        // TODO guardar la tabla
-        console.log('guardando');
-        this.openCatalogue = false;
-    }
-
-    loadCatalogueInfoByid() {
-        this.openCatalogue = true;
-        this.spinnerService.show();
-        const filterbeach = 'objectid = \'' + this.selectedId + '\'';
-        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filterbeach,
-            '*', false, this.currentUser.token, 'objectid', false).subscribe(
-            (result: any) => {
-                if (result && result.features.length > 0) {
-                    this.beachFieldsCatalogue = result;
-                    console.log(this.beachFieldsCatalogue);
-                } else if (result.error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Error ' + result.error.code,
-                        text: result.error.message,
-                        footer: ''
-                    });
-                }
-                this.spinnerService.hide();
-            },
-            error => {
-                console.log(error.toString());
-                this.spinnerService.hide();
-            });
     }
 }
