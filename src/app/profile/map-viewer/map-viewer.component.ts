@@ -15,6 +15,9 @@ import Swal from 'sweetalert2';
 
 declare var $: any;
 declare var jquery: any;
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
 
 // variables javascript esri maps
 declare let viewer: any;
@@ -360,7 +363,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filterbeach,
             '*', false, this.currentUser.token, 'objectid', false).subscribe(
             (result: any) => {
-                if (result && result.features.length > 0) {
+                if (result ) {
                     this.printPdf(result.features[0]);
                 } else if (result.error) {
                     Swal.fire({
@@ -381,8 +384,91 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     }
 
     private printPdf(beach) {
+      let nombre_ficha: string;
+      let clasificacion: string;
+      let isla: string;
+      let fecha_hoy = moment().subtract(10, 'days').calendar();
         // TODO desarrollar el metodo con js2pdf
-        beach = {...beach, ...this.resultBeachs.find(b => b.objectId === this.selectedBeachId)};
-        console.log(beach);
+        beach = {...beach, ...this.beachsWgrades.find(b => b.objectId === this.selectedBeachId)};
+        switch (beach.attributes.clasificacion) {
+          case 'L':
+            clasificacion = 'Libre';
+            break;
+          case 'P':
+            clasificacion = 'Peligrosa';
+            break;
+          case 'UP':
+              clasificacion = 'Uso Prohibido';
+            break;
+          default:
+          clasificacion = 'Sin clasificación';
+            break;
+        }
+
+        var item = {
+          "Nombre zona de baño" : beach.attributes.nombre_municipio,
+          "Municipio" :  beach.attributes.municipio,
+          "Provincia" :  beach.attributes.provincia,
+          "Isla": beach.attributes.isla,
+          "Clasificación" : clasificacion,
+          "Longitud (mts)": beach.attributes.longitud_metros,
+          "Anchura (mts)": beach.attributes.anchura_metros,
+          "Composicion ": beach.attributes.composicion,
+          "Condiciones del baño": beach.attributes.condiciones_baño,
+          "Forma de acceso": beach.attributes.forma_de_acceso,
+          "Tipo de arena": beach.attributes.tipo_de_arena,
+          'IDGSE':beach.attributes.id_dgse,
+        };
+        var doc = new jsPDF();
+        var col = ["Información general",''];
+        var rows = [];
+        for(var key in item){
+          var temp = [key, item[key]];
+          rows.push(temp);
+        }
+        doc.autoTable(col, rows);
+        //periodos
+        var colperiodos = ["Periodos",'Grado de protección', 'Afluencia'];
+        var rowsperiodos = [];
+        //console.log(beach);
+        for(var key2 in beach.periodos){
+            var temp2 = [moment(beach.periodos[key2].fecha_inicio).format('DD/MM/YYYY'),
+            beach.periodos[key2].grado,
+            beach.periodos[key2].afluencia];
+
+            rowsperiodos.push(temp2);
+        }
+        doc.autoTable(colperiodos, rowsperiodos);
+        //Entorno
+        console.log(beach.relatedEntorno[0].attributes);
+        var colentorno = ["Entorno",''];
+        var rowsentorno = [];
+        var cobertura = beach.relatedEntorno[0].attributes.corbertura_telefonica!=1 ? 'No' : 'Si',
+        var itemEntorno = {
+          "Accesos": beach.relatedEntorno[0].attributes.accesos,
+          "Cobertura telefónica": cobertura,
+        }
+        for(var x in itemEntorno){
+          var temp3 = [x, itemEntorno[x]];
+          rowsentorno.push(temp3);
+        }
+        doc.autoTable(colentorno, rowsentorno);
+
+        var colactividades = ["Actividades deportivas y de recreo",''];
+        var rowsactividades = [];
+        var itemActividades= {
+          "Actividades acotadas": beach.relatedIncidencias[0].attributes.actividades_acotadas==='1' ? 'No' : 'Si',
+          "Actividades deportivas": beach.relatedIncidencias[0].attributes.actividades_deportivas==='1' ? 'No' : 'Si',
+          "Balizamiento": beach.relatedIncidencias[0].attributes.balizamiento==='1' ? 'No' : 'Si',
+        }
+        for(var y in itemActividades){
+          var temp4 = [y, itemActividades[y]];
+          rowsactividades.push(temp4);
+        }
+        doc.autoTable(colactividades, rowsactividades);
+
+
+        nombre_ficha = 'Ficha_' + fecha_hoy + '_' + beach.attributes.nombre_municipio;
+        doc.save(nombre_ficha + '.pdf');
     }
 }

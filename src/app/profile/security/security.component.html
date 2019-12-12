@@ -446,6 +446,12 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                   <th class="centrar"><span>{{totales.totalsocper | currency: 'EUR' | lowercase }}</span></th>
                  <th class="centrar"><span class="totales">{{totales.costetotal | currency: 'EUR' | lowercase }}</span></th>
                </tr>
+               <tr>
+                 <td colspan="5"><br></td>
+               </tr>
+               <tr>
+                 <td colspan="5">* Para realizar este calculo, es necesario que previamente se introduza el horario de trabajo de los socorristas en la sección horario salvamento </td>
+               </tr>
                <br>
                 </ng-template >
 
@@ -542,6 +548,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th colspan="5" class="tamanhofont">Amortización Anual</th>
               <th colspan="5" class="tamanhofont">PVP €/año</th>
               <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
+              <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual Amortización</th>
             </tr>
 
             <tr>
@@ -596,6 +603,12 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.banderas_comp * formUnitarios.value.bandera_comp_pvp * formCalcMateriales.value.banderas_compl_amort / 100 }}"></th>
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formBanderas.value.senales_prohibicion * formUnitarios.value.senal_prohibicion_pvp * formCalcMateriales.value.senales_proh_amort / 100 }}"></th>
 
+             <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formBanderas.value.banderas * formUnitarios.value.bandera_pvp ) +
+                                                                                                          (formBanderas.value.mastiles * formUnitarios.value.mastil_pvp ) +
+                                                                                                          (formBanderas.value.carteles * formUnitarios.value.cartel_pvp) +
+                                                                                                          (formBanderas.value.banderas_comp * formUnitarios.value.bandera_comp_pvp  ) +
+                                                                                                          (formBanderas.value.senales_prohibicion * formUnitarios.value.senal_prohibicion_pvp ) }}"></th>
+
              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formBanderas.value.banderas * formUnitarios.value.bandera_pvp * formCalcMateriales.value.banderas_amort / 100) +
                                                                                                           (formBanderas.value.mastiles * formUnitarios.value.mastil_pvp * formCalcMateriales.value.mastiles_amort / 100) +
                                                                                                           (formBanderas.value.carteles * formUnitarios.value.cartel_pvp * formCalcMateriales.value.carteles_amort / 100) +
@@ -614,6 +627,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th colspan="2" class="tamanhofont">Amortización Anual</th>
               <th colspan="2"  class="tamanhofont">PVP €/año</th>
               <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
+              <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual Amortización</th>
             </tr>
             <tr>
               <th class="tamanhofont">Aros Salvavidas</th>
@@ -639,6 +653,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
               <th class="centrar"><input type="text"   class="form-control  inputCustom" placeholder="%" formControlName="carretes_amort"></th>
               <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formPasiva.value.salvavidas * formUnitarios.value.salvavidas_pvp * formCalcMateriales.value.salvavidas_amort / 100}}"></th>
               <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{formPasiva.value.salvavidas * formUnitarios.value.salvavidas_pvp * formCalcMateriales.value.carretes_amort / 100}}"></th>
+              <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formPasiva.value.salvavidas * formUnitarios.value.salvavidas_pvp) + (formPasiva.value.carretes * formUnitarios.value.carrete_pvp )}}"></th>
               <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formPasiva.value.salvavidas * formUnitarios.value.salvavidas_pvp * formCalcMateriales.value.salvavidas_amort / 100) + (formPasiva.value.carretes * formUnitarios.value.carrete_pvp * formCalcMateriales.value.carretes_amort / 100)}}"></th>
           </tr>
             </ng-template >
@@ -653,6 +668,8 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                 <th colspan="2" class="tamanhofont">Amortización Anual</th>
                 <th colspan="2" class="tamanhofont">PVP €/año</th>
                 <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
+                <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual Amortización</th>
+
               </tr>
               <tr>
                 <th class="tamanhofont">Longitud cuerda(m)</th>
@@ -682,8 +699,12 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" placeholder="%" formControlName="boyas_amar_amort"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formBalizamiento.value.m_cuerda * formUnitarios.value.m_cuerda_pvp * formCalcMateriales.value.long_cuerda_amort / 100}}"></th>
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_amar_amort/ 100}}"></th>
+                <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{(formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp +
+                                                                                                             formBalizamiento.value.m_cuerda * formUnitarios.value.m_cuerda_pvp )}}"></th>
+
                 <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{(formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_amar_amort/ 100 +
-                                                                                                             formBalizamiento.value.m_cuerda * formUnitarios.value.m_cuerda_pvp * formCalcMateriales.value.long_cuerda_amort / 100)}}"></th>
+                                                                                                            formBalizamiento.value.m_cuerda * formUnitarios.value.m_cuerda_pvp * formCalcMateriales.value.long_cuerda_amort / 100)}}"></th>
+
 
             </tr>
               </ng-template >
@@ -699,6 +720,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                   <th colspan="3" class="tamanhofont">Amortización Anual</th>
                   <th colspan="3"  class="tamanhofont">PVP €/año</th>
                   <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
+                  <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual Amortización</th>
                 </tr>
 
                 <tr>
@@ -745,9 +767,14 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                  <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly value="{{formBalizamiento.value.boyas_verdes * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_verd_ba_amort / 100}}"></th>
                  <th class="centrar"><input type="text"   class="form-control  inputCustom"  readonly value="{{formBalizamiento.value.boyas_rojas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_roj_ba_amort / 100}}"></th>
 
-                 <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_amar_ba_amort / 100) +
-                                                                                                            (formBalizamiento.value.boyas_verdes * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_verd_ba_amort / 100) +
-                                                                                                            (formBalizamiento.value.boyas_rojas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_roj_ba_amort / 100) }}"></th>
+                 <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp) +
+                                                                                                            (formBalizamiento.value.boyas_verdes * formUnitarios.value.boya_pvp ) +
+                                                                                                            (formBalizamiento.value.boyas_rojas * formUnitarios.value.boya_pvp ) }}"></th>
+
+                <th class="centrar"><input type="text"   class="form-control  inputCustom" readonly value="{{(formBalizamiento.value.boyas_amarillas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_amar_ba_amort / 100) +
+                                                                                                              (formBalizamiento.value.boyas_verdes * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_verd_ba_amort / 100) +
+                                                                                                              (formBalizamiento.value.boyas_rojas * formUnitarios.value.boya_pvp * formCalcMateriales.value.boyas_roj_ba_amort / 100) }}"></th>
+
 
               </tr>
                 </ng-template >
@@ -762,6 +789,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                   <th colspan="4" class="tamanhofont">Amortización Anual</th>
                   <th colspan="4" class="tamanhofont">PVP €/año</th>
                   <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual</th>
+                  <th rowspan="2" class="totalCalculadora text-center">PVP Total Anual Amortización</th>
                 </tr>
                 <tr>
                   <th class="tamanhofont">Torres - Sillas de vigilancia</th>
@@ -802,10 +830,15 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                   <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formTorres.value.botiquines * formUnitarios.value.botiquin_pvp * formCalcMateriales.value.botiquin_amort / 100}}"></th>
                   <th class="centrar"><input type="text"  class="form-control  inputCustom" readonly value="{{formTorres.value.desfibriladores * formUnitarios.value.desfibrilador_pvp * formCalcMateriales.value.desfibrilador_amort / 100}}"></th>
                   <th class="centrar"><input type="text"  value="" class="form-control  inputCustom" readonly value="{{formTorres.value.banderas * formUnitarios.value.bandera_pvp * formCalcMateriales.value.bandera_torre_amort/ 100}}"></th>
+                  <th class="centrar"><input type="text"  value="" class="form-control  inputCustom" readonly value="{{(formTorres.value.torres * formUnitarios.value.torre_pvp) +
+                                                                                                             (formTorres.value.botiquines * formUnitarios.value.botiquin_pvp ) +
+                                                                                                             (formTorres.value.desfibriladores * formUnitarios.value.desfibrilador_pvp) +
+                                                                                                             (formTorres.value.banderas * formUnitarios.value.bandera_pvp)}}"></th>
+
                   <th class="centrar"><input type="text"  value="" class="form-control  inputCustom" readonly value="{{(formTorres.value.torres * formUnitarios.value.torre_pvp * formCalcMateriales.value.torre_amort / 100) +
-                                                                                                             (formTorres.value.botiquines * formUnitarios.value.botiquin_pvp * formCalcMateriales.value.botiquin_amort / 100) +
-                                                                                                             (formTorres.value.desfibriladores * formUnitarios.value.desfibrilador_pvp * formCalcMateriales.value.desfibrilador_amort / 100) +
-                                                                                                             (formTorres.value.banderas * formUnitarios.value.bandera_pvp * formCalcMateriales.value.bandera_torre_amort/ 100)}}"></th>
+                                                                                                                    (formTorres.value.botiquines * formUnitarios.value.botiquin_pvp * formCalcMateriales.value.botiquin_amort / 100) +
+                                                                                                                    (formTorres.value.desfibriladores * formUnitarios.value.desfibrilador_pvp * formCalcMateriales.value.desfibrilador_amort / 100) +
+                                                                                                                    (formTorres.value.banderas * formUnitarios.value.bandera_pvp * formCalcMateriales.value.bandera_torre_amort/ 100)}}"></th>
               </tr>
                 </ng-template >
             </p-table>
