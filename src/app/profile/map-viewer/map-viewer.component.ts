@@ -360,7 +360,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filterbeach,
             '*', false, this.currentUser.token, 'objectid', false).subscribe(
             (result: any) => {
-                if (result && result.features.length > 0) {
+                if (result ) {
                     this.printPdf(result.features[0]);
                 } else if (result.error) {
                     Swal.fire({
@@ -382,20 +382,34 @@ export class MapViewerComponent implements OnInit, OnDestroy {
 
     private printPdf(beach) {
       let nombre_ficha: string;
+      let clasificacion: string;
+
         // TODO desarrollar el metodo con js2pdf
         beach = {...beach, ...this.beachsWgrades.find(b => b.objectId === this.selectedBeachId)};
         console.log(beach);
+
+        switch (beach.attributes.clasificacion) {
+          case 'L':
+            clasificacion = 'Libre';
+            break;
+          case 'P':
+            clasificacion = 'Peligrosa';
+            break;
+          default:
+          clasificacion = 'Uso Prohibido';
+            break;
+        }
 
         var item = {
           "Nombre zona de baño" : beach.attributes.nombre_municipio,
           "Municipio" :  beach.attributes.municipio,
           "Provincia" :  beach.attributes.provincia,
-          "Clasificación" : beach.attributes.clasificacion,
+          "Clasificación" : clasificacion,
         };
         var doc = new jsPDF();
-        var col = ["Campos", "Valores"];
+        var col = ["Información general"];
         var rows = [];
-
+        console.log(clasificacion);
         for(var key in item){
           var temp = [key, item[key]];
           rows.push(temp);
