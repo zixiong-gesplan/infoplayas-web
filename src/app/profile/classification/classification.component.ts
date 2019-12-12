@@ -10,6 +10,8 @@ import Swal from 'sweetalert2';
 import {PopulationService} from '../../services/population.service';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
+import * as moment from 'moment';
+import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 
 declare var Swiper: any;
 declare var $: any;
@@ -48,7 +50,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     private subscripcionMunicipality;
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
-                private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService) {
+                private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService,
+                private spinnerService: Ng4LoadingSpinnerService) {
 
         this.es = {
             firstDayOfWeek: 1,
@@ -70,7 +73,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     ngOnInit() {
         init_plugins();
-        this.setPopulationByMuncipality(this.popService.getMunicipality());
         this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'valoracion'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
@@ -88,7 +90,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             {field: 'grado', header: 'Grado', width: '20%', type: 'text', orderBy: 'grado'},
             {field: 'grado_valor', header: 'Nivel', width: '20%', type: 'text', orderBy: 'grado_valor'}
         ];
-
         this.formVacational = this.fb.group({
             objectid: new FormControl(''),
             plazas: new FormControl('', Validators.required),
@@ -96,6 +97,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             id_ayuntamiento: new FormControl(''),
             on_edit: new FormControl('')
         });
+        this.setPopulationByMuncipality(this.popService.getMunicipality());
         // cargamos los ids de las playas para usarlo posteriormente al mostrar los resultados
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
@@ -107,28 +109,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     ngOnDestroy() {
         this.subscripcionMunicipality.unsubscribe();
     }
-
-    /* cargamos los datos del formulario de alquiler vacacional, que no
-  tiene relacion con una playa sino con el municipio y se carga una vez */
-    // readFeatures() {
-    //     this.service.features$.subscribe(
-    //         (results: any) => {
-    //             if (results[0]) {
-    //                 // console.log(results);
-    //                 const beachs = results;
-    //                 if (beachs[0]) {
-    //                     beachs[0].periods = this.gradeService.calculateGradeForPeriods(beachs[0].relatedRecords1, beachs[0].relatedRecords2,
-    //                         beachs[0].relatedRecords3.relatedRecords);
-    //                     beachs[0].grado_maximo = this.gradeService.getMaximunGrade(beachs[0].periods);
-    //                     beachs[0].grados = this.gradeService.getDistinctGrades(beachs[0].periods);
-    //                     console.log(beachs[0]);
-    //                 }
-    //             }
-    //         },
-    //         error => {
-    //             console.log(error.toString());
-    //         });
-    // }
 
     initCubPortfolio() {
         $('#js-grid-mosaic-flat').cubeportfolio({
@@ -199,9 +179,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                 footer: ''
             });
         } else {
-            this.municipio = mun;
-            this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01)) + this.municipio.population;
-            this.DangerPopulationLevel = this.getDangerPopulationLevel();
+            this.loadVacational(mun);
         }
     }
 
@@ -241,7 +219,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                     this.loadBeachsIds();
                     // actualizar las variables para el nuevo municipio y resetear el formulario vacacional
                     this.setPopulationByMuncipality(result);
-                    this.formVacational.reset();
                 }
             },
             error => {
@@ -251,11 +228,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     receiveBeachId($event: string) {
         this.beachObjectId = $event;
-        // if ($event !== 'noid') {
-        //     this.gradeService.calculate($event, this.authService.getCurrentUser().token);
-        // } else {
-        //     this.gradeService.Publicrecords = [];
-        // }
     }
 
     receiveNzones($event: number) {
@@ -314,7 +286,77 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     onSubmitVacational() {
-        // TODO
-        console.log('submit vacacional');
+        // TODO id_ayuntamiento esta como smallInteger con lo que no se puede introducir el numero del istac que es mas largo, cambiarlo
+        this.spinnerService.show();
+        const mode = this.formVacational.get('on_edit').value ? 'updates' : 'adds';
+        const updateObj = new Array();
+        updateObj.push({
+            attributes: {
+                objectid: mode === 'updates' ? this.formVacational.get('objectid').value : null,
+                plazas: this.formVacational.get('plazas').value,
+                ocupacion: this.formVacational.get('ocupacion').value,
+                id_ayuntamiento: this.formVacational.get('id_ayuntamiento').value,
+                ultimo_cambio: moment().format('YYYY-MM-DD HH:mm:ss'),
+                ultimo_editor: this.authService.getCurrentUser().username
+            }
+        });
+        // cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
+        this.formVacational.get('on_edit').setValue(true);
+        this.editDataLayer(updateObj, this.authService.getCurrentUser(), mode,
+            environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbVacacional + '/applyEdits');
+    }
+
+    private editDataLayer(updateObj, currentUser, mode, endpoint) {
+        this.service.updateEsriData(endpoint,
+            updateObj, mode, currentUser.token).subscribe(
+            (result: any) => {
+                if (result) {
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Éxito',
+                        text: 'La actualización ha sido correcta.',
+                        footer: ''
+                    });
+                }
+            },
+            error => {
+                Swal.fire({
+                    type: 'error',
+                    title: 'NO se han guardado los datos',
+                    text: error.toString(),
+                    footer: ''
+                });
+                console.log(error.toString());
+                this.spinnerService.hide();
+            }).add(() => {
+            console.log('end of request');
+            this.spinnerService.hide();
+        });
+    }
+
+    loadVacational(mun: Municipality) {
+        // this.spinnerService.show();
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbVacacional + '/query',
+            'id_ayuntamiento =' + mun.istac_code, '*', false, this.authService.getCurrentUser().token,
+            'id_ayuntamiento', false).subscribe(
+            (result: any) => {
+                if (result && result.features.length > 0) {
+                    this.formVacational.patchValue(result.features[0].attributes);
+                    this.formVacational.get('on_edit').setValue(true);
+                } else {
+                    this.formVacational.get('on_edit').setValue(false);
+                    this.formVacational.get('id_ayuntamiento').setValue(Number(mun.istac_code));
+                }
+                const bedsVacational = this.formVacational.get('plazas').value ? this.formVacational.get('plazas').value : 0;
+                const ocupationVacational = this.formVacational.get('ocupacion').value ? this.formVacational.get('ocupacion').value : 0;
+                this.municipio = mun;
+                this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01 + bedsVacational
+                    * ocupationVacational * 0.01)) + this.municipio.population;
+                this.DangerPopulationLevel = this.getDangerPopulationLevel();
+            },
+            error => {
+                this.spinnerService.hide();
+            }).add(() => {
+        });
     }
 }

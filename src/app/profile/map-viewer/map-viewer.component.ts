@@ -160,6 +160,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                             const layer = new GraphicsLayer({
                                 graphics: []
                             });
+                            // TODO el filtro !==UP no parece funcionar porque muestra grado en una clasificacion Prohibida
                             beachs = [...beachs].filter(x => x.relatedAfluencia.length > 0 && x.relatedEntorno.length > 0
                                 && x.relatedIncidencias.length > 0 && x.clasificacion !== 'UP');
                             this.beachsWgrades = beachs;

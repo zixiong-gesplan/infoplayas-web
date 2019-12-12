@@ -39,7 +39,8 @@ export const environment = {
     tbPuesto: 8,
     tbPasiva: 9,
     tbRiesgos: 11,
-    tbUnitarios: 10
+    tbUnitarios: 10,
+    tbVacacional: 12
 };
 
 /*

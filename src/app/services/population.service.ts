@@ -108,11 +108,12 @@ export class PopulationService {
         const mun: Municipality = {
             user: this.populationName,
             year: year,
+            istac_code: Number(this.aytos.find(i => i.username === this.populationName)
+                .istac_code),
             ayuntamiento: this.aytos.find(i => i.username === this.populationName).municipio_mayus
         };
 
-        const representation = 'GEOGRAPHICAL[' + this.aytos.find(i => i.username === mun.user)
-            .istac_code + '],MEASURE[ABSOLUTE],TIME[' + year + ']';
+        const representation = 'GEOGRAPHICAL[' + mun.istac_code + '],MEASURE[ABSOLUTE],TIME[' + year + ']';
         this.service.getIstacData('POBLACION/data', representation).subscribe(
             (result: any) => {
                 if (result) {
