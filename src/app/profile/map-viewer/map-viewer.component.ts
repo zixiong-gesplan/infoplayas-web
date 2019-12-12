@@ -389,7 +389,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
       let isla: string;
       let fecha_hoy = moment().subtract(10, 'days').calendar();
         // TODO desarrollar el metodo con js2pdf
-        beach = {...beach, ...this.beachsWgrades.find(b => b.objectId === this.selectedBeachId)};
+        beach = {...beach, ...this.resultBeachs.find(b => b.objectId === this.selectedBeachId)};
         switch (beach.attributes.clasificacion) {
           case 'L':
             clasificacion = 'Libre';
