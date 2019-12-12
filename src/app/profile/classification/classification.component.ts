@@ -340,7 +340,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             'id_ayuntamiento = \'' + mun.istac_code + '\'', '*', false, this.authService.getCurrentUser().token,
             'id_ayuntamiento', false).subscribe(
             (result: any) => {
-                console.log(result);
                 if (result && result.features.length > 0) {
                     this.formVacational.patchValue(result.features[0].attributes);
                     this.formVacational.get('on_edit').setValue(true);
