@@ -47,7 +47,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     private subscripcionMunicipality;
     private lastGraphicLayerId: string;
     private aytos: AppSetting[];
-    private beachsWgrades: any;
+    private resultBeachs: any;
     selectedBeachId: number;
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
@@ -161,9 +161,10 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                 graphics: []
                             });
                             // TODO el filtro !==UP no parece funcionar porque muestra grado en una clasificacion Prohibida
+                            this.resultBeachs = [...beachs].filter(x => x.relatedAfluencia.length > 0 && x.relatedEntorno.length > 0
+                                && x.relatedIncidencias.length > 0 || x.clasificacion === 'UP');
                             beachs = [...beachs].filter(x => x.relatedAfluencia.length > 0 && x.relatedEntorno.length > 0
                                 && x.relatedIncidencias.length > 0 && x.clasificacion !== 'UP');
-                            this.beachsWgrades = beachs;
                             beachs.forEach(beach => {
                                 // si se ha seleccionado una fecha entonces los periodos se filtraran por esa fecha para mostrar el grado
                                 const sDate = moment(this.SelectedDate, 'YYYY-MM-DD').startOf('day');
@@ -256,7 +257,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                 t.selectedPeriodos.sort((a, b) => (a.fecha_inicio > b.fecha_inicio) ? 1 :
                                     (a.fecha_inicio === b.fecha_inicio) ? ((a.fecha_fin > b.fecha_fin) ? 1 : -1) : -1);
                             }
-                            if (resultBeach && t.beachsWgrades.find(b => b.objectId === resultBeach.graphic.attributes.objectid)) {
+                            if (resultBeach && t.resultBeachs.find(b => b.objectId === resultBeach.graphic.attributes.objectid)) {
                                 t.selectedBeachId = resultBeach.graphic.attributes.objectid;
                             } else {
                                 t.selectedBeachId = null;
@@ -275,9 +276,11 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
                         const resultBeachId = Number(target.getAttribute('oid'));
-                        t.selectedBeachId = {...t.beachsWgrades.find(b => b.objectId === resultBeachId)} ?
-                            resultBeachId : null;
-
+                        if (t.resultBeachs.find(b => b.objectId === resultBeachId)) {
+                            t.selectedBeachId = resultBeachId;
+                        } else {
+                            t.selectedBeachId = null;
+                        }
                         expandList.collapse();
 
                         const result = resultId && featuresViewer && featuresViewer[parseInt(resultId, 10)];
@@ -379,7 +382,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
 
     private printPdf(beach) {
         // TODO desarrollar el metodo con js2pdf
-        beach = {...beach, ...this.beachsWgrades.find(b => b.objectId === this.selectedBeachId)};
+        beach = {...beach, ...this.resultBeachs.find(b => b.objectId === this.selectedBeachId)};
         console.log(beach);
     }
 }
