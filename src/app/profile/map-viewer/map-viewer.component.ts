@@ -437,12 +437,13 @@ export class MapViewerComponent implements OnInit, OnDestroy {
         }
         doc.autoTable(colperiodos, rowsperiodos);
         //Entorno
-        console.log(beach);
+        console.log(beach.relatedEntorno[0].attributes);
         var colentorno = ["Entorno",''];
         var rowsentorno = [];
+        var cobertura = beach.relatedEntorno[0].attributes.corbertura_telefonica!=1 ? 'No' : 'Si',
         var itemEntorno = {
           "Accesos": beach.relatedEntorno[0].attributes.accesos,
-          "Cobertura telefónica": beach.relatedEntorno[0].attributes.corbertura_telefonica==='1' ? 'No' : 'Si',
+          "Cobertura telefónica": cobertura,
         }
         for(var x in itemEntorno){
           var temp3 = [x, itemEntorno[x]];
