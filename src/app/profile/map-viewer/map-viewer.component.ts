@@ -15,6 +15,9 @@ import Swal from 'sweetalert2';
 
 declare var $: any;
 declare var jquery: any;
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
 
 // variables javascript esri maps
 declare let viewer: any;
@@ -375,8 +378,28 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     }
 
     private printPdf(beach) {
+      let nombre_ficha: string;
         // TODO desarrollar el metodo con js2pdf
         beach = {...beach, ...this.beachsWgrades.find(b => b.objectId === this.selectedBeachId)};
         console.log(beach);
+
+        var item = {
+          "Nombre zona de baño" : beach.attributes.nombre_municipio,
+          "Municipio" :  beach.attributes.municipio,
+          "Provincia" :  beach.attributes.provincia,
+          "Clasificación" : beach.attributes.clasificacion,
+        };
+        var doc = new jsPDF();
+        var col = ["Campos", "Valores"];
+        var rows = [];
+
+        for(var key in item){
+          var temp = [key, item[key]];
+          rows.push(temp);
+        }
+        nombre_ficha = 'Ficha: ' + beach.attributes.nombre_municipio;
+        doc.autoTable(col, rows);
+        doc.save(nombre_ficha + '.pdf');
+
     }
 }
