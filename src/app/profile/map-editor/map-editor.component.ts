@@ -70,6 +70,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     FlowOptions: SelectItem[];
     additionalDangersOptions: SelectItem[];
     viewNoDanger: boolean;
+    onClickDangerForm: boolean;
     selectedId: string;
     selectLongitude: number;
     selectLatitude: number;
@@ -741,6 +742,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                 t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
                             }
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
+                            t.onClickDangerForm = false;
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
                             t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
@@ -777,6 +779,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                         t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
                                     }
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
+                                    t.onClickDangerForm = false;
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
                                     t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
