@@ -440,7 +440,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
         console.log(beach.relatedEntorno[0].attributes);
         var colentorno = ["Entorno",''];
         var rowsentorno = [];
-        var cobertura = beach.relatedEntorno[0].attributes.corbertura_telefonica!=1 ? 'No' : 'Si',
+        var cobertura = beach.relatedEntorno[0].attributes.cobertura_telefonica!=1 ? 'No' : 'Si',
         var itemEntorno = {
           "Accesos": beach.relatedEntorno[0].attributes.accesos,
           "Cobertura telefónica": cobertura,
