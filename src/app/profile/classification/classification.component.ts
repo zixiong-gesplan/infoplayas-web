@@ -345,7 +345,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                     this.formVacational.get('on_edit').setValue(true);
                 } else {
                     this.formVacational.get('on_edit').setValue(false);
-                    this.formVacational.get('id_ayuntamiento').setValue(Number(mun.istac_code));
+                    this.formVacational.get('id_ayuntamiento').setValue(mun.istac_code);
                 }
                 const bedsVacational = this.formVacational.get('plazas').value ? this.formVacational.get('plazas').value : 0;
                 const ocupationVacational = this.formVacational.get('ocupacion').value ? this.formVacational.get('ocupacion').value : 0;

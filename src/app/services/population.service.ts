@@ -108,8 +108,8 @@ export class PopulationService {
         const mun: Municipality = {
             user: this.populationName,
             year: year,
-            istac_code: Number(this.aytos.find(i => i.username === this.populationName)
-                .istac_code),
+            istac_code: this.aytos.find(i => i.username === this.populationName)
+                .istac_code,
             ayuntamiento: this.aytos.find(i => i.username === this.populationName).municipio_mayus
         };
 
