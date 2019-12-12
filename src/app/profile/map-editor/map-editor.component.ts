@@ -598,6 +598,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     }
 
     private updateClasification(clasification: string) {
+        // cerramos el formulario para evitar incongruencias entre el formulario abierto y el mapa
+        this.sendMessage('noid', unselectFeature(), null);
+        this.centroidOption = false;
+
         const updateObj = new Array();
         updateObj.push({
             attributes: {
@@ -822,7 +826,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     let filter = 'municipio = \'' + t.aytos.find(i => i.username === IdentityManager.credentials[0].userId)
                         .municipio_minus + '\'';
                     filter = event.target.dataset.filter === '.protection' ? filter +
-                        ' AND clasificacion <> \'UP\''
+                        ' AND (clasificacion <> \'UP\' OR clasificacion IS NULL)'
                         : event.target.dataset.filter === '.result' ? filter
                             + ' AND clasificacion IS NOT NULL' : filter;
                     playasLayer.definitionExpression = filter;
