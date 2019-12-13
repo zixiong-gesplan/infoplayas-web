@@ -48,6 +48,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     formVacational: FormGroup;
     vacacional: boolean;
     private subscripcionMunicipality;
+    fillState: number;
+    percentage: number;
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
                 private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService,
@@ -228,6 +230,10 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     receiveBeachId($event: string) {
+        this.fillState = this.localClasification ? 25 : 0;
+        if ($event === 'noid') {
+            $('#resultsFilterMenu').show();
+        }
         this.beachObjectId = $event;
     }
 
@@ -362,5 +368,14 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                 this.spinnerService.hide();
             }).add(() => {
         });
+    }
+
+    receiveCompleteState($event: number) {
+        this.fillState += $event;
+        if (this.fillState > 100) {
+            $('#resultsFilterMenu').show();
+        } else {
+            $('#resultsFilterMenu').hide();
+        }
     }
 }

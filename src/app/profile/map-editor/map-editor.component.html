@@ -78,7 +78,7 @@
                     <div class="form-group">
                         <div [hidden]="onClickDangerForm" [ngSwitch]="formEvaluation.get('dangerLevel').value">
                             <label *ngSwitchCase="'L'" style="color: green; font-weight : bolder">CLASIFICACIÓN LIBRE</label>
-                            <label *ngSwitchCase="'P'" style="color: yellow; font-weight : bolder">CLASIFICACIÓN PELIGROSA</label>
+                            <label *ngSwitchCase="'P'" style="color: orange; font-weight : bolder">CLASIFICACIÓN PELIGROSA</label>
                             <label *ngSwitchCase="'UP'" class="esri-font" style="color: red; font-weight : bolder">CLASIFICACIÓN USO
                                 PROHIBIDO</label>
                             <label *ngSwitchDefault
@@ -115,13 +115,6 @@
             <form class="esri-pad" [formGroup]="formEvaluation" (ngSubmit)="onSubmitEvaluation()">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
-                    <label class="esri-font" style="font-weight : bolder; margin-bottom: 5px;">Avance de realización de
-                        los formularios para la playa:</label>
-                    <div class="form-group">
-                        <p-progressBar [value]="getCompleteState()"></p-progressBar>
-                    </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group">
                         <label class="esri-font" style="font-weight : bolder">Criterios para clasificar la playa o ZBM
                             como libre
@@ -148,8 +141,8 @@
                 <div class="form-row">
                     <div class="form-group">
                         <button class="esri-button" type="submit"
-                                [class]="!formEvaluation.valid || getCompleteState() !== 100 ? 'esri-button esri-button--disabled' : 'esri-button'"
-                                [disabled]="!formEvaluation.valid || getCompleteState() !== 100">
+                                [class]="!formEvaluation.valid ? 'esri-button esri-button--disabled' : 'esri-button'"
+                                [disabled]="!formEvaluation.valid">
                             Guardar
                         </button>
                         <input (click)="sendMessage('noid',getUnselectedMessage(), null)"

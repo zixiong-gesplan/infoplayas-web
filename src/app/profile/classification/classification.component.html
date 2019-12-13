@@ -437,6 +437,7 @@
 <!-- clasificacion Body -->
 <div id="portfolio" class="paddingtopbottom50px">
     <div class="container">
+        <p-progressBar [value]="this.fillState"></p-progressBar>
         <div class="col-md-5 portfolio-wide paddingleft25px">
             <div class="information-written-data wow fadeIn">
                 <h2
@@ -536,6 +537,7 @@
                 (localName)="receiveLocalName($event)"
                 (nZones)="receiveNzones($event)"
                 (clasification)="receiveClasification($event)"
+                (completeState)="receiveCompleteState($event)"
                 [zoom]="mapZoomLevel"
                 [mapHeight]="mapHeightContainer"
                 [selectForm]="actualForm"

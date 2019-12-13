@@ -16,6 +16,7 @@ import {PopulationService} from '../../services/population.service';
 import {Municipality} from '../../models/municipality';
 import {AppSetting} from '../../models/app-setting';
 import {AppSettingsService} from '../../services/app-settings.service';
+import swal from 'sweetalert';
 
 declare var $: any;
 
@@ -55,6 +56,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     @Output() localName = new EventEmitter<string>();
     @Output() nZones = new EventEmitter<number>();
     @Output() clasification = new EventEmitter<string>();
+    @Output() completeState = new EventEmitter<number>();
     @Input() mapHeight: string;
     @Input() zoom: number;
     @Input() selectForm: string;
@@ -389,8 +391,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         const updateObj = new Array();
         updateObj.push({attributes: convertEsriBool[0]});
         const mode = fg.get('on_edit').value ? 'updates' : 'adds';
-        // cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
-        fg.get('on_edit').setValue(true);
+        // emitimos el valor para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
+        this.completeState.emit(25);
         const postExecuteTask = fg.contains('desprendimientos') && this.viewNoDanger ? 'no_prohibido' : fg.contains('desprendimientos')
             ? 'prohibido' : fg.contains('peligros_anadidos') ? 'update_dangers' : 'none';
         this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + tableId
@@ -548,15 +550,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
 
     onSubmitEvaluation() {
         this.updateClasification(this.formEvaluation.get('dangerLevel').value);
-    }
-
-    getCompleteState(): number {
-        let percentage = 0;
-        percentage += this.formIncidents.get('on_edit').value ? 30 : 0;
-        percentage += this.formEnvironment.get('on_edit').value ? 30 : 0;
-        percentage += this.periods.length > 0 ? 30 : 0;
-        percentage += this.formEvaluation.valid ? 10 : 0;
-        return percentage;
+        // emitimos el valor para completeState
+        this.completeState.emit(25);
     }
 
     saveBeach() {
@@ -747,10 +742,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             }
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.onClickDangerForm = false;
-                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
-                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
-                            t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
-                            t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 1);
+                            t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relDanger[0]), t.formDanger);
+                            t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relIncidencias[0]), t.formIncidents);
+                            t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, Number(environment.relEntorno[0]));
+                            t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, Number(environment.relAfluencia[0]));
                             // guardamos los datos de geometria de la playa para componentes externos
                             t.coordX = output.coordX;
                             t.coordY = output.coordY;
@@ -784,10 +779,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                     }
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.onClickDangerForm = false;
-                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
-                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
-                                    t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
-                                    t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 1);
+                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relDanger[0]), t.formDanger);
+                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relIncidencias[0]), t.formIncidents);
+                                    t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, Number(environment.relEntorno[0]));
+                                    t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, Number(environment.relAfluencia[0]));
                                     // guardamos los datos de geometria de la playa para componentes externos
                                     t.coordX = output.coordX;
                                     t.coordY = output.coordY;
@@ -902,7 +897,17 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 frm.patchValue({id_dgse: output.id_dgse});
                 frm.patchValue({on_edit: false});
+                if (relationshipId === Number(environment.relDanger[0]) && output.clasificacion === 'UP') {
+                    console.log(results);
+                    Swal.fire({
+                        type: 'warning',
+                        title: 'Clasificación INCOMPLETA.',
+                        text: 'La playa seleccionada está clasificada como de USO PROHIBIDO pero no se ha establecido el motivo en el formulario de clasificación.',
+                        footer: 'Seleccione el motivo en el formulario correspondiente.'
+                    });
+                }
             } else {
+                this.completeState.emit(relationshipId === Number(environment.relDanger[0]) ? 100 : 25);
                 frm.patchValue(results[query.objectIds[0]].features[0].attributes);
                 frm.patchValue({on_edit: true});
             }
@@ -927,6 +932,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 this.loadRelatedAdditionalDangers(output.beachId);
                 this.formEnvironment.patchValue(results[query.objectIds[0]].features[0].attributes);
                 this.formEnvironment.patchValue({on_edit: true});
+                this.completeState.emit(25);
             }
         });
     }
@@ -958,6 +964,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     value.attributes.fecha_inicio = new Date(value.attributes.fecha_inicio);
                 });
                 this.loadInvalidDates();
+                this.completeState.emit(25);
             }
         });
     }
