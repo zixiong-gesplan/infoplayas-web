@@ -384,13 +384,14 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     }
 
     private printPdf(beach) {
+      console.log(beach);
       let nombre_ficha: string;
       let clasificacion: string;
       let isla: string;
       let fecha_hoy = moment().subtract(10, 'days').calendar();
       var doc = new jsPDF();
 
-      doc.text(beach.attributes.nombre_municipio + ' - Fecha: ' + fecha_hoy, 15, 20);
+      doc.text(beach.attributes.nombre_municipio + ' Fecha: ' + fecha_hoy, 15, 20);
 
       doc.autoTable({startY: 20});
         // TODO desarrollar el metodo con js2pdf
@@ -410,11 +411,35 @@ export class MapViewerComponent implements OnInit, OnDestroy {
             break;
         }
 
+        switch (beach.attributes.isla) {
+          case 'GC':
+            isla = 'Gran Canaria';
+            break;
+          case 'TF':
+            isla = 'Tenerife';
+            break;
+          case 'LG':
+            isla =  'La Gomera';
+            break;
+          case 'LZ':
+             isla = 'Lanzarote';
+            break;
+          case 'FV':
+            isla =  'Fuerteventura';
+            break;
+          case 'LP':
+              isla =  'La Palma';
+            break;
+          default:
+            isla =  'El Hierro';
+            break;
+        }
+
         var item = {
           "Nombre zona de baño" : beach.attributes.nombre_municipio,
           "Municipio" :  beach.attributes.municipio,
           "Provincia" :  beach.attributes.provincia,
-          "Isla": beach.attributes.isla,
+          "Isla": isla,
           "Clasificación" : clasificacion,
           "Longitud (mts)": beach.attributes.longitud_metros,
           "Anchura (mts)": beach.attributes.anchura_metros,
@@ -428,6 +453,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
           rows.push(temp);
         }
         doc.autoTable(col, rows);
+
+        if(beach.periodos){
         //periodos
         var colperiodos = ["Periodos",'Grado de protección', 'Afluencia'];
         var rowsperiodos = [];
@@ -447,7 +474,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 grado = 'BAJO';
               break;
             default:
-              grado = 'Sin grado de protección';
+              grado = 'Grado de protección no asignado';
               break;
           }
           switch (beach.periodos[key2].afluencia) {
@@ -469,8 +496,10 @@ export class MapViewerComponent implements OnInit, OnDestroy {
             rowsperiodos.push(temp2);
         }
         doc.autoTable(colperiodos, rowsperiodos);
+        }
+        if(beach.relatedEntorno.length!==0){
         //Entorno
-        console.log(beach);
+
         var colentorno = ["Entorno",''];
         var rowsentorno = [];
         var cobertura = beach.relatedEntorno[0].attributes.cobertura_telefonica!=1 ? 'No' : 'Si';
@@ -483,7 +512,8 @@ export class MapViewerComponent implements OnInit, OnDestroy {
           rowsentorno.push(temp3);
         }
         doc.autoTable(colentorno, rowsentorno);
-
+      }
+      if(beach.relatedIncidencias.length!==0){
         var colactividades = ["Actividades deportivas y de recreo",''];
         var rowsactividades = [];
         var itemActividades= {
@@ -496,6 +526,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
           rowsactividades.push(temp4);
         }
         doc.autoTable(colactividades, rowsactividades);
+      }
 
         var colextras= ["Información detallada",''];
         var rowextras = [];
@@ -547,7 +578,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
           "Técnico redactor": beach.attributes.tecnico_redactor,
           "Teléfono": beach.attributes.telefono!=='1' ? 'No' : 'Si',
           "Oficina de turismo": beach.attributes.turismo_oficina!=='1' ? 'No' : 'Si',
-          "Último cambio": moment(beach.attributes.ultimo_cambio).format('DD/MM/YYYY') ,
+          "Último cambio": beach.attributes.ultimo_cambio ? moment(beach.attributes.ultimo_cambio).format('DD/MM/YYYY') : 'Dato no informado',
           "Último editor": beach.attributes.ultimo_editor,
           "Zona de surf": beach.attributes.zona_surf,
         }
