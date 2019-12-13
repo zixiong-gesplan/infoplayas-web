@@ -459,7 +459,7 @@
                 </div>
                 <div pTooltip="Inventario de playas y otras zonas de baño" tooltipPosition="top" (mouseout)="op2.hide()"
                      (click)="setForm('inventario');op2.show($event)" data-filter=".none"
-                     class="cbp-filter-item text-capitalize">
+                     class="cbp-filter-item cbp-filter-item-active text-capitalize">
                     inventario
                     <!-- <div class="cbp-filter-counter"></div>-->
                 </div>
@@ -542,249 +542,223 @@
                 [urlInfoMap]="'https://gesplangis.es/arcgis/apps/webappviewer/index.html?id=d570f2faba45491d9d0927fc29f97dc2'">
             </app-map-editor>
         </div>
-        <div [hidden]="!vacacional || viewResults" class="row paddingleft15px paddingright15px">
-            <div class="col-md-12 padding-top-10">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title"><a *ngIf="municipio" data-toggle="collapse" data-parent="#accordion1"
-                                                   href="#collapsePopulation"
-                                                   aria-expanded="false" class="collapsed">carga poblacional
-                            de {{municipio.ayuntamiento}} {{cargaPoblacional | number:'':'es-ES'}}</a></h4>
-                    </div>
-                    <div id="collapsePopulation" class="panel-collapse collapse" aria-expanded="false"
-                         style="height: 0px;">
-                        <div class="panel-body">
-                            <div class="col-md-12 cart_table">
+        <div *ngIf="municipio" [hidden]="!vacacional || viewResults" class="row paddingleft15px paddingright15px">
+            <div class="col-md-12 padding-bottom-10">
+                <div class="blog-listing-outer">
+                    <div class="panel-body">
+                        <div class="col-md-12 cart_table">
+                            <div class="blog-listing-heading">
+                                <h5 class="font-style-1 text-color-grey-646464 font-weight-600">Carga
+                                    poblacional: {{cargaPoblacional | number:'':'es-ES'}}</h5>
+                            </div>
+                            <div class="blog-listing-date padding-top-10 padding-bottom-10">
+                                <div class="font-style-1-u blog-date text-capitalize">Municipio
+                                    de {{municipio.ayuntamiento}}</div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th class="darkcolor">Población residente</th>
+                                        <th class="darkcolor">Plazas ofertadas</th>
+                                        <th class="darkcolor">Ocupación</th>
+                                        <th class="darkcolor">Población turística</th>
+                                        <th class="darkcolor">Total</th>
+                                        <th class="darkcolor">Valor de Peligrosidad</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngIf="municipio">
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{municipio.population | number:'1.0-0'}}</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{municipio.beds | number:'1.0-0'}}</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{municipio.occupation | number:'1.2-2':'es-ES'}}
+                                                %</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{municipio.beds * municipio.occupation * 0.01 | number:'1.0-0'}}</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{cargaPoblacional | number:'1.0-0'}}</h6>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-style-2 text-color-grey text-center">{{DangerPopulationLevel}}</h6>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="apply_coupon clearfix">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 coupon">
+                                        <p><b>Plazas ofertadas:</b> plazas hoteleras y extrahoteleras
+                                            (apartamentos) ofertadas por el municipio. En caso de que el
+                                            ISTAC incluya
+                                            los datos del
+                                            municipio consultado en las plazas del resto de la isla, se
+                                            computarán para
+                                            éste las plazas a razon del 5 por mil de la población del
+                                            municipio. Es una
+                                            media observada al dividir el total de la población de estos
+                                            municipios
+                                            entre sus plazas ofertadas.
+                                            Esta ponderación no afecta al cálculo total del valor de
+                                            peligrosidad por carga poblacional al ser municipios con poca
+                                            población
+                                            turistica
+                                            respecto del total y a los rangos considerados en la escala.</p>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 coupon">
+                                        <p><b>Ocupación:</b> tasa de ocupación por plazas se define como la
+                                            relación
+                                            expresada en porcentaje entre el total de las pernoctaciones en
+                                            un año y el
+                                            producto de las plazas hoteleras y extrahoteleras,
+                                            excluyendo las camas supletorias, por el número de días de un
+                                            año.
+                                            Para los municipios de poco peso turistico se aplicara el 65 %
+                                            de tasa de
+                                            ocupacion debido al escaso impacto de la poblacion turistica en
+                                            el computo
+                                            total y las escalas en el valor de peligrosidad.</p>
+                                    </div>
+                                </div>
+                                <div class="row padding-top-10">
+                                    <div class="col-md-2 col-sm-2 col-xs-2">
+                                        <img class="img-responsive" src="assets\images\logos\istac.jpg">
+                                    </div>
+                                    <div class="col-md-10 col-sm-10 col-xs-10">
+                                        <p style="padding-top: 20px;"><b>Los datos se obtienen en tiempo
+                                            real</b>
+                                            mediante la consulta al Catálogo de API de
+                                            eDatos del <a target="_blank"
+                                                          href="http://www.gobiernodecanarias.org/istac/api/">Instituto
+                                                Canario de Estadística.</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 padding-top-10">
+                            <div class="col-md-6">
+                                <div class="totals" style="padding-bottom: 25px">
+                                    <!--        formulario de poblacion vacacional-->
+                                    <form class="esri-pad" [formGroup]="formVacational"
+                                          (ngSubmit)="onSubmitVacational()">
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <i style="color: #1f57ff; margin-top: 2px"
+                                                   pTooltip="Viviendas de alquiler vacacional no contabilizadas como plazas hoteleras y extrahoteleras."
+                                                   class="pull-left fa fa-info-circle"></i>
+                                                <p>Los datos de alquiler vacacional se incorporan a la suma
+                                                    total en la tabla de
+                                                    arriba.</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <i style="color: #1f57ff; margin-top: 2px"
+                                                   pTooltip="Viviendas de alquiler vacacional no contabilizadas como plazas hoteleras y extrahoteleras."
+                                                   class="pull-left fa fa-info-circle"></i>
+                                                <a href="http://www.gobiernodecanarias.org/cmsgobcan/export/sites/turismo/downloads/Alquiler_vacacional/Vv-Canarias-2018-Informe-Grafico.pdf#page=30"
+                                                   class="esri-font" target="_blank"
+                                                   pTooltip="En caso de no disponer de este dato pinche en este enlace">Número
+                                                    de
+                                                    plazas alquiler vacacional</a>
+                                                <input class="esri-feature-form__input" pInputText type="number"
+                                                       min="0"
+                                                       pattern="^[0-9]+"
+                                                       formControlName="plazas"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <i style="color: #1f57ff; margin-top: 2px"
+                                                   pTooltip="Porcentaje medio de ocupación a lo largo del año..."
+                                                   class="pull-left fa fa-info-circle"></i>
+                                                <label class="esri-font">Ocupación media</label>
+                                                <input class="esri-feature-form__input" pInputText type="number"
+                                                       min="0"
+                                                       pattern="^[0-9]+"
+                                                       formControlName="ocupacion"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <button
+                                                    [class]="!formVacational.valid ? 'esri-button esri-button--disabled' : 'esri-button'"
+                                                    class="esri-button" type="submit"
+                                                    [disabled]="!formVacational.valid">
+                                                    Guardar
+                                                </button>
+                                                <input (click)="resetForm()"
+                                                       type="button"
+                                                       class="esri-button esri-button--secondary"
+                                                       value="Cancelar"/>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-md-6 cart_table">
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
                                         <thead>
                                         <tr>
                                             <th class="darkcolor">Población residente</th>
-                                            <th class="darkcolor">Plazas ofertadas</th>
-                                            <th class="darkcolor">Ocupación</th>
-                                            <th class="darkcolor">Población turística</th>
-                                            <th class="darkcolor">Total</th>
                                             <th class="darkcolor">Valor de Peligrosidad</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr *ngIf="municipio">
+                                        <tr>
                                             <td>
-                                                <h6 class="font-style-2 text-color-grey text-center">{{municipio.population | number:'1.0-0'}}</h6>
+                                                <h6 class="font-style-2 text-color-grey">Más de 100.000
+                                                    habitantes</h6>
                                             </td>
                                             <td>
-                                                <h6 class="font-style-2 text-color-grey text-center">{{municipio.beds | number:'1.0-0'}}</h6>
+                                                <h6 class="font-style-2 text-color-grey">5</h6>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h6 class="font-style-2 text-color-grey">Entre más de 20.000 y
+                                                    100.000
+                                                    habitantes</h6>
                                             </td>
                                             <td>
-                                                <h6 class="font-style-2 text-color-grey text-center">{{municipio.occupation | number:'1.2-2':'es-ES'}}
-                                                    %</h6>
+                                                <h6 class="font-style-2 text-color-grey">3</h6>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h6 class="font-style-2 text-color-grey">Entre 5.000 y 20.000
+                                                    habitantes</h6>
                                             </td>
                                             <td>
-                                                <h6 class="font-style-2 text-color-grey text-center">{{municipio.beds * municipio.occupation * 0.01 | number:'1.0-0'}}</h6>
+                                                <h6 class="font-style-2 text-color-grey">1</h6>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h6 class="font-style-2 text-color-grey">Menos de 5000
+                                                    habitantes</h6>
                                             </td>
                                             <td>
-                                                <h6 class="font-style-2 text-color-grey text-center">{{cargaPoblacional | number:'1.0-0'}}</h6>
-                                            </td>
-                                            <td>
-                                                <h6 class="font-style-2 text-color-grey text-center">{{DangerPopulationLevel}}</h6>
+                                                <h6 class="font-style-2 text-color-grey">0</h6>
                                             </td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="apply_coupon clearfix">
-                                    <div class="row">
-                                        <div class="col-md-6 col-sm-6 col-xs-12 coupon">
-                                            <p><b>Plazas ofertadas:</b> plazas hoteleras y extrahoteleras
-                                                (apartamentos) ofertadas por el municipio. En caso de que el
-                                                ISTAC incluya
-                                                los datos del
-                                                municipio consultado en las plazas del resto de la isla, se
-                                                computarán para
-                                                éste las plazas a razon del 5 por mil de la población del
-                                                municipio. Es una
-                                                media observada al dividir el total de la población de estos
-                                                municipios
-                                                entre sus plazas ofertadas.
-                                                Esta ponderación no afecta al cálculo total del valor de
-                                                peligrosidad por carga poblacional al ser municipios con poca
-                                                población
-                                                turistica
-                                                respecto del total y a los rangos considerados en la escala.</p>
-                                        </div>
-                                        <div class="col-md-6 col-sm-6 col-xs-12 coupon">
-                                            <p><b>Ocupación:</b> tasa de ocupación por plazas se define como la
-                                                relación
-                                                expresada en porcentaje entre el total de las pernoctaciones en
-                                                un año y el
-                                                producto de las plazas hoteleras y extrahoteleras,
-                                                excluyendo las camas supletorias, por el número de días de un
-                                                año.
-                                                Para los municipios de poco peso turistico se aplicara el 65 %
-                                                de tasa de
-                                                ocupacion debido al escaso impacto de la poblacion turistica en
-                                                el computo
-                                                total y las escalas en el valor de peligrosidad.</p>
-                                        </div>
-                                    </div>
-                                    <div class="row padding-top-10">
-                                        <div class="col-md-2 col-sm-2 col-xs-2">
-                                            <img class="img-responsive" src="assets\images\logos\istac.jpg">
-                                        </div>
-                                        <div class="col-md-10 col-sm-10 col-xs-10">
-                                            <p style="padding-top: 20px;"><b>Los datos se obtienen en tiempo
-                                                real</b>
-                                                mediante la consulta al Catálogo de API de
-                                                eDatos del <a target="_blank"
-                                                              href="http://www.gobiernodecanarias.org/istac/api/">Instituto
-                                                    Canario de Estadística.</a></p>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="totals" style="padding-bottom: 60px">
-                    <!--        formulario de poblacion vacacional-->
-                    <form class="esri-pad" [formGroup]="formVacational" (ngSubmit)="onSubmitVacational()">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <i style="color: #1f57ff; margin-top: 2px"
-                                   pTooltip="Viviendas de alquiler vacacional no contabilizadas como plazas hoteleras y extrahoteleras."
-                                   class="pull-left fa fa-info-circle"></i>
-                                <a href="http://www.gobiernodecanarias.org/cmsgobcan/export/sites/turismo/downloads/Alquiler_vacacional/Vv-Canarias-2018-Informe-Grafico.pdf#page=30"
-                                   class="esri-font" target="_blank"
-                                   pTooltip="En caso de no disponer de este dato pinche en este enlace">Número de
-                                    plazas alquiler vacacional</a>
-                                <input class="esri-feature-form__input" pInputText type="number" min="0"
-                                       pattern="^[0-9]+"
-                                       formControlName="plazas"/>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <i style="color: #1f57ff; margin-top: 2px"
-                                   pTooltip="Porcentaje medio de ocupación a lo largo del año..."
-                                   class="pull-left fa fa-info-circle"></i>
-                                <label class="esri-font">Ocupación media</label>
-                                <input class="esri-feature-form__input" pInputText type="number" min="0"
-                                       pattern="^[0-9]+"
-                                       formControlName="ocupacion"/>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <button
-                                    [class]="!formVacational.valid ? 'esri-button esri-button--disabled' : 'esri-button'"
-                                    class="esri-button" type="submit" [disabled]="!formVacational.valid">
-                                    Guardar
-                                </button>
-                                <input (click)="resetForm()"
-                                       type="button"
-                                       class="esri-button esri-button--secondary"
-                                       value="Cancelar"/>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-md-6 cart_table">
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th class="darkcolor">Población residente</th>
-                            <th class="darkcolor">Valor de Peligrosidad</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                                <h6 class="font-style-2 text-color-grey">Más de 100.000
-                                    habitantes</h6>
-                            </td>
-                            <td>
-                                <h6 class="font-style-2 text-color-grey">5</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h6 class="font-style-2 text-color-grey">Entre más de 20.000 y
-                                    100.000
-                                    habitantes</h6>
-                            </td>
-                            <td>
-                                <h6 class="font-style-2 text-color-grey">3</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h6 class="font-style-2 text-color-grey">Entre 5.000 y 20.000
-                                    habitantes</h6>
-                            </td>
-                            <td>
-                                <h6 class="font-style-2 text-color-grey">1</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h6 class="font-style-2 text-color-grey">Menos de 5000
-                                    habitantes</h6>
-                            </td>
-                            <td>
-                                <h6 class="font-style-2 text-color-grey">0</h6>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
-        <!--            <div class="row">
-                        <div class="section-title text-center">
-                            <h6 class="paragraph-18 font-weight-700 blue-color text-capitalize">Seleccione una playa para ver
-                                más datos</h6>
-                            <h2 *ngIf="gradeService.Publicrecords && gradeService.Publicrecords.length > 0"
-                                class="text-color-grey-646464 font-weight-700 padding-bottom-20 bottom50 position-relative text-capitalize">
-                                grados</h2>
-                        </div>
-                        <div
-                            [class]="gradeService.records && gradeService.records.length > 0 ? 'col-md-12 cart_table wow fadeInUp' : 'col-md-12 cart_table'"
-                            data-wow-delay="300ms">
-                            <p-table *ngIf="gradeService.Publicrecords && gradeService.Publicrecords.length > 0"
-                                     [columns]="colsGrade"
-                                     [value]="gradeService.Publicrecords">
-                                <ng-template pTemplate="header" let-columns>
-                                    <tr>
-                                        <th *ngFor="let col of columns" [width]="col.width"
-                                            [pSortableColumn]="col.orderBy">
-                                            {{col.header}}
-                                            <p-sortIcon [field]="col.orderBy" ariaLabel="Active para ordenar"
-                                                        ariaLabelDesc="Active para ordenar en orden descendente"
-                                                        ariaLabelAsc="Active para ordenar en orden ascendente"></p-sortIcon>
-                                        </th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" let-rowData let-columns="columns">
-                                    <tr>
-                                        <td *ngFor="let col of columns" [ngSwitch]="col.type">
-                                            <div *ngSwitchCase="'text'">
-                                                {{rowData[col.field]}}
-                                            </div>
-                                            <div *ngSwitchDefault>
-                                                {{rowData[col.field] | date: 'dd-MMM'}}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </ng-template>
-                            </p-table>
-                        </div>
-                    </div>
-                </div>-->
-        <div class="row"></div>
     </div>
 </div>
 <!-- clasificacion Body End -->

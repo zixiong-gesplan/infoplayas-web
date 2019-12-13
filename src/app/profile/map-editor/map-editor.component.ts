@@ -169,8 +169,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             {field: 'longitud_metros', type: 'number', alias: 'longitud metros', width: '200px'},
             {field: 'anchura_metros', type: 'number', alias: 'anchura metros', width: '200px'},
             {field: 'carretera_mas_proxima', type: 'text', alias: 'Carretera próxima', width: '300px'},
-            {field: 'autobus', type: 'bol', alias: 'Línea autobus', width: '200px'},
-            {field: 'autobus_tipo', type: 'text', alias: 'Autobús tipo', width: '400px'},
+            {field: 'autobus', type: 'bol', alias: 'Línea guagua', width: '200px'},
+            {field: 'autobus_tipo', type: 'text', alias: 'Guagua tipo', width: '400px'},
             {field: 'acceso_discapacitado', type: 'bol', alias: 'acceso discapacitado', width: '150px'},
             {field: 'grado_urbanizacion', type: 'text', alias: 'Grado urbanización', width: '300px'},
             {field: 'composicion', type: 'text', alias: 'Composición', width: '300px'}

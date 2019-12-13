@@ -287,7 +287,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     onSubmitVacational() {
-        // TODO id_ayuntamiento esta como smallInteger con lo que no se puede introducir el numero del istac que es mas largo, cambiarlo
         this.spinnerService.show();
         const mode = this.formVacational.get('on_edit').value ? 'updates' : 'adds';
         const updateObj = new Array();
@@ -305,6 +304,10 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.formVacational.get('on_edit').setValue(true);
         this.editDataLayer(updateObj, this.authService.getCurrentUser(), mode,
             environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbVacacional + '/applyEdits');
+        // actualizamos el valor de la carga poblacional
+        this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01 + updateObj[0].attributes.plazas
+            * updateObj[0].attributes.ocupacion * 0.01)) + this.municipio.population;
+        this.DangerPopulationLevel = this.getDangerPopulationLevel();
     }
 
     private editDataLayer(updateObj, currentUser, mode, endpoint) {
