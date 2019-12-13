@@ -388,6 +388,11 @@ export class MapViewerComponent implements OnInit, OnDestroy {
       let clasificacion: string;
       let isla: string;
       let fecha_hoy = moment().subtract(10, 'days').calendar();
+      var doc = new jsPDF();
+
+      doc.text(beach.attributes.nombre_municipio + ' - Fecha: ' + fecha_hoy, 15, 20);
+
+      doc.autoTable({startY: 20});
         // TODO desarrollar el metodo con js2pdf
         beach = {...beach, ...this.resultBeachs.find(b => b.objectId === this.selectedBeachId)};
         switch (beach.attributes.clasificacion) {
@@ -413,13 +418,9 @@ export class MapViewerComponent implements OnInit, OnDestroy {
           "Clasificación" : clasificacion,
           "Longitud (mts)": beach.attributes.longitud_metros,
           "Anchura (mts)": beach.attributes.anchura_metros,
-          "Composicion ": beach.attributes.composicion,
-          "Condiciones del baño": beach.attributes.condiciones_baño,
-          "Forma de acceso": beach.attributes.forma_de_acceso,
-          "Tipo de arena": beach.attributes.tipo_de_arena,
           'IDGSE':beach.attributes.id_dgse,
         };
-        var doc = new jsPDF();
+
         var col = ["Información general",''];
         var rows = [];
         for(var key in item){
@@ -430,17 +431,46 @@ export class MapViewerComponent implements OnInit, OnDestroy {
         //periodos
         var colperiodos = ["Periodos",'Grado de protección', 'Afluencia'];
         var rowsperiodos = [];
-        //console.log(beach);
-        for(var key2 in beach.periodos){
-            var temp2 = [moment(beach.periodos[key2].fecha_inicio).format('DD/MM/YYYY'),
-            beach.periodos[key2].grado,
-            beach.periodos[key2].afluencia];
+        var grado;
+        var afluencia;
 
+        for(var key2 in beach.periodos){
+
+          switch (beach.periodos[key2].grado) {
+            case 'A':
+              grado = 'ALTO';
+              break;
+            case 'M':
+              grado = 'MODERADO';
+              break;
+            case 'B':
+                grado = 'BAJO';
+              break;
+            default:
+              grado = 'Sin grado de protección';
+              break;
+          }
+          switch (beach.periodos[key2].afluencia) {
+            case 'A':
+              afluencia = 'ALTA';
+              break;
+            case 'M':
+              afluencia = 'MEDIA';
+              break;
+            case 'B':
+              afluencia = 'BAJA';
+              break;
+            default:
+              afluencia = 'Afluencia no informada';
+              break;
+          }
+
+            var temp2 = [moment(beach.periodos[key2].fecha_inicio).format('DD/MM/YYYY'), grado, afluencia];
             rowsperiodos.push(temp2);
         }
         doc.autoTable(colperiodos, rowsperiodos);
         //Entorno
-        console.log(beach.relatedEntorno[0].attributes);
+        console.log(beach);
         var colentorno = ["Entorno",''];
         var rowsentorno = [];
         var cobertura = beach.relatedEntorno[0].attributes.cobertura_telefonica!=1 ? 'No' : 'Si';
@@ -457,9 +487,9 @@ export class MapViewerComponent implements OnInit, OnDestroy {
         var colactividades = ["Actividades deportivas y de recreo",''];
         var rowsactividades = [];
         var itemActividades= {
-          "Actividades acotadas": beach.relatedIncidencias[0].attributes.actividades_acotadas==='1' ? 'No' : 'Si',
-          "Actividades deportivas": beach.relatedIncidencias[0].attributes.actividades_deportivas==='1' ? 'No' : 'Si',
-          "Balizamiento": beach.relatedIncidencias[0].attributes.balizamiento==='1' ? 'No' : 'Si',
+          "Actividades acotadas": beach.relatedIncidencias[0].attributes.actividades_acotadas!=='1' ? 'No' : 'Si',
+          "Actividades deportivas": beach.relatedIncidencias[0].attributes.actividades_deportivas!=='1' ? 'No' : 'Si',
+          "Balizamiento": beach.relatedIncidencias[0].attributes.balizamiento!=='1' ? 'No' : 'Si',
         }
         for(var y in itemActividades){
           var temp4 = [y, itemActividades[y]];
@@ -467,7 +497,67 @@ export class MapViewerComponent implements OnInit, OnDestroy {
         }
         doc.autoTable(colactividades, rowsactividades);
 
+        var colextras= ["Información detallada",''];
+        var rowextras = [];
+        var itemExtras= {
+          "Acceso para discapacitados": beach.attributes.acceso_discapacitado!=='1' ? 'No' : 'Si',
+          "Afluencia": beach.attributes.afluencia,
+          "Alquiler de hamacas": beach.attributes.alquiler_hamaca!=='1' ? 'No' : 'Si',
+          "Alquiler nautico": beach.attributes.alquiler_nautico!=='1' ? 'No' : 'Si',
+          "Alquiler sombrilla": beach.attributes.alquiler_sombrilla!=='1' ? 'No' : 'Si',
+          "Anchura(mts)": beach.attributes.anchura_metros,
+          "Aparcamientos": beach.attributes.aparcamientos,
+          "apto": beach.attributes.alquiler_apto!=='1' ? 'No' : 'Si',
+          "Area deportiva": beach.attributes.alquiler_hamaca!=='1' ? 'No' : 'Si',
+          "Area infantil": beach.attributes.alquiler_hamaca!=='1' ? 'No' : 'Si',
+          "Aseo": beach.attributes.alquiler_hamaca!=='1' ? 'No' : 'Si',
+          "Guagua": beach.attributes.alquiler_hamaca!=='1' ? 'No' : 'Si',
+          "Tipo de Guagua": beach.attributes.autobus_tipo,
+          "Auxilio y salvamento": beach.attributes.aux_y_salvamento!=='1' ? 'No' : 'Si',
+          "Auxilio y salvamento (descripción)": beach.attributes.auxilio_y_salvamento_desc,
+          "Bandera azul": beach.attributes.bandera_azul!=='1' ? 'No' : 'Si',
+          "Carretera más próxima": beach.attributes.carretera_mas_proxima,
+          "Composición": beach.attributes.composicion,
+          "Condiciones del baño": beach.attributes.condiciones_baño,
+          "Forma de acceso": beach.attributes.forma_de_acceso,
+          "Tipo de arena": beach.attributes.tipo_de_arena,
+          "Corregido por ayto.": beach.attributes.corregido_ayto!=='1' ? 'No' : 'Si',
+          "Ducha": beach.attributes.ducha!=='1' ? 'No' : 'Si',
+          "Fachada litoral": beach.attributes.fachada_litoral,
+          "Grado de urbanización": beach.attributes.grado_urbanizacion,
+          "Id de mapama": beach.attributes.id_mapama,
+          "Id pilotaje litoral": beach.attributes.id_pilotaje_litoral,
+          "Interlocutor": beach.attributes.interlocutor,
+          "Kiosko": beach.attributes.kiosko!=='1' ? 'No' : 'Si',
+          "Longitud": beach.attributes.longitud,
+          "Latitud": beach.attributes.latitud,
+          "Lavapies": beach.attributes.lavapie!=='1' ? 'No' : 'Si',
+          "Nombre en Mapama": beach.attributes.nombre_mapama,
+          "Nombre pilotaje litoral": beach.attributes.nombre_pilotaje_litoral,
+          "Nueva en el catálogo": beach.attributes.nueva_catalogo,
+          "Papeleras": beach.attributes.papeleras!=='1' ? 'No' : 'Si',
+          "Paseo marítimo": beach.attributes.paseo_maritimo,
+          "Playa zbm": beach.attributes.playa_zbm,
+          "Presentado por Gesplan": beach.attributes.presentado_gesplan!=='1' ? 'No' : 'Si',
+          "Registro dgse": beach.attributes.registro_dgse!=='1' ? 'No' : 'Si',
+          "Requiere PSS": beach.attributes.requiere_pss!=='1' ? 'No' : 'Si',
+          "Revisado por Gesplan": beach.attributes.revisado_gesplan!=='1' ? 'No' : 'Si',
+          "Riesgo": beach.attributes.riesgo,
+          "Submarinismo": beach.attributes.submarinismo_!=='1' ? 'No' : 'Si',
+          "Técnico redactor": beach.attributes.tecnico_redactor,
+          "Teléfono": beach.attributes.telefono!=='1' ? 'No' : 'Si',
+          "Oficina de turismo": beach.attributes.turismo_oficina!=='1' ? 'No' : 'Si',
+          "Último cambio": moment(beach.attributes.ultimo_cambio).format('DD/MM/YYYY') ,
+          "Último editor": beach.attributes.ultimo_editor,
+          "Zona de surf": beach.attributes.zona_surf,
+        }
+        for(var z in itemExtras){
+          var temp5 = [z, itemExtras[z]];
+          rowextras.push(temp5);
+        }
 
+
+        doc.autoTable(colextras, rowextras);
         nombre_ficha = 'Ficha_' + fecha_hoy + '_' + beach.attributes.nombre_municipio;
         doc.save(nombre_ficha + '.pdf');
     }
