@@ -448,7 +448,7 @@
         </div>
         <div *ngIf="beachObjectId && beachObjectId !== 0" class="col-md-7 paddingleft25px">
             <h5>Progreso del cumplimentado de los datos:</h5>
-            <p-progressBar styleClass="progress" [value]="this.fillState"></p-progressBar>
+            <p-progressBar [class]="this.fillState < 100 ? 'customProgress' : null" [value]="this.fillState"></p-progressBar>
         </div>
         <p-overlayPanel #op2>
             <label>Playas: {{numberOfBeachs}}</label>

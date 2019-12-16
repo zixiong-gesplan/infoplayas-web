@@ -6,3 +6,10 @@
 .logo-nav {
     margin-top: 5px;
 }
+.customProgress .ui-progressbar .ui-progressbar-label {
+    color: black;
+}
+
+.customProgress .ui-progressbar .ui-progressbar-value {
+    background: orange;
+}
