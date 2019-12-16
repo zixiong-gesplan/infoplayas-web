@@ -20,7 +20,7 @@ import {
     TabViewModule,
     ToggleButtonModule,
     TooltipModule,
-    AccordionModule, DialogModule
+    AccordionModule, DialogModule, LightboxModule
 } from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
 import {EsriRequestService} from './services/esri-request.service';
@@ -77,7 +77,8 @@ registerLocaleData(localeEs, 'es');
         ConfirmDialogModule,
         ProgressBarModule,
         AccordionModule,
-        DialogModule
+        DialogModule,
+        LightboxModule
 
     ],
     providers: [EsriRequestService, MessageService, ConfirmationService, {
