@@ -1113,9 +1113,5 @@ function init_plugins(){
         disableFocusListener: false
       }
     });
-
-
   });
-console.log('cargando');
-
 }

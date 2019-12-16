@@ -1,3 +1,8 @@
-.pointer{
-  cursor: pointer;
-  }/*-- Use For Custom Styling --*/
+.pointer {
+    cursor: pointer;
+}
+
+/*-- Use For Custom Styling --*/
+.logo-nav {
+    margin-top: 5px;
+}
