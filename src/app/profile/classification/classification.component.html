@@ -14,7 +14,7 @@
 <!-- esquema1 -->
 <section class="padding-top-70 padding-bottom-30">
     <div class="container">
-        <div class="col-md-4 testimonial">
+        <div class="col-md-9 testimonial">
             <div class="information-written-data">
                 <h2 class="border-color-blue-5 text-color-grey paddingleft10px text-capitalize margin-top0"><span
                     class="green-color">Clasificaci&oacute;n de playas </span><br>otras zonas de Baño Mar&iacute;timas
@@ -109,7 +109,7 @@
 <!--esquema 2 -->
 <section class="padding-top-70 padding-bottom-30">
     <div class="container">
-        <div class="col-md-4 testimonial">
+        <div class="col-md-9 testimonial">
             <div class="information-written-data">
                 <h2 class="border-color-blue-5 text-color-grey paddingleft10px text-capitalize margin-top0"><span
                     class="green-color"> Criterios para la determinaci&oacute;n</span><br>del grado de protecci&oacute;n
@@ -437,7 +437,6 @@
 <!-- clasificacion Body -->
 <div id="portfolio" class="paddingtopbottom50px">
     <div class="container">
-        <p-progressBar [value]="this.fillState"></p-progressBar>
         <div class="col-md-5 portfolio-wide paddingleft25px">
             <div class="information-written-data wow fadeIn">
                 <h2
@@ -446,6 +445,10 @@
                     <br> <span [hidden]="localName && localName.length > 23"
                                class="green-color font-style-1">Editor</span></h2>
             </div>
+        </div>
+        <div *ngIf="beachObjectId && beachObjectId !== 0" class="col-md-7 paddingleft25px">
+            <h5>Progreso del cumplimentado de los datos:</h5>
+            <p-progressBar styleClass="progress" [value]="this.fillState"></p-progressBar>
         </div>
         <p-overlayPanel #op2>
             <label>Playas: {{numberOfBeachs}}</label>
@@ -537,7 +540,6 @@
                 (localName)="receiveLocalName($event)"
                 (nZones)="receiveNzones($event)"
                 (clasification)="receiveClasification($event)"
-                (completeState)="receiveCompleteState($event)"
                 [zoom]="mapZoomLevel"
                 [mapHeight]="mapHeightContainer"
                 [selectForm]="actualForm"

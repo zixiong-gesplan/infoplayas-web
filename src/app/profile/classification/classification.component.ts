@@ -12,6 +12,7 @@ import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
 import * as moment from 'moment';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
+import {FormStateService} from '../../services/form-state.service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -26,7 +27,7 @@ declare function init_plugins();
 })
 export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy {
     itemsProtection: MenuItem[];
-    beachObjectId: string;
+    beachObjectId: number;
     numberOfBeachs: number;
     mapZoomLevel: number;
     mapHeightContainer: string;
@@ -41,19 +42,20 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     aytos: AppSetting[];
     colsGrade: any;
     visible: string;
-    beachs: any[];
     viewResults: boolean;
     dateForGrades: Date;
     es: any;
     formVacational: FormGroup;
     vacacional: boolean;
-    private subscripcionMunicipality;
     fillState: number;
     percentage: number;
+    private subscripcionMunicipality;
+    private subscripcionFormState;
+
 
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
                 private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService,
-                private spinnerService: Ng4LoadingSpinnerService) {
+                private spinnerService: Ng4LoadingSpinnerService, private formStateService: FormStateService) {
 
         this.es = {
             firstDayOfWeek: 1,
@@ -75,6 +77,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     ngOnInit() {
         init_plugins();
+        this.readFormsState();
+        $('#resultsFilterMenu').show();
         this.listOfLayersProtection = ['afluencia', 'entorno', 'incidencias', 'valoracion'];
         this.itemsProtection = [
             {label: 'Afluencia', icon: 'fa fa-fw fa-street-view'},
@@ -103,13 +107,13 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         // cargamos los ids de las playas para usarlo posteriormente al mostrar los resultados
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
-            this.loadBeachsIds();
             this.readSmunicipality();
         });
     }
 
     ngOnDestroy() {
         this.subscripcionMunicipality.unsubscribe();
+        this.subscripcionFormState.unsubscribe();
     }
 
     initCubPortfolio() {
@@ -185,7 +189,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         }
     }
 
-    loadBeachsIds() {
+    loadAllData() {
         const current_user = this.authService.getCurrentUser();
         const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
         const filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.username === name).municipio_minus + '\'';
@@ -193,10 +197,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             'objectid, clasificacion', false, this.authService.getCurrentUser().token, 'objectid', true).subscribe(
             (result: any) => {
                 if (result) {
-                    this.beachs = result.features;
-                    // si es visible el mapa de resultados entonces es que se ha cambiado de municipio y hay que recalcular los grados
-                    if (this.viewResults && result.features.length > 0) {
-                        this.service.getMultipleRelatedData(this.beachs, [environment.relAfluencia, environment.relEntorno,
+                    if (result.features.length > 0) {
+                        this.service.getMultipleRelatedData(result.features, [environment.relAfluencia, environment.relEntorno,
                             environment.relIncidencias], current_user.token);
                     }
                 } else if (result.error) {
@@ -218,7 +220,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             (result: Municipality) => {
                 if (result.user) {
                     // recalcular el listado de playas al cambiar el municipio
-                    this.loadBeachsIds();
+                    this.loadAllData();
                     // actualizar las variables para el nuevo municipio y resetear el formulario vacacional
                     this.resetForm();
                     this.setPopulationByMuncipality(result);
@@ -229,9 +231,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             });
     }
 
-    receiveBeachId($event: string) {
-        this.fillState = this.localClasification ? 25 : 0;
-        if ($event === 'noid') {
+    receiveBeachId($event: number) {
+        if ($event === 0) {
             $('#resultsFilterMenu').show();
         }
         this.beachObjectId = $event;
@@ -282,8 +283,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     calculateGradesProtection() {
-        this.service.getMultipleRelatedData(this.beachs, [environment.relAfluencia, environment.relEntorno,
-            environment.relIncidencias], this.authService.getCurrentUser().token);
+        this.loadAllData();
         this.viewResults = true;
         this.vacacional = false;
     }
@@ -316,34 +316,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.DangerPopulationLevel = this.getDangerPopulationLevel();
     }
 
-    private editDataLayer(updateObj, currentUser, mode, endpoint) {
-        this.service.updateEsriData(endpoint,
-            updateObj, mode, currentUser.token).subscribe(
-            (result: any) => {
-                if (result) {
-                    Swal.fire({
-                        type: 'success',
-                        title: 'Éxito',
-                        text: 'La actualización ha sido correcta.',
-                        footer: ''
-                    });
-                }
-            },
-            error => {
-                Swal.fire({
-                    type: 'error',
-                    title: 'NO se han guardado los datos',
-                    text: error.toString(),
-                    footer: ''
-                });
-                console.log(error.toString());
-                this.spinnerService.hide();
-            }).add(() => {
-            console.log('end of request');
-            this.spinnerService.hide();
-        });
-    }
-
     loadVacational(mun: Municipality) {
         // this.spinnerService.show();
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbVacacional + '/query',
@@ -370,12 +342,50 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         });
     }
 
-    receiveCompleteState($event: number) {
-        this.fillState += $event;
-        if (this.fillState > 100) {
-            $('#resultsFilterMenu').show();
-        } else {
-            $('#resultsFilterMenu').hide();
-        }
+    readFormsState() {
+        this.subscripcionFormState = this.formStateService.sFormsState$.subscribe(
+            (result: number) => {
+                if (result === 0) {
+                    this.fillState = 0;
+                } else {
+                    this.fillState += result;
+                }
+                if (this.fillState > 99) {
+                    $('#resultsFilterMenu').show();
+                } else {
+                    $('#resultsFilterMenu').hide();
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
+    }
+
+    private editDataLayer(updateObj, currentUser, mode, endpoint) {
+        this.service.updateEsriData(endpoint,
+            updateObj, mode, currentUser.token).subscribe(
+            (result: any) => {
+                if (result) {
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Éxito',
+                        text: 'La actualización ha sido correcta.',
+                        footer: ''
+                    });
+                }
+            },
+            error => {
+                Swal.fire({
+                    type: 'error',
+                    title: 'NO se han guardado los datos',
+                    text: error.toString(),
+                    footer: ''
+                });
+                console.log(error.toString());
+                this.spinnerService.hide();
+            }).add(() => {
+            console.log('end of request');
+            this.spinnerService.hide();
+        });
     }
 }

@@ -101,7 +101,7 @@
                         <button class="esri-button" type="submit" [disabled]="!formDanger.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), null)"
+                        <input (click)="sendMessage(0,getUnselectedMessage(), null)"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -145,7 +145,7 @@
                                 [disabled]="!formEvaluation.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), null)"
+                        <input (click)="sendMessage(0,getUnselectedMessage(), null)"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -243,7 +243,7 @@
                                 class="esri-button" type="submit" [disabled]="!formIncidents.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), null)"
+                        <input (click)="sendMessage(0,getUnselectedMessage(), null)"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -285,7 +285,7 @@
                                     <p-selectButton [options]="FlowOptions" formControlName="flowLevelDefault">
                                     </p-selectButton>
                                     <span style="margin-left: 10%"></span>
-                                    <p-selectButton [options]="FlowOptions" formControlName="flowLevelWeekend">
+                                    <p-selectButton (onOptionClick)="clearWeekendButton($event)" [options]="FlowOptions" formControlName="flowLevelWeekend">
                                     </p-selectButton>
                                 </div>
                                 <div class="form-row">
@@ -320,7 +320,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <div *ngIf="this.invalidDates.length < this.days_of_this_year(); else completeDates"
+                        <div *ngIf="this.invalidDates.length < this.days_of_this_year; else completeDates"
                              class="alert alert-warning">
                             <strong>Atención!</strong> Año en curso INCOMPLETO.
                         </div>
@@ -350,12 +350,11 @@
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-rowData let-columns="columns">
-                                <tr>
-                                    <td *ngFor="let col of columns" [ngSwitch]="col.type">
-                                        <div [ngClass]="{null: rowData.attributes.incluir_dias === 'TD',
+                                <tr [ngClass]="{null: rowData.attributes.incluir_dias === 'TD',
                                         'includeDatesFS':rowData.attributes.incluir_dias === 'FS',
-                                        'includeDatesLB':rowData.attributes.incluir_dias === 'LB' }"
-                                             *ngSwitchCase="'text'">
+                                        'includeDatesLB':rowData.attributes.incluir_dias === 'LB' }">
+                                    <td *ngFor="let col of columns" [ngSwitch]="col.type">
+                                        <div *ngSwitchCase="'text'">
                                             {{rowData['attributes'][col.subfield]}}
                                         </div>
                                         <div *ngSwitchDefault>
@@ -363,7 +362,7 @@
                                         </div>
                                     </td>
                                     <td style="text-align:center">
-                                        <button style="height: 25px" type="button"
+                                        <button style="height: 25px; color: #333333" type="button"
                                                 (click)="onRowDelete(rowData)">
                                             <i class="fa fa-times"></i>
                                         </button>
@@ -475,7 +474,7 @@
                                 type="submit" [disabled]="!formEnvironment.valid">
                             Guardar
                         </button>
-                        <input (click)="sendMessage('noid',getUnselectedMessage(), null)"
+                        <input (click)="sendMessage(0,getUnselectedMessage(), null)"
                                onclick="unselectFeature()"
                                type="button"
                                class="esri-button esri-button--secondary"
@@ -568,7 +567,7 @@
                     (click)="loadCatalogueInfoByid()">Abrir
                 catálogo
             </button>
-            <input (click)="sendMessage('noid',getUnselectedMessage(), null)"
+            <input (click)="sendMessage(0,getUnselectedMessage(), null)"
                    onclick="unselectFeature()"
                    type="button"
                    class="esri-button esri-button--secondary"
