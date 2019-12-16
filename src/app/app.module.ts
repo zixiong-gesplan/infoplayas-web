@@ -33,7 +33,7 @@ import {registerLocaleData} from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import {ToastModule} from 'primeng/toast';
 import { MapViewerComponent } from './profile/map-viewer/map-viewer.component';
-import {TokenInterceptorService} from './services/token-interceptor.service';
+import {ResponseInterceptorService} from './services/response-interceptor.service';
 
 registerLocaleData(localeEs, 'es');
 
@@ -86,7 +86,7 @@ registerLocaleData(localeEs, 'es');
     },
         {
             provide: HTTP_INTERCEPTORS,
-            useClass: TokenInterceptorService,
+            useClass: ResponseInterceptorService,
             multi: true
         }],
     bootstrap: [AppComponent]

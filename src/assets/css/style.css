@@ -1384,7 +1384,7 @@ button.mfp-close, button.mfp-arrow{
 .wordpress, .joomla, .drupal, .css3{
     float: left;
     text-align: left;
-    height: 550px;
+    height: 590px;
     width: 25%;
     padding: 50px 45px;
 }
@@ -2902,7 +2902,7 @@ a.image{
     display: inline-table;
 }
 .totals {
-    padding: 40px 15px;
+    padding: 25px 15px;
     border: 1px solid #d1d1d1;
 }
 .totals .table-responsive tr > td {
@@ -3835,6 +3835,7 @@ svg polygon {
     }
     .wordpress,.joomla,.drupal,.css3,.html5 {
         width: 50%;
+        max-height: 500px;
     }
     .four-boxes {
         padding: 0;

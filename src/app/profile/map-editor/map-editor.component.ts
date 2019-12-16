@@ -10,12 +10,13 @@ import {OverlayPanel} from 'primeng/primeng';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Attribute} from '../../models/attribute';
 import * as moment from 'moment';
-import Swal from 'sweetalert2';
 import {Tableids} from '../../models/tableids';
 import {PopulationService} from '../../services/population.service';
 import {Municipality} from '../../models/municipality';
 import {AppSetting} from '../../models/app-setting';
 import {AppSettingsService} from '../../services/app-settings.service';
+import Swal from 'sweetalert2';
+import {FormStateService} from '../../services/form-state.service';
 
 declare var $: any;
 
@@ -51,7 +52,7 @@ declare let unselectedMessage: any;
 })
 export class MapEditorComponent implements OnInit, OnDestroy {
     // decoradores entrada salida
-    @Output() beachId = new EventEmitter<string>();
+    @Output() beachId = new EventEmitter<number>();
     @Output() localName = new EventEmitter<string>();
     @Output() nZones = new EventEmitter<number>();
     @Output() clasification = new EventEmitter<string>();
@@ -94,10 +95,14 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     sectionNames: string[];
     private subscripcionMunicipality;
     private aytos: AppSetting[];
+    days_of_this_year: number;
+    private lastOpValue: string;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
-                private popService: PopulationService, private appSettingsService: AppSettingsService) {
+                private popService: PopulationService, private appSettingsService: AppSettingsService,
+                private formStateService: FormStateService) {
+        this.days_of_this_year = this.isLeapYear(new Date().getFullYear()) ? 366 : 365;
         this.beachsCatalogue = [];
         this.sectionNames = ['Sección General', 'Sección de Gestión', 'Sección de Equipamiento'];
         // TODO implementar los dominios con la llamada al api /queryDomains en vez de en modo estatico
@@ -169,8 +174,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             {field: 'longitud_metros', type: 'number', alias: 'longitud metros', width: '200px'},
             {field: 'anchura_metros', type: 'number', alias: 'anchura metros', width: '200px'},
             {field: 'carretera_mas_proxima', type: 'text', alias: 'Carretera próxima', width: '300px'},
-            {field: 'autobus', type: 'bol', alias: 'Línea autobus', width: '200px'},
-            {field: 'autobus_tipo', type: 'text', alias: 'Autobús tipo', width: '400px'},
+            {field: 'autobus', type: 'bol', alias: 'Línea guagua', width: '200px'},
+            {field: 'autobus_tipo', type: 'text', alias: 'Guagua tipo', width: '400px'},
             {field: 'acceso_discapacitado', type: 'bol', alias: 'acceso discapacitado', width: '150px'},
             {field: 'grado_urbanizacion', type: 'text', alias: 'Grado urbanización', width: '300px'},
             {field: 'composicion', type: 'text', alias: 'Composición', width: '300px'}
@@ -366,7 +371,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         this.invalidDates = [];
     }
 
-    sendMessage(id: string, name: string, clasification: string) {
+    sendMessage(id: number, name: string, clasification: string) {
         this.beachId.emit(id);
         this.localName.emit(name);
         this.clasification.emit(clasification);
@@ -389,8 +394,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         const updateObj = new Array();
         updateObj.push({attributes: convertEsriBool[0]});
         const mode = fg.get('on_edit').value ? 'updates' : 'adds';
-        // cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
-        fg.get('on_edit').setValue(true);
+        if (mode === 'adds') {
+            this.formStateService.udpateFormState(25);
+        }
         const postExecuteTask = fg.contains('desprendimientos') && this.viewNoDanger ? 'no_prohibido' : fg.contains('desprendimientos')
             ? 'prohibido' : fg.contains('peligros_anadidos') ? 'update_dangers' : 'none';
         this.editRelatedData(updateObj, this.currentUser, mode, environment.infoplayas_catalogo_edicion_tablas_url + '/' + tableId
@@ -482,6 +488,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         // actualizamos el periodo en las fechas invalidas del calendario para evitar ser seleccionadas denuevo
         this.invalidDates = [];
         this.loadInvalidDates();
+        // comprobamos el progreso del formulario
+        if (this.invalidDates.length >= this.days_of_this_year) {
+            this.formStateService.udpateFormState(25);
+        }
         // seteamos los valores del calendario para que apareca al abrirlo en la ultima fecha
         const iniDate = new Date(this.formFlow.get('dates').value[0]);
         if (this.formFlow.get('dates').value[1]) {
@@ -521,10 +531,6 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         return false;
     }
 
-    days_of_this_year() {
-        return this.isLeapYear(new Date().getFullYear()) ? 366 : 365;
-    }
-
     isLeapYear(year) {
         return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
     }
@@ -541,6 +547,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbAfluencia
                 + '/deleteFeatures', true);
         }
+        // comprobamos el progreso del formulario
+        if (this.invalidDates.length >= this.days_of_this_year) {
+            this.formStateService.udpateFormState(-25);
+        }
         // actualizamos los dias ya seleccionados en el calendario
         this.invalidDates = [];
         this.loadInvalidDates();
@@ -548,15 +558,6 @@ export class MapEditorComponent implements OnInit, OnDestroy {
 
     onSubmitEvaluation() {
         this.updateClasification(this.formEvaluation.get('dangerLevel').value);
-    }
-
-    getCompleteState(): number {
-        let percentage = 0;
-        percentage += this.formIncidents.get('on_edit').value ? 30 : 0;
-        percentage += this.formEnvironment.get('on_edit').value ? 30 : 0;
-        percentage += this.periods.length > 0 ? 30 : 0;
-        percentage += this.formEvaluation.valid ? 10 : 0;
-        return percentage;
     }
 
     saveBeach() {
@@ -597,11 +598,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             });
     }
 
-    private updateClasification(clasification: string) {
+    private updateClasification(clasification: any) {
         // cerramos el formulario para evitar incongruencias entre el formulario abierto y el mapa
-        this.sendMessage('noid', unselectFeature(), null);
+        this.sendMessage(0, unselectFeature(), null);
         this.centroidOption = false;
-
         const updateObj = new Array();
         updateObj.push({
             attributes: {
@@ -734,6 +734,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     });
 
                     function onListClickHandler(event) {
+                        t.formStateService.udpateFormState(0);
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
                         const objectId = target.getAttribute('oid');
@@ -743,14 +744,17 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             t.selectedId = output.beachId;
                             t.formEvaluation.reset();
                             if (output.clasificacion) {
+                                t.formStateService.udpateFormState(25);
                                 t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
                             }
                             // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                             t.onClickDangerForm = false;
-                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
-                            t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
-                            t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
-                            t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 1);
+                            t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relDanger[0]), t.formDanger);
+                            if (output.clasificacion !== 'UP') {
+                                t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relIncidencias[0]), t.formIncidents);
+                                t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, Number(environment.relEntorno[0]));
+                                t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, Number(environment.relAfluencia[0]));
+                            }
                             // guardamos los datos de geometria de la playa para componentes externos
                             t.coordX = output.coordX;
                             t.coordY = output.coordY;
@@ -774,20 +778,24 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                         // If user selects a feature, select it.Find function is for only taking results from desired layer
                         const result = response.results.find(item => item.graphic.layer.id === playasLayerId);
                         if (result) {
+                            t.formStateService.udpateFormState(0);
                             selectFeature(view, result.graphic.attributes[playasLayer.objectIdField], playasLayer, form, editFeature)
                                 .then(function (output) {
                                     t.sendMessage(output.beachId, output.localName, output.clasificacion);
                                     t.selectedId = output.beachId;
                                     t.formEvaluation.reset();
                                     if (output.clasificacion) {
+                                        t.formStateService.udpateFormState(25);
                                         t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
                                     }
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.onClickDangerForm = false;
-                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 0, t.formDanger);
-                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, 4, t.formIncidents);
-                                    t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, 3);
-                                    t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, 1);
+                                    t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relDanger[0]), t.formDanger);
+                                    if (output.clasificacion !== 'UP') {
+                                        t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relIncidencias[0]), t.formIncidents);
+                                        t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, Number(environment.relEntorno[0]));
+                                        t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, Number(environment.relAfluencia[0]));
+                                    }
                                     // guardamos los datos de geometria de la playa para componentes externos
                                     t.coordX = output.coordX;
                                     t.coordY = output.coordY;
@@ -795,7 +803,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                     t.centroidOption = true;
                                 });
                         } else {
-                            t.sendMessage('noid', unselectFeature(), null);
+                            t.sendMessage(0, unselectFeature(), null);
                             t.centroidOption = false;
                         }
                     });
@@ -843,7 +851,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     (result: Municipality) => {
                         if (result && municipiosLayer) {
                             // cierro formularios por si estan abiertos cuando se cambia de municipios
-                            t.sendMessage('noid', unselectFeature(), null);
+                            t.sendMessage(0, unselectFeature(), null);
                             t.centroidOption = false;
                             view.zoom = this.zoom;
 
@@ -857,6 +865,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             playasLayer.definitionExpression = filter;
                             t.spinnerService.show();
                             loadList(view, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (Beachs) {
+                                t.formStateService.udpateFormState(0);
                                 t.nZones.emit(Beachs.length);
                                 features = Beachs;
                                 t.spinnerService.hide();
@@ -902,7 +911,20 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 frm.patchValue({id_dgse: output.id_dgse});
                 frm.patchValue({on_edit: false});
+                if (relationshipId === Number(environment.relDanger[0]) && output.clasificacion === 'UP') {
+                    Swal.fire({
+                        type: 'warning',
+                        title: 'Clasificación INCOMPLETA.',
+                        text: 'La playa seleccionada está clasificada como de USO PROHIBIDO pero no se ha establecido el motivo en el formulario de clasificación.',
+                        footer: 'Seleccione el motivo en el formulario correspondiente.'
+                    });
+                }
             } else {
+                if (relationshipId === Number(environment.relDanger[0]) && output.clasificacion === 'UP') {
+                    this.formStateService.udpateFormState(75);
+                } else if (relationshipId !== Number(environment.relDanger[0]) ) {
+                    this.formStateService.udpateFormState(25);
+                }
                 frm.patchValue(results[query.objectIds[0]].features[0].attributes);
                 frm.patchValue({on_edit: true});
             }
@@ -927,6 +949,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 this.loadRelatedAdditionalDangers(output.beachId);
                 this.formEnvironment.patchValue(results[query.objectIds[0]].features[0].attributes);
                 this.formEnvironment.patchValue({on_edit: true});
+                this.formStateService.udpateFormState(25);
             }
         });
     }
@@ -958,6 +981,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     value.attributes.fecha_inicio = new Date(value.attributes.fecha_inicio);
                 });
                 this.loadInvalidDates();
+                if (this.invalidDates.length >= this.days_of_this_year) {
+                    this.formStateService.udpateFormState(25);
+                }
             }
         });
     }
@@ -997,6 +1023,12 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 }
             },
             error => {
+                Swal.fire({
+                    type: 'error',
+                    title: 'NO se han guardado los datos',
+                    text: error.toString(),
+                    footer: ''
+                });
                 console.log(error.toString());
             });
     }
@@ -1091,6 +1123,16 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         if (addvalues.length > 0) {
             this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbRiesgos
                 + '/applyEdits', 'none');
+        }
+    }
+
+// anulamos si el usuario vuelve a clickar sobre la opcion seleccionada
+    clearWeekendButton($event: any) {
+        if ($event.option.value === this.lastOpValue) {
+            this.formFlow.get('flowLevelWeekend').setValue(null);
+            this.lastOpValue = null;
+        } else {
+            this.lastOpValue = $event.option.value;
         }
     }
 }

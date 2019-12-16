@@ -163,11 +163,10 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                             const layer = new GraphicsLayer({
                                 graphics: []
                             });
-                            // TODO el filtro !==UP no parece funcionar porque muestra grado en una clasificacion Prohibida
                             this.resultBeachs = [...beachs].filter(x => x.relatedAfluencia.length > 0 && x.relatedEntorno.length > 0
                                 && x.relatedIncidencias.length > 0 || x.clasificacion === 'UP');
                             beachs = [...beachs].filter(x => x.relatedAfluencia.length > 0 && x.relatedEntorno.length > 0
-                                && x.relatedIncidencias.length > 0 && x.clasificacion !== 'UP');
+                                && x.relatedIncidencias.length > 0 && x.clasificacion && x.clasificacion !== 'UP');
                             beachs.forEach(beach => {
                                 // si se ha seleccionado una fecha entonces los periodos se filtraran por esa fecha para mostrar el grado
                                 const sDate = moment(this.SelectedDate, 'YYYY-MM-DD').startOf('day');
