@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Injectable({
     providedIn: 'root'
 })
-export class TokenInterceptorService implements HttpInterceptor {
+export class ResponseInterceptorService implements HttpInterceptor {
 
     constructor(private router: Router) {
     }
@@ -25,7 +26,17 @@ export class TokenInterceptorService implements HttpInterceptor {
                 } else {
                     return event;
                 }
+            }),
+            catchError((error: HttpErrorResponse) => {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Error ' + error.status,
+                    text: error && error.error.reason ? error.error.reason : '',
+                    footer: ''
+                });
+                return throwError(error);
             }));
     }
 
 }
+

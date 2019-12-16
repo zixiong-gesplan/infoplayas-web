@@ -249,7 +249,7 @@ h6 {
 .border-color-blue:before {
     height: 85px;
     left: 15px;
-    transform: translateY(190%);
+    transform: translateY(120%);
 }
 .border-color-blue-2:before {
     height: 88px;

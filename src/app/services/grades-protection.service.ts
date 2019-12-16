@@ -7,11 +7,10 @@ import {GradeRecord} from '../models/grade-record';
 })
 
 
+export class GradesProtectionService {
 
-export class GradesProtectionService{
-
-
-    constructor() {}
+    constructor() {
+    }
 
     calculateGradeForPeriods(incidents_Sports, env_sea, periods: Attribute[]): GradeRecord[] {
         // calculos para el valor de peligrosidad Incidentes y actividades deportivas
