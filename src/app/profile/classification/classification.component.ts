@@ -314,6 +314,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01 + updateObj[0].attributes.plazas
             * updateObj[0].attributes.ocupacion * 0.01)) + this.municipio.population;
         this.DangerPopulationLevel = this.getDangerPopulationLevel();
+        // actualizamos la local storage
+        const mun = this.popService.getMunicipality();
+        mun.beds_vacational = updateObj[0].attributes.plazas;
+        mun.occupation_vacational = updateObj[0].attributes.ocupacion;
+        localStorage.setItem('municipality', JSON.stringify(mun));
     }
 
     loadVacational(mun: Municipality) {
@@ -335,6 +340,10 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                 this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01 + bedsVacational
                     * ocupationVacational * 0.01)) + this.municipio.population;
                 this.DangerPopulationLevel = this.getDangerPopulationLevel();
+                // actualizamos la local storage
+                mun.beds_vacational = bedsVacational;
+                mun.occupation_vacational = ocupationVacational;
+                localStorage.setItem('municipality', JSON.stringify(mun));
             },
             error => {
                 this.spinnerService.hide();
