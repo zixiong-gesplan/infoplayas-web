@@ -677,7 +677,7 @@
     {
         "username": "gesplansa",
         "isSuperUser": true,
-        "editor": false,
+        "editor": true,
         "municipio_minus": null,
         "municipio_mayus": null,
         "istac_code": null,
