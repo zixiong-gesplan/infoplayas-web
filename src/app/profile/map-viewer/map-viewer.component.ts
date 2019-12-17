@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {loadModules} from 'esri-loader';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
@@ -12,11 +12,13 @@ import {Municipality} from '../../models/municipality';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
 import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/api';
+import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 
 declare var $: any;
 declare var jquery: any;
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 
 
 // variables javascript esri maps
@@ -41,9 +43,6 @@ declare let featuresViewer: any;
 })
 export class MapViewerComponent implements OnInit, OnDestroy {
     @ViewChild('GradesTable') gTable: ElementRef;
-    @Input() zoom: number;
-    @Input() mapHeight: string;
-    @Input() SelectedDate: string;
     selectedPeriodos: GradeRecord[];
     private currentUser: Auth;
     private subscripcionFeatures;
@@ -52,13 +51,29 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     private aytos: AppSetting[];
     private resultBeachs: any;
     selectedBeachId: number;
+    dateForGrades: Date;
+    es: any;
+    private lastResults: any;
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
                 private service: EsriRequestService, private popService: PopulationService,
-                private appSettingsService: AppSettingsService) {
+                private appSettingsService: AppSettingsService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
+                private spinnerService: Ng4LoadingSpinnerService) {
+        this.es = {
+            firstDayOfWeek: 1,
+            dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+            dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+            monthNames: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre',
+                'diciembre'],
+            monthNamesShort: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+            today: 'Hoy',
+            clear: 'Borrar'
+        };
     }
 
     ngOnInit() {
+        this.spinnerService.show();
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
             this.currentUser = this.authService.getCurrentUser();
@@ -69,7 +84,6 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     // preparamos una lista de features provenientes del REST API para que tenga la estructura para añadir a la capa grafica de un mapa.
     convertCentroidDataToGraphic(beach: any) {
         beach.geometry = beach.centroid;
-        delete beach.centroid;
         beach.geometry.spatialReference = {
             latestWkid: 32628,
             wkid: 32628
@@ -129,7 +143,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 viewer = new MapView({
                     container: 'viewDivViewer', // Reference to the scene div created in step 5
                     map: webmap, // Reference to the map object created before the scene
-                    zoom: this.zoom
+                    zoom: this.config.data.zoom
                 });
 
                 // Se crean los simbolos para los marcadores
@@ -159,6 +173,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     (results: any) => {
                         let beachs = (results as any[]);
                         if (results.length > 0) {
+                        this.lastResults = [...beachs];
                             webmap.remove((webmap.findLayerById(this.lastGraphicLayerId)));
                             const layer = new GraphicsLayer({
                                 graphics: []
@@ -169,20 +184,20 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                                 && x.relatedIncidencias.length > 0 && x.clasificacion && x.clasificacion !== 'UP');
                             beachs.forEach(beach => {
                                 // si se ha seleccionado una fecha entonces los periodos se filtraran por esa fecha para mostrar el grado
-                                const sDate = moment(this.SelectedDate, 'YYYY-MM-DD').startOf('day');
+                                const sDate = moment(this.dateForGrades).startOf('day');
                                 const incDias = sDate.format('ddd') !== 'Sat' && sDate.format('ddd') !== 'Sun' ? 'LB' : 'FS';
                                 beach.periodos = this.gradeService.calculateGradeForPeriods(beach.relatedIncidencias, beach.relatedEntorno,
-                                    this.SelectedDate ? beach.relatedAfluencia
-                                            .filter(b => b.attributes.fecha_inicio <= new Date(this.SelectedDate).setHours(23)
-                                                && b.attributes.fecha_fin >= new Date(this.SelectedDate).setHours(0) &&
+                                    this.dateForGrades ? beach.relatedAfluencia
+                                            .filter(b => b.attributes.fecha_inicio <= new Date(this.dateForGrades).setHours(23)
+                                                && b.attributes.fecha_fin >= new Date(this.dateForGrades).setHours(0) &&
                                                 (b.attributes.incluir_dias === incDias || b.attributes.incluir_dias === 'TD'))
                                         : beach.relatedAfluencia);
                                 if (beach.periodos.length > 0) {
-                                    beach.grado_maximo = this.SelectedDate ? beach.periodos[0].grado :
+                                    beach.grado_maximo = this.dateForGrades ? beach.periodos[0].grado :
                                         this.gradeService.getMaximunGrade(beach.periodos);
                                     beach = this.convertCentroidDataToGraphic(beach);
                                     const grap = Graphic.fromJSON(beach);
-                                    if (!this.SelectedDate) {
+                                    if (!this.dateForGrades) {
                                         grap.attributes = beach.periodos;
                                         grap.popupTemplate = {
                                             title: 'Tabla de grados',
@@ -199,9 +214,11 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                             webmap.add(layer);
                             this.lastGraphicLayerId = layer.id;
                         }
+                        this.spinnerService.hide();
                     },
                     error => {
                         console.log(error.toString());
+                        this.spinnerService.hide();
                     });
 
                 const t = this;
@@ -299,7 +316,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
                     (result: Municipality) => {
                         if (result.user && municipiosLayer) {
-                            viewer.zoom = this.zoom;
+                            viewer.zoom = this.config.data.zoom;
 
                             this.currentUser = this.authService.getCurrentUser();
                             IdentityManager.credentials[0].userId = result.user;
@@ -378,12 +395,15 @@ export class MapViewerComponent implements OnInit, OnDestroy {
             });
     }
 
+    save() {
+        this.ref.close('onClose');
+    }
+
     checkReport() {
         this.loadCatalogueInfoByid();
     }
 
     private printPdf(beach) {
-      console.log(beach);
       let nombre_ficha: string;
       let clasificacion: string;
       let isla: string;

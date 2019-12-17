@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Attribute} from '../models/attribute';
 import {GradeRecord} from '../models/grade-record';
+import {Municipality} from '../models/municipality';
 
 @Injectable({
     providedIn: 'root'
@@ -36,8 +37,9 @@ export class GradesProtectionService {
             });
         });
         // calculos de poblacion
-        const municipio = JSON.parse(localStorage.getItem('municipality'));
-        const cargaPoblacional = Math.round((municipio.beds * municipio.occupation * 0.01)) + municipio.population;
+        const municipio: Municipality = JSON.parse(localStorage.getItem('municipality'));
+        const cargaPoblacional = Math.round((municipio.beds * municipio.occupation * 0.01) +
+            (municipio.beds_vacational * municipio.occupation_vacational * 0.01)) + municipio.population;
         const vPopulation = this.getDangerPopulationLevel(cargaPoblacional);
         // calculo del grado
         const riskfactors = (vIncidents + vSports + vSeaConditions + vEnvironment + vPopulation) / 5;

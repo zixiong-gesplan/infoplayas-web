@@ -4,7 +4,8 @@ export class Auth {
         public expires: number,
         public username: string,
         public selectedusername: string,
-        public persist: boolean
+        public persist: boolean,
+        public editor: boolean
     ) {
     }
 }
