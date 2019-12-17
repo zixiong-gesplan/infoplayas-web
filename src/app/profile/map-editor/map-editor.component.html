@@ -574,7 +574,7 @@
                 </div>
             </p-accordion>
             <p-footer>
-                <button type="button" pButton icon="pi pi-check" (click)="saveBeach()" label="Guardar"></button>
+                <button type="button" pButton icon="pi pi-check" [disabled]="currentUser && !currentUser.editor" (click)="saveBeach()" label="Guardar"></button>
                 <button type="button" pButton icon="pi pi-close" (click)="openCatalogue=false" label="Cancelar"
                         class="ui-button-secondary"></button>
             </p-footer>
