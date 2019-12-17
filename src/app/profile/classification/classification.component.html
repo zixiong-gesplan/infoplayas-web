@@ -443,7 +443,7 @@
                     class="border-color-blue-3 no-margin text-color-grey ">
                     {{(localName ? localName : 'seleccione playa') }}
                     <br> <span [hidden]="localName && localName.length > 23"
-                               class="green-color font-style-1">Editor</span></h2>
+                               class="green-color font-style-1">{{authService.getCurrentUser().editor ? 'Editor' : 'Visor'}}</span></h2>
             </div>
         </div>
         <div *ngIf="beachObjectId && beachObjectId !== 0" class="col-md-7 paddingleft25px">

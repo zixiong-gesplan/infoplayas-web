@@ -88,7 +88,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             plazas: new FormControl('', Validators.required),
             ocupacion: new FormControl('', Validators.required),
             id_ayuntamiento: new FormControl(''),
-            on_edit: new FormControl('')
+            on_edit: new FormControl(''),
+            editor: new FormControl('', Validators.requiredTrue)
         });
         this.setPopulationByMuncipality(this.popService.getMunicipality());
         // cargamos los ids de las playas para usarlo posteriormente al mostrar los resultados
@@ -333,8 +334,10 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                 if (result && result.features.length > 0) {
                     this.formVacational.patchValue(result.features[0].attributes);
                     this.formVacational.get('on_edit').setValue(true);
+                    this.formVacational.get('editor').setValue(this.authService.getCurrentUser().editor);
                 } else {
                     this.formVacational.get('on_edit').setValue(false);
+                    this.formVacational.get('editor').setValue(this.authService.getCurrentUser().editor);
                     this.formVacational.get('id_ayuntamiento').setValue(mun.istac_code);
                 }
                 const bedsVacational = this.formVacational.get('plazas').value ? this.formVacational.get('plazas').value : 0;

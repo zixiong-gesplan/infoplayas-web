@@ -3,9 +3,7 @@ import {CanActivate} from '@angular/router/src/interfaces';
 import {Auth} from '../models/auth';
 import {environment} from '../../environments/environment';
 import {Router} from '@angular/router';
-import {PopulationService} from './population.service';
 import {EsriRequestService} from './esri-request.service';
-import Swal from 'sweetalert2';
 
 declare function init_plugins();
 
