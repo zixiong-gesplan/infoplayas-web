@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {BehaviorSubject, forkJoin, Subscription} from 'rxjs';
+import {BehaviorSubject, forkJoin} from 'rxjs';
 import {environment} from '../../environments/environment';
 
 @Injectable()
@@ -16,7 +16,6 @@ export class EsriRequestService {
                      centro: boolean) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
-
 
         const params = new HttpParams().set('token', token).append('f', 'json')
             .append('where', cWhere)
@@ -114,4 +113,7 @@ export class EsriRequestService {
         this.featuresSource.next([]);
     }
 
+    insertFeaturesInSource(beachs: any) {
+        this.featuresSource.next(beachs);
+    }
 }

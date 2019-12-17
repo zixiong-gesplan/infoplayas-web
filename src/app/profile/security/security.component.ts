@@ -70,7 +70,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
     calculoTotalHumanos;
     totalGAlto:number;
     totalGMedio: number;
-    controlHorario: number = 0;
     urlimageweather =  environment.urlimageweather;
     unitarios = {
       jefe_turno_pvp:'',
@@ -368,7 +367,6 @@ readFeatures() {
 
     }
 
-          this.controlHorario = beach.relatedAfluencia.filter(x => x.attributes.hora_inicio === null && x.attributes.nivel !== 'B').length;
         if (beach && beach.relatedAfluencia.length > 0 && beach.relatedEntorno.length > 0
           && beach.relatedIncidencias.length > 0) {
             // inicializamos desactivado el esc y el click fuera de la modal
@@ -383,6 +381,7 @@ readFeatures() {
               if(beach.relatedHumanos){ this.dinamicForm(this.grados,beach.relatedHumanos );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
+              console.log(this.datosPlayaRelacionada);
               this.getNumWorkDays(this.datosPlayaRelacionada.periodos.fecha_inicio, this.datosPlayaRelacionada.periodos.fecha_fin, 'FS');
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedAfluencia);
@@ -413,7 +412,6 @@ readFeatures() {
 
     loadRecords() {
         this.spinnerService.show();
-        console.log(this.currentUser);
         const name = this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username;
         if(this.filterClasificacion){
           this.filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.username === name).municipio_minus + '\'' + this.filterClasificacion;

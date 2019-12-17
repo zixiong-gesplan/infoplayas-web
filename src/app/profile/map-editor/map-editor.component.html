@@ -25,7 +25,8 @@
     <div id="formContainer" class="esri-hidden scroller">
         <!--        formulario de peligrosidad-->
         <div [hidden]="selectForm !=='clasificacion'">
-            <form class="esri-pad" (click)="onClickDangerForm = true" [formGroup]="formDanger" (ngSubmit)="onSubmit(formDanger, tableIds.tbDanger)">
+            <form class="esri-pad" (click)="onClickDangerForm = true" [formGroup]="formDanger"
+                  (ngSubmit)="onSubmit(formDanger, tableIds.tbDanger)">
                 <!--            <div [hidden]="!databaseFail" class="alert alert-danger">{{ERROR}}</div>-->
                 <div class="form-row">
                     <div class="form-group">
@@ -77,9 +78,12 @@
                 <div class="form-row">
                     <div class="form-group">
                         <div [hidden]="onClickDangerForm" [ngSwitch]="formEvaluation.get('dangerLevel').value">
-                            <label *ngSwitchCase="'L'" style="color: green; font-weight : bolder">CLASIFICACIÓN LIBRE</label>
-                            <label *ngSwitchCase="'P'" style="color: orange; font-weight : bolder">CLASIFICACIÓN PELIGROSA</label>
-                            <label *ngSwitchCase="'UP'" class="esri-font" style="color: red; font-weight : bolder">CLASIFICACIÓN USO
+                            <label *ngSwitchCase="'L'" style="color: green; font-weight : bolder">CLASIFICACIÓN
+                                LIBRE</label>
+                            <label *ngSwitchCase="'P'" style="color: orange; font-weight : bolder">CLASIFICACIÓN
+                                PELIGROSA</label>
+                            <label *ngSwitchCase="'UP'" class="esri-font" style="color: red; font-weight : bolder">CLASIFICACIÓN
+                                USO
                                 PROHIBIDO</label>
                             <label *ngSwitchDefault
                                    pTooltip="Valoración definitiva al final del proceso de introducción de datos"
@@ -87,7 +91,8 @@
                                    style="color: darkorange; font-weight : bolder">¡SIN Clasificación!, Continúe con el
                                 resto de formularios y clasifique al final en Protección/Valoración final</label>
                         </div>
-                        <label *ngIf="onClickDangerForm && !viewNoDanger" class="esri-font" style="color: red; font-weight : bolder">CLASIFICACIÓN USO
+                        <label *ngIf="onClickDangerForm && !viewNoDanger" class="esri-font"
+                               style="color: red; font-weight : bolder">CLASIFICACIÓN USO
                             PROHIBIDO</label>
                         <label *ngIf="onClickDangerForm && viewNoDanger"
                                pTooltip="Valoración definitiva al final del proceso de introducción de datos"
@@ -98,7 +103,8 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <button class="esri-button" type="submit" [disabled]="!formDanger.valid">
+                        <button [class]="!formDanger.valid ? 'esri-button esri-button--disabled' : 'esri-button'"
+                                type="submit" [disabled]="!formDanger.valid">
                             Guardar
                         </button>
                         <input (click)="sendMessage(0,getUnselectedMessage(), null)"
@@ -106,6 +112,9 @@
                                type="button"
                                class="esri-button esri-button--secondary"
                                value="Cancelar"/>
+                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor"
+                               class="esri-font">* No tiene permisos para
+                            editar</label>
                     </div>
                 </div>
             </form>
@@ -150,6 +159,9 @@
                                type="button"
                                class="esri-button esri-button--secondary"
                                value="Cancelar"/>
+                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor"
+                               class="esri-font">* No tiene permisos para
+                            editar</label>
                     </div>
                 </div>
             </form>
@@ -248,6 +260,9 @@
                                type="button"
                                class="esri-button esri-button--secondary"
                                value="Cancelar"/>
+                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor"
+                               class="esri-font">* No tiene permisos para
+                            editar</label>
                     </div>
                 </div>
             </form>
@@ -279,13 +294,15 @@
                                     <p-button label="Guardar "
                                               icon="pi pi-plus-circle"
                                               (onClick)="addPeriod()"
-                                              [disabled]="!formFlow.get('flowLevelDefault').value || !formFlow.get('dates').value || !this.formFlow.get('dates').value[0]">
+                                              [disabled]="!formFlow.get('flowLevelDefault').value || !formFlow.get('dates').value
+                                              || !this.formFlow.get('dates').value[0] || !formFlow.valid">
                                     </p-button>
                                     <span style="margin-left: 2%"></span>
                                     <p-selectButton [options]="FlowOptions" formControlName="flowLevelDefault">
                                     </p-selectButton>
                                     <span style="margin-left: 10%"></span>
-                                    <p-selectButton (onOptionClick)="clearWeekendButton($event)" [options]="FlowOptions" formControlName="flowLevelWeekend">
+                                    <p-selectButton (onOptionClick)="clearWeekendButton($event)" [options]="FlowOptions"
+                                                    formControlName="flowLevelWeekend">
                                     </p-selectButton>
                                 </div>
                                 <div class="form-row">
@@ -346,7 +363,9 @@
                                                     ariaLabelDesc="Active para ordenar en orden descendente"
                                                     ariaLabelAsc="Active para ordenar en orden ascendente"></p-sortIcon>
                                     </th>
-                                    <th pTooltip="Eliminar período de Afluencia" style="width:13%">AC.</th>
+                                    <th *ngIf="currentUser && currentUser.editor"
+                                        pTooltip="Eliminar período de Afluencia" style="width:13%">AC.
+                                    </th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -361,7 +380,7 @@
                                             {{rowData['attributes'][col.subfield] | date: 'dd-MMM'}}
                                         </div>
                                     </td>
-                                    <td style="text-align:center">
+                                    <td *ngIf="currentUser && currentUser.editor" style="text-align:center">
                                         <button style="height: 25px; color: #333333" type="button"
                                                 (click)="onRowDelete(rowData)">
                                             <i class="fa fa-times"></i>
@@ -479,6 +498,9 @@
                                type="button"
                                class="esri-button esri-button--secondary"
                                value="Cancelar"/>
+                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor"
+                               class="esri-font">* No tiene permisos para
+                            editar</label>
                     </div>
                 </div>
             </form>
@@ -572,6 +594,9 @@
                    type="button"
                    class="esri-button esri-button--secondary"
                    value="Cancelar"/>
+            <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor" class="esri-font">*
+                No tiene permisos para
+                editar</label>
         </div>
     </div>
 </div>
