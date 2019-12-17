@@ -52,8 +52,11 @@ export class LoginComponent implements OnInit {
                     expires: Number(new URLSearchParams(fragment).get('expires_in')),
                     username: new URLSearchParams(fragment).get('username'),
                     selectedusername: this.aytos.find(i => i.username === new URLSearchParams(fragment).get('username')).isSuperUser ? this.aytos[0].username : null,
-                    persist: this.getBoolean(new URLSearchParams(fragment).get('persist'))
+                    persist: this.getBoolean(new URLSearchParams(fragment).get('persist')),
+                    editor: false
                 };
+                // buscamos si puede editar el usuario
+                current_user.editor = this.aytos.find(i => i.username === current_user.username).editor;
                 // timestamp + expires token
                 const currentDate = new Date();
                 current_user.expires = current_user.persist ? this.DEFAULT_TIME_KEEP_SIGN_IN

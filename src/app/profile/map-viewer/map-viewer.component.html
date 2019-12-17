@@ -1,80 +1,106 @@
 <ng4-loading-spinner [timeout]="10000" [threshold]="500"></ng4-loading-spinner>
-<div id="listPlayasViewer" class="panel-side scroller esri-widget esri-hidden">
-    <ul id="ulPlayaViewer">
-        <li>Cargando&hellip;</li>
-    </ul>
-</div>
-<div id="mainContainerViewer" [style.height]="mapHeight">
-    <div id="viewDivViewer"></div>
-    <div id="legendDivViewer" class="card custom-widget"></div>
-    <div id="infoViewer" class="container-fluid esri-widget custom-widget esri-hidden">
-        <img src="assets/images/logos/logo.png" class="card-img-top padding-bottom-10"/>
-        <h3 class="esri-widget__heading esri-legend__service-label">Grados de protección</h3>
-        <div class="esri-legend__layer-row">
-            <div class="esri-legend__layer-row">
-
-            </div>
-            <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
-                <div class="esri-legend__symbol">
-                    <img src="assets\images\grados\alto.svg" style="height: 25px; width: 25px"/>
-                </div>
-            </div>
-            <div class="esri-legend__layer-cell esri-legend__layer-cell--info">ALTO</div>
+<div class="container">
+    <div class="row padding-bottom-10">
+        <div class="col-md-5">
+            <p-calendar width="100%" appendTo="body" [(ngModel)]="dateForGrades" showButtonBar="true"
+                        [readonlyInput]="true" [locale]="es" dateFormat="dd/mm"
+                        placeholder="Grados por fecha" [showIcon]="true"
+                        (onSelect)="service.insertFeaturesInSource(lastResults)"
+                        (onClearClick)="service.insertFeaturesInSource(lastResults)"></p-calendar>
         </div>
-        <div class="esri-legend__layer-row">
-            <div class="esri-legend__layer-row">
-
-            </div>
-            <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
-                <div class="esri-legend__symbol">
-                    <img src="assets\images\grados\moderado.svg" style="height: 25px; width: 25px"/>
-                </div>
-            </div>
-            <div class="esri-legend__layer-cell esri-legend__layer-cell--info">MODERADO</div>
+        <div class="col-md-5">
+            <i style="color: #1f57ff; margin-top: 2px"
+               pTooltip="Puede ver los grados por fecha - opcional. Para ello seleccione una fecha en el calendario para calcular el grado de protección en dicha fecha."
+               class="pull-left fa fa-2x fa-info-circle"></i>
+            <label class="info" style="font-weight: bolder; padding-top: 8px">Clasificación y grados de
+                protección máximo.</label>
         </div>
-        <div class="esri-legend__layer-row">
-            <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
-                <div class="esri-legend__symbol">
-                    <img src="assets\images\grados\bajo.svg" style="height: 25px; width: 25px"/>
+        <div class="col-md-2">
+            <input (click)="save()"
+                   type="button"
+                   class="esri-button esri-button--secondary"
+                   value="Cerrar"/>
+        </div>
+    </div>
+    <div id="listPlayasViewer" class="panel-side scroller esri-widget esri-hidden">
+        <ul id="ulPlayaViewer">
+            <li>Cargando&hellip;</li>
+        </ul>
+    </div>
+    <div id="mainContainerViewer" [style.height]="config.data.mapHeight">
+        <div id="viewDivViewer"></div>
+        <div id="legendDivViewer" class="card custom-widget"></div>
+        <div id="infoViewer" class="container-fluid esri-widget custom-widget esri-hidden">
+            <img src="assets/images/logos/logo.png" class="card-img-top padding-bottom-10"/>
+            <h3 class="esri-widget__heading esri-legend__service-label">Grados de protección</h3>
+            <div class="esri-legend__layer-row">
+                <div class="esri-legend__layer-row">
+
+                </div>
+                <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
+                    <div class="esri-legend__symbol">
+                        <img src="assets\images\grados\alto.svg" style="height: 25px; width: 25px"/>
+                    </div>
+                </div>
+                <div class="esri-legend__layer-cell esri-legend__layer-cell--info">ALTO</div>
+            </div>
+            <div class="esri-legend__layer-row">
+                <div class="esri-legend__layer-row">
+
+                </div>
+                <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
+                    <div class="esri-legend__symbol">
+                        <img src="assets\images\grados\moderado.svg" style="height: 25px; width: 25px"/>
+                    </div>
+                </div>
+                <div class="esri-legend__layer-cell esri-legend__layer-cell--info">MODERADO</div>
+            </div>
+            <div class="esri-legend__layer-row">
+                <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
+                    <div class="esri-legend__symbol">
+                        <img src="assets\images\grados\bajo.svg" style="height: 25px; width: 25px"/>
+                    </div>
+                </div>
+                <div style="margin-bottom: 10px" class="esri-legend__layer-cell esri-legend__layer-cell--info">BAJO
                 </div>
             </div>
-            <div style="margin-bottom: 10px" class="esri-legend__layer-cell esri-legend__layer-cell--info">BAJO
+        </div>
+        <div id="pdfbutton" class="container-fluid esri-widget custom-widget">
+            <div class="row paddingtopbottom10px">
+                <div class="col-md-12">
+                    <button [disabled]="!selectedBeachId" (click)="checkReport()">
+                        <i style="color: red"
+                           [ngClass]="!selectedBeachId ? 'pull-left fa fa-file-pdf-o fa-2x desabilitar' : 'pull-left fa fa-file-pdf-o fa-2x'"></i><b>Ficha
+                        Playa</b></button>
+                </div>
             </div>
         </div>
     </div>
-    <div id="pdfbutton" class="container-fluid esri-widget custom-widget">
-        <div class="row paddingtopbottom10px">
-            <div class="col-md-12">
-                <button [disabled]="!selectedBeachId" (click)="checkReport()">
-                <i style="color: red"  [ngClass]="!selectedBeachId ? 'pull-left fa fa-file-pdf-o fa-2x desabilitar' : 'pull-left fa fa-file-pdf-o fa-2x'"></i><b>Ficha Playa</b></button>
-            </div>
-        </div>
-    </div>
-</div>
-<div hidden="true">
-    <div #GradesTable>
-        <p-table [value]="selectedPeriodos">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>Grado</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Fin</th>
-                    <th>Nº Días</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-period>
-                <tr>
-                    <td [ngClass]="{'gradeMiddle': period.grado === 'M',
+    <div hidden="true">
+        <div #GradesTable>
+            <p-table [value]="selectedPeriodos">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Grado</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Nº Días</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-period>
+                    <tr>
+                        <td [ngClass]="{'gradeMiddle': period.grado === 'M',
                                         'gradeHigh': period.grado === 'A',
                                         'gradeLow': period.grado === 'B'}">{{period.grado === 'M' ? 'Moderado'
-                        : period.grado === 'A' ? 'Alto' : 'Bajo'}}</td>
-                    <td>{{period.fecha_inicio | date:'shortDate'}}</td>
-                    <td>{{period.fecha_fin | date:'shortDate'}}</td>
-                    <td [ngClass]="{null: period.incluir_dias === 'TD',
+                            : period.grado === 'A' ? 'Alto' : 'Bajo'}}</td>
+                        <td>{{period.fecha_inicio | date:'shortDate'}}</td>
+                        <td>{{period.fecha_fin | date:'shortDate'}}</td>
+                        <td [ngClass]="{null: period.incluir_dias === 'TD',
                                         'includeDatesFS':period.incluir_dias === 'FS',
                                         'includeDatesLB':period.incluir_dias === 'LB' }">{{getDifference(period)}}</td>
-                </tr>
-            </ng-template>
-        </p-table>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
     </div>
 </div>

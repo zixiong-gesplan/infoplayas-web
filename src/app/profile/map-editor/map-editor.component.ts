@@ -248,9 +248,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.spinnerService.show();
+        this.currentUser = this.authService.getCurrentUser();
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
-            this.currentUser = this.authService.getCurrentUser();
             this.setMap();
         });
         this.formDanger = this.fb.group({
@@ -261,7 +261,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             fauna_marina: new FormControl(''),
             desprendimientos: new FormControl(''),
             id_dgse: new FormControl(''),
-            on_edit: new FormControl('')
+            on_edit: new FormControl(''),
+            // campo para evitar que los usuarios en aytos.json clasificados como editor false puedan modificar nada
+            editor: new FormControl('', Validators.requiredTrue)
         });
         this.formIncidents = this.fb.group({
             objectid: new FormControl(''),
@@ -275,7 +277,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             id_dgse: new FormControl(''),
             // campos auxiliares o calculados que no pertenecen al modelo
             val_peligrosidad: new FormControl({value: '', disabled: true}),
-            on_edit: new FormControl('')
+            on_edit: new FormControl(''),
+            editor: new FormControl('', Validators.requiredTrue)
         });
         this.formEnvironment = this.fb.group({
             objectid: new FormControl(''),
@@ -287,18 +290,21 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             id_dgse: new FormControl(''),
             // campos auxiliares o calculados que no pertenecen al modelo
             val_peligrosidad: new FormControl({value: '', disabled: true}),
-            on_edit: new FormControl('')
+            on_edit: new FormControl(''),
+            editor: new FormControl('', Validators.requiredTrue)
         });
         this.formFlow = this.fb.group({
             objectid: new FormControl(''),
             dates: new FormControl(''),
             flowLevelDefault: new FormControl(''),
             flowLevelWeekend: new FormControl(''),
-            id_dgse: new FormControl('')
+            id_dgse: new FormControl(''),
+            editor: new FormControl('', Validators.requiredTrue)
         });
         this.formEvaluation = this.fb.group({
             objectid: new FormControl(''),
-            dangerLevel: new FormControl('', Validators.required)
+            dangerLevel: new FormControl('', Validators.required),
+            editor: new FormControl('', Validators.requiredTrue)
         });
         this.onChanges();
         // establecemos valores en espanol para el calendario
@@ -911,6 +917,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 frm.patchValue({id_dgse: output.id_dgse});
                 frm.patchValue({on_edit: false});
+                console.log(this.currentUser.editor);
+                frm.patchValue({editor: this.currentUser.editor});
                 if (relationshipId === Number(environment.relDanger[0]) && output.clasificacion === 'UP') {
                     Swal.fire({
                         type: 'warning',
@@ -922,11 +930,12 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             } else {
                 if (relationshipId === Number(environment.relDanger[0]) && output.clasificacion === 'UP') {
                     this.formStateService.udpateFormState(75);
-                } else if (relationshipId !== Number(environment.relDanger[0]) ) {
+                } else if (relationshipId !== Number(environment.relDanger[0])) {
                     this.formStateService.udpateFormState(25);
                 }
                 frm.patchValue(results[query.objectIds[0]].features[0].attributes);
                 frm.patchValue({on_edit: true});
+                frm.patchValue({editor: this.currentUser.editor});
             }
         });
     }
@@ -944,11 +953,13 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 this.formEnvironment.patchValue({id_dgse: output.id_dgse});
                 this.formEnvironment.patchValue({on_edit: false});
+                this.formEnvironment.patchValue({editor: this.currentUser.editor});
                 this.formEnvironment.get('peligros_anadidos').setValue(0);
             } else {
                 this.loadRelatedAdditionalDangers(output.beachId);
                 this.formEnvironment.patchValue(results[query.objectIds[0]].features[0].attributes);
                 this.formEnvironment.patchValue({on_edit: true});
+                this.formEnvironment.patchValue({editor: this.currentUser.editor});
                 this.formStateService.udpateFormState(25);
             }
         });
@@ -967,8 +978,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             this.formFlow.reset();
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 this.formFlow.patchValue({id_dgse: output.id_dgse});
+                this.formEnvironment.patchValue({editor: this.currentUser.editor});
             } else {
                 this.formFlow.patchValue({id_dgse: output.id_dgse});
+                this.formEnvironment.patchValue({editor: this.currentUser.editor});
                 this.periods = results[query.objectIds[0]].features;
                 // voy a la ultima fecha del calendario en los periodos introducidos
                 const lastDate = new Date(this.periods[this.periods.length - 1].attributes.fecha_fin);
