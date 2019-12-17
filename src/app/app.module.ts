@@ -20,7 +20,7 @@ import {
     TabViewModule,
     ToggleButtonModule,
     TooltipModule,
-    AccordionModule, DialogModule, LightboxModule
+    AccordionModule, DialogModule, LightboxModule, SidebarModule, DialogService
 } from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
 import {EsriRequestService} from './services/esri-request.service';
@@ -34,6 +34,7 @@ import localeEs from '@angular/common/locales/es';
 import {ToastModule} from 'primeng/toast';
 import { MapViewerComponent } from './profile/map-viewer/map-viewer.component';
 import {ResponseInterceptorService} from './services/response-interceptor.service';
+import {DynamicDialogComponent, DynamicDialogModule} from 'primeng/dynamicdialog';
 
 registerLocaleData(localeEs, 'es');
 
@@ -78,10 +79,11 @@ registerLocaleData(localeEs, 'es');
         ProgressBarModule,
         AccordionModule,
         DialogModule,
-        LightboxModule
-
+        LightboxModule,
+        SidebarModule,
+        DynamicDialogModule
     ],
-    providers: [EsriRequestService, MessageService, ConfirmationService, {
+    providers: [DialogService, EsriRequestService, MessageService, ConfirmationService, {
         provide: LOCALE_ID,
         useValue: 'es'
     },
@@ -90,6 +92,7 @@ registerLocaleData(localeEs, 'es');
             useClass: ResponseInterceptorService,
             multi: true
         }],
+    entryComponents: [DynamicDialogComponent, MapViewerComponent],
     bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -487,18 +487,7 @@
                      pTooltip="Presentación de resultados de la clasificación y grado de protección"
                      tooltipPosition="top" (click)="calculateGradesProtection();op2.show($event)" data-filter=".result"
                      class="cbp-filter-item text-capitalize">
-                    <p-lightbox type="content">
-                        <a class="group" href="#">
-                            resultados
-                        </a>
-                        <div style="height: 78vh; width: 1200px">
-                            <app-map-viewer
-                                [mapHeight]="mapHeightContainer"
-                                [zoom]="mapZoomLevel"
-                                [SelectedDate]="dateForGrades">
-                            </app-map-viewer>
-                        </div>
-                    </p-lightbox>
+                    resultados
                     <!--                    <div class="cbp-filter-counter"></div>-->
                 </div>
             </div>
@@ -519,24 +508,6 @@
                         </p-tabMenu>
                     </div>
                 </div>
-                <div class="cbp-item result">
-                    <div class="cbp-caption">
-                        <p-calendar width="100%" appendTo="body" [(ngModel)]="dateForGrades" showButtonBar="true"
-                                    [readonlyInput]="true" [locale]="es" dateFormat="dd/mm"
-                                    placeholder="Grados por fecha" [showIcon]="true"
-                                    (onSelect)="calculateGradesProtection()"
-                                    (onClearClick)="calculateGradesProtection()"></p-calendar>
-                    </div>
-                </div>
-                <div class="cbp-item result">
-                    <div class="cbp-caption">
-                        <i style="color: #1f57ff; margin-top: 2px"
-                           pTooltip="Puede ver los grados por fecha - opcional. Para ello seleccione una fecha en el calendario para calcular el grado de protección en dicha fecha."
-                           class="pull-left fa fa-2x fa-info-circle"></i>
-                        <label class="info" style="font-weight: bolder; padding-top: 8px">Clasificación y grados de
-                            protección máximo.</label>
-                    </div>
-                </div>
             </div>
         </div>
         <div [hidden]="vacacional" class="row paddingleft15px paddingright15px">
@@ -551,7 +522,7 @@
                 [urlInfoMap]="'https://gesplangis.es/arcgis/apps/webappviewer/index.html?id=d570f2faba45491d9d0927fc29f97dc2'">
             </app-map-editor>
         </div>
-        <div *ngIf="municipio" [hidden]="!vacacional || viewResults" class="row paddingleft15px paddingright15px">
+        <div *ngIf="municipio" [hidden]="!vacacional" class="row paddingleft15px paddingright15px">
             <div class="col-md-12 padding-bottom-10">
                 <div class="blog-listing-outer">
                     <div class="panel-body">

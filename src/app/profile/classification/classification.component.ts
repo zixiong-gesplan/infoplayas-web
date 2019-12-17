@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {MenuItem} from 'primeng/api';
+import {DialogService, MenuItem} from 'primeng/api';
 import {Municipality} from '../../models/municipality';
 import {GradesProtectionService} from '../../services/grades-protection.service';
 import {AuthGuardService} from '../../services/auth-guard.service';
@@ -13,6 +13,7 @@ import {AppSetting} from '../../models/app-setting';
 import * as moment from 'moment';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {FormStateService} from '../../services/form-state.service';
+import {MapViewerComponent} from '../map-viewer/map-viewer.component';
 
 declare var Swiper: any;
 declare var $: any;
@@ -42,32 +43,18 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     aytos: AppSetting[];
     colsGrade: any;
     visible: string;
-    viewResults: boolean;
-    dateForGrades: Date;
-    es: any;
     formVacational: FormGroup;
     vacacional: boolean;
     fillState: number;
     percentage: number;
+    display;
     private subscripcionMunicipality;
     private subscripcionFormState;
 
-
     constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
                 private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService,
-                private spinnerService: Ng4LoadingSpinnerService, private formStateService: FormStateService) {
-
-        this.es = {
-            firstDayOfWeek: 1,
-            dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
-            dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
-            monthNames: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre',
-                'diciembre'],
-            monthNamesShort: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
-            today: 'Hoy',
-            clear: 'Borrar'
-        };
+                private spinnerService: Ng4LoadingSpinnerService, private formStateService: FormStateService,
+                public dialogService: DialogService) {
     }
 
     ngAfterViewInit() {
@@ -131,19 +118,19 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             sortByDimension: true,
             mediaQueries: [{
                 width: 1500,
-                cols: 3
+                cols: 1
             }, {
                 width: 1100,
-                cols: 3
+                cols: 1
             }, {
                 width: 768,
-                cols: 2
+                cols: 1
             }, {
                 width: 480,
-                cols: 1
+                cols: 2
             }, {
                 width: 320,
-                cols: 1
+                cols: 2
             }],
 
             // lightbox
@@ -219,8 +206,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
             (result: Municipality) => {
                 if (result.user) {
-                    // recalcular el listado de playas al cambiar el municipio
-                    this.loadAllData();
                     // actualizar las variables para el nuevo municipio y resetear el formulario vacacional
                     this.resetForm();
                     this.setPopulationByMuncipality(result);
@@ -266,7 +251,6 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     setForm(opFilter: string) {
-        this.viewResults = false;
         this.vacacional = opFilter === 'vacacional';
         this.actualForm = opFilter === 'protection' ? this.selectedLayerProtection > 0 ?
             this.listOfLayersProtection[this.selectedLayerProtection] : this.listOfLayersProtection[0] : opFilter;
@@ -283,8 +267,27 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     calculateGradesProtection() {
+        const current_user = this.authService.getCurrentUser();
+        const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
+        const ref = this.dialogService.open(MapViewerComponent, {
+            data: {
+                id: this.beachObjectId,
+                zoom: this.mapZoomLevel,
+                mapHeight: '65vh'
+            },
+            header: this.localName ? 'Se muestran los resultados para: ' + this.localName
+                : 'Mapa de resultados de grados de protección del municipio de '
+                + this.aytos.find(i => i.username === name).municipio_minus,
+            width: '65%',
+            contentStyle: {'max-height': this.mapHeightContainer, 'overflow': 'auto'}
+        });
+
+        ref.onClose.subscribe((mensaje: string) => {
+            if (mensaje) {
+                console.log(mensaje);
+            }
+        });
         this.loadAllData();
-        this.viewResults = true;
         this.vacacional = false;
     }
 
@@ -361,7 +364,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                 }
                 if (this.fillState > 99) {
                     $('#resultsFilterMenu').show();
-                } else {
+                } else if (this.fillState) {
                     $('#resultsFilterMenu').hide();
                 }
             },
