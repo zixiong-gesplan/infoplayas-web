@@ -53,10 +53,10 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     selectedBeachId: number;
     dateForGrades: Date;
     es: any;
-    private lastResults: any;
+    lastResults: any;
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
-                private service: EsriRequestService, private popService: PopulationService,
+                public service: EsriRequestService, private popService: PopulationService,
                 private appSettingsService: AppSettingsService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
                 private spinnerService: Ng4LoadingSpinnerService) {
         this.es = {

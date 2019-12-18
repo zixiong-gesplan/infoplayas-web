@@ -51,7 +51,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     private subscripcionMunicipality;
     private subscripcionFormState;
 
-    constructor(private gradeService: GradesProtectionService, private authService: AuthGuardService, private service: EsriRequestService,
+    constructor(private gradeService: GradesProtectionService, public authService: AuthGuardService, private service: EsriRequestService,
                 private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService,
                 private spinnerService: Ng4LoadingSpinnerService, private formStateService: FormStateService,
                 public dialogService: DialogService) {
