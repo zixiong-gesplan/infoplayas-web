@@ -70,6 +70,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     calculoTotalHumanos;
     totalGAlto:number;
     totalGMedio: number;
+    controlHorario: any;
     urlimageweather =  environment.urlimageweather;
     unitarios = {
       jefe_turno_pvp:'',
