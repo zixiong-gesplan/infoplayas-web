@@ -455,6 +455,9 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
                <tr>
                  <td colspan="5">* Para realizar este calculo, es necesario que previamente se introduza el horario de trabajo de los socorristas en la sección horario salvamento </td>
                </tr>
+               <tr>
+                 <td colspan="5" *ngIf="controlHorario!==0">* el calculo no se realizara completamente faltan {{controlHorario}} horarios de salvamento </td>
+               </tr>
                <br>
                 </ng-template >
 

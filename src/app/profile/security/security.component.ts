@@ -367,6 +367,8 @@ readFeatures() {
 
     }
 
+        this.controlHorario = beach.relatedAfluencia.filter(x => x.hora_inicio !== null).length;
+        console.log(this.controlHorario);
         if (beach && beach.relatedAfluencia.length > 0 && beach.relatedEntorno.length > 0
           && beach.relatedIncidencias.length > 0) {
             // inicializamos desactivado el esc y el click fuera de la modal
