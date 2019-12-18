@@ -70,6 +70,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     calculoTotalHumanos;
     totalGAlto:number;
     totalGMedio: number;
+    controlHorario: number = 0;
     urlimageweather =  environment.urlimageweather;
     unitarios = {
       jefe_turno_pvp:'',
@@ -367,6 +368,8 @@ readFeatures() {
 
     }
 
+        this.controlHorario = beach.relatedAfluencia.filter(x => x.hora_inicio !== null).length;
+        console.log(this.controlHorario);
         if (beach && beach.relatedAfluencia.length > 0 && beach.relatedEntorno.length > 0
           && beach.relatedIncidencias.length > 0) {
             // inicializamos desactivado el esc y el click fuera de la modal
@@ -381,7 +384,6 @@ readFeatures() {
               if(beach.relatedHumanos){ this.dinamicForm(this.grados,beach.relatedHumanos );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
-              console.log(this.datosPlayaRelacionada);
               this.getNumWorkDays(this.datosPlayaRelacionada.periodos.fecha_inicio, this.datosPlayaRelacionada.periodos.fecha_fin, 'FS');
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedAfluencia);
