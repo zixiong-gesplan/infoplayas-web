@@ -31,7 +31,7 @@ export class ResponseInterceptorService implements HttpInterceptor {
                 Swal.fire({
                     type: 'error',
                     title: 'Error ' + error.status,
-                    text: error && error.error.reason ? error.error.reason : '',
+                    text: error && error.error.reason ? error.error.reason : 'No se puede conectar con el servidor, reinténtelo más tarde por favor.',
                     footer: ''
                 });
                 return throwError(error);
