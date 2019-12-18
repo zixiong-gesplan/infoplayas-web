@@ -70,7 +70,6 @@ export class SecurityComponent implements OnInit, OnDestroy {
     calculoTotalHumanos;
     totalGAlto:number;
     totalGMedio: number;
-    controlHorario: number = 0;
     urlimageweather =  environment.urlimageweather;
     unitarios = {
       jefe_turno_pvp:'',
@@ -384,6 +383,7 @@ readFeatures() {
               if(beach.relatedHumanos){ this.dinamicForm(this.grados,beach.relatedHumanos );}
               this.periodos = beach.periodos;
               this.datosPlayaRelacionada = beach;
+              console.log(this.datosPlayaRelacionada);
               this.getNumWorkDays(this.datosPlayaRelacionada.periodos.fecha_inicio, this.datosPlayaRelacionada.periodos.fecha_fin, 'FS');
               this.selectObjectId = beach.objectId;
               this.dinamicFormHorarios(beach.relatedAfluencia);
