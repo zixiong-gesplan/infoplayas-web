@@ -596,7 +596,7 @@
     {
         "username": "ayto_telde",
         "isSuperUser": false,
-        "editor": true,
+        "editor": false,
         "municipio_minus": "Telde",
         "municipio_mayus": "TELDE",
         "istac_code": "35026",

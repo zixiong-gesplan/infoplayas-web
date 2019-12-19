@@ -129,7 +129,7 @@
       </div>
       <div class="modal-footer botonCentrado">
         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button> -->
-        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!currentUser.editor">Actualizar</button>
       </div>
     </form>
     </div><!-- /.modal-content -->
@@ -255,7 +255,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
 </form>
 </div>
 <div class="modal-footer botonCentrado">
-  <button type="button" class="btn btn-primary" (click)="updateMediosMateriales()">Actualizar</button>
+  <button type="button" class="btn btn-primary" (click)="updateMediosMateriales()" [disabled]="!currentUser.editor">Actualizar</button>
 </div>
 
 </div><!-- /.modal-content -->
@@ -303,7 +303,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
         <p style="font-style:italic;padding-top: 15px;font-size: small">*El uso horario mostrado es del usuario web, pero hay que introducir la jornada del socorrista en la hora de Canarias</p>
         </div>
         <div class="modal-footer botonCentrado">
-          <button type="submit" class="btn btn-primary" [disabled]="desabilitar">Actualizar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="desabilitar || !currentUser.editor">Actualizar</button>
         </div>
       </form>
       </div>
@@ -383,7 +383,7 @@ Estará dotada con equipamiento de vigilancia, salvamento y megafonía (*). Adem
             </p-table>
             </div>
             <div class="modal-footer botonCentrado">
-              <button type="submit" class="btn btn-primary" [disabled]="!formUnitarios.valid">Actualizar</button>
+              <button type="submit" class="btn btn-primary" [disabled]="!formUnitarios.valid || !currentUser.editor">Actualizar</button>
             </div>
 
       </form>

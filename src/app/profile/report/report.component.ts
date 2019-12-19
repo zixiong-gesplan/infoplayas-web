@@ -11,11 +11,10 @@ declare function navbar_load();
 })
 export class ReportComponent implements OnInit {
 
-
-
   constructor() { }
 
   ngOnInit() {
+
     init_plugins();
     navbar_load();
   }
