@@ -251,11 +251,16 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         geometry: viewer.initialExtent,
                         returnGeometry: true
                     }).then(function (results) {
-                        const latitude = results.features[0].geometry.centroid.latitude;
-                        const longitude = results.features[0].geometry.centroid.longitude;
-                        viewer.center = [longitude, latitude];
+                        if (!t.config.data.id) {
+                            const latitude = results.features[0].geometry.centroid.latitude;
+                            const longitude = results.features[0].geometry.centroid.longitude;
+                            viewer.center = [longitude, latitude];
+                        }
                         // Default Home value is current extent
                         home = createHomeButton(Home, viewer);
+                        home.viewpoint = {
+                            targetGeometry: results.features[0].geometry.extent
+                        };
                         // Add widgets to the view
                         viewer.ui.add([home, expandList], 'top-left');
                         viewer.ui.add(scaleBar, 'bottom-left');
@@ -289,6 +294,11 @@ export class MapViewerComponent implements OnInit, OnDestroy {
 
                     loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (Beachs) {
                         featuresViewer = Beachs;
+                        // movemos la vista a la playa que se haya seleccionado en el mapa editor
+                        if (t.config.data.id) {
+                            const fe = featuresViewer.find(b => b.attributes.objectid === t.config.data.id);
+                            viewer.goTo(fe.geometry.extent.expand(2));
+                        }
                     });
 
                     function onListClickHandler(event) {

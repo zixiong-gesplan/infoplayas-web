@@ -295,7 +295,7 @@
                                               icon="pi pi-plus-circle"
                                               (onClick)="addPeriod()"
                                               [disabled]="!formFlow.get('flowLevelDefault').value || !formFlow.get('dates').value
-                                              || !this.formFlow.get('dates').value[0] || !formFlow.valid">
+                                              || !this.formFlow.get('dates').value[0] || (currentUser && !currentUser.editor)">
                                     </p-button>
                                     <span style="margin-left: 2%"></span>
                                     <p-selectButton [options]="FlowOptions" formControlName="flowLevelDefault">
