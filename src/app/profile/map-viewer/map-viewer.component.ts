@@ -98,7 +98,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
     }
 
     private setMap() {
-        const options = {css: true, version: '4.11'};
+        const options = {css: true, version: '4.13'};
 
         // first, we use Dojo's loader to require the map class
         loadModules([
