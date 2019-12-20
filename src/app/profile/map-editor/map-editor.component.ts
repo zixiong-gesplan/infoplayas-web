@@ -735,7 +735,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                         .getElementById('distanceButton')
                         .addEventListener('click', function () {
                             setActiveWidget(null);
-                            if (!this.classList.contains('active')) {
+                            if (!this.classList.contains('activeMap')) {
                                 setActiveWidget('distance');
                             } else {
                                 setActiveButton(null);
@@ -766,12 +766,12 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     function setActiveButton(selectedButton) {
                         // focus the view to activate keyboard shortcuts for sketching
                         view.focus();
-                        const elements = document.getElementsByClassName('active');
+                        const elements = document.getElementsByClassName('activeMap');
                         for (let i = 0; i < elements.length; i++) {
-                            elements[i].classList.remove('active');
+                            elements[i].classList.remove('activeMap');
                         }
                         if (selectedButton) {
-                            selectedButton.classList.add('active');
+                            selectedButton.classList.add('activeMap');
                         }
                     }
 
