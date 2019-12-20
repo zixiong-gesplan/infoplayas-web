@@ -30,6 +30,33 @@
     float: left;
 }
 
+#mapTopbar {
+    background: #fff;
+    padding: 1px;
+}
+
+.action-button {
+    font-size: 16px;
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    color: #6e6e6e;
+    height: 32px;
+    width: 32px;
+    text-align: center;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.action-button:hover,
+.action-button:focus {
+    background: #0079c1;
+    color: #e4e4e4;
+}
+
+.active {
+    background: #0079c1;
+    color: #e4e4e4;
+}
+
 .custom-widget {
     border-radius: 2px;
     width: 11em!important;
@@ -65,7 +92,9 @@ textarea {
 }
 
 .esri-scale-bar__line, .esri-scale-bar__line--top, .esri-scale-bar__line--top:before, .esri-scale-bar__line--top:after {
-    background-color: white!important;
+    border-bottom-color: white!important;
+    border-left-color: white!important;
+    border-right-color: white!important;
 }
 
 .esri-legend__service {
@@ -74,6 +103,7 @@ textarea {
 
 .esri-button {
     margin-bottom: 3px;
+    max-height: 35px;
 }
 
 .resLink {

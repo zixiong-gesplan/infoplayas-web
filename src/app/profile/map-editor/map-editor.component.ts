@@ -621,7 +621,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     }
 
     private setMap() {
-        const options = {css: true, version: '4.11'};
+        const options = {css: true, version: '4.13'};
 
         // first, we use Dojo's loader to require the map class
         loadModules([
@@ -636,8 +636,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             'esri/widgets/Legend',
             'esri/widgets/Home',
             'esri/tasks/QueryTask',
-            'esri/tasks/support/Query',
-            'esri/tasks/support/RelationshipQuery'
+            'esri/tasks/support/RelationshipQuery',
+            'esri/widgets/DistanceMeasurement2D'
         ], options)
             .then(([
                        WebMap,
@@ -651,8 +651,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                        Legend,
                        Home,
                        QueryTask,
-                       Query,
-                       RelationshipQuery
+                       RelationshipQuery,
+                       DistanceMeasurement2D
                    ]) => {
 
                 IdentityManager.registerToken({
@@ -683,6 +683,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 const legend = createLegend(Legend, view, 'legendDiv');
                 const expandList = createExpand(Expand, view, document.getElementById('listPlayas')
                     , 'esri-icon-layer-list', 'Listado de playas');
+                const measurementBar = document.getElementById('mapTopbar');
+                let activeWidget = null;
 
                 view.when(function () {
                     view.popup.autoOpenEnabled = false; // disable popups
@@ -719,7 +721,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                         home = createHomeButton(Home, view);
                         form = createForm(FeatureForm, 'form', playasLayer, forms[playasLayerId]);
                         // Add widgets to the view
-                        view.ui.add([home, expandList], 'top-left');
+                        view.ui.add([home, measurementBar, expandList], 'top-left');
                         view.ui.add(scaleBar, 'bottom-left');
                         view.ui.add(['info', legend], 'top-right');
                         view.ui.add(['infobutton'], 'bottom-right');
@@ -728,6 +730,50 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                         $('#info')[0].classList.remove('esri-hidden');
                         $('#listPlayas')[0].classList.remove('esri-hidden');
                     });
+                    // para el boton de medir distancias
+                    document
+                        .getElementById('distanceButton')
+                        .addEventListener('click', function () {
+                            setActiveWidget(null);
+                            if (!this.classList.contains('active')) {
+                                setActiveWidget('distance');
+                            } else {
+                                setActiveButton(null);
+                            }
+                        });
+                    function setActiveWidget(type) {
+                        switch (type) {
+                            case 'distance':
+                                activeWidget = new DistanceMeasurement2D({
+                                    view: view
+                                });
+
+                                // skip the initial 'new measurement' button
+                                activeWidget.viewModel.newMeasurement();
+
+                                view.ui.add(activeWidget, 'top-left');
+                                setActiveButton(document.getElementById('distanceButton'));
+                                break;
+                            case null:
+                                if (activeWidget) {
+                                    view.ui.remove(activeWidget);
+                                    activeWidget.destroy();
+                                    activeWidget = null;
+                                }
+                                break;
+                        }
+                    }
+                    function setActiveButton(selectedButton) {
+                        // focus the view to activate keyboard shortcuts for sketching
+                        view.focus();
+                        const elements = document.getElementsByClassName('active');
+                        for (let i = 0; i < elements.length; i++) {
+                            elements[i].classList.remove('active');
+                        }
+                        if (selectedButton) {
+                            selectedButton.classList.add('active');
+                        }
+                    }
 
                     const listID = 'ulPlaya';
                     listNode = $('#ulPlaya')[0];
@@ -749,6 +795,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             t.sendMessage(output.beachId, output.localName, output.clasificacion);
                             t.selectedId = output.beachId;
                             t.formEvaluation.reset();
+                            t.formEvaluation.get('editor').setValue(t.currentUser.editor);
                             if (output.clasificacion) {
                                 t.formStateService.udpateFormState(25);
                                 t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
@@ -790,6 +837,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                     t.sendMessage(output.beachId, output.localName, output.clasificacion);
                                     t.selectedId = output.beachId;
                                     t.formEvaluation.reset();
+                                    t.formEvaluation.get('editor').setValue(t.currentUser.editor);
                                     if (output.clasificacion) {
                                         t.formStateService.udpateFormState(25);
                                         t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
@@ -917,7 +965,6 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 frm.patchValue({id_dgse: output.id_dgse});
                 frm.patchValue({on_edit: false});
-                console.log(this.currentUser.editor);
                 frm.patchValue({editor: this.currentUser.editor});
                 if (relationshipId === Number(environment.relDanger[0]) && output.clasificacion === 'UP') {
                     Swal.fire({

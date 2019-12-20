@@ -274,7 +274,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             data: {
                 id: this.beachObjectId,
                 zoom: this.mapZoomLevel,
-                mapHeight: '65vh'
+                mapHeight: '69vh'
             },
             header: this.localName ? 'Se muestran los resultados para: ' + this.localName
                 : 'Mapa de resultados de grados de protección del municipio de '
