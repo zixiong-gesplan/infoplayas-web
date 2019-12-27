@@ -1049,6 +1049,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     }
 
     private editRelatedData(updateObj, currentUser, mode, endpoint, postExecute) {
+        // introducimos datos para la trazabilidad desde la web
+        updateObj[0].attributes.ultimo_cambio = moment(new Date()).format('YYYY-MM-DD hh:mm:ss');
+        updateObj[0].attributes.ultimo_editor = this.currentUser.username;
         this.service.updateEsriData(endpoint,
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
