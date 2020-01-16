@@ -105,7 +105,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         this.days_of_this_year = this.isLeapYear(new Date().getFullYear()) ? 366 : 365;
         this.beachsCatalogue = [];
         this.sectionNames = ['Sección General', 'Sección de Gestión', 'Sección de Equipamiento'];
-        // TODO implementar los dominios con la llamada al api /queryDomains en vez de en modo estatico
+        // TODO implementar los dominios con la llamada al api /queryDomains en vez de en modo estatico - opcional
         this.tableColsCatalogue = [[
             {field: 'provincia', type: 'text', alias: 'Provincia', width: '120px'},
             {
@@ -320,8 +320,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             clear: 'Borrar'
         };
         this.colsFlow = [
-            {subfield: 'fecha_inicio', header: 'Inicio', width: '29%', orderBy: 'attributes.fecha_inicio'},
-            {subfield: 'fecha_fin', header: 'Fin', width: '29%', orderBy: 'attributes.fecha_fin'},
+            {subfield: 'fecha_inicio', header: 'De', width: '27%', orderBy: 'attributes.fecha_inicio'},
+            {subfield: 'fecha_fin', header: 'Hasta', width: '31%', type: 'year', orderBy: 'attributes.fecha_fin'},
             {subfield: 'nivel', header: 'Nivel', width: '29%', type: 'text', orderBy: 'attributes.nivel'}
         ];
         this.initCalendarDates();

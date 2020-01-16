@@ -384,6 +384,9 @@
                                         <div *ngSwitchCase="'text'">
                                             {{rowData['attributes'][col.subfield]}}
                                         </div>
+                                        <div *ngSwitchCase="'year'">
+                                            {{rowData['attributes'][col.subfield] | date: 'dd-MMM-yy'}}
+                                        </div>
                                         <div *ngSwitchDefault>
                                             {{rowData['attributes'][col.subfield] | date: 'dd-MMM'}}
                                         </div>
