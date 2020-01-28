@@ -675,6 +675,15 @@
         "isBichado": false
     },
     {
+        "username": "ayto_yaiza",
+        "isSuperUser": false,
+        "editor": true,
+        "municipio_minus": "Yaiza",
+        "municipio_mayus": "YAIZA",
+        "istac_code": "35034",
+        "isBichado": false
+    },
+    {
         "username": "gesplansa",
         "isSuperUser": true,
         "editor": true,
