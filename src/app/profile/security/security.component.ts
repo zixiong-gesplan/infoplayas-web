@@ -394,7 +394,7 @@ readFeatures() {
               Swal.fire({
                 type: 'error',
                 title: 'Error',
-                text: 'No existen grados de protección para esta playa     debe determinar el grado de protección en la fase 2',
+                text: 'No existen grados de protección para esta playa     debe determinar el grado de protección en clasificación',
                 footer: ''
               });
             }
