@@ -39,6 +39,13 @@ export class EsriRequestService {
         return this.http.post(featureEndPoint, params, {headers: headers});
     }
 
+    getRole(token: string) {
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'application/X-www-form-urlencoded');
+        const params = new HttpParams().set('token', token).append('f', 'json');
+        return this.http.post(environment.urlServerRest + environment.urlSelfinfo, params, {headers: headers});
+    }
+
     updateEsriData(featureEndPoint: string, data: Object, mode: string, token: string) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');

@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import {AuthGuardService} from '../services/auth-guard.service';
 import {AppSettingsService} from '../services/app-settings.service';
 import {AppSetting} from '../models/app-setting';
+import {EsriRequestService} from '../services/esri-request.service';
+import {environment} from '../../environments/environment';
 
 @Component({
     selector: 'app-login',
@@ -19,7 +21,7 @@ export class LoginComponent implements OnInit {
     private aytos: AppSetting[];
 
     constructor(public route: ActivatedRoute, public router: Router, private authService: AuthGuardService,
-                private appSettingsService: AppSettingsService) {
+                private appSettingsService: AppSettingsService, private service: EsriRequestService) {
     }
 
     ngOnInit() {
@@ -62,10 +64,32 @@ export class LoginComponent implements OnInit {
                 current_user.expires = current_user.persist ? this.DEFAULT_TIME_KEEP_SIGN_IN
                     + currentDate.getTime() + current_user.expires * 1000 :
                     currentDate.getTime() + current_user.expires * 1000;
-                this.authService.setUser(current_user);
+                this.getRole(current_user);
             }
-            this.router.navigate(['tecnicos']);
         });
+    }
+
+    getRole(user: Auth) {
+        this.service.getRole(user.token).subscribe(
+            (result: any) => {
+                if (result) {
+                    const roleIndex = environment.rolesIds.findIndex(x => x === result.roleId);
+                    console.log(environment.roles[roleIndex]);
+                    this.authService.setUser(user);
+                    this.router.navigate(['tecnicos']);
+                } else {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Usuario no permitido',
+                        text: 'El usuario que itenta acceder no está registrado para el uso de esta aplicación. Contacte con el administrador.',
+                        footer: ''
+                    });
+                    this.router.navigate(['home']);
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
     }
 
     getBoolean(value) {
