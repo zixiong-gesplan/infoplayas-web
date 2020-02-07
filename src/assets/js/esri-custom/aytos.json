@@ -1,696 +1,687 @@
 [
     {
+        "ayto": "adeje",
         "username": "ayto_adeje",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Adeje",
         "municipio_mayus": "ADEJE",
-        "istac_code": "38001",
-        "isBichado": false
+        "istac_code": "38001"
     },
     {
+        "ayto": "agaete",
         "username": "ayto_agaete",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Agaete",
         "municipio_mayus": "AGAETE",
-        "istac_code": "35001",
-        "isBichado": false
+        "istac_code": "35001"
     },
     {
+        "ayto": "aguimes",
         "username": "ayto_aguimes",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Agüimes",
         "municipio_mayus": "AGÜIMES",
-        "istac_code": "35002",
-        "isBichado": false
+        "istac_code": "35002"
     },
     {
+        "ayto": "agulo",
         "username": "ayto_agulo",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Agulo",
         "municipio_mayus": "AGULO",
-        "istac_code": "38002",
-        "isBichado": false
+        "istac_code": "38002"
     },
     {
+        "ayto": "alajero",
         "username": "ayto_alajero",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Alajeró",
         "municipio_mayus": "ALAJERÓ",
-        "istac_code": "38003",
-        "isBichado": false
+        "istac_code": "38003"
     },
     {
+        "ayto": "aldeasannicolas",
         "username": "ayto_aldeasannicolas",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "La Aldea de San Nicolás",
         "municipio_mayus": "LA ALDEA DE SAN NICOLÁS",
-        "istac_code": "35020",
-        "isBichado": false
+        "istac_code": "35020"
     },
     {
+        "ayto": "antigua",
         "username": "ayto_antigua",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Antigua",
         "municipio_mayus": "ANTIGUA",
-        "istac_code": "35003",
-        "isBichado": false
+        "istac_code": "35003"
     },
     {
+        "ayto": "arafo",
         "username": "ayto_arafo",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Arafo",
         "municipio_mayus": "ARAFO",
-        "istac_code": "38004",
-        "isBichado": false
+        "istac_code": "38004"
     },
     {
+        "ayto": "arico",
         "username": "ayto_arico",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Arico",
         "municipio_mayus": "ARICO",
-        "istac_code": "38005",
-        "isBichado": false
+        "istac_code": "38005"
     },
     {
+        "ayto": "arona",
         "username": "ayto_arona",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Arona",
         "municipio_mayus": "ARONA",
-        "istac_code": "38006",
-        "isBichado": false
+        "istac_code": "38006"
     },
     {
+        "ayto": "arrecife",
         "username": "ayto_arrecife",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Arrecife",
         "municipio_mayus": "ARRECIFE",
-        "istac_code": "35004",
-        "isBichado": false
+        "istac_code": "35004"
     },
     {
+        "ayto": "arucas",
         "username": "ayto_arucas",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Arucas",
         "municipio_mayus": "ARUCAS",
-        "istac_code": "35006",
-        "isBichado": false
+        "istac_code": "35006"
     },
     {
+        "ayto": "barlovento",
         "username": "ayto_barlovento",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Barlovento",
         "municipio_mayus": "BARLOVENTO",
-        "istac_code": "38007",
-        "isBichado": false
+        "istac_code": "38007"
     },
     {
+        "ayto": "betancuria",
         "username": "ayto_betancuria",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Betancuria",
         "municipio_mayus": "BETANCURIA",
-        "istac_code": "35007",
-        "isBichado": false
+        "istac_code": "35007"
     },
     {
+        "ayto": "brenaalta",
         "username": "ayto_brenaalta",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Breña Alta",
         "municipio_mayus": "BREÑA ALTA",
-        "istac_code": "38008",
-        "isBichado": false
+        "istac_code": "38008"
     },
     {
+        "ayto": "brenabaja",
         "username": "ayto_brenabaja",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Breña Baja",
         "municipio_mayus": "BREÑA BAJA",
-        "istac_code": "38009",
-        "isBichado": false
+        "istac_code": "38009"
     },
     {
+        "ayto": "buenavista",
         "username": "ayto_buenavista",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Buenavista del Norte",
         "municipio_mayus": "BUENAVISTA DEL NORTE",
-        "istac_code": "38010",
-        "isBichado": false
+        "istac_code": "38010"
     },
     {
+        "ayto": "candelaria",
         "username": "ayto_candelaria",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Candelaria",
         "municipio_mayus": "CANDELARIA",
-        "istac_code": "38011",
-        "isBichado": false
+        "istac_code": "38011"
     },
     {
+        "ayto": "elpinar",
         "username": "ayto_elpinar",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "El Pinar de El Hierro",
         "municipio_mayus": "EL PINAR",
-        "istac_code": "38901",
-        "isBichado": false
+        "istac_code": "38901"
     },
     {
+        "ayto": "elrosario",
         "username": "ayto_elrosario",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "El Rosario",
         "municipio_mayus": "EL ROSARIO",
-        "istac_code": "38032",
-        "isBichado": false
+        "istac_code": "38032"
     },
     {
+        "ayto": "elsauzal",
         "username": "ayto_elsauzal",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "El Sauzal",
         "municipio_mayus": "EL SAUZAL",
-        "istac_code": "38041",
-        "isBichado": false
+        "istac_code": "38041"
     },
     {
+        "ayto": "fasnia",
         "username": "ayto_fasnia",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Fasnia",
         "municipio_mayus": "FASNIA",
-        "istac_code": "38012",
-        "isBichado": false
+        "istac_code": "38012"
     },
     {
+        "ayto": "frontera",
         "username": "ayto_frontera",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Frontera",
         "municipio_mayus": "FRONTERA",
-        "istac_code": "38013",
-        "isBichado": false
+        "istac_code": "38013"
     },
     {
+        "ayto": "fuencaliente",
         "username": "ayto_fuencaliente",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Fuencaliente de la Palma",
         "municipio_mayus": "FUENCALIENTE",
-        "istac_code": "38014",
-        "isBichado": false
+        "istac_code": "38014"
     },
     {
+        "ayto": "galdar",
         "username": "ayto_galdar",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Gáldar",
         "municipio_mayus": "GÁLDAR",
-        "istac_code": "35009",
-        "isBichado": false
+        "istac_code": "35009"
     },
     {
+        "ayto": "garachico",
         "username": "ayto_garachico",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Garachico",
         "municipio_mayus": "GARACHICO",
-        "istac_code": "38015",
-        "isBichado": false
+        "istac_code": "38015"
     },
     {
+        "ayto": "garafia",
         "username": "ayto_garafia",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Garafía",
         "municipio_mayus": "GARAFÍA",
-        "istac_code": "38016",
-        "isBichado": false
+        "istac_code": "38016"
     },
     {
+        "ayto": "granadilla",
         "username": "ayto_granadilla",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Granadilla de Abona",
         "municipio_mayus": "GRANADILLA DE ABONA",
-        "istac_code": "38017",
-        "isBichado": false
+        "istac_code": "38017"
     },
     {
+        "ayto": "guiadeisora",
         "username": "ayto_guiadeisora",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Guía de Isora",
         "municipio_mayus": "GUÍA DE ISORA",
-        "istac_code": "38019",
-        "isBichado": false
+        "istac_code": "38019"
     },
     {
+        "ayto": "guimar",
         "username": "ayto_guimar",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Güímar",
         "municipio_mayus": "GÜÍMAR",
-        "istac_code": "38020",
-        "isBichado": false
+        "istac_code": "38020"
     },
     {
+        "ayto": "haria",
         "username": "ayto_haria",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Haría",
         "municipio_mayus": "HARÍA",
-        "istac_code": "35010",
-        "isBichado": false
+        "istac_code": "35010"
     },
     {
+        "ayto": "hermigua",
         "username": "ayto_hermigua",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Hermigua",
         "municipio_mayus": "HERMIGUA",
-        "istac_code": "38021",
-        "isBichado": false
+        "istac_code": "38021"
     },
     {
+        "ayto": "icod",
         "username": "ayto_icod",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Icod de los Vinos",
         "municipio_mayus": "ICOD DE LOS VINOS",
-        "istac_code": "38022",
-        "isBichado": false
+        "istac_code": "38022"
     },
     {
+        "ayto": "ingenio",
         "username": "ayto_ingenio",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Ingenio",
         "municipio_mayus": "INGENIO",
-        "istac_code": "35011",
-        "isBichado": false
+        "istac_code": "35011"
     },
     {
+        "ayto": "laguancha",
         "username": "ayto_laguancha",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "La Guancha",
         "municipio_mayus": "LA GUANCHA",
-        "istac_code": "38018",
-        "isBichado": false
+        "istac_code": "38018"
     },
     {
+        "ayto": "lalaguna",
         "username": "ayto_lalaguna",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "San Cristóbal de La Laguna",
         "municipio_mayus": "LA LAGUNA",
-        "istac_code": "38023",
-        "isBichado": false
+        "istac_code": "38023"
     },
     {
+        "ayto": "lamatanza",
         "username": "ayto_lamatanza",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "La Matanza de Acentejo",
         "municipio_mayus": "LA MATANZA DE ACENTEJO",
-        "istac_code": "38025",
-        "isBichado": false
+        "istac_code": "38025"
     },
     {
+        "ayto": "laoliva",
         "username": "ayto_laoliva",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "La Oliva",
         "municipio_mayus": "LA OLIVA",
-        "istac_code": "35014",
-        "isBichado": false
+        "istac_code": "35014"
     },
     {
+        "ayto": "laorotava",
         "username": "ayto_laorotava",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "La Orotava",
         "municipio_mayus": "LA OROTAVA",
-        "istac_code": "38026",
-        "isBichado": false
+        "istac_code": "38026"
     },
     {
+        "ayto": "laspalmas",
         "username": "ayto_laspalmas",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Las Palmas de Gran Canaria",
         "municipio_mayus": "LAS PALMAS DE GRAN CANARIA",
-        "istac_code": "35016",
-        "isBichado": false
+        "istac_code": "35016"
     },
     {
+        "ayto": "lavictoria",
         "username": "ayto_lavictoria",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "La Victoria de Acentejo",
         "municipio_mayus": "LA VICTORIA DE ACENTEJO",
-        "istac_code": "38051",
-        "isBichado": false
+        "istac_code": "38051"
     },
     {
+        "ayto": "losllanos",
         "username": "ayto_losllanos",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Los Llanos de Aridane",
         "municipio_mayus": "LOS LLANOS DE ARIDANE",
-        "istac_code": "38024",
-        "isBichado": false
+        "istac_code": "38024"
     },
     {
+        "ayto": "losrealejos",
         "username": "ayto_losrealejos",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Los Realejos",
         "municipio_mayus": "LOS REALEJOS",
-        "istac_code": "38031",
-        "isBichado": false
+        "istac_code": "38031"
     },
     {
+        "ayto": "lossilos",
         "username": "ayto_lossilos",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Los Silos",
         "municipio_mayus": "LOS SILOS",
-        "istac_code": "38042",
-        "isBichado": false
+        "istac_code": "38042"
     },
     {
+        "ayto": "mogan",
         "username": "ayto_mogan",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Mogán",
         "municipio_mayus": "MOGÁN",
-        "istac_code": "35012",
-        "isBichado": false
+        "istac_code": "35012"
     },
     {
+        "ayto": "moya",
         "username": "ayto_moya",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Moya",
         "municipio_mayus": "MOYA",
-        "istac_code": "35013",
-        "isBichado": false
+        "istac_code": "35013"
     },
     {
+        "ayto": "pajara",
         "username": "ayto_pajara",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Pájara",
         "municipio_mayus": "PÁJARA",
-        "istac_code": "35015",
-        "isBichado": false
+        "istac_code": "35015"
     },
     {
+        "ayto": "puertodelacruz",
         "username": "ayto_puertodelacruz",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Puerto de la Cruz",
         "municipio_mayus": "PUERTO DE LA CRUZ",
-        "istac_code": "38028",
-        "isBichado": false
+        "istac_code": "38028"
     },
     {
+        "ayto": "puertodelrosario",
         "username": "ayto_puertodelrosario",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Puerto del Rosario",
         "municipio_mayus": "PUERTO DEL ROSARIO",
-        "istac_code": "35017",
-        "isBichado": false
+        "istac_code": "35017"
     },
     {
+        "ayto": "puntagorda",
         "username": "ayto_puntagorda",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Puntagorda",
         "municipio_mayus": "PUNTAGORDA",
-        "istac_code": "38029",
-        "isBichado": false
+        "istac_code": "38029"
     },
     {
+        "ayto": "puntallana",
         "username": "ayto_puntallana",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Puntallana",
         "municipio_mayus": "PUNTALLANA",
-        "istac_code": "38030",
-        "isBichado": false
+        "istac_code": "38030"
     },
     {
+        "ayto": "sanandresysauces",
         "username": "ayto_sanandresysauces",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "San Andrés y Sauces",
         "municipio_mayus": "SAN ANDRÉS Y SAUCES",
-        "istac_code": "38033",
-        "isBichado": false
+        "istac_code": "38033"
     },
     {
+        "ayto": "sanbartolome",
         "username": "ayto_sanbartolome",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "San Bartolomé",
         "municipio_mayus": "SAN BARTOLOMÉ",
-        "istac_code": "35018",
-        "isBichado": false
+        "istac_code": "35018"
     },
     {
+        "ayto": "sanbartolomedetirajana",
         "username": "ayto_sanbartolomedetirajana",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "San Bartolomé de Tirajana",
         "municipio_mayus": "SAN BARTOLOMÉ DE TIRAJANA",
-        "istac_code": "35019",
-        "isBichado": false
+        "istac_code": "35019"
     },
     {
+        "ayto": "sanjuandelarambla",
         "username": "ayto_sanjuandelarambla",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "San Juan de la Rambla",
         "municipio_mayus": "SAN JUAN DE LA RAMBLA",
-        "istac_code": "38034",
-        "isBichado": false
+        "istac_code": "38034"
     },
     {
+        "ayto": "sanmiguel",
         "username": "ayto_sanmiguel",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "San Miguel de Abona",
         "municipio_mayus": "SAN MIGUEL DE ABONA",
-        "istac_code": "38035",
-        "isBichado": false
+        "istac_code": "38035"
     },
     {
+        "ayto": "sansebastianlg",
         "username": "ayto_sansebastianlg",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "San Sebastián de la Gomera",
         "municipio_mayus": "SAN SEBASTIÁN DE LA GOMERA",
-        "istac_code": "38036",
-        "isBichado": false
+        "istac_code": "38036"
     },
     {
+        "ayto": "santacruzlp",
         "username": "ayto_santacruzlp",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Santa Cruz de La Palma",
         "municipio_mayus": "SANTA CRUZ DE LA PALMA",
-        "istac_code": "38037",
-        "isBichado": false
+        "istac_code": "38037"
     },
     {
+        "ayto": "santacruztf",
         "username": "ayto_santacruztf",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Santa Cruz de Tenerife",
         "municipio_mayus": "SANTA CRUZ DE TENERIFE",
-        "istac_code": "38038",
-        "isBichado": false
+        "istac_code": "38038"
     },
     {
+        "ayto": "santalucia",
         "username": "ayto_santalucia",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Santa Lucía de Tirajana",
         "municipio_mayus": "SANTA LUCÍA DE TIRAJANA",
-        "istac_code": "35022",
-        "isBichado": false
+        "istac_code": "35022"
     },
     {
+        "ayto": "santamariadeguia",
         "username": "ayto_santamariadeguia",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Santa María de Guía de Gran Canaria",
         "municipio_mayus": "SANTA MARÍA DE GUÍA",
-        "istac_code": "35023",
-        "isBichado": false
+        "istac_code": "35023"
     },
     {
+        "ayto": "santaursula",
         "username": "ayto_santaursula",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Santa Úrsula",
         "municipio_mayus": "SANTA ÚRSULA",
-        "istac_code": "38039",
-        "isBichado": false
+        "istac_code": "38039"
     },
     {
+        "ayto": "santiagodelteide",
         "username": "ayto_santiagodelteide",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Santiago del Teide",
         "municipio_mayus": "SANTIAGO DEL TEIDE",
-        "istac_code": "38040",
-        "isBichado": false
+        "istac_code": "38040"
     },
     {
+        "ayto": "tacoronte",
         "username": "ayto_tacoronte",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Tacoronte",
         "municipio_mayus": "TACORONTE",
-        "istac_code": "38043",
-        "isBichado": false
+        "istac_code": "38043"
     },
     {
+        "ayto": "tazacorte",
         "username": "ayto_tazacorte",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Tazacorte",
         "municipio_mayus": "TAZACORTE",
-        "istac_code": "38045",
-        "isBichado": false
+        "istac_code": "38045"
     },
     {
+        "ayto": "teguise",
         "username": "ayto_teguise",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Teguise",
         "municipio_mayus": "TEGUISE",
-        "istac_code": "35024",
-        "isBichado": false
+        "istac_code": "35024"
     },
     {
+        "ayto": "telde",
         "username": "ayto_telde",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Telde",
         "municipio_mayus": "TELDE",
-        "istac_code": "35026",
-        "isBichado": false
+        "istac_code": "35026"
     },
     {
+        "ayto": "tias",
         "username": "ayto_tias",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Tías",
         "municipio_mayus": "TÍAS",
-        "istac_code": "35028",
-        "isBichado": false
+        "istac_code": "35028"
     },
     {
+        "ayto": "tijarafe",
         "username": "ayto_tijarafe",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Tijarafe",
         "municipio_mayus": "TIJARAFE",
-        "istac_code": "38047",
-        "isBichado": false
+        "istac_code": "38047"
     },
     {
+        "ayto": "tinajo",
         "username": "ayto_tinajo",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Tinajo",
         "municipio_mayus": "TINAJO",
-        "istac_code": "35029",
-        "isBichado": false
+        "istac_code": "35029"
     },
     {
+        "ayto": "tuineje",
         "username": "ayto_tuineje",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Tuineje",
         "municipio_mayus": "TUINEJE",
-        "istac_code": "35030",
-        "isBichado": false
+        "istac_code": "35030"
     },
     {
+        "ayto": "vallegranrey",
         "username": "ayto_vallegranrey",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Valle Gran Rey",
         "municipio_mayus": "VALLE GRAN REY",
-        "istac_code": "38049",
-        "isBichado": false
+        "istac_code": "38049"
     },
     {
+        "ayto": "vallehermoso",
         "username": "ayto_vallehermoso",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Vallehermoso",
         "municipio_mayus": "VALLEHERMOSO",
-        "istac_code": "38050",
-        "isBichado": false
+        "istac_code": "38050"
     },
     {
+        "ayto": "valverde",
         "username": "ayto_valverde",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Valverde",
         "municipio_mayus": "VALVERDE",
-        "istac_code": "38048",
-        "isBichado": false
+        "istac_code": "38048"
     },
     {
+        "ayto": "villademazo",
         "username": "ayto_villademazo",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Villa de Mazo",
         "municipio_mayus": "VILLA DE MAZO",
-        "istac_code": "38053",
-        "isBichado": false
+        "istac_code": "38053"
     },
     {
+        "ayto": "yaiza",
         "username": "ayto_yaiza",
         "isSuperUser": false,
         "editor": true,
         "municipio_minus": "Yaiza",
         "municipio_mayus": "YAIZA",
-        "istac_code": "35034",
-        "isBichado": false
-    },
-    {
-        "username": "gesplansa",
-        "isSuperUser": true,
-        "editor": true,
-        "municipio_minus": null,
-        "municipio_mayus": null,
-        "istac_code": null,
-        "isBichado": true
+        "istac_code": "35034"
     },
     {
         "username": "infoplayas",
@@ -698,8 +689,7 @@
         "editor": true,
         "municipio_minus": null,
         "municipio_mayus": null,
-        "istac_code": null,
-        "isBichado": false
+        "istac_code": null
     },
     {
         "username": "dgse_creator",
@@ -707,7 +697,6 @@
         "editor": false,
         "municipio_minus": null,
         "municipio_mayus": null,
-        "istac_code": null,
-        "isBichado": false
+        "istac_code": null
     }
 ]

@@ -1,4 +1,5 @@
 export interface AppSetting {
+    ayto?: string;
     username?: string;
     isSuperUser?: boolean;
     municipio_minus?: string;

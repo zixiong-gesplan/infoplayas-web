@@ -72,19 +72,23 @@ export class LoginComponent implements OnInit {
     getRole(user: Auth) {
         this.service.getRole(user.token).subscribe(
             (result: any) => {
-                if (result) {
-                    const roleIndex = environment.rolesIds.findIndex(x => x === result.roleId);
-                    console.log(environment.roles[roleIndex]);
+                const roleIndex = environment.rolesIds.findIndex(x => x === result.roleId);
+                if (result && (environment.roles[roleIndex])) {
+                    // TODO guardamos el identificador del rol del usuario en la sessionStorage
+                    const rol = environment.roles[roleIndex];
+                    console.log(rol);
+                    if ((rol === 'infoplayas' || rol === 'infoplayas_inc') && !this.aytos.find(i => i.ayto ===
+                        result.description.toLowerCase())) {
+                        this.showUserAlert('Su usuario no tiene configurado el identificador de su ayuntamiento, ' +
+                            'o su ayuntamiento no está configurado aún, contacte con el soporte de la aplicación');
+                        return false;
+                    }
+                    console.log(result.description);
                     this.authService.setUser(user);
                     this.router.navigate(['tecnicos']);
                 } else {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Usuario no permitido',
-                        text: 'El usuario que itenta acceder no está registrado para el uso de esta aplicación. Contacte con el administrador.',
-                        footer: ''
-                    });
-                    this.router.navigate(['home']);
+                    this.showUserAlert('El usuario que itenta acceder no está registrado para el uso de esta aplicación. ' +
+                        'Contacte con el administrador.');
                 }
             },
             error => {
@@ -104,5 +108,15 @@ export class LoginComponent implements OnInit {
             default:
                 return false;
         }
+    }
+
+    showUserAlert(message: string) {
+        Swal.fire({
+            type: 'error',
+            title: 'Usuario no permitido',
+            text: message,
+            footer: ''
+        });
+        this.router.navigate(['home']);
     }
 }
