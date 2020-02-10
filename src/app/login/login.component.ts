@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
                     username: new URLSearchParams(fragment).get('username'),
                     persist: this.getBoolean(new URLSearchParams(fragment).get('persist')),
                     roleId: null,
-                    scope: null
+                    filter: null
                 };
                 this.chekRole(oAuthInfo);
             }
@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
                 const roleIndex = environment.roles.findIndex(x => x.id === result.roleId);
                 if (result && roleIndex !== -1) {
                     oAuthInfo.roleId = result.roleId;
-                    oAuthInfo.scope = result.description ? result.description.toLowerCase() : null;
+                    oAuthInfo.filter = result.description ? result.description.toLowerCase() : null;
                     this.setUserContext(oAuthInfo, roleIndex);
                 } else {
                     this.showUserAlert('El usuario que itenta acceder no está registrado para el uso de esta aplicación. ' +
@@ -69,8 +69,8 @@ export class LoginComponent implements OnInit {
         this.appSettingsService.getJSON().subscribe(data => {
             const aytos: AppSetting[] = data;
             const rol = environment.roles[roleIndex];
-            if ((rol.name === 'infoplayas' || rol.name === 'infoplayas_inc') && !aytos.find(i => i.ayto ===
-                oAuthInfo.scope)) {
+            if (rol.scope === 'ayto' && !aytos.find(i => i.ayto ===
+                oAuthInfo.filter)) {
                 this.showUserAlert('Su usuario no tiene configurado el identificador de su ayuntamiento, ' +
                     'o su ayuntamiento no está configurado aún, contacte con el soporte de la aplicación');
                 return false;
@@ -83,12 +83,12 @@ export class LoginComponent implements OnInit {
                     + currentDate.getTime() + oAuthInfo.expiresToken * 1000 :
                     currentDate.getTime() + oAuthInfo.expiresToken * 1000,
                 username: oAuthInfo.username,
-                selectedusername: !oAuthInfo.scope ? aytos[0].username : null,
+                selectedusername: rol.scope === 'todos' ? aytos[0].username : null,
                 persist: oAuthInfo.persist,
                 editor: false
             };
             // TODO buscamos si puede editar el usuario
-            current_user.editor = aytos.find(i => i.username === current_user.username).editor;
+            current_user.editor = rol.plan_edit;
             this.authService.setUser(current_user);
             return this.router.navigate(['tecnicos']);
         });

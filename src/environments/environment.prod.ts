@@ -14,33 +14,37 @@ export const environment = {
             inc_edit: true,
             plan_visual: true,
             plan_edit: true,
-            catalogue_edit: true
+            scope: 'ayto',
+            catalogue_edit: false
         },
         {
-            id: 'xxx',
+            id: '73z1ex3Y6Gjeba6e',
             name: 'infoplayas_gest',
             inc_visual: true,
             inc_edit: true,
             plan_visual: true,
             plan_edit: true,
-            catalogue_edit: false
+            scope: 'todos',
+            catalogue_edit: true
         },
         {
-            id: 'xxx',
+            id: 'PccS59DlcDquITjj',
             name: 'infoplayas_inc',
             inc_visual: true,
             inc_edit: true,
             plan_visual: false,
             plan_edit: false,
+            scope: 'ayto',
             catalogue_edit: false
         },
         {
-            id: 'xxx',
+            id: '4NMdR9hVpKr0CG7r',
             name: 'infoplayas_gob',
             inc_visual: true,
             inc_edit: false,
             plan_visual: true,
             plan_edit: true,
+            scope: 'todos',
             catalogue_edit: false
         }
     ],
