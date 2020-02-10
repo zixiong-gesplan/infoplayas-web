@@ -7,7 +7,9 @@ El fichero ayto.json en assets define las características para el portal de cad
 IMPORTANTE!!! Al crear un usuario para el portal además de asignarle un rol personalizado de Esri de los listados a continuación se debe añadir en la biografía el valor correspondiente al ayuntamiento del usuario del fichero ayto.json - propiedad ayto.
 
 ROLES ESRI->            ámbito          Visualizar Planes     Editar Planes     Visualizar Incidencias      Editar Incidencias      valorArrayEnvironment.ts (roles)
-InfoPlayas              Municipio       si                    si                si                          no                      infoplayas
-InfoPlayas GEST         todos           si                    si                si                          si                      infoplayas_gest
+InfoPlayas              Municipio       si                    si                si                          si                      infoplayas
+InfoPlayas GEST*        todos           si                    si                si                          si                      infoplayas_gest
 InfoPlayas INC          Municipio       no                    no                si                          si                      infoplayas_inc
 InfoPlayas GOB          todos           si                    no                si                          si                      infoplayas_gob
+
+* Adicionalmente permite editar todos los campos de la capa de playas en el formulario de inventario en el apartado de clasificación. Gestión interna Gesplán.
