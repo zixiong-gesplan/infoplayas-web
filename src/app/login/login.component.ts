@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
                     username: new URLSearchParams(fragment).get('username'),
                     persist: this.getBoolean(new URLSearchParams(fragment).get('persist')),
                     roleId: null,
-                    ambito: null
+                    scope: null
                 };
                 this.chekRole(oAuthInfo);
             }
@@ -50,10 +50,10 @@ export class LoginComponent implements OnInit {
     chekRole(oAuthInfo) {
         this.service.getRole(oAuthInfo.token).subscribe(
             (result: any) => {
-                const roleIndex = environment.rolesIds.findIndex(x => x === result.roleId);
+                const roleIndex = environment.roles.findIndex(x => x.id === result.roleId);
                 if (result && roleIndex !== -1) {
                     oAuthInfo.roleId = result.roleId;
-                    oAuthInfo.ambito = result.description ? result.description.toLowerCase() : null;
+                    oAuthInfo.scope = result.description ? result.description.toLowerCase() : null;
                     this.setUserContext(oAuthInfo, roleIndex);
                 } else {
                     this.showUserAlert('El usuario que itenta acceder no está registrado para el uso de esta aplicación. ' +
@@ -69,8 +69,8 @@ export class LoginComponent implements OnInit {
         this.appSettingsService.getJSON().subscribe(data => {
             const aytos: AppSetting[] = data;
             const rol = environment.roles[roleIndex];
-            if ((rol === 'infoplayas' || rol === 'infoplayas_inc') && !aytos.find(i => i.ayto ===
-                oAuthInfo.ambito)) {
+            if ((rol.name === 'infoplayas' || rol.name === 'infoplayas_inc') && !aytos.find(i => i.ayto ===
+                oAuthInfo.scope)) {
                 this.showUserAlert('Su usuario no tiene configurado el identificador de su ayuntamiento, ' +
                     'o su ayuntamiento no está configurado aún, contacte con el soporte de la aplicación');
                 return false;
@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit {
                     + currentDate.getTime() + oAuthInfo.expiresToken * 1000 :
                     currentDate.getTime() + oAuthInfo.expiresToken * 1000,
                 username: oAuthInfo.username,
-                selectedusername: !oAuthInfo.ambito ? aytos[0].username : null,
+                selectedusername: !oAuthInfo.scope ? aytos[0].username : null,
                 persist: oAuthInfo.persist,
                 editor: false
             };

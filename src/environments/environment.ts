@@ -10,8 +10,44 @@ export const environment = {
     idportalView: '81e40ab3616b4b4386058593078eaddf',
     urlServerRest: 'https://gesplan.maps.arcgis.com/sharing/rest',
     urlSelfinfo: '/community/self',
-    rolesIds: ['6eaujmQDyuNamfzU', 'xxx', 'xxx', 'xxx'],
-    roles: ['infoplayas', 'infoplayas_gest', 'infoplayas_inc', 'infoplayas_gob'],
+    roles: [
+        {
+            id: '6eaujmQDyuNamfzU',
+            name: 'infoplayas',
+            inc_visual: true,
+            inc_edit: true,
+            plan_visual: true,
+            plan_edit: true,
+            catalogue_edit: true
+        },
+        {
+            id: 'xxx',
+            name: 'infoplayas_gest',
+            inc_visual: true,
+            inc_edit: true,
+            plan_visual: true,
+            plan_edit: true,
+            catalogue_edit: false
+        },
+        {
+            id: 'xxx',
+            name: 'infoplayas_inc',
+            inc_visual: true,
+            inc_edit: true,
+            plan_visual: false,
+            plan_edit: false,
+            catalogue_edit: false
+        },
+        {
+            id: 'xxx',
+            name: 'infoplayas_gob',
+            inc_visual: true,
+            inc_edit: false,
+            plan_visual: true,
+            plan_edit: true,
+            catalogue_edit: false
+        }
+    ],
     istac: 'https://www3.gobiernodecanarias.org/istac/api/indicators/v1.0/indicators/',
     client_id: 'RNiCC2e9tgwl1mCV',
     urlAuthorize: 'https://www.arcgis.com/sharing/rest/oauth2/authorize',
