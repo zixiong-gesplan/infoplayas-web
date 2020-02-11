@@ -85,10 +85,9 @@ export class LoginComponent implements OnInit {
                 username: oAuthInfo.username,
                 selectedusername: rol.scope === 'todos' ? aytos[0].username : null,
                 persist: oAuthInfo.persist,
-                editor: false
+                roleId: oAuthInfo.roleId,
+                filter: oAuthInfo.filter
             };
-            // TODO buscamos si puede editar el usuario
-            // current_user.editor = rol.plan_edit;
             this.authService.setUser(current_user);
             return this.router.navigate(['tecnicos']);
         });

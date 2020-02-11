@@ -50,6 +50,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     display;
     private subscripcionMunicipality;
     private subscripcionFormState;
+    isUserEditor: boolean;
 
     constructor(private gradeService: GradesProtectionService, public authService: AuthGuardService, private service: EsriRequestService,
                 private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService,
@@ -63,6 +64,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     ngOnInit() {
+        this.isUserEditor = environment.roles.find(i => i.id === this.authService.getCurrentUser().roleId).plan_edit;
         init_plugins();
         this.readFormsState();
         $('#resultsFilterMenu').show();
@@ -334,10 +336,10 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                 if (result && result.features.length > 0) {
                     this.formVacational.patchValue(result.features[0].attributes);
                     this.formVacational.get('on_edit').setValue(true);
-                    this.formVacational.get('editor').setValue(this.authService.getCurrentUser().editor);
+                    this.formVacational.get('editor').setValue(this.isUserEditor);
                 } else {
                     this.formVacational.get('on_edit').setValue(false);
-                    this.formVacational.get('editor').setValue(this.authService.getCurrentUser().editor);
+                    this.formVacational.get('editor').setValue(this.isUserEditor);
                     this.formVacational.get('id_ayuntamiento').setValue(mun.istac_code);
                 }
                 const bedsVacational = this.formVacational.get('plazas').value ? this.formVacational.get('plazas').value : 0;

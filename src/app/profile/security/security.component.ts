@@ -28,6 +28,7 @@ declare function navbar_load();
 })
 export class SecurityComponent implements OnInit, OnDestroy {
     currentUser: Auth;
+    isUserEditor: boolean;
     fechaActual: Date = new Date();
     defaultWorkdayInicio: Date;
     defaultWorkdayFin: Date;
@@ -122,7 +123,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     ngOnInit() {
         navbar_load();
         this.currentUser = this.authService.getCurrentUser();
-        console.log(this.currentUser.editor);
+        this.isUserEditor = environment.roles.find(i => i.id === this.currentUser.roleId).plan_edit;
         this.loadDataForms();
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;

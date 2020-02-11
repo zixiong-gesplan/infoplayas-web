@@ -97,6 +97,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     private aytos: AppSetting[];
     days_of_this_year: number;
     private lastOpValue: string;
+    isUserEditor: boolean;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
@@ -249,6 +250,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.spinnerService.show();
         this.currentUser = this.authService.getCurrentUser();
+        this.isUserEditor = environment.roles.find(i => i.id === this.currentUser.roleId).plan_edit;
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
             this.setMap();
@@ -478,6 +480,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 attributes: {
                     id_dgse: this.formFlow.get('id_dgse').value,
                     fecha_inicio: this.formFlow.get('dates').value[0],
+                    // tslint:disable-next-line:max-line-length
                     fecha_fin: this.formFlow.get('dates').value[1] ? this.formFlow.get('dates').value[1] : this.formFlow.get('dates').value[0],
                     nivel: value === 'FS' ? this.formFlow.get('flowLevelWeekend').value : this.formFlow.get('flowLevelDefault').value,
                     incluir_dias: value
@@ -795,7 +798,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             t.sendMessage(output.beachId, output.localName, output.clasificacion);
                             t.selectedId = output.beachId;
                             t.formEvaluation.reset();
-                            t.formEvaluation.get('editor').setValue(t.currentUser.editor);
+                            t.formEvaluation.get('editor').setValue(t.isUserEditor);
                             if (output.clasificacion) {
                                 t.formStateService.udpateFormState(25);
                                 t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
@@ -804,6 +807,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             t.onClickDangerForm = false;
                             t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relDanger[0]), t.formDanger);
                             if (output.clasificacion !== 'UP') {
+                                // tslint:disable-next-line:max-line-length
                                 t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relIncidencias[0]), t.formIncidents);
                                 t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, Number(environment.relEntorno[0]));
                                 t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, Number(environment.relAfluencia[0]));
@@ -837,16 +841,19 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                                     t.sendMessage(output.beachId, output.localName, output.clasificacion);
                                     t.selectedId = output.beachId;
                                     t.formEvaluation.reset();
-                                    t.formEvaluation.get('editor').setValue(t.currentUser.editor);
+                                    t.formEvaluation.get('editor').setValue(t.isUserEditor);
                                     if (output.clasificacion) {
                                         t.formStateService.udpateFormState(25);
                                         t.formEvaluation.get('dangerLevel').setValue(output.clasificacion);
                                     }
                                     // consultas datos relacionados: relacionar formulario con el identificador de relacion de la tabla
                                     t.onClickDangerForm = false;
+                                    // tslint:disable-next-line:max-line-length
                                     t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relDanger[0]), t.formDanger);
                                     if (output.clasificacion !== 'UP') {
+                                        // tslint:disable-next-line:max-line-length
                                         t.execRelatedQuery(queryTask, RelationshipQuery, output, Number(environment.relIncidencias[0]), t.formIncidents);
+                                        // tslint:disable-next-line:max-line-length
                                         t.execRelatedEnvironmentQuery(queryTask, RelationshipQuery, output, Number(environment.relEntorno[0]));
                                         t.execRelatedFlowQuery(queryTask, RelationshipQuery, output, Number(environment.relAfluencia[0]));
                                     }
@@ -965,11 +972,12 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 frm.patchValue({id_dgse: output.id_dgse});
                 frm.patchValue({on_edit: false});
-                frm.patchValue({editor: this.currentUser.editor});
+                frm.patchValue({editor: this.isUserEditor});
                 if (relationshipId === Number(environment.relDanger[0]) && output.clasificacion === 'UP') {
                     Swal.fire({
                         type: 'warning',
                         title: 'Clasificación INCOMPLETA.',
+                        // tslint:disable-next-line:max-line-length
                         text: 'La playa seleccionada está clasificada como de USO PROHIBIDO pero no se ha establecido el motivo en el formulario de clasificación.',
                         footer: 'Seleccione el motivo en el formulario correspondiente.'
                     });
@@ -982,7 +990,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 }
                 frm.patchValue(results[query.objectIds[0]].features[0].attributes);
                 frm.patchValue({on_edit: true});
-                frm.patchValue({editor: this.currentUser.editor});
+                frm.patchValue({editor: this.isUserEditor});
             }
         });
     }
@@ -1000,13 +1008,13 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 this.formEnvironment.patchValue({id_dgse: output.id_dgse});
                 this.formEnvironment.patchValue({on_edit: false});
-                this.formEnvironment.patchValue({editor: this.currentUser.editor});
+                this.formEnvironment.patchValue({editor: this.isUserEditor});
                 this.formEnvironment.get('peligros_anadidos').setValue(0);
             } else {
                 this.loadRelatedAdditionalDangers(output.beachId);
                 this.formEnvironment.patchValue(results[query.objectIds[0]].features[0].attributes);
                 this.formEnvironment.patchValue({on_edit: true});
-                this.formEnvironment.patchValue({editor: this.currentUser.editor});
+                this.formEnvironment.patchValue({editor: this.isUserEditor});
                 this.formStateService.udpateFormState(25);
             }
         });
@@ -1025,10 +1033,10 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             this.formFlow.reset();
             if (Object.entries(results).length === 0 && results.constructor === Object) {
                 this.formFlow.patchValue({id_dgse: output.id_dgse});
-                this.formEnvironment.patchValue({editor: this.currentUser.editor});
+                this.formEnvironment.patchValue({editor: this.isUserEditor});
             } else {
                 this.formFlow.patchValue({id_dgse: output.id_dgse});
-                this.formEnvironment.patchValue({editor: this.currentUser.editor});
+                this.formEnvironment.patchValue({editor: this.isUserEditor});
                 this.periods = results[query.objectIds[0]].features;
                 // voy a la ultima fecha del calendario en los periodos introducidos
                 const lastDate = new Date(this.periods[this.periods.length - 1].attributes.fecha_fin);
@@ -1161,8 +1169,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     private updateAdditionalDangers() {
         // borramos los registros que han sido eliminados por el usuario
         if (this.deleteAddtionalDangers && this.deleteAddtionalDangers.length > 0) {
-            this.removeRelatedData(this.deleteAddtionalDangers, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbRiesgos
-                + '/deleteFeatures', false);
+            this.removeRelatedData(this.deleteAddtionalDangers, this.currentUser, environment.infoplayas_catalogo_edicion_tablas_url
+                + '/' + environment.tbRiesgos + '/deleteFeatures', false);
         }
         const addvalues = [...this.tEnv.value].filter(s => !s.objectid).map(value => {
             return {attributes: value};
@@ -1175,8 +1183,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             value.attributes.ultimo_editor = this.currentUser.username;
         });
         if (updatesvalues.length > 0) {
-            this.editRelatedData(updatesvalues, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbRiesgos
-                + '/applyEdits', 'none');
+            this.editRelatedData(updatesvalues, this.currentUser, 'updates', environment.infoplayas_catalogo_edicion_tablas_url
+                + '/' + environment.tbRiesgos + '/applyEdits', 'none');
         }
         addvalues.forEach(value => {
             value.attributes.id_dgse = this.formEnvironment.get('id_dgse').value;
@@ -1184,8 +1192,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             value.attributes.ultimo_editor = this.currentUser.username;
         });
         if (addvalues.length > 0) {
-            this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbRiesgos
-                + '/applyEdits', 'none');
+            this.editRelatedData(addvalues, this.currentUser, 'adds', environment.infoplayas_catalogo_edicion_tablas_url + '/'
+                + environment.tbRiesgos + '/applyEdits', 'none');
         }
     }
 

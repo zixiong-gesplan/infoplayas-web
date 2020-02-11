@@ -5,7 +5,8 @@ export class Auth {
         public username: string,
         public selectedusername: string,
         public persist: boolean,
-        public editor: boolean
+        public roleId: string,
+        public filter: string
     ) {
     }
 }

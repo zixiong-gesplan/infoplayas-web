@@ -120,7 +120,7 @@
                                type="button"
                                class="esri-button esri-button--secondary"
                                value="Cancelar"/>
-                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor"
+                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !isUserEditor"
                                class="esri-font">* No tiene permisos para
                             editar</label>
                     </div>
@@ -167,7 +167,7 @@
                                type="button"
                                class="esri-button esri-button--secondary"
                                value="Cancelar"/>
-                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor"
+                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !isUserEditor"
                                class="esri-font">* No tiene permisos para
                             editar</label>
                     </div>
@@ -268,7 +268,7 @@
                                type="button"
                                class="esri-button esri-button--secondary"
                                value="Cancelar"/>
-                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor"
+                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !isUserEditor"
                                class="esri-font">* No tiene permisos para
                             editar</label>
                     </div>
@@ -303,7 +303,7 @@
                                               icon="pi pi-plus-circle"
                                               (onClick)="addPeriod()"
                                               [disabled]="!formFlow.get('flowLevelDefault').value || !formFlow.get('dates').value
-                                              || !this.formFlow.get('dates').value[0] || (currentUser && !currentUser.editor)">
+                                              || !this.formFlow.get('dates').value[0] || (currentUser && !isUserEditor)">
                                     </p-button>
                                     <span style="margin-left: 2%"></span>
                                     <p-selectButton [options]="FlowOptions" formControlName="flowLevelDefault">
@@ -371,7 +371,7 @@
                                                     ariaLabelDesc="Active para ordenar en orden descendente"
                                                     ariaLabelAsc="Active para ordenar en orden ascendente"></p-sortIcon>
                                     </th>
-                                    <th *ngIf="currentUser && currentUser.editor"
+                                    <th *ngIf="currentUser && isUserEditor"
                                         pTooltip="Eliminar período de Afluencia" style="width:13%">AC.
                                     </th>
                                 </tr>
@@ -391,7 +391,7 @@
                                             {{rowData['attributes'][col.subfield] | date: 'dd-MMM'}}
                                         </div>
                                     </td>
-                                    <td *ngIf="currentUser && currentUser.editor" style="text-align:center">
+                                    <td *ngIf="currentUser && isUserEditor" style="text-align:center">
                                         <button style="height: 25px; color: #333333" type="button"
                                                 (click)="onRowDelete(rowData)">
                                             <i class="fa fa-times"></i>
@@ -515,7 +515,7 @@
                                type="button"
                                class="esri-button esri-button--secondary"
                                value="Cancelar"/>
-                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor"
+                        <label style="color: red;font-weight: bold" *ngIf="currentUser && !isUserEditor"
                                class="esri-font">* No tiene permisos para
                             editar</label>
                     </div>
@@ -591,7 +591,7 @@
                 </div>
             </p-accordion>
             <p-footer>
-                <button type="button" pButton icon="pi pi-check" [disabled]="currentUser && !currentUser.editor" (click)="saveBeach()" label="Guardar"></button>
+                <button type="button" pButton icon="pi pi-check" [disabled]="currentUser && !isUserEditor" (click)="saveBeach()" label="Guardar"></button>
                 <button type="button" pButton icon="pi pi-close" (click)="openCatalogue=false" label="Cancelar"
                         class="ui-button-secondary"></button>
             </p-footer>
@@ -611,7 +611,7 @@
                    type="button"
                    class="esri-button esri-button--secondary"
                    value="Cancelar"/>
-            <label style="color: red;font-weight: bold" *ngIf="currentUser && !currentUser.editor" class="esri-font">*
+            <label style="color: red;font-weight: bold" *ngIf="currentUser && !isUserEditor" class="esri-font">*
                 No tiene permisos para
                 editar</label>
         </div>
