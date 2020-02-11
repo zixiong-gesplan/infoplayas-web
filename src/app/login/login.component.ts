@@ -88,7 +88,7 @@ export class LoginComponent implements OnInit {
                 editor: false
             };
             // TODO buscamos si puede editar el usuario
-            current_user.editor = rol.plan_edit;
+            // current_user.editor = rol.plan_edit;
             this.authService.setUser(current_user);
             return this.router.navigate(['tecnicos']);
         });
