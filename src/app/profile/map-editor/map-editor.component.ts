@@ -98,6 +98,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     days_of_this_year: number;
     private lastOpValue: string;
     isUserEditor: boolean;
+    isUserCatalogueEditor: boolean;
 
     constructor(private authService: AuthGuardService, private service: EsriRequestService, private fb: FormBuilder,
                 private spinnerService: Ng4LoadingSpinnerService, public messageService: MessageService,
@@ -250,7 +251,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.spinnerService.show();
         this.currentUser = this.authService.getCurrentUser();
-        this.isUserEditor = environment.roles.find(i => i.id === this.currentUser.roleId).plan_edit;
+        const role = environment.roles.find(i => i.id === this.currentUser.roleId);
+        this.isUserEditor = role.plan_edit;
+        this.isUserCatalogueEditor = role.catalogue_edit;
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
             this.setMap();
@@ -869,7 +872,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                         }
                     });
                 });
-                if (this.currentUser && !this.currentUser.selectedusername) {
+                if (this.currentUser && !this.isUserCatalogueEditor) {
                     $('#btnSave')[0].onclick = function () {
                         if (submitForm(playasLayer, form, ['nombre_municipio', 'objectid'], filterPlayas)) {
                             Swal.fire({

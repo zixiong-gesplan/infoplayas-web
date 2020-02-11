@@ -599,10 +599,12 @@
         <!--        formulario propio del api para inventario - datos del catalogo para tecnicos de ayuntamiento-->
         <div [hidden]="selectForm !=='inventario'">
             <div id="form" class="esri-component"></div>
-            <input *ngIf="currentUser && !currentUser.selectedusername" type="button" class="esri-button"
+            <input *ngIf="currentUser && !isUserCatalogueEditor" type="button"
+                   [class]="currentUser && isUserEditor ? 'esri-button' : 'esri-button esri-button--disabled'"
+                   [disabled]="currentUser && !isUserEditor"
                    value="Guardar" id="btnSave"/>
-            <!--        botón para superusuario - modificar el catalogo-->
-            <button *ngIf="currentUser && currentUser.selectedusername" role="button" class="esri-button"
+            <!--        botón para modificar el catalogo-->
+            <button *ngIf="currentUser && isUserCatalogueEditor" role="button" class="esri-button"
                     (click)="loadCatalogueInfoByid()">Abrir
                 catálogo
             </button>
