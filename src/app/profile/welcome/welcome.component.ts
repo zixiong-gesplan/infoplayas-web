@@ -30,8 +30,8 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
         init_plugins();
         this.appSettingsService.getJSON().subscribe(data => {
             const aytos: AppSetting[] = data;
-            this.municipalityName = this.authService.getCurrentUser().selectedusername ? this.authService.getCurrentUser().username :
-                aytos.find(i => i.username === this.authService.getCurrentUser().username).municipio_minus;
+            this.municipalityName = this.authService.getCurrentUser().selectedusername ? this.authService.getCurrentUser().name :
+                aytos.find(i => i.ayto === this.authService.getCurrentUser().filter).municipio_minus;
         });
     }
 

@@ -40,7 +40,8 @@ export class LoginComponent implements OnInit {
                     username: new URLSearchParams(fragment).get('username'),
                     persist: this.getBoolean(new URLSearchParams(fragment).get('persist')),
                     roleId: null,
-                    filter: null
+                    filter: null,
+                    name: null
                 };
                 this.chekRole(oAuthInfo);
             }
@@ -54,6 +55,7 @@ export class LoginComponent implements OnInit {
                 if (result && roleIndex !== -1) {
                     oAuthInfo.roleId = result.roleId;
                     oAuthInfo.filter = result.description ? result.description.toLowerCase() : null;
+                    oAuthInfo.name = result.firstName;
                     this.setUserContext(oAuthInfo, roleIndex);
                 } else {
                     this.showUserAlert('El usuario que itenta acceder no está registrado para el uso de esta aplicación. ' +
@@ -86,7 +88,8 @@ export class LoginComponent implements OnInit {
                 selectedusername: rol.scope === 'todos' ? aytos[0].username : null,
                 persist: oAuthInfo.persist,
                 roleId: oAuthInfo.roleId,
-                filter: oAuthInfo.filter
+                filter: oAuthInfo.filter,
+                name: oAuthInfo.name
             };
             this.authService.setUser(current_user);
             return this.router.navigate(['tecnicos']);

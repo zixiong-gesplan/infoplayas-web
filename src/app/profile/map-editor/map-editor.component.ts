@@ -267,7 +267,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             desprendimientos: new FormControl(''),
             id_dgse: new FormControl(''),
             on_edit: new FormControl(''),
-            // campo para evitar que los usuarios en aytos.json clasificados como editor false puedan modificar nada
+            // campo para evitar que los usuarios que no tengan rol con capacidades de edición en el plan (plan_edit) puedan modificar nada
             editor: new FormControl('', Validators.requiredTrue)
         });
         this.formIncidents = this.fb.group({
