@@ -10,6 +10,7 @@ import {ReportComponent} from './profile/report/report.component';
 import {ContactUsComponent} from './profile/contact-us/contact-us.component';
 import {LoginComponent} from './login/login.component';
 import {WelcomeComponent} from './profile/welcome/welcome.component';
+import {DrowningsComponent} from './profile/drownings/drownings.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -38,6 +39,9 @@ const routes: Routes = [
             },
             {
                 path: 'informes', component: ContactUsComponent, canActivate: [AuthGuardService]
+            },
+            {
+                path: 'incidentes', component: DrowningsComponent, canActivate: [AuthGuardService]
             }
         ]
     },

@@ -35,6 +35,7 @@ import {ToastModule} from 'primeng/toast';
 import { MapViewerComponent } from './profile/map-viewer/map-viewer.component';
 import {ResponseInterceptorService} from './services/response-interceptor.service';
 import {DynamicDialogComponent, DynamicDialogModule} from 'primeng/dynamicdialog';
+import { DrowningsComponent } from './profile/drownings/drownings.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -51,7 +52,8 @@ registerLocaleData(localeEs, 'es');
         ContactUsComponent,
         MapEditorComponent,
         WelcomeComponent,
-        MapViewerComponent
+        MapViewerComponent,
+        DrowningsComponent
     ],
     imports: [
         BrowserModule,
