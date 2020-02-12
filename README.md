@@ -4,7 +4,7 @@ Proyecto de migración de la web https://www.infoplayascanarias.es/ del wordpres
 
 AYUDA: 
 El fichero ayto.json en assets define las características para el portal de cada ayuntamiento de canarias con playas, como pueden ser el código del istac o las propiedades del filtro de municipio en las capas. 
-IMPORTANTE!!! Al crear un usuario para el portal además de asignarle un rol personalizado de Esri de los listados a continuación se debe añadir en la biografía el valor correspondiente al ayuntamiento del usuario del fichero ayto.json - propiedad ayto.
+IMPORTANTE!!! Al crear un usuario para el portal además de asignarle un rol personalizado de Esri de los listados a continuación se debe añadir en la biografía el valor correspondiente al ayuntamiento del usuario del fichero ayto.json - propiedad ayto. Esto último no es necesario para los roles de ámbito "todos".
 
 ROLES ESRI->            ámbito          Visualizar Planes     Editar Planes     Visualizar Incidencias      Editar Incidencias      valorArrayEnvironment.ts (roles)
 InfoPlayas              Municipio       si                    si                si                          si                      infoplayas
