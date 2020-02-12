@@ -41,9 +41,9 @@ export const environment = {
             id: '4NMdR9hVpKr0CG7r',
             name: 'infoplayas_gob',
             inc_visual: true,
-            inc_edit: false,
+            inc_edit: true,
             plan_visual: true,
-            plan_edit: true,
+            plan_edit: false,
             scope: 'todos',
             catalogue_edit: false
         }
