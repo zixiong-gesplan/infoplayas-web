@@ -33,9 +33,7 @@ export class PopulationService {
     public isMunicipalityStore(current_user: Auth): boolean {
         const mun: Municipality = this.getMunicipality();
         const currentDate = new Date();
-        if (mun && current_user.selectedusername && current_user.selectedusername !== mun.user) {
-            return false;
-        } else if (mun && !current_user.selectedusername && current_user.username !== mun.user) {
+        if (mun && current_user.filter && current_user.filter !== mun.user) {
             return false;
         }
         if (mun && currentDate.getFullYear() - 1 > Number(mun.year)) {
@@ -108,9 +106,9 @@ export class PopulationService {
         const mun: Municipality = {
             user: this.populationName,
             year: year,
-            istac_code: this.aytos.find(i => i.username === this.populationName)
+            istac_code: this.aytos.find(i => i.ayto === this.populationName)
                 .istac_code,
-            ayuntamiento: this.aytos.find(i => i.username === this.populationName).municipio_mayus
+            ayuntamiento: this.aytos.find(i => i.ayto === this.populationName).municipio_mayus
         };
 
         const representation = 'GEOGRAPHICAL[' + mun.istac_code + '],MEASURE[ABSOLUTE],TIME[' + year + ']';

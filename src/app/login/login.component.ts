@@ -85,10 +85,9 @@ export class LoginComponent implements OnInit {
                     + currentDate.getTime() + oAuthInfo.expiresToken * 1000 :
                     currentDate.getTime() + oAuthInfo.expiresToken * 1000,
                 username: oAuthInfo.username,
-                selectedusername: rol.scope === 'todos' ? aytos[0].username : null,
                 persist: oAuthInfo.persist,
                 roleId: oAuthInfo.roleId,
-                filter: oAuthInfo.filter,
+                filter: rol.scope === 'ayto' ? oAuthInfo.filter : null,
                 name: oAuthInfo.name
             };
             this.authService.setUser(current_user);

@@ -417,13 +417,13 @@ readFeatures() {
 
     loadRecords() {
         this.spinnerService.show();
-        const name = this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username;
+        const name = this.currentUser.filter ? this.currentUser.filter : this.popService.getMunicipality().user;
         if(this.filterClasificacion){
-          this.filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.username === name).municipio_minus + '\'' + this.filterClasificacion;
+          this.filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.ayto === name).municipio_minus + '\'' + this.filterClasificacion;
         }else{
-            this.filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.username === name).municipio_minus + '\'';
+            this.filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.ayto === name).municipio_minus + '\'';
         }
-        this.nomMunicipio = this.aytos.find(i => i.username === name).municipio_minus;
+        this.nomMunicipio = this.aytos.find(i => i.ayto === name).municipio_minus;
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query',
             this.filtermunicipio, '*', false, this.currentUser.token, 'clasificacion', true).subscribe(
             (result: any) => {

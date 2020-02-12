@@ -181,8 +181,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     loadAllData() {
         const current_user = this.authService.getCurrentUser();
-        const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
-        const filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.username === name).municipio_minus + '\'';
+        const name = current_user.filter ? current_user.filter : this.popService.getMunicipality().user;
+        const filtermunicipio = 'municipio = \'' + this.aytos.find(i => i.ayto === name).municipio_minus + '\'';
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filtermunicipio,
             'objectid, clasificacion', false, this.authService.getCurrentUser().token, 'objectid', true).subscribe(
             (result: any) => {
@@ -271,7 +271,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     calculateGradesProtection() {
         const current_user = this.authService.getCurrentUser();
-        const name = current_user.selectedusername ? current_user.selectedusername : current_user.username;
+        const name = current_user.filter ? current_user.filter : this.popService.getMunicipality().user;
         const ref = this.dialogService.open(MapViewerComponent, {
             data: {
                 id: this.beachObjectId,
@@ -280,7 +280,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             },
             header: this.localName ? 'Se muestran los resultados para: ' + this.localName
                 : 'Mapa de resultados de grados de protección del municipio de '
-                + this.aytos.find(i => i.username === name).municipio_minus,
+                + this.aytos.find(i => i.ayto === name).municipio_minus,
             width: '65%',
             contentStyle: {'max-height': this.mapHeightContainer, 'overflow': 'auto'}
         });

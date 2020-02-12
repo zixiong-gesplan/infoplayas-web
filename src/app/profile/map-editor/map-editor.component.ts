@@ -666,7 +666,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                     server: environment.urlServerRest,
                     ssl: true,
                     token: this.currentUser.token,
-                    userId: this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username
+                    userId: this.currentUser.username
                 });
                 // then we load a web map from an id
                 const webmap = new WebMap({
@@ -702,11 +702,11 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                         url: playasLayer.url + '/' + playasLayer.layerId + '/' + 'queryRelatedRecords'
                     });
 
-                    const user = IdentityManager.credentials[0].userId;
+                    const ayto = t.popService.getMunicipality().user;
 
                     // Filter by changing runtime params
-                    filterPlayas = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_minus + '\'';
-                    filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_mayus + '\'';
+                    filterPlayas = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_minus + '\'';
+                    filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_mayus + '\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
 
@@ -895,7 +895,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 // aplicamos distintos filtros al mapa en funcion de lo que se quiera mostrar en cada apartado
                 $('#js-filters-mosaic-flat')[0].onclick = function (event) {
                     t.spinnerService.show();
-                    let filter = 'municipio = \'' + t.aytos.find(i => i.username === IdentityManager.credentials[0].userId)
+                    let filter = 'municipio = \'' + t.aytos.find(i => i.ayto === t.popService.getMunicipality().user)
                         .municipio_minus + '\'';
                     filter = event.target.dataset.filter === '.protection' ? filter +
                         ' AND (clasificacion <> \'UP\' OR clasificacion IS NULL)'
@@ -918,12 +918,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             t.sendMessage(0, unselectFeature(), null);
                             t.centroidOption = false;
                             view.zoom = this.zoom;
-
-                            this.currentUser = this.authService.getCurrentUser();
-                            IdentityManager.credentials[0].userId = result.user;
-                            filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_mayus + '\'';
+                            filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            let filter = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_minus + '\'';
+                            let filter = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_minus + '\'';
                             filter = playasLayer.definitionExpression.indexOf(' AND ') !== -1 ? filter +
                                 playasLayer.definitionExpression.substr(playasLayer.definitionExpression.indexOf(' AND ')) : filter;
                             playasLayer.definitionExpression = filter;

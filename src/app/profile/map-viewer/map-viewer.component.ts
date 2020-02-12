@@ -131,7 +131,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     server: environment.urlServerRest,
                     ssl: true,
                     token: this.currentUser.token,
-                    userId: this.currentUser.selectedusername ? this.currentUser.selectedusername : this.currentUser.username
+                    userId: this.currentUser.username
                 });
                 // then we load a web map from an id
                 const webmap = new WebMap({
@@ -236,12 +236,12 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerViewerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
-                    const user = IdentityManager.credentials[0].userId;
+                    const ayto = t.popService.getMunicipality().user;
 
                     // Filter by changing runtime params
-                    filterPlayas = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_minus + '\'';
+                    filterPlayas = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_minus + '\'';
                     filterPlayas = filterPlayas + ' AND clasificacion IS NOT NULL';
-                    filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === user).municipio_mayus + '\'';
+                    filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_mayus + '\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
 
@@ -328,11 +328,9 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                         if (result.user && municipiosLayer) {
                             viewer.zoom = this.config.data.zoom;
 
-                            this.currentUser = this.authService.getCurrentUser();
-                            IdentityManager.credentials[0].userId = result.user;
-                            filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_mayus + '\'';
+                            filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            const filter = 'municipio = \'' + t.aytos.find(i => i.username === result.user).municipio_minus + '\''
+                            const filter = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_minus + '\''
                                 + ' AND clasificacion IS NOT NULL';
                             playasLayer.definitionExpression = filter;
                             loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (Beachs) {

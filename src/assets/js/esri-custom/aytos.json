@@ -682,21 +682,5 @@
         "municipio_minus": "Yaiza",
         "municipio_mayus": "YAIZA",
         "istac_code": "35034"
-    },
-    {
-        "username": "infoplayas",
-        "isSuperUser": true,
-        "editor": true,
-        "municipio_minus": null,
-        "municipio_mayus": null,
-        "istac_code": null
-    },
-    {
-        "username": "dgse_creator",
-        "isSuperUser": true,
-        "editor": false,
-        "municipio_minus": null,
-        "municipio_mayus": null,
-        "istac_code": null
     }
 ]

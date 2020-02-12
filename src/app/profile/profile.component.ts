@@ -26,8 +26,8 @@ export class ProfileComponent implements OnInit {
         this.appSettingsService.getJSON().subscribe(data => {
             const aytos: AppSetting[] = data;
             aytos.map(v => {
-                if (!v.isSuperUser) {
-                    this.municipalities.push({label: v.municipio_minus, value: v.username});
+                if (v.istac_code) {
+                    this.municipalities.push({label: v.municipio_minus, value: v.ayto});
                 }
             });
         });
@@ -38,14 +38,12 @@ export class ProfileComponent implements OnInit {
         navbar_load();
         this.current_user = this.authService.getCurrentUser();
         if (!this.popService.isMunicipalityStore(this.current_user)) {
-            this.popService.updateMunicipality(this.current_user.selectedusername
-                ? this.current_user.selectedusername : this.current_user.username);
+            this.popService.updateMunicipality(this.current_user.filter
+                ? this.current_user.filter : 'adeje');
         }
     }
 
     updateFilterUser($event) {
-        this.current_user.selectedusername = $event.value;
-        this.authService.setUser(this.current_user);
         this.popService.updateMunicipality($event.value);
     }
 

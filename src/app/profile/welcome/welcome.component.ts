@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {AppSetting} from '../../models/app-setting';
 import {AppSettingsService} from '../../services/app-settings.service';
+import {Auth} from '../../models/auth';
 declare function init_plugins();
 
 declare var Swiper: any;
@@ -30,8 +31,9 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
         init_plugins();
         this.appSettingsService.getJSON().subscribe(data => {
             const aytos: AppSetting[] = data;
-            this.municipalityName = this.authService.getCurrentUser().selectedusername ? this.authService.getCurrentUser().name :
-                aytos.find(i => i.ayto === this.authService.getCurrentUser().filter).municipio_minus;
+            const user: Auth = this.authService.getCurrentUser();
+            this.municipalityName = user.filter ? aytos.find(i => i.ayto === user.filter).municipio_minus :
+                user.name;
         });
     }
 
