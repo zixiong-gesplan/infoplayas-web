@@ -8,6 +8,7 @@ import {SelectItem} from 'primeng/api';
 import {PopulationService} from '../services/population.service';
 import {AppSettingsService} from '../services/app-settings.service';
 import {AppSetting} from '../models/app-setting';
+import {environment} from '../../environments/environment';
 declare function init_plugins();
 declare function navbar_load();
 
@@ -19,6 +20,8 @@ declare function navbar_load();
 export class ProfileComponent implements OnInit {
     municipalities: SelectItem[];
     current_user: Auth;
+    isPlanUser: boolean;
+    isIncidentsUser: boolean;
 
     constructor(private service: RequestService, private authService: AuthGuardService, private spinnerService: Ng4LoadingSpinnerService,
                 public router: Router, private popService: PopulationService, private appSettingsService: AppSettingsService) {
@@ -37,6 +40,9 @@ export class ProfileComponent implements OnInit {
         init_plugins();
         navbar_load();
         this.current_user = this.authService.getCurrentUser();
+        const rol = environment.roles.find(i => i.id === this.current_user.roleId);
+        this.isPlanUser = rol.plan_visual;
+        this.isIncidentsUser = rol.inc_visual;
         if (!this.popService.isMunicipalityStore(this.current_user)) {
             this.popService.updateMunicipality(this.current_user.filter
                 ? this.current_user.filter : 'adeje');
