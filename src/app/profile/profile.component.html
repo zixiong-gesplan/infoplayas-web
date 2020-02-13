@@ -38,7 +38,7 @@
                             <a [routerLink]="['planos']" class="font-style-1 nav-item"
                                pTooltip="Generador de planos de asistencia técnica" tooltipPosition="top">planos</a>
                         </li>
-                        <li *ngIf="current_user.filter" class="nav-tab">
+                        <li *ngIf="isPlanUser" class="nav-tab">
                             <a [routerLink]="['informes']" class="font-style-1 nav-item ">Informes</a>
                         </li>
                         <li *ngIf="!current_user.filter" class="navbar-toggle">
@@ -95,7 +95,7 @@
                         <li class="clearfix">
                             <a [routerLink]="['planos']"><span><i class="fa fa-sticky-note-o"></i></span> planos</a>
                         </li>
-                        <li class="clearfix">
+                        <li *ngIf="isPlanUser" class="clearfix">
                             <a [routerLink]="['informes']"><span><i class="fa fa-envelope-square"></i></span>
                                 Informes</a>
                         </li>

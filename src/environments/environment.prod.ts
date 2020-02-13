@@ -6,6 +6,7 @@ export const environment = {
     idportalView: '81e40ab3616b4b4386058593078eaddf',
     urlServerRest: 'https://gesplan.maps.arcgis.com/sharing/rest',
     urlSelfinfo: '/community/self',
+    urlPlanos: 'https://www.infoplayascanarias.es/planos/',
     roles: [
         {
             id: '6eaujmQDyuNamfzU',
@@ -42,6 +43,16 @@ export const environment = {
             name: 'infoplayas_gob',
             inc_visual: true,
             inc_edit: true,
+            plan_visual: true,
+            plan_edit: false,
+            scope: 'todos',
+            catalogue_edit: false
+        },
+        {
+            id: 'pNHGBRR3LVB6u2e0',
+            name: 'infoplayas_visor',
+            inc_visual: true,
+            inc_edit: false,
             plan_visual: true,
             plan_edit: false,
             scope: 'todos',
