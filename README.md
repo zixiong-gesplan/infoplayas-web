@@ -11,5 +11,7 @@ InfoPlayas              Municipio       si                    si                
 InfoPlayas GEST*        todos           si                    si                si                          si                      infoplayas_gest
 InfoPlayas INC          Municipio       no                    no                si                          si                      infoplayas_inc
 InfoPlayas GOB          todos           si                    no                si                          si                      infoplayas_gob
+InfoPlayas VISOR**      todos           si                    no                si                          no                      infoplayas_visor
 
 * Adicionalmente permite editar todos los campos de la capa de playas en el formulario de inventario en el apartado de clasificación. Gestión interna Gesplán.
+** este rol está dirigido para usuarios de esri de tipo viewer, mientras que los otros son de tipo creator (o editores).
