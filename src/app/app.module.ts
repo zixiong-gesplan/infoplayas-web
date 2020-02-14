@@ -96,7 +96,7 @@ registerLocaleData(localeEs, 'es');
             useClass: ResponseInterceptorService,
             multi: true
         }],
-    entryComponents: [DynamicDialogComponent, MapViewerComponent],
+    entryComponents: [DynamicDialogComponent, MapViewerComponent, MapPickLocationComponent],
     bootstrap: [AppComponent]
 })
 export class AppModule {

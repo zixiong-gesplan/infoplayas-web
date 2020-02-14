@@ -1,3 +1,42 @@
-<p>
-  map-pick-location works!
-</p>
+<ng4-loading-spinner [timeout]="10000" [threshold]="500"></ng4-loading-spinner>
+<div class="container">
+    <div class="row padding-bottom-10">
+        <div class="col-md-10">
+            <i style="color: #1f57ff; margin-top: 2px"
+               pTooltip="Seleccione primero una playa y luego un punto para ubicar el incidente."
+               class="pull-left fa fa-2x fa-info-circle"></i>
+            <label class="info" style="font-weight: bolder; padding-top: 8px">Seleccione primero una playa y luego un punto para ubicar el incidente.</label>
+        </div>
+        <div class="col-md-2">
+            <input (click)="close()"
+                   type="button"
+                   class="esri-button esri-button--secondary"
+                   value="Cerrar"/>
+        </div>
+    </div>
+    <div id="listPlayasPick" class="panel-side scroller esri-widget esri-hidden">
+        <ul id="ulPlayaPick">
+            <li>Cargando&hellip;</li>
+        </ul>
+    </div>
+    <div id="mainContainerPick" [style.height]="config.data.mapHeight">
+        <div id="viewDivPick"></div>
+        <div id="legendDivPick" class="card custom-widget"></div>
+        <div id="infoPick" class="container-fluid esri-widget custom-widget esri-hidden">
+            <img src="assets/images/logos/logo.png" class="card-img-top padding-bottom-10"/>
+            <h3 class="esri-widget__heading esri-legend__service-label">Grados de protección</h3>
+            <div class="esri-legend__layer-row">
+                <div class="esri-legend__layer-row">
+
+                </div>
+                <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
+                    <div class="esri-legend__symbol">
+                        <img src="assets\images\grados\alto.svg" style="height: 25px; width: 25px"/>
+                    </div>
+                </div>
+                <div class="esri-legend__layer-cell esri-legend__layer-cell--info">ALTO</div>
+            </div>
+        </div>
+    </div>
+</div>
+
