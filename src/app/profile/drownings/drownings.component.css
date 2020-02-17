@@ -36,3 +36,9 @@
   height: 25px !important;
   width: 25px !important;
 }
+input[type="text"].hora_derivacion::-webkit-input-placeholder {
+  border: #000;
+ padding: 10px;
+ font-size: 1.2em;
+ width: 100%;
+}

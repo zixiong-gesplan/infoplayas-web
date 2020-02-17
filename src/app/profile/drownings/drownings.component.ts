@@ -27,12 +27,16 @@ export class DrowningsComponent implements OnInit {
 
   ngOnInit() {
 
-    //console.log(this.authService.getCurrentUser());
+    console.log(this.authService.getCurrentUser());
     this.formPrincipal = this.fb.group({
       incidente: new FormControl(''),
       expte: new FormControl(0, Validators.min(0)),
       socorristas: new FormControl(0),
       fuen_datos: new FormControl(0),
+      municipio: new FormControl(this.authService.getCurrentUser().filter.toUpperCase()),
+      playa: new FormControl(''),
+      hora_derivación: new FormControl(''),
+      isla: new FormControl('Gran Canaria'),
       //ultimo_editor: new FormControl(this.currentUser.username),
       //ultimo_cambio: new FormControl(this.toDateFormat(true))
     });
@@ -57,6 +61,14 @@ export class DrowningsComponent implements OnInit {
       this.archivos.push(files[i]);
     }
     reader.readAsDataURL(event.target.files[i]);
+  }
+  nuevaIncidencia(){
+    Swal.fire({
+      type: 'success',
+      title: 'Exito',
+      text: 'La incidencia se ha creado correctamente',
+      footer: ''
+    });
   }
 
 }

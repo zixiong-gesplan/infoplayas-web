@@ -15,7 +15,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-8">
-          <form>
+          <form [formGroup]="formPrincipal" (ngSubmit)="nuevaIncidencia()">
             <!-- panel del identificador -->
             <div class="panel panel-primary">
             <div class="panel-heading">ID</div>
@@ -48,24 +48,24 @@
             <div class="panel-heading">Tiempo</div>
             <div class="panel-body">
             <div class="form-group form-group-sm">
-              <label for="fecha">Fecha</label>
-              <input type="text" class="form-control" id="fecha" aria-describedby="fecha">
-              <small id="fecha" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <label for="fecha">Fecha</label><br>
+              <p-calendar formControlName="fecha" id="fecha" [showIcon]="true" placeholder="Fecha"></p-calendar><br>
+              <small id="hora_deriva" class="form-text text-muted">Seleccione la fecha del incidente</small>
             </div>
             <div class="form-group form-group-sm">
-              <label for="hora">Hora conocimiento.</label>
-              <input type="text" class="form-control" id="hora">
-              <small id="hora" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <label for="playa">Hora conocimiento</label><br>
+              <p-calendar class="custom" [readonlyInput]="true" dateFormat="HH/mm" formControlName="hora_conocimiento" id="hora_conocimiento" [showIcon]="true" [timeOnly]="true" placeholder="Hora conocimiento"></p-calendar><br>
+              <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la derivación</small>
             </div>
             <div class="form-group form-group-sm">
-              <label for="hora_toma">Hora toma tierra</label>
-              <input type="text" class="form-control" id="hora_toma">
-              <small id="hora_toma" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <label for="playa">Hora toma</label><br>
+              <p-calendar class="custom" [readonlyInput]="true" dateFormat="HH/mm" formControlName="hora_toma" id="hora_toma" [showIcon]="true" [timeOnly]="true" placeholder="Hora toma"></p-calendar><br>
+              <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la derivación</small>
             </div>
             <div class="form-group form-group-sm">
-              <label for="hora_deriva">Hora derivación</label>
-              <input type="text" class="form-control" id="hora_deriva">
-              <small id="hora_deriva" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <label for="playa">Hora derivación</label><br>
+              <p-calendar class="custom" [readonlyInput]="true" dateFormat="HH/mm" formControlName="hora_derivación" id="hora_derivacion" [showIcon]="true" [timeOnly]="true" placeholder="Hora derivación"></p-calendar><br>
+              <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la derivación</small>
             </div>
             </div>
             </div>
@@ -76,27 +76,23 @@
             <div class="panel-body">
             <div class="form-group form-group-sm">
               <label for="isla">Isla</label>
-              <input type="text" class="form-control" id="isla" aria-describedby="isla">
-              <small id="isla" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <input type="text" formControlName="isla" class="form-control" id="isla" aria-describedby="isla" readonly>
+              <small id="isla" class="form-text text-muted">Isla seleccionada</small>
             </div>
             <div class="form-group form-group-sm">
               <label for="municipio">Municipio</label>
-              <input type="text" class="form-control" id="municipio">
-              <small id="municipio" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <input type="text" formControlName="municipio" class="form-control" id="municipio" readonly>
+              <small id="municipio" class="form-text text-muted">Municipio seleccionado</small>
             </div>
             <div class="form-group form-group-sm">
-              <label for="playas">Playa</label>
-              <select class="form-control" id="playas">
-                <option>La Garita</option>
-                <option>Salinetas</option>
-                <option>Playa de Silva</option>
-              </select>
-              <small id="playas" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <label for="playa">Playa</label>
+              <input type="text" formControlName="playa" class="form-control" id="playa" readonly>
+              <small id="playa" class="form-text text-muted">Playa seleccionada</small>
             </div>
             <div class="form-group form-group-sm">
-              <label for="hora_deriva">Hora derivación</label>
-              <input type="text" class="form-control" id="hora_deriva">
-              <small id="hora_deriva" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <label for="playa">Hora derivación</label><br>
+              <p-calendar class="custom" [readonlyInput]="true" dateFormat="HH/mm" formControlName="hora_derivación1" id="hora_derivacion1" [showIcon]="true" [timeOnly]="true" placeholder="Hora derivación"></p-calendar><br>
+              <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la derivación</small>
             </div>
             </div>
             </div>
@@ -119,13 +115,13 @@
               <label for="servicio">Servicio socorrismo en activo</label>
               <div class="radio">
                 <label>
-                  <input type="radio" name="servicio" id="servicio" value="1" checked>
+                  <input type="radio"  id="serv_on" value="1" checked>
                   Servicio activo
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="servicio" id="servicio" value="0">
+                  <input type="radio" id="serv_off" value="0">
                   Servicio desactivado
                 </label>
               </div>
@@ -300,13 +296,13 @@
                   <label for="servicio">Alerta CECOES</label>
                   <div class="radio">
                     <label>
-                      <input type="radio" name="alerta" id="alerta" value="1">
+                      <input type="radio" id="alert_on" value="1">
                       Existe alerta
                     </label>
                   </div>
                   <div class="radio">
                     <label>
-                      <input type="radio" name="alerta" id="alerta" value="0" checked>
+                      <input type="radio" id="alert_off" value="0" checked>
                       No existe alerta
                     </label>
                   </div>
@@ -318,13 +314,13 @@
                   <small id="ralerta" class="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div class="form-group form-group-sm">
-                  <label for="tiempo">Situación declarada</label>
-                  <select class="form-control" id="tiempo">
+                  <label for="situacion">Situación declarada</label>
+                  <select class="form-control" id="situacion">
                     <option>Alerta</option>
                     <option>Prealerta</option>
                     <option>Definir</option>
                   </select>
-                  <small id="tiempo" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                  <small id="situacion" class="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
               </div>
             </div>
