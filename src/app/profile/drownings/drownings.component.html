@@ -14,5 +14,388 @@
 <section class="padding-top-70 padding-bottom-30">
     <div class="container">
         <button (click)="pickAlocation()">Indicar punto en el mapa</button>
+        <div class="row">
+            <div class="col-sm-8">
+                <form>
+                    <!-- panel del identificador -->
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">ID</div>
+                        <div class="panel-body">
+                            <div class="form-group form-group-sm">
+                                <label for="incidente">Incidente</label>
+                                <input type="text" class="form-control" id="incidente" aria-describedby="incidente">
+                                <small id="incidente" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="expte">Expte.</label>
+                                <input type="text" class="form-control" id="expte">
+                                <small id="incidente" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="socorristas">Socorristas</label>
+                                <input type="text" class="form-control" id="socorristas">
+                                <small id="socorristas" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="fuen_datos">Fuente de datos</label>
+                                <input type="text" class="form-control" id="fuen_datos">
+                                <small id="fuen_datos" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- panel tiempo -->
+                    <div class="panel panel-success">
+                        <div class="panel-heading">Tiempo</div>
+                        <div class="panel-body">
+                            <div class="form-group form-group-sm">
+                                <label for="fecha">Fecha</label>
+                                <input type="text" class="form-control" id="fecha" aria-describedby="fecha">
+                                <small id="fecha" class="form-text text-muted">We'll never share your email with anyone
+                                    else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="hora">Hora conocimiento.</label>
+                                <input type="text" class="form-control" id="hora">
+                                <small id="hora" class="form-text text-muted">We'll never share your email with anyone
+                                    else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="hora_toma">Hora toma tierra</label>
+                                <input type="text" class="form-control" id="hora_toma">
+                                <small id="hora_toma" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="hora_deriva">Hora derivación</label>
+                                <input type="text" class="form-control" id="hora_deriva">
+                                <small id="hora_deriva" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- panel lugar -->
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Lugar</div>
+                        <div class="panel-body">
+                            <div class="form-group form-group-sm">
+                                <label for="isla">Isla</label>
+                                <input type="text" class="form-control" id="isla" aria-describedby="isla">
+                                <small id="isla" class="form-text text-muted">We'll never share your email with anyone
+                                    else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="municipio">Municipio</label>
+                                <input type="text" class="form-control" id="municipio">
+                                <small id="municipio" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="playas">Playa</label>
+                                <select class="form-control" id="playas">
+                                    <option>La Garita</option>
+                                    <option>Salinetas</option>
+                                    <option>Playa de Silva</option>
+                                </select>
+                                <small id="playas" class="form-text text-muted">We'll never share your email with anyone
+                                    else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="hora_deriva">Hora derivación</label>
+                                <input type="text" class="form-control" id="hora_deriva">
+                                <small id="hora_deriva" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- panel persona -->
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">Añadir personas afectadas</div>
+                        <div class="panel-body">
+                            <div class="form-group form-group-sm">
+                                <input type="text" class="form-control" id="persona" aria-describedby="persona">
+                                <small id="persona" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- panel recursos -->
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">Recursos</div>
+                        <div class="panel-body">
+                            <div class="form-group form-group-sm">
+                                <label for="servicio">Servicio socorrismo en activo</label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="servicio" id="servicio" value="1" checked>
+                                        Servicio activo
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="servicio" id="servicio" value="0">
+                                        Servicio desactivado
+                                    </label>
+                                </div>
+                                <small id="servicio" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="tipo">Tipo situación</label>
+                                <select class="form-control" id="tipo">
+                                    <option>0</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                </select>
+                                <small id="tipo" class="form-text text-muted">We'll never share your email with anyone
+                                    else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="nsocorristas">Número de socorristas de servicio</label>
+                                <input type="number" class="form-control" id="nsocorristas" min="1">
+                                <small id="nsocorristas" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="nintervinietes">Número intervinietes</label>
+                                <input type="number" class="form-control" id="nintervinietes" min="1">
+                                <small id="nintervinietes" class="form-text text-muted">We'll never share your email
+                                    with anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="rmovilizados">Recursos movilizados</label>
+                                <select multiple class="form-control" id="rmovilizados">
+                                    <option>Lancha</option>
+                                    <option>Moto</option>
+                                    <option>Embarcación</option>
+                                </select>
+                                <small id="rmovilizados" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+
+                            <div class="form-group form-group-sm">
+                                <label for="rescate">Recursos utilizados en rescate</label>
+                                <select multiple class="form-control" id="rescate">
+                                    <option>Helicóptero</option>
+                                    <option>Embarcación</option>
+                                    <option>Policía Nacional</option>
+                                    <option>Policía Local</option>
+                                    <option>Guardia civil</option>
+                                    <option>Bomberos</option>
+                                    <option>Protección Civil</option>
+                                    <option>Salvamento Marítimo</option>
+                                </select>
+                                <small id="rescate" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="rtierra">Recursos utilizados en tierra</label>
+                                <select multiple class="form-control" id="rtierra">
+                                    <option>DESA</option>
+                                    <option>Vendas</option>
+                                </select>
+                                <small id="rtierra" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+
+                            <div class="form-group form-group-sm">
+                                <label for="acciones">Acciones realizadas</label>
+                                <select multiple class="form-control" id="acciones">
+                                    <option>DESA</option>
+                                    <option>Rescate</option>
+                                    <option>Rcp</option>
+                                </select>
+                                <small id="acciones" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+
+                            <div class="form-group form-group-sm">
+                                <label for="derivacion">Derivación victima</label>
+                                <select class="form-control" id="derivacion">
+                                    <option>DESA</option>
+                                    <option>Rescate</option>
+                                    <option>Rcp</option>
+                                </select>
+                                <small id="derivacion" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- panel resultados -->
+                    <div class="panel panel-success">
+                        <div class="panel-heading">Resultados</div>
+                        <div class="panel-body">
+                            <div class="form-group form-group-sm">
+                                <label for="remergencia">Resultado de la emergencia</label>
+                                <select class="form-control" id="remergencia">
+                                    <option>Ileso</option>
+                                    <option>Leve</option>
+                                    <option>Grave</option>
+                                    <option>Fallecido</option>
+                                </select>
+                                <small id="remergencia" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="observaciones">Observaciones</label>
+                                <textarea class="form-control" rows="10" id="robservaciones"></textarea>
+                                <small id="observaciones" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- panel desarrollo-->
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">Desarrollo</div>
+                        <div class="panel-body">
+                            <div class="form-group form-group-sm">
+                                <label for="dobservaciones1">Observaciones 1</label>
+                                <textarea class="form-control" rows="10" id="dobservaciones1"></textarea>
+                                <small id="dobservaciones1" class="form-text text-muted">We'll never share your email
+                                    with anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="dobservaciones2">Observaciones 2</label>
+                                <textarea class="form-control" rows="10" id="dobservaciones2"></textarea>
+                                <small id="dobservaciones2" class="form-text text-muted">We'll never share your email
+                                    with anyone else.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- panel resultados -->
+                    <div class="panel panel-success">
+                        <div class="panel-heading">Observaciones</div>
+                        <div class="panel-body">
+                            <div class="form-group form-group-sm">
+                                <label for="emar">Estado de la mar (ESCALA DE DOUGLAS)</label>
+                                <select class="form-control" id="emar">
+                                    <option>0</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                </select>
+                                <small id="emar" class="form-text text-muted">We'll never share your email with anyone
+                                    else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="eviento">Estado del viento (ESCALA DE BEAUFORT)</label>
+                                <select class="form-control" id="eviento">
+                                    <option>0</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option>12</option>
+                                </select>
+                                <small id="eviento" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+
+                            <div class="form-group form-group-sm">
+                                <label for="tiempo">Tiempo atmosférico</label>
+                                <select class="form-control" id="tiempo">
+                                    <option>Soleado</option>
+                                    <option>Nubes y Claros</option>
+                                    <option>Nublado</option>
+                                    <option>Llovizna</option>
+                                    <option>Lluvia intesa</option>
+                                </select>
+                                <small id="tiempo" class="form-text text-muted">We'll never share your email with anyone
+                                    else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="servicio">Alerta CECOES</label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="alerta" id="alerta" value="1">
+                                        Existe alerta
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="alerta" id="alerta" value="0" checked>
+                                        No existe alerta
+                                    </label>
+                                </div>
+                                <small id="servicio" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="ralerta">Referencia alerta</label>
+                                <input type="text" class="form-control" id="ralerta" aria-describedby="ralerta">
+                                <small id="ralerta" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="tiempo">Situación declarada</label>
+                                <select class="form-control" id="tiempo">
+                                    <option>Alerta</option>
+                                    <option>Prealerta</option>
+                                    <option>Definir</option>
+                                </select>
+                                <small id="tiempo" class="form-text text-muted">We'll never share your email with anyone
+                                    else.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- panel del identificador -->
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">Anexo</div>
+                        <div class="panel-body">
+                            <div *ngFor="let item of archivos; let i = index">
+                                <table class="table table-bordered table-striped">
+                                    <tr>
+                                        <td width="10%" class="text text-center">
+                                            <img class="imgs" [src]="url[i]"/></td>
+                                        <td width="80%">{{item.name}}</td>
+                                        <td width="10%" class="text text-center"><span (click)="borrarArchivo(item)"
+                                                                                       class="glyphicon glyphicon-trash pointer"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <input type="file" name="file-7" id="file-7" class="inputfile inputfile-7"
+                                       onclick="this.value = null" (change)="fileChangeEvent($event)" multiple
+                                       accept='image/*'/>
+                                <label for="file-7">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="iborrainputfile" width="20"
+                                         height="17" viewBox="0 0 20 17">
+                                        <path
+                                            d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path>
+                                    </svg>
+                                    <span class="iborrainputfile">Seleccionar archivos</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+            </div>
+        </div>
     </div>
 </section>
