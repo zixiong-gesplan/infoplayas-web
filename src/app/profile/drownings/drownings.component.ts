@@ -19,7 +19,7 @@ export class DrowningsComponent implements OnInit {
     test() {
         const ref = this.dialogService.open(MapPickLocationComponent, {
             data: {
-                id: 'this.beachObjectId',
+                id: null,
                 zoom: 12,
                 mapHeight: '69vh'
             },

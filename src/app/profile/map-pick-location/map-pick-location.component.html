@@ -14,29 +14,13 @@
                    value="Cerrar"/>
         </div>
     </div>
-    <div id="listPlayasPick" class="panel-side scroller esri-widget esri-hidden">
-        <ul id="ulPlayaPick">
+    <div id="listPlayasViewer" class="panel-side scroller esri-widget esri-hidden">
+        <ul id="ulPlayaViewer">
             <li>Cargando&hellip;</li>
         </ul>
     </div>
-    <div id="mainContainerPick" [style.height]="config.data.mapHeight">
-        <div id="viewDivPick"></div>
-        <div id="legendDivPick" class="card custom-widget"></div>
-        <div id="infoPick" class="container-fluid esri-widget custom-widget esri-hidden">
-            <img src="assets/images/logos/logo.png" class="card-img-top padding-bottom-10"/>
-            <h3 class="esri-widget__heading esri-legend__service-label">Grados de protección</h3>
-            <div class="esri-legend__layer-row">
-                <div class="esri-legend__layer-row">
-
-                </div>
-                <div class="esri-legend__layer-cell esri-legend__layer-cell--symbols">
-                    <div class="esri-legend__symbol">
-                        <img src="assets\images\grados\alto.svg" style="height: 25px; width: 25px"/>
-                    </div>
-                </div>
-                <div class="esri-legend__layer-cell esri-legend__layer-cell--info">ALTO</div>
-            </div>
-        </div>
+    <div id="mainContainerViewer" [style.height]="config.data.mapHeight">
+        <div id="viewDivViewer"></div>
+        <div id="legendDivViewer" class="card custom-widget"></div>
     </div>
 </div>
-

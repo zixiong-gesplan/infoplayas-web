@@ -154,9 +154,6 @@ function loadList(view, featureLayer, fields, filter) {
       if (view.container.id === 'viewDivViewer'){
           listNodeViewer.innerHTML = "";
           listNodeViewer.appendChild(fragment);
-      } else if (view.container.id === 'viewDivPick') {
-          listNodePick.innerHTML = "";
-          listNodePick.appendChild(fragment);
       } else {
           listNode.innerHTML = "";
           listNode.appendChild(fragment);
