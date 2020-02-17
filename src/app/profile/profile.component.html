@@ -13,24 +13,32 @@
         <nav class="navbar position-absolute sm-position-fixed top40px box-nav">
             <div class="container sm-width-100 white-background">
                 <div class="row">
-                    <ul class="nav navbar-nav navbar-right navlinks-outer collapse navbar-collapse pointer">
-                        <li *ngIf="current_user.filter" class="navbar-brand md-float-right" [routerLink]="['bienvenida']">
+                    <ul class="nav navbar-nav navbar-left navlinks-outer collapse navbar-collapse pointer">
+                        <li *ngIf="current_user.filter" class="navbar-brand md-float-right"
+                            [routerLink]="['bienvenida']">
                             <img src="assets/images/logos/logo_bueno2.png" alt="logo">
                         </li>
                         <li class="nav-tab">
                             <a [routerLink]="['catalogo']" class="font-style-1 nav-item">catálogo</a>
                         </li>
-                        <li class="nav-tab">
+                        <li *ngIf="isPlanUser" class="nav-tab">
                             <a [routerLink]="['clasificacion']" class="font-style-1 nav-item ">clasificación</a>
                         </li>
-                        <li class="nav-tab">
-                            <a [routerLink]="['seguridad']" class="font-style-1 nav-item ">seguridad y salvamento</a>
+                        <li *ngIf="isPlanUser" class="nav-tab">
+                            <a [routerLink]="['seguridad']" class="font-style-1 nav-item ">
+                                seguridad
+                            </a>
+                        </li>
+                        <li *ngIf="isIncidentsUser" class="nav-tab">
+                            <a [routerLink]="['incidentes']" class="font-style-1 nav-item ">
+                                incidentes
+                            </a>
                         </li>
                         <li class="nav-tab">
                             <a [routerLink]="['planos']" class="font-style-1 nav-item"
-                                  pTooltip="Generador de planos de asistencia técnica" tooltipPosition="top">planos</a>
+                               pTooltip="Generador de planos de asistencia técnica" tooltipPosition="top">planos</a>
                         </li>
-                        <li *ngIf="current_user.filter" class="nav-tab">
+                        <li *ngIf="isPlanUser" class="nav-tab">
                             <a [routerLink]="['informes']" class="font-style-1 nav-item ">Informes</a>
                         </li>
                         <li *ngIf="!current_user.filter" class="navbar-toggle">
@@ -75,16 +83,19 @@
                         <li class="nav-item active clearfix">
                             <a [routerLink]="['catalogo']"><span><i class="fa fa-map-o"></i></span> catálogo</a>
                         </li>
-                        <li class="clearfix">
+                        <li *ngIf="isPlanUser" class="clearfix">
                             <a [routerLink]="['clasificacion']"><span><i class="fa fa-shield"></i></span> clasificación</a>
                         </li>
-                        <li class="clearfix">
+                        <li *ngIf="isPlanUser" class="clearfix">
                             <a [routerLink]="['seguridad']"><span><i class="fa fa-user-secret"></i></span> seguridad</a>
                         </li>
-                        <li class="clearfix">
-                            <a [routerLink]="['planos']"><span><i class="fa fa-sticky-note-o"></i></span> Planos</a>
+                        <li *ngIf="isIncidentsUser" class="clearfix">
+                            <a [routerLink]="['incidentes']"><span><i class="fa fa-user-secret"></i></span> incidentes</a>
                         </li>
                         <li class="clearfix">
+                            <a [routerLink]="['planos']"><span><i class="fa fa-sticky-note-o"></i></span> planos</a>
+                        </li>
+                        <li *ngIf="isPlanUser" class="clearfix">
                             <a [routerLink]="['informes']"><span><i class="fa fa-envelope-square"></i></span>
                                 Informes</a>
                         </li>

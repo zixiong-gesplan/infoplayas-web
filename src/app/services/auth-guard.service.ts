@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {CanActivate} from '@angular/router/src/interfaces';
 import {Auth} from '../models/auth';
 import {environment} from '../../environments/environment';
-import {Router} from '@angular/router';
+import {ActivatedRouteSnapshot, Router} from '@angular/router';
 import {EsriRequestService} from './esri-request.service';
 
 declare function init_plugins();
@@ -17,11 +17,32 @@ export class AuthGuardService implements CanActivate {
     constructor(public router: Router, private service: EsriRequestService) {
     }
 
-    canActivate(): boolean {
+    canActivate(route: ActivatedRouteSnapshot): boolean {
         init_plugins();
         if (!this.isAuthenticated()) {
             window.location.href = this.urlAuthorize;
             return false;
+        }
+        if (route.data.permission) {
+            const currentUser: Auth = this.getCurrentUser();
+            const rol = environment.roles.find(i => i.id === currentUser.roleId);
+            switch (route.data.permission) {
+                case 'plan':
+                    if (!rol.plan_visual) {
+                        this.router.navigate(['/tecnicos/bienvenida']);
+                        return false;
+                    }
+                    break;
+                case 'incidentes':
+                    if (!rol.inc_visual) {
+                        this.router.navigate(['/tecnicos/bienvenida']);
+                        return false;
+                    }
+                    break;
+                default:
+                    this.router.navigate(['/home']);
+                    return false;
+            }
         }
         return true;
     }

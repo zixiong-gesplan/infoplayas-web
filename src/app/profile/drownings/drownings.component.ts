@@ -1,3 +1,5 @@
+import {DialogService} from 'primeng/api';
+import {MapPickLocationComponent} from '../map-pick-location/map-pick-location.component';
 import { Component, OnInit } from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
 import {Auth} from '../../models/auth';
@@ -10,9 +12,9 @@ import Swal from 'sweetalert2';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'app-drownings',
-  templateUrl: './drownings.component.html',
-  styleUrls: ['./drownings.component.css']
+    selector: 'app-drownings',
+    templateUrl: './drownings.component.html',
+    styleUrls: ['./drownings.component.css']
 })
 export class DrowningsComponent implements OnInit {
   public formPrincipal: FormGroup;
@@ -23,7 +25,8 @@ export class DrowningsComponent implements OnInit {
   constructor(  private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
                 private fb: FormBuilder,
-                private service: EsriRequestService) { }
+                private service: EsriRequestService,
+                public dialogService: DialogService) { }
 
   ngOnInit() {
 
@@ -74,5 +77,26 @@ export class DrowningsComponent implements OnInit {
       footer: ''
     });
   }
+
+    pickAlocation() {
+        const ref = this.dialogService.open(MapPickLocationComponent, {
+            data: {
+                id: null,
+                zoom: 12,
+                mapHeight: '69vh'
+            },
+            header: 'titulo cabecera ventana',
+            width: '65%',
+            contentStyle: {'max-height': '78vh', 'overflow': 'auto'}
+        });
+
+        ref.onClose.subscribe((incidentPoint) => {
+            if (incidentPoint) {
+                console.log(incidentPoint);
+            // TODO hacer visible el formulario de incidentes y precargar datos de la playa y el punto
+            // this.formulario = true;
+            }
+        });
+    }
 
 }

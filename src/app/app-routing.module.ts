@@ -29,10 +29,12 @@ const routes: Routes = [
                 path: 'catalogo', component: CatalogueComponent, canActivate: [AuthGuardService]
             },
             {
-                path: 'clasificacion', component: ClassificationComponent, canActivate: [AuthGuardService]
+                path: 'clasificacion', component: ClassificationComponent, canActivate: [AuthGuardService],
+                data: {permission: 'plan'}
             },
             {
-                path: 'seguridad', component: SecurityComponent, canActivate: [AuthGuardService]
+                path: 'seguridad', component: SecurityComponent, canActivate: [AuthGuardService],
+                data: {permission: 'plan'}
             },
             {
                 path: 'planos', component: ReportComponent, canActivate: [AuthGuardService]
@@ -41,7 +43,8 @@ const routes: Routes = [
                 path: 'informes', component: ContactUsComponent, canActivate: [AuthGuardService]
             },
             {
-                path: 'incidentes', component: DrowningsComponent, canActivate: [AuthGuardService]
+                path: 'incidentes', component: DrowningsComponent, canActivate: [AuthGuardService],
+                data: {permission: 'incidentes'}
             }
         ]
     },

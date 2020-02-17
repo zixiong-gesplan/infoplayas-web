@@ -1,4 +1,4 @@
-<!-- clasificacion Header -->
+<!-- Header -->
 <ng4-loading-spinner [timeout]="10000" [threshold]="500"></ng4-loading-spinner>
 <section class="blog-header blog-page-padding-top" data-parallax="scroll" data-image-src="assets/images/play.jpg"
          style="background-image: url('assets/images/play.jpg'); background-size: cover; background-position: center center;">
@@ -9,10 +9,11 @@
         </div>
     </div>
 </section>
-<!-- clasificacion Header End -->
-<!-- esquema1 -->
+<!-- Header End -->
+<!-- seccion -->
 <section class="padding-top-70 padding-bottom-30">
     <div class="container">
+        <button (click)="pickAlocation()">Indicar punto en el mapa</button>
       <div class="row">
         <div class="col-sm-8">
           <form [formGroup]="formPrincipal" (ngSubmit)="nuevaIncidencia()">
