@@ -37,6 +37,10 @@ export class DrowningsComponent implements OnInit {
       playa: new FormControl(''),
       hora_derivación: new FormControl(''),
       isla: new FormControl('Gran Canaria'),
+      fecha: new FormControl(''),
+      hora_conocimiento: new FormControl(''),
+      hora_toma: new FormControl(''),
+      hora_derivación1: new FormControl(''),
       //ultimo_editor: new FormControl(this.currentUser.username),
       //ultimo_cambio: new FormControl(this.toDateFormat(true))
     });
