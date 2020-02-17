@@ -11,6 +11,7 @@ import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/api';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
+import Swal from 'sweetalert2';
 
 declare var $: any;
 declare var jquery: any;
@@ -41,6 +42,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
     private currentUser: Auth;
     private subscripcionMunicipality;
     private lastGraphicLayerId: string;
+    private selectedMpPoint: any;
     private aytos: AppSetting[];
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
@@ -73,7 +75,32 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
     }
 
     close() {
-        this.ref.close('onClose');
+        this.loadCatalogueInfoByid();
+    }
+
+    loadCatalogueInfoByid() {
+        this.spinnerService.show();
+        const filterBeach = 'objectid = \'' + this.selectedBeachId + '\'';
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filterBeach,
+            '*', false, this.currentUser.token, 'objectid', false).subscribe(
+            (result: any) => {
+                if (result && result.features.length > 0) {
+                    this.selectedMpPoint.attributes = result.features[0].attributes;
+                    this.ref.close(this.selectedMpPoint);
+                } else if (result.error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Error ' + result.error.code,
+                        text: result.error.message,
+                        footer: ''
+                    });
+                }
+                this.spinnerService.hide();
+            },
+            error => {
+                console.log(error.toString());
+                this.spinnerService.hide();
+            });
     }
 
     private setMap() {
@@ -175,6 +202,8 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                         viewer.hitTest(event).then(function (response) {
                             if (response.results.length > 1) {
                                 standOutBeach(response.results[0].graphic.layer, response.results[0].graphic.attributes.objectid);
+                                const resultBeach = response.results.find(item => item.graphic.layer.id === playasLayerViewerId);
+                                t.selectedBeachId = resultBeach.graphic.attributes.objectid;
                             }
                             let layer = null;
                             if (!t.lastGraphicLayerId) {
@@ -193,7 +222,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                             if (highlight) {
                                 const mpPoint = viewer.toMap(response.screenPoint);
                                 const pointGraphic = new Graphic({
-                                    geometry: mpPoint, // Add the geometry created in step 4
+                                    geometry: mpPoint,
                                     symbol: {
                                         type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
                                         url: 'https://static.arcgis.com/images/Symbols/Animated/EnlargeRotatingRedMarkerSymbol.png',
@@ -202,13 +231,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                                     }
                                 });
                                 layer.graphics.add(pointGraphic);
-                            }
-                            const result = response.results.find(item => item.graphic.layer.id === t.lastGraphicLayerId);
-                            const resultBeach = response.results.find(item => item.graphic.layer.id === playasLayerViewerId);
-                            if (resultBeach) {
-                                t.selectedBeachId = resultBeach.graphic.attributes.objectid;
-                            } else {
-                                t.selectedBeachId = null;
+                                t.selectedMpPoint = pointGraphic;
                             }
                         });
                     });

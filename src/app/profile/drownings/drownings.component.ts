@@ -16,7 +16,7 @@ export class DrowningsComponent implements OnInit {
     ngOnInit() {
     }
 
-    test() {
+    pickAlocation() {
         const ref = this.dialogService.open(MapPickLocationComponent, {
             data: {
                 id: null,
@@ -28,13 +28,13 @@ export class DrowningsComponent implements OnInit {
             contentStyle: {'max-height': '78vh', 'overflow': 'auto'}
         });
 
-        ref.onClose.subscribe((mensaje: string) => {
-            if (mensaje) {
-                console.log(mensaje);
+        ref.onClose.subscribe((incidentPoint) => {
+            if (incidentPoint) {
+                console.log(incidentPoint);
             }
         });
-        // this.loadAllData();
-        // this.vacacional = false;
+        // TODO hacer visible el formulario de incidentes y precargar datos de la playa y el punto
+        // this.formulario = true;
     }
 
 }
