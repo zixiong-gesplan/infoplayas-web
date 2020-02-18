@@ -98,7 +98,7 @@ export class DrowningsComponent implements OnInit {
                 zoom: 12,
                 mapHeight: '69vh'
             },
-            header: 'titulo cabecera ventana',
+            header: 'Seleccione una playa del municipio de ' + this.populationService.getMunicipality().ayuntamiento.toUpperCase() ,
             width: '65%',
             contentStyle: {'max-height': '78vh', 'overflow': 'auto'}
         });
