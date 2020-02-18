@@ -42,3 +42,6 @@ input[type="text"].hora_derivacion::-webkit-input-placeholder {
  font-size: 1.2em;
  width: 100%;
 }
+.textSize{
+  font-size: 0.7em;
+}
