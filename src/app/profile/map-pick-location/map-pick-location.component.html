@@ -3,14 +3,18 @@
     <div class="row padding-bottom-10">
         <div class="col-md-10">
             <i style="color: #1f57ff; margin-top: 2px"
-               pTooltip="Seleccione primero una playa y luego un punto para ubicar el incidente."
+               pTooltip="Seleccione en primer lugar una playa para que pueda pintar sobre el mapa el punto deseado del
+               lugar del incidente. Si quiere mover el punto simplemente pulse en el mapa en el nuevo lugar deseado. A
+continuación pulse el botón para añadir los datos al formulario subyacente."
                class="pull-left fa fa-2x fa-info-circle"></i>
-            <label class="info" style="font-weight: bolder; padding-top: 8px">Seleccione primero una playa y luego un punto para ubicar el incidente.</label>
+            <label class="info" style="font-weight: bolder; padding-top: 8px">Tras la playa seleccione un punto para
+                ubicar el incidente. Puede recolocar el punto pinchando de nuevo sobre el lugar deseado.</label>
         </div>
         <div class="col-md-2">
             <input [disabled]="!selectedBeachId || !selectedMpPoint" (click)="close()"
                    type="button"
-                   [class]="!selectedBeachId || !selectedMpPoint? 'esri-button esri-button--secondary esri-button--disabled' : 'esri-button esri-button--secondary'"
+                   [class]="!selectedBeachId || !selectedMpPoint? 'esri-button esri-button--secondary esri-button--disabled'
+                   : 'esri-button esri-button--secondary'"
                    value="Añadir"/>
         </div>
     </div>
