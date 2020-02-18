@@ -11,9 +11,24 @@
 </section>
 <!-- Header End -->
 <!-- seccion -->
-<section class="padding-top-70 padding-bottom-30">
+<section class="padding-top-70 padding-bottom-30" [hidden]="mapa">
+<div class="container">
+  <div class="row">
+    <div class="col-sm text text-center">
+      <div class="panel panel-primary">
+        <div class="panel-heading ">Ubicar incidente en el mapa, seleccionando la playa y colocando un punto en el lugar elegido</div>
+        <div class="panel-body">
+          <button type="button" class="btn btn-primary" (click)="pickAlocation()">Abrir mapa</button>
+      </div>
+        </div>
+      </div>
+
+  </div>
+</div>
+</section>
+
+<section class="padding-top-70 padding-bottom-30" [hidden]="formulario">
     <div class="container">
-        <button (click)="pickAlocation()">Indicar punto en el mapa</button>
       <div class="row">
         <div class="col-sm-8">
           <form [formGroup]="formPrincipal" (ngSubmit)="nuevaIncidencia()">
@@ -102,8 +117,7 @@
             <div class="panel-heading">Añadir personas afectadas</div>
             <div class="panel-body">
             <div class="form-group form-group-sm">
-              <input type="text" class="form-control" id="persona" aria-describedby="persona">
-              <small id="persona" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#personasModal">Añadir personas afectadas</button>
             </div>
             </div>
             </div>
@@ -116,13 +130,13 @@
               <label for="servicio">Servicio socorrismo en activo</label>
               <div class="radio">
                 <label>
-                  <input type="radio"  id="serv_on" value="1" checked>
+                  <input type="radio"  name="servicio" value="1" checked>
                   Servicio activo
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" id="serv_off" value="0">
+                  <input type="radio" name="servicio" value="0">
                   Servicio desactivado
                 </label>
               </div>
@@ -297,13 +311,13 @@
                   <label for="servicio">Alerta CECOES</label>
                   <div class="radio">
                     <label>
-                      <input type="radio" id="alert_on" value="1">
+                      <input type="radio" name="alerta" value="1">
                       Existe alerta
                     </label>
                   </div>
                   <div class="radio">
                     <label>
-                      <input type="radio" id="alert_off" value="0" checked>
+                      <input type="radio" name="alerta" value="0" checked>
                       No existe alerta
                     </label>
                   </div>
@@ -356,3 +370,66 @@
       </div>
     </div>
 </section>
+
+
+<!-- inicio de la modal para añadir personas -->
+<!-- Modal -->
+<div class="modal fade" id="personasModal" tabindex="-1" role="dialog" aria-labelledby="personasModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+      <form [formGroup]="formPersonas" (ngSubmit)="nuevaIncidencia()">
+        <!-- panel lugar -->
+        <div class="panel panel-info">
+        <div class="panel-heading">Prsonas afectadas</div>
+        <div class="panel-body">
+        <div class="form-group form-group-sm">
+          <label for="servicio">Sexo</label>
+          <div class="radio">
+            <label>
+              <input type="radio"  name="genero" value="1">
+              Hombre
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="genero" value="0">
+              Mujer
+            </label>
+          </div>
+        </div>
+        <div class="form-group form-group-sm">
+          <label for="playa">Fecha de nacimiento</label><br>
+          <p-calendar [readonlyInput]="true" formControlName="fecha_nacimiento" id="fecha_nacimiento" [showIcon]="true"placeholder="Fecha nacimiento"></p-calendar><br>
+          <small id="fecha_nacimiento" class="form-text text-muted">Seleccione la fecha de nacimiento</small>
+        </div>
+        <div class="form-group form-group-sm">
+          <label for="playa">Lugar de nacimiento</label>
+          <input type="text" formControlName="lnacimiento" class="form-control" id="lnacimiento">
+        </div>
+        <div class="form-group form-group-sm">
+          <label for="playa">País de nacimiento</label>
+          <input type="text" formControlName="pnacimiento" class="form-control" id="pnacimiento">
+
+        </div>
+        <div class="form-group form-group-sm">
+          <label for="playa">Lugar de residencia</label>
+          <input type="text" formControlName="lresidencia" class="form-control" id="lresidencia">
+
+        </div>
+        <div class="form-group form-group-sm">
+          <label for="playa">País de residencia</label>
+          <input type="text" formControlName="presidencia" class="form-control" id="presidencia">
+
+        </div>
+        </div>
+        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary">Añadir</button>
+      </div>
+    </div>
+  </div>
+</div>
