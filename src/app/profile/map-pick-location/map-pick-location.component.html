@@ -8,10 +8,10 @@
             <label class="info" style="font-weight: bolder; padding-top: 8px">Seleccione primero una playa y luego un punto para ubicar el incidente.</label>
         </div>
         <div class="col-md-2">
-            <input (click)="close()"
+            <input [disabled]="!selectedBeachId || !selectedMpPoint" (click)="close()"
                    type="button"
-                   class="esri-button esri-button--secondary"
-                   value="Cerrar"/>
+                   [class]="!selectedBeachId || !selectedMpPoint? 'esri-button esri-button--secondary esri-button--disabled' : 'esri-button esri-button--secondary'"
+                   value="Añadir"/>
         </div>
     </div>
     <div id="listPlayasViewer" class="panel-side scroller esri-widget esri-hidden">
