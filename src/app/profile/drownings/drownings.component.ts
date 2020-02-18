@@ -26,7 +26,7 @@ export class DrowningsComponent implements OnInit {
   public url:any[] = [];
   public mapa:boolean = false;
   public formulario:boolean = true;
-  public personasArray:[] = [];
+  public personasArray:any[] = [];
 
   constructor(  private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
