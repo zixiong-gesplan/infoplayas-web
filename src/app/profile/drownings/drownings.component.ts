@@ -11,6 +11,8 @@ import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angul
 import {InputTextModule} from 'primeng/inputtext';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
+declare var $: any;
+declare var jQuery: any;
 
 @Component({
     selector: 'app-drownings',
@@ -24,6 +26,7 @@ export class DrowningsComponent implements OnInit {
   public url:any[] = [];
   public mapa:boolean = false;
   public formulario:boolean = true;
+  public personasArray:[] = [];
 
   constructor(  private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -34,7 +37,7 @@ export class DrowningsComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(this.populationService.getMunicipality());
+    console.log(this.authService.getCurrentUser());
     this.formPrincipal = this.fb.group({
       incidente: new FormControl(''),
       expte: new FormControl(0, Validators.min(0)),
@@ -50,10 +53,11 @@ export class DrowningsComponent implements OnInit {
       hora_derivación1: new FormControl(''),
       alerta: new FormControl(''),
 
-      //ultimo_editor: new FormControl(this.currentUser.username),
-      //ultimo_cambio: new FormControl(this.toDateFormat(true))
+      ultimo_editor: new FormControl(this.authService.getCurrentUser().username),
+      ultimo_cambio: new FormControl(this.toDateFormat(true))
     });
     this.formPersonas = this.fb.group({
+      genero: new FormControl(''),
       fecha_nacimiento: new FormControl(''),
       lnacimiento: new FormControl(''),
       pnacimiento: new FormControl(''),
@@ -73,6 +77,10 @@ export class DrowningsComponent implements OnInit {
     this.archivos.splice(indice,1);
     this.url.splice(indice,1);
     }
+  borrarPersona(persona){
+    let indice = this.personasArray.indexOf(persona);
+    this.personasArray.splice(indice,1);
+  }
 
   readUrl(event:any, i,files) {
     var reader:any = new FileReader();
@@ -83,10 +91,13 @@ export class DrowningsComponent implements OnInit {
     reader.readAsDataURL(event.target.files[i]);
   }
   nuevaIncidencia(){
+
+    this.personasArray.push(this.formPersonas.value);
+    this.formPersonas.reset();
     Swal.fire({
       type: 'success',
       title: 'Exito',
-      text: 'La incidencia se ha creado correctamente',
+      text: 'La persona se ha añadido correctamente',
       footer: ''
     });
   }
@@ -114,5 +125,16 @@ export class DrowningsComponent implements OnInit {
             }
         });
     }
+    public toDateFormat(timePart: boolean): string {
+        const date = new Date();
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        const hh = date.getHours();
+        const i = date.getMinutes();
+        const ss = date.getSeconds();
+        return timePart ? yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + i + ':' + ss : yyyy + '-' + mm + '-' + dd;
+    }
+
 
 }

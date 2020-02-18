@@ -119,6 +119,26 @@
             <div class="form-group form-group-sm">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#personasModal">Añadir personas afectadas</button>
             </div>
+            <table class="table table-responsive" >
+              <tr class="textSize">
+                <th>Sexo</th>
+                <th>Fecha nacimiento</th>
+                <th>Lugar nacimiento</th>
+                <th>País nacimiento</th>
+                <th>Lugar de residencia</th>
+                <th>País de residencia</th>
+                <th>Eliminar</th>
+              </tr>
+              <tr *ngFor="let persona of personasArray">
+                <td>{{persona.genero}}</td>
+                <td>{{persona.fecha_nacimiento | date: 'dd/MM/yyyy'}}</td>
+                <td>{{persona.lnacimiento}}</td>
+                <td>{{persona.pnacimiento}}</td>
+                <td>{{persona.lresidencia}}</td>
+                <td>{{persona.presidencia}}</td>
+                <td class="text text-center"><span (click)="borrarPersona(persona)" class="glyphicon glyphicon-trash pointer"></span></td>
+              </tr>
+            </table>
             </div>
             </div>
 
@@ -377,8 +397,8 @@
 <div class="modal fade" id="personasModal" tabindex="-1" role="dialog" aria-labelledby="personasModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-body">
       <form [formGroup]="formPersonas" (ngSubmit)="nuevaIncidencia()">
+      <div class="modal-body">
         <!-- panel lugar -->
         <div class="panel panel-info">
         <div class="panel-heading">Prsonas afectadas</div>
@@ -387,13 +407,13 @@
           <label for="servicio">Sexo</label>
           <div class="radio">
             <label>
-              <input type="radio"  name="genero" value="1">
+              <input type="radio" formControlName="genero" value="hombre">
               Hombre
             </label>
           </div>
           <div class="radio">
             <label>
-              <input type="radio" name="genero" value="0">
+              <input type="radio" formControlName="genero" value="mujer">
               Mujer
             </label>
           </div>
@@ -424,12 +444,13 @@
         </div>
         </div>
         </div>
-        </form>
+
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary">Añadir</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+        <button type="submit" class="btn btn-primary">Añadir</button>
       </div>
+    </form>
     </div>
   </div>
 </div>
