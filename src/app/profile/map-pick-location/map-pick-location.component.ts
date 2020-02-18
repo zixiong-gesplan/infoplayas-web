@@ -42,7 +42,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
     private currentUser: Auth;
     private subscripcionMunicipality;
     private lastGraphicLayerId: string;
-    private selectedMpPoint: any;
+    selectedMpPoint: any;
     private aytos: AppSetting[];
 
     constructor(private authService: AuthGuardService, private gradeService: GradesProtectionService,
