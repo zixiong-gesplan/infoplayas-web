@@ -206,19 +206,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                                 t.selectedBeachId = resultBeach.graphic.attributes.objectid;
                             }
                             let layer = null;
-                            if (!t.lastGraphicLayerId) {
-                                layer = new GraphicsLayer({
-                                    graphics: []
-                                });
-                                layer.minScale = 7000;
-                                webmap.add(layer);
-                                t.lastGraphicLayerId = layer.id;
-                            } else {
-                                layer = webmap.findLayerById(t.lastGraphicLayerId);
-                                layer.graphics.items.forEach(v => {
-                                    layer.graphics.remove(v);
-                                });
-                            }
+                            layer = getLastGraphicLayerForPoint(layer);
                             if (highlight) {
                                 const mpPoint = viewer.toMap(response.screenPoint);
                                 const pointGraphic = new Graphic({
@@ -264,6 +252,19 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                         try {
                             viewer.goTo(result.geometry.extent.expand(2));
                             standOutBeach(result.layer, resultBeachId);
+                            let layer = null;
+                            layer = getLastGraphicLayerForPoint(layer);
+                            const pointGraphic = new Graphic({
+                                geometry: result.geometry.centroid,
+                                symbol: {
+                                    type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
+                                    url: 'https://static.arcgis.com/images/Symbols/Animated/EnlargeRotatingRedMarkerSymbol.png',
+                                    width: '48px',
+                                    height: '48px'
+                                }
+                            });
+                            layer.graphics.add(pointGraphic);
+                            t.selectedMpPoint = pointGraphic;
                         } catch (error) {
                         }
                     }
@@ -277,6 +278,24 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                             highlight = layerView.highlight(id);
                         });
                     }
+
+                    function getLastGraphicLayerForPoint(layer) {
+                        if (!t.lastGraphicLayerId) {
+                            layer = new GraphicsLayer({
+                                graphics: []
+                            });
+                            layer.minScale = 7000;
+                            webmap.add(layer);
+                            t.lastGraphicLayerId = layer.id;
+                        } else {
+                            layer = webmap.findLayerById(t.lastGraphicLayerId);
+                            layer.graphics.items.forEach(v => {
+                                layer.graphics.remove(v);
+                            });
+                        }
+                        return layer;
+                    }
+
                 });
 
                 // recargamos el filtro de municipio y de playas cuando se selecciona un nuevo municipio desde un superusuario
