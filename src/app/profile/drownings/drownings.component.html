@@ -454,3 +454,17 @@
     </div>
   </div>
 </div>
+
+<!--mapa para visualizar y editar incidentes-->
+<section class="padding-top-15 padding-bottom-30" [hidden]="!formulario">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <app-map-viewer-drownings
+                    [mapHeight]="mapHeightContainer"
+                    [zoom]="mapZoomLevel">
+                </app-map-viewer-drownings>
+            </div>
+        </div>
+    </div>
+</section>

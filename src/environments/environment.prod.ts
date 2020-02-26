@@ -4,6 +4,7 @@ export const environment = {
     infoplayas_catalogo_edicion_tablas_url: 'https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer',
     idportalForms: '4df033868833441798c532394806601c',
     idportalView: '81e40ab3616b4b4386058593078eaddf',
+    idportalDrownings: '81e2f8adabc04ebb8572bd715696cf54',
     urlServerRest: 'https://gesplan.maps.arcgis.com/sharing/rest',
     urlSelfinfo: '/community/self',
     urlPlanos: 'https://www.infoplayascanarias.es/planos/',

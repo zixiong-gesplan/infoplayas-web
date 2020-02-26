@@ -7,9 +7,10 @@ var unselectedMessage = "seleccione playa";
 var playasLayerId = "playas_catalogo_edicion_5477";
 var playasLayerViewerId = "playas_catalogo_4464";
 var municipiosLayerId = "enp_y_municipios_islas_canarias_4946";
+var incidentesLayerId = "incidentes_2_6625";
 
 //Layer filters
-var filterPlayas, filterMunicipios;
+var filterPlayas, filterMunicipios, filterIncidentes;
 
 //Forms definitions
 var forms = {

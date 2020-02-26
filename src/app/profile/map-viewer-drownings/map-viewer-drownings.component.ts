@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {loadModules} from 'esri-loader';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
@@ -8,13 +8,11 @@ import {PopulationService} from '../../services/population.service';
 import {Municipality} from '../../models/municipality';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
-import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/api';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import Swal from 'sweetalert2';
 
 declare var $: any;
 declare var jquery: any;
-
 
 // variables javascript esri maps
 declare let viewer: any;
@@ -24,19 +22,23 @@ declare const createLegend: any;
 declare const createExpand: any;
 declare const playasLayerViewerId: any;
 declare const municipiosLayerId: any;
+declare const incidentesLayerId: any;
 declare let filterPlayas: any;
 declare let filterMunicipios: any;
+declare let filterIncidentes: any;
 declare const createHomeButton: any;
 declare let listNodeViewer: any;
 declare const loadList: any;
 declare let featuresViewer: any;
 
 @Component({
-    selector: 'app-map-pick-location',
-    templateUrl: './map-pick-location.component.html',
-    styleUrls: ['./map-pick-location.component.css']
+    selector: 'app-map-viewer-drownings',
+    templateUrl: './map-viewer-drownings.component.html',
+    styleUrls: ['./map-viewer-drownings.component.css']
 })
-export class MapPickLocationComponent implements OnInit, OnDestroy {
+export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
+    @Input() mapHeight: string;
+    @Input() zoom: number;
     selectedBeachId: number;
     private currentUser: Auth;
     private subscripcionMunicipality;
@@ -45,8 +47,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
     private aytos: AppSetting[];
 
     constructor(private authService: AuthGuardService, public service: EsriRequestService, private popService: PopulationService,
-                private appSettingsService: AppSettingsService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
-                private spinnerService: Ng4LoadingSpinnerService) {
+                private appSettingsService: AppSettingsService, private spinnerService: Ng4LoadingSpinnerService) {
     }
 
     ngOnInit() {
@@ -58,47 +59,8 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
         });
     }
 
-    // preparamos una lista de features provenientes del REST API para que tenga la estructura para añadir a la capa grafica de un mapa.
-    convertCentroidDataToGraphic(beach: any) {
-        beach.geometry = beach.centroid;
-        beach.geometry.spatialReference = {
-            latestWkid: 32628,
-            wkid: 32628
-        };
-        return beach;
-    }
-
     ngOnDestroy() {
         this.subscripcionMunicipality.unsubscribe();
-    }
-
-    close() {
-        this.loadCatalogueInfoByid();
-    }
-
-    loadCatalogueInfoByid() {
-        this.spinnerService.show();
-        const filterBeach = 'objectid = \'' + this.selectedBeachId + '\'';
-        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_url + '/query', filterBeach,
-            '*', false, this.currentUser.token, 'objectid', false).subscribe(
-            (result: any) => {
-                if (result && result.features.length > 0) {
-                    this.selectedMpPoint.attributes = result.features[0].attributes;
-                    this.ref.close(this.selectedMpPoint);
-                } else if (result.error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Error ' + result.error.code,
-                        text: result.error.message,
-                        footer: ''
-                    });
-                }
-                this.spinnerService.hide();
-            },
-            error => {
-                console.log(error.toString());
-                this.spinnerService.hide();
-            });
     }
 
     private setMap() {
@@ -138,18 +100,18 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                 // then we load a web map from an id
                 const webmap = new WebMap({
                     portalItem: {
-                        id: environment.idportalView
+                        id: environment.idportalDrownings
                     }
                 });
                 // and we show that map in a container w/ id #viewDiv
                 viewer = new MapView({
                     container: 'viewDivViewer', // Reference to the scene div created in step 5
                     map: webmap, // Reference to the map object created before the scene
-                    zoom: this.config.data.zoom
+                    zoom: this.zoom
                 });
 
                 const t = this;
-                let playasLayer, municipiosLayer, home;
+                let playasLayer, municipiosLayer, incidentesLayer, home;
                 // Create widgets
                 const scaleBar = createScaleBar(ScaleBar, viewer);
                 const legend = createLegend(Legend, viewer, 'legendDivViewer');
@@ -162,14 +124,19 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerViewerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
+                    incidentesLayer = webmap.findLayerById(incidentesLayerId);
                     const ayto = t.popService.getMunicipality().user;
                     highlight = null;
                     // Filter by changing runtime params
                     filterPlayas = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_minus + '\'';
                     filterPlayas = filterPlayas + ' AND clasificacion IS NOT NULL';
                     filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_mayus + '\'';
+                    // TODO filtrar por el municipio esta mal en la capa los datos
+                    // filterIncidentes = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_minus + '\'';
+                    filterIncidentes = '1=1';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
+                    incidentesLayer.definitionExpression = filterIncidentes;
 
                     municipiosLayer.queryFeatures({
                         outFields: ['*'],
@@ -177,11 +144,9 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                         geometry: viewer.initialExtent,
                         returnGeometry: true
                     }).then(function (results) {
-                        if (!t.config.data.id) {
-                            const latitude = results.features[0].geometry.centroid.latitude;
-                            const longitude = results.features[0].geometry.centroid.longitude;
-                            viewer.center = [longitude, latitude];
-                        }
+                        const latitude = results.features[0].geometry.centroid.latitude;
+                        const longitude = results.features[0].geometry.centroid.longitude;
+                        viewer.center = [longitude, latitude];
                         // Default Home value is current extent
                         home = createHomeButton(Home, viewer);
                         home.viewpoint = {
@@ -227,11 +192,6 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
 
                     loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (Beachs) {
                         featuresViewer = Beachs;
-                        // movemos la vista a la playa que se haya seleccionado en el mapa editor
-                        if (t.config.data.id) {
-                            const fe = featuresViewer.find(b => b.attributes.objectid === t.config.data.id);
-                            viewer.goTo(fe.geometry.extent.expand(2));
-                        }
                     });
 
                     function onListClickHandler(event) {
@@ -300,7 +260,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                 this.subscripcionMunicipality = this.popService.sMunicipality$.subscribe(
                     (result: Municipality) => {
                         if (result.user && municipiosLayer) {
-                            viewer.zoom = this.config.data.zoom;
+                            viewer.zoom = this.zoom;
                             highlight = null;
                             filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;

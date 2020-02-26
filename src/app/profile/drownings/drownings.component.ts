@@ -27,6 +27,8 @@ export class DrowningsComponent implements OnInit {
   public mapa:boolean = false;
   public formulario:boolean = true;
   public personasArray:any[] = [];
+  public mapHeightContainer: string;
+  public mapZoomLevel: number;
 
   constructor(  private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -63,7 +65,9 @@ export class DrowningsComponent implements OnInit {
       pnacimiento: new FormControl(''),
       lresidencia: new FormControl(''),
       presidencia: new FormControl(''),
-    })
+    });
+      this.mapHeightContainer = '78vh';
+      this.mapZoomLevel = 12;
   }
   fileChangeEvent(fileInput){
     let files = fileInput.target.files;

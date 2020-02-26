@@ -37,6 +37,7 @@ import {ResponseInterceptorService} from './services/response-interceptor.servic
 import {DynamicDialogComponent, DynamicDialogModule} from 'primeng/dynamicdialog';
 import { DrowningsComponent } from './profile/drownings/drownings.component';
 import { MapPickLocationComponent } from './profile/map-pick-location/map-pick-location.component';
+import { MapViewerDrowningsComponent } from './profile/map-viewer-drownings/map-viewer-drownings.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -55,7 +56,8 @@ registerLocaleData(localeEs, 'es');
         WelcomeComponent,
         MapViewerComponent,
         DrowningsComponent,
-        MapPickLocationComponent
+        MapPickLocationComponent,
+        MapViewerDrowningsComponent
     ],
     imports: [
         BrowserModule,
