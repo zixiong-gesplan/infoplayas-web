@@ -150,14 +150,21 @@ function loadList(view, featureLayer, fields, filter) {
 
       fragment.appendChild(li);
     });
-    // Empty the current list
-      if (view.container.id === 'viewDivViewer'){
-          listNodeViewer.innerHTML = "";
-          listNodeViewer.appendChild(fragment);
-      } else {
-          listNode.innerHTML = "";
-          listNode.appendChild(fragment);
-      };
+    // Empty the current list - se usan distintos divs para la lista en distintos componentes para evitar problemas con el dojo
+      switch (view.container.id) {
+          case 'viewDivViewer':
+              listNodeViewer.innerHTML = "";
+              listNodeViewer.appendChild(fragment);
+              break;
+          case 'viewDivDrowningsViewer':
+              listNodeDrowningsViewer.innerHTML = "";
+              listNodeDrowningsViewer.appendChild(fragment);
+              break;
+          default:
+              listNode.innerHTML = "";
+              listNode.appendChild(fragment);
+              break;
+      }
     return results.features;
   })
   .catch(function(error) {

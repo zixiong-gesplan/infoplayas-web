@@ -1,4 +1,4 @@
-var view, viewer, highlight, editFeature, listNode, listNodeViewer, features, featuresViewer;
+var view, viewer, highlight, editFeature, listNode, listNodeViewer, listNodeDrowningsViewer, features, featuresViewer;
 
 //mensaje playa no seleccionada
 var unselectedMessage = "seleccione playa";
@@ -7,7 +7,7 @@ var unselectedMessage = "seleccione playa";
 var playasLayerId = "playas_catalogo_edicion_5477";
 var playasLayerViewerId = "playas_catalogo_4464";
 var municipiosLayerId = "enp_y_municipios_islas_canarias_4946";
-var incidentesLayerId = "incidentes_2_6625";
+var incidentesLayerId = "incidentes_edicion_4146";
 
 //Layer filters
 var filterPlayas, filterMunicipios, filterIncidentes;

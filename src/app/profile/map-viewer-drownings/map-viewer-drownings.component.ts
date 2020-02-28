@@ -27,7 +27,7 @@ declare let filterPlayas: any;
 declare let filterMunicipios: any;
 declare let filterIncidentes: any;
 declare const createHomeButton: any;
-declare let listNodeViewer: any;
+declare let listNodeDrowningsViewer: any;
 declare const loadList: any;
 declare let featuresViewer: any;
 
@@ -105,7 +105,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                 });
                 // and we show that map in a container w/ id #viewDiv
                 viewer = new MapView({
-                    container: 'viewDivViewer', // Reference to the scene div created in step 5
+                    container: 'viewDivDrowningsViewer', // Reference to the scene div created in step 5
                     map: webmap, // Reference to the map object created before the scene
                     zoom: this.zoom
                 });
@@ -114,8 +114,8 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                 let playasLayer, municipiosLayer, incidentesLayer, home;
                 // Create widgets
                 const scaleBar = createScaleBar(ScaleBar, viewer);
-                const legend = createLegend(Legend, viewer, 'legendDivViewer');
-                const expandList = createExpand(Expand, viewer, document.getElementById('listPlayasViewer')
+                const legend = createLegend(Legend, viewer, 'legendDivDrowningsViewer');
+                const expandList = createExpand(Expand, viewer, document.getElementById('listPlayasDrowningsViewer')
                     , 'esri-icon-layer-list', 'Listado de playas');
 
                 viewer.when(function () {
@@ -131,9 +131,9 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     filterPlayas = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_minus + '\'';
                     filterPlayas = filterPlayas + ' AND clasificacion IS NOT NULL';
                     filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_mayus + '\'';
-                    // TODO filtrar por el municipio esta mal en la capa los datos
+                    // TODO aclarar con Jose este tema de errores en los valores de municipio
                     // filterIncidentes = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_minus + '\'';
-                    filterIncidentes = '1=1';
+                    filterIncidentes = 'municipio = \'47.0\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
                     incidentesLayer.definitionExpression = filterIncidentes;
@@ -156,15 +156,15 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                         viewer.ui.add([home, expandList], 'top-left');
                         viewer.ui.add(scaleBar, 'bottom-left');
                         viewer.ui.add([legend], 'top-right');
-
+                        console.log(home);
                         // Some elements are hidden by default. We show them when the view is loaded
-                        $('#listPlayasViewer')[0].classList.remove('esri-hidden');
+                        $('#listPlayasDrowningsViewer')[0].classList.remove('esri-hidden');
                     });
                     viewer.on('click', function (event) {
                         // Listen for when the user clicks on the view
                         viewer.hitTest(event).then(function (response) {
                             if (response.results.length > 1) {
-                                standOutBeach(response.results[0].graphic.layer, response.results[0].graphic.attributes.objectid);
+                                // standOutBeach(response.results[0].graphic.layer, response.results[0].graphic.attributes.objectid);
                                 const resultBeach = response.results.find(item => item.graphic.layer.id === playasLayerViewerId);
                                 t.selectedBeachId = resultBeach.graphic.attributes.objectid;
                             }
@@ -186,9 +186,9 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                             }
                         });
                     });
-                    const listID = 'ulPlayaViewer';
-                    listNodeViewer = $('#ulPlayaViewer')[0];
-                    listNodeViewer.addEventListener('click', onListClickHandler);
+                    const listID = 'ulPlayaDrowningsViewer';
+                    listNodeDrowningsViewer = $('#ulPlayaDrowningsViewer')[0];
+                    listNodeDrowningsViewer.addEventListener('click', onListClickHandler);
 
                     loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filterPlayas).then(function (Beachs) {
                         featuresViewer = Beachs;
@@ -206,10 +206,9 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                         expandList.collapse();
 
                         const result = resultId && featuresViewer && featuresViewer[parseInt(resultId, 10)];
-
                         try {
                             viewer.goTo(result.geometry.extent.expand(2));
-                            standOutBeach(result.layer, resultBeachId);
+                            // standOutBeach(result.layer, resultBeachId);
                             let layer = null;
                             layer = getLastGraphicLayerForPoint(layer);
                             const pointGraphic = new Graphic({
@@ -267,6 +266,9 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                             const filter = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_minus + '\''
                                 + ' AND clasificacion IS NOT NULL';
                             playasLayer.definitionExpression = filter;
+                            // TODO arreglar los valores del campo municipio de incidentes
+                            // incidentesLayer.definitionExpression = filterMunicipios;
+                            incidentesLayer.definitionExpression = 'municipio = \'47.0\'';
                             loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (Beachs) {
                                 featuresViewer = Beachs;
                             });
@@ -278,6 +280,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                             }).then(function (results) {
                                 const latitude = results.features[0].geometry.centroid.latitude;
                                 const longitude = results.features[0].geometry.centroid.longitude;
+                                console.log('latitude' + latitude + ' longitud' + longitude);
                                 viewer.center = [longitude, latitude];
                                 // cambiamos el valor al nuevo municipio para el boton de home
                                 home.viewpoint.targetGeometry.latitude = latitude;
