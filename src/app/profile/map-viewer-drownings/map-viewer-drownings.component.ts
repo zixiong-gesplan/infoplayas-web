@@ -156,7 +156,6 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                         viewer.ui.add([home, expandList], 'top-left');
                         viewer.ui.add(scaleBar, 'bottom-left');
                         viewer.ui.add([legend], 'top-right');
-                        console.log(home);
                         // Some elements are hidden by default. We show them when the view is loaded
                         $('#listPlayasDrowningsViewer')[0].classList.remove('esri-hidden');
                     });
@@ -168,21 +167,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                                 const resultBeach = response.results.find(item => item.graphic.layer.id === playasLayerViewerId);
                                 t.selectedBeachId = resultBeach.graphic.attributes.objectid;
                             }
-                            let layer = null;
-                            layer = getLastGraphicLayerForPoint(layer);
                             if (highlight) {
-                                const mpPoint = viewer.toMap(response.screenPoint);
-                                const pointGraphic = new Graphic({
-                                    geometry: mpPoint,
-                                    symbol: {
-                                        type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
-                                        url: 'https://static.arcgis.com/images/Symbols/Animated/EnlargeRotatingRedMarkerSymbol.png',
-                                        width: '48px',
-                                        height: '48px'
-                                    }
-                                });
-                                layer.graphics.add(pointGraphic);
-                                t.selectedMpPoint = pointGraphic;
                             }
                         });
                     });
@@ -198,35 +183,16 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
                         const resultBeachId = Number(target.getAttribute('oid'));
-                        if (resultBeachId) {
-                            t.selectedBeachId = resultBeachId;
-                        } else {
-                            t.selectedBeachId = null;
-                        }
                         expandList.collapse();
 
                         const result = resultId && featuresViewer && featuresViewer[parseInt(resultId, 10)];
                         try {
                             viewer.goTo(result.geometry.extent.expand(2));
-                            // standOutBeach(result.layer, resultBeachId);
-                            let layer = null;
-                            layer = getLastGraphicLayerForPoint(layer);
-                            const pointGraphic = new Graphic({
-                                geometry: result.geometry.centroid,
-                                symbol: {
-                                    type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
-                                    url: 'https://static.arcgis.com/images/Symbols/Animated/EnlargeRotatingRedMarkerSymbol.png',
-                                    width: '48px',
-                                    height: '48px'
-                                }
-                            });
-                            layer.graphics.add(pointGraphic);
-                            t.selectedMpPoint = pointGraphic;
                         } catch (error) {
                         }
                     }
 
-                    function standOutBeach(beachLayer, id) {
+                    function standOutIncident(beachLayer, id) {
                         viewer.whenLayerView(beachLayer).then(function (layerView) {
                             if (highlight) {
                                 highlight.remove();
@@ -234,23 +200,6 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                             }
                             highlight = layerView.highlight(id);
                         });
-                    }
-
-                    function getLastGraphicLayerForPoint(layer) {
-                        if (!t.lastGraphicLayerId) {
-                            layer = new GraphicsLayer({
-                                graphics: []
-                            });
-                            layer.minScale = 7000;
-                            webmap.add(layer);
-                            t.lastGraphicLayerId = layer.id;
-                        } else {
-                            layer = webmap.findLayerById(t.lastGraphicLayerId);
-                            layer.graphics.items.forEach(v => {
-                                layer.graphics.remove(v);
-                            });
-                        }
-                        return layer;
                     }
 
                 });
@@ -280,7 +229,6 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                             }).then(function (results) {
                                 const latitude = results.features[0].geometry.centroid.latitude;
                                 const longitude = results.features[0].geometry.centroid.longitude;
-                                console.log('latitude' + latitude + ' longitud' + longitude);
                                 viewer.center = [longitude, latitude];
                                 // cambiamos el valor al nuevo municipio para el boton de home
                                 home.viewpoint = {
