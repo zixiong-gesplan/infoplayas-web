@@ -283,8 +283,9 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                                 console.log('latitude' + latitude + ' longitud' + longitude);
                                 viewer.center = [longitude, latitude];
                                 // cambiamos el valor al nuevo municipio para el boton de home
-                                home.viewpoint.targetGeometry.latitude = latitude;
-                                home.viewpoint.targetGeometry.longitude = longitude;
+                                home.viewpoint = {
+                                    targetGeometry: results.features[0].geometry.extent
+                                };
                             });
                         }
                     },

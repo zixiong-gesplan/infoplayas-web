@@ -123,7 +123,6 @@ export class DrowningsComponent implements OnInit {
                 console.log(incidentPoint.attributes);
                 this.formPrincipal.get('isla').setValue(incidentPoint.attributes.isla);
                 this.formPrincipal.get('playa').setValue(incidentPoint.attributes.nombre_municipio);
-            // TODO hacer visible el formulario de incidentes y precargar datos de la playa y el punto
              this.formulario = false;
              this.mapa = true;
             }

@@ -421,7 +421,6 @@ export class MapViewerComponent implements OnInit, OnDestroy {
       doc.text(beach.attributes.nombre_municipio + ' Fecha: ' + fecha_hoy, 15, 20);
 
       doc.autoTable({startY: 20});
-        // TODO desarrollar el metodo con js2pdf
         beach = {...beach, ...this.resultBeachs.find(b => b.objectId === this.selectedBeachId)};
         switch (beach.attributes.clasificacion) {
           case 'L':
