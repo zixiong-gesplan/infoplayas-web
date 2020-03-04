@@ -129,6 +129,7 @@ function loadList(view, featureLayer, fields, filter) {
   })
   .then(function(results) {
     const fragment = document.createDocumentFragment();
+      results.features.sort(compare);
       results.features.forEach(function(result, index) {
       const attributes = result.attributes;
       var name = attributes.nombre_municipio;
@@ -171,3 +172,32 @@ function loadList(view, featureLayer, fields, filter) {
     console.error("query failed: ", error);
   });
 };
+// Ordenamos el listado de playas obviando las coletillas tipicas
+function compare(a, b) {
+    const beachA = replaceFor(a.attributes.nombre_municipio);
+    const beachB = replaceFor(b.attributes.nombre_municipio);
+
+    let comparison = 0;
+    if (beachA > beachB) {
+        comparison = 1;
+    } else if (beachA < beachB) {
+        comparison = -1;
+    }
+    return comparison;
+};
+
+function replaceFor(a) {
+    return a.toUpperCase()
+        .replace("PLAYA DEL ", "")
+        .replace("PLAYA DE ", "")
+        .replace("PLAYA EL ", "")
+        .replace("PLAYA LA ", "")
+        .replace("PLAYA ", "")
+        .replace("PISCINA ", "")
+        .replace("ZONA DE BAÑO DE ", "")
+        .replace("ZONA DE BAÑO ", "")
+        .replace("LAS ", "")
+        .replace("LOS ", "")
+        .replace("LA ", "")
+        .replace("EL ", "");
+}
