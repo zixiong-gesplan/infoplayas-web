@@ -10,6 +10,7 @@ import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import Swal from 'sweetalert2';
+import {el} from '@angular/platform-browser/testing/src/browser_util';
 
 declare var $: any;
 declare var jquery: any;
@@ -39,11 +40,9 @@ declare let featuresViewer: any;
 export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
     @Input() mapHeight: string;
     @Input() zoom: number;
-    selectedBeachId: number;
+    selectedIncidentId: number;
     private currentUser: Auth;
     private subscripcionMunicipality;
-    private lastGraphicLayerId: string;
-    selectedMpPoint: any;
     private aytos: AppSetting[];
 
     constructor(private authService: AuthGuardService, public service: EsriRequestService, private popService: PopulationService,
@@ -85,9 +84,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                        ScaleBar,
                        Expand,
                        Legend,
-                       Home,
-                       Graphic,
-                       GraphicsLayer
+                       Home
                    ]) => {
 
                 IdentityManager.registerToken({
@@ -162,12 +159,17 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     viewer.on('click', function (event) {
                         // Listen for when the user clicks on the view
                         viewer.hitTest(event).then(function (response) {
-                            if (response.results.length > 1) {
-                                // standOutBeach(response.results[0].graphic.layer, response.results[0].graphic.attributes.objectid);
-                                const resultBeach = response.results.find(item => item.graphic.layer.id === playasLayerViewerId);
-                                t.selectedBeachId = resultBeach.graphic.attributes.objectid;
-                            }
                             if (highlight) {
+                                highlight.remove();
+                                highlight = null;
+                                t.selectedIncidentId = null;
+                            }
+                            if (response.results.length > 0) {
+                                const resultIncident = response.results.find(item => item.graphic.layer.id === incidentesLayerId);
+                                if (resultIncident) {
+                                    standOutIncident(response.results[0].graphic.layer, response.results[0].graphic.attributes.objectid);
+                                    t.selectedIncidentId = resultIncident.graphic.attributes.objectid;
+                                }
                             }
                         });
                     });
@@ -182,7 +184,6 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     function onListClickHandler(event) {
                         const target = event.target;
                         const resultId = target.getAttribute('data-result-id');
-                        const resultBeachId = Number(target.getAttribute('oid'));
                         expandList.collapse();
 
                         const result = resultId && featuresViewer && featuresViewer[parseInt(resultId, 10)];
