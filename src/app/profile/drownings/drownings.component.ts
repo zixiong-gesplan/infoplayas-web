@@ -105,6 +105,8 @@ export class DrowningsComponent implements OnInit {
       text: 'La persona se ha añadido correctamente',
       footer: ''
     });
+    this.formulario = true;
+    this.mapa = false;
   }
 
     pickAlocation() {
