@@ -1,12 +1,12 @@
 <ng4-loading-spinner [timeout]="10000" [threshold]="800"></ng4-loading-spinner>
 <p-toast [style]="{marginTop: '80px'}" position="top-right"></p-toast>
-<div id="listPlayas" class="panel-side scroller esri-widget esri-hidden">
+<div id="listPlayas" class="maplist panel-side scroller esri-widget esri-hidden">
     <ul id="ulPlaya">
         <li>Cargando&hellip;</li>
     </ul>
 </div>
-<div id="mainContainer" [style.height]="mapHeight">
-    <div id="viewDiv"></div>
+<div class="mapContainer" [style.height]="mapHeight">
+    <div id="viewDiv" class="mapview"></div>
     <div id="legendDiv" class="card custom-widget"></div>
     <div id="infobutton" class="container-fluid esri-widget custom-widget">
         <div class="row paddingtopbottom10px">

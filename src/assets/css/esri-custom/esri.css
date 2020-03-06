@@ -1,4 +1,4 @@
-#mainContainer {
+.mapContainer {
     padding: 0;
     margin: 0;
     height: 100%;
@@ -6,7 +6,7 @@
     overflow: auto;
 }
 
-#viewDiv {
+.mapview {
     padding: 0;
     margin: 0;
     height: 100%;
@@ -14,28 +14,13 @@
     float: left;
 }
 
-#mainContainerViewer {
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    overflow: auto;
-}
-
-#viewDivViewer {
+.mapviewback {
     padding: 0;
     margin: 0;
     height: 100%;
     width: 100%;
     float: left;
-}
-
-#viewDivDrowningsViewer {
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    float: left;
+    opacity: 0.3;
 }
 
 #mapTopbar {
@@ -127,17 +112,7 @@ textarea {
 
 /*-------------------------------WIDGET DE LISTADO DE PLAYAS-------------------------------------*/
 
-#listPlayas {
-    width: 15rem;
-    max-height: 300px;
-}
-
-#listPlayasViewer {
-    width: 15rem;
-    max-height: 300px;
-}
-
-#listPlayasDrowningsViewer {
+.maplist {
     width: 15rem;
     max-height: 300px;
 }

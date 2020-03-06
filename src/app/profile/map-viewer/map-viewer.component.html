@@ -22,13 +22,13 @@
                    value="Cerrar"/>
         </div>
     </div>
-    <div id="listPlayasViewer" class="panel-side scroller esri-widget esri-hidden">
+    <div id="listPlayasViewer" class="maplist panel-side scroller esri-widget esri-hidden">
         <ul id="ulPlayaViewer">
             <li>Cargando&hellip;</li>
         </ul>
     </div>
-    <div id="mainContainerViewer" [style.height]="config.data.mapHeight">
-        <div id="viewDivViewer"></div>
+    <div class="mapContainer" [style.height]="config.data.mapHeight">
+        <div id="viewDivViewer" class="mapview"></div>
         <div id="legendDivViewer" class="card custom-widget"></div>
         <div id="infoViewer" class="container-fluid esri-widget custom-widget esri-hidden">
             <img src="assets/images/logos/logo.png" class="card-img-top padding-bottom-10"/>

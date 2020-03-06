@@ -1,10 +1,10 @@
 <ng4-loading-spinner [timeout]="10000" [threshold]="500"></ng4-loading-spinner>
-<div id="listPlayasDrowningsViewer" class="panel-side scroller esri-widget esri-hidden">
+<div id="listPlayasDrowningsViewer" class="maplist panel-side scroller esri-widget esri-hidden">
     <ul id="ulPlayaDrowningsViewer">
         <li>Cargando&hellip;</li>
     </ul>
 </div>
-<div id="mainContainerViewer" [style.height]="mapHeight">
-    <div id="viewDivDrowningsViewer"></div>
+<div class="mapContainer" [style.height]="mapHeight">
+    <div id="viewDivDrowningsViewer" class="mapviewback"></div>
     <div id="legendDivDrowningsViewer" class="card custom-widget"></div>
 </div>
