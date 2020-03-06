@@ -31,6 +31,7 @@ export class DrowningsComponent implements OnInit {
     public mapHeightContainer: string;
     public mapZoomLevel: number;
     public viewEditor: boolean;
+    private incidentId: number;
 
     constructor(private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -163,5 +164,12 @@ export class DrowningsComponent implements OnInit {
         return timePart ? yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + i + ':' + ss : yyyy + '-' + mm + '-' + dd;
     }
 
-
+    receiveIncidentId($event: number) {
+        this.incidentId = $event;
+        if ($event) {
+            console.log('se ha seleccionado el incidente ' + $event);
+        } else {
+            console.log('se ha deseleccionado indidente');
+        }
+    }
 }

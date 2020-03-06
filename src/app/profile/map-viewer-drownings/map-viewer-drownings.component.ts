@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {loadModules} from 'esri-loader';
 import {Auth} from '../../models/auth';
 import {AuthGuardService} from '../../services/auth-guard.service';
@@ -40,7 +40,7 @@ declare let featuresViewer: any;
 export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
     @Input() mapHeight: string;
     @Input() zoom: number;
-    selectedIncidentId: number;
+    @Output() selectedIncidentId = new EventEmitter<number>();
     private currentUser: Auth;
     private subscripcionMunicipality;
     private aytos: AppSetting[];
@@ -171,14 +171,15 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                             if (highlight) {
                                 highlight.remove();
                                 highlight = null;
-                                t.selectedIncidentId = null;
                             }
                             if (response.results.length > 0) {
                                 const resultIncident = response.results.find(item => item.graphic.layer.id === incidentesLayerId);
                                 if (resultIncident) {
                                     standOutIncident(response.results[0].graphic.layer, response.results[0].graphic.attributes.objectid);
-                                    t.selectedIncidentId = resultIncident.graphic.attributes.objectid;
+                                    t.selectedIncidentId.emit(resultIncident.graphic.attributes.objectid);
                                 }
+                            } else {
+                                t.selectedIncidentId.emit(null);
                             }
                         });
                     });

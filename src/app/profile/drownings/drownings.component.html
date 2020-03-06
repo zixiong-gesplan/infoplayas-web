@@ -520,7 +520,8 @@
             <div class="col-sm-12">
                 <app-map-viewer-drownings
                     [mapHeight]="mapHeightContainer"
-                    [zoom]="mapZoomLevel">
+                    [zoom]="mapZoomLevel"
+                    (selectedIncidentId)="receiveIncidentId($event)">
                 </app-map-viewer-drownings>
             </div>
         </div>
