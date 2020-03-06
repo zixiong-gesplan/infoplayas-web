@@ -117,7 +117,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
 
                 viewer.when(function () {
                     // cancelo el popup
-                    viewer.popup.autoOpenEnabled = false;
+                    viewer.popup.autoOpenEnabled = true;
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerViewerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);

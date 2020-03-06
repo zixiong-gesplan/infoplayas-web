@@ -189,6 +189,7 @@ function compare(a, b) {
 function replaceFor(a) {
     return a.toUpperCase()
         .replace("PLAYA DEL ", "")
+        .replace("PLAYAS DE ", "")
         .replace("PLAYA DE ", "")
         .replace("PLAYA EL ", "")
         .replace("PLAYA LA ", "")
