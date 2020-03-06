@@ -116,8 +116,17 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     , 'esri-icon-layer-list', 'Listado de playas');
 
                 viewer.when(function () {
-                    // cancelo el popup
-                    viewer.popup.autoOpenEnabled = true;
+                    // activo el popup
+                    viewer.popup = {
+                        dockEnabled: true,
+                        dockOptions: {
+                            // Disables the dock button from the popup
+                            buttonEnabled: false,
+                            // Ignore the default sizes that trigger responsive docking
+                            breakpoint: false,
+                            position: 'bottom-right'
+                        }
+                    };
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerViewerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);

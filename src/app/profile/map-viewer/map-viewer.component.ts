@@ -233,6 +233,12 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 viewer.when(function () {
                     // configuro el popup
                     viewer.popup.autoOpenEnabled = true;
+                    viewer.popup = {
+                        dockOptions: {
+                            buttonEnabled: true,
+                            position: 'bottom-left'
+                        }
+                    };
                     // Get layer objects from the web map
                     playasLayer = webmap.findLayerById(playasLayerViewerId);
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);

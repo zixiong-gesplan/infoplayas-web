@@ -29,6 +29,7 @@ export class DrowningsComponent implements OnInit {
   public personasArray:any[] = [];
   public mapHeightContainer: string;
   public mapZoomLevel: number;
+  public viewEditor: boolean;
 
   constructor(  private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -107,6 +108,7 @@ export class DrowningsComponent implements OnInit {
   }
 
     pickAlocation() {
+        this.viewEditor = false;
         const ref = this.dialogService.open(MapPickLocationComponent, {
             data: {
                 id: null,
