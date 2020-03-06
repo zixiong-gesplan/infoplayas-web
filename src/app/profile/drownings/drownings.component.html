@@ -32,7 +32,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-8">
-                <form [formGroup]="formPrincipal" (ngSubmit)="nuevaIncidencia()">
+                <form [formGroup]="formPrincipal" (ngSubmit)="enviar()">
                     <!-- panel del identificador -->
                     <div class="panel panel-primary">
                         <div class="panel-heading">ID</div>
@@ -452,7 +452,7 @@
 <div class="modal fade" id="personasModal" tabindex="-1" role="dialog" aria-labelledby="personasModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form [formGroup]="formPersonas" (ngSubmit)="nuevaIncidencia()">
+            <form [formGroup]="formPersonas" (ngSubmit)="nuevaPersona()">
                 <div class="modal-body">
                     <!-- panel lugar -->
                     <div class="panel panel-info">
