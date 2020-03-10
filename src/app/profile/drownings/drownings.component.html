@@ -13,7 +13,7 @@
 <!-- seccion -->
 <section class="padding-top-70" [hidden]="mapa">
     <div class="container">
-        <div class="row">
+        <div id="buttonBar" class="row">
             <div class="col-sm text text-center">
                 <ul class="nav nav-pills">
                     <li role="presentation" [ngClass]="{'active': !viewEditor}"><a href="#"
@@ -28,21 +28,31 @@
         </div>
     </div>
 </section>
-<section class="padding-top-70 padding-bottom-30" [hidden]="formulario">
+<!--mapa para visualizar y editar incidentes-->
+<section class="padding-top-15 padding-bottom-30" [hidden]="mapa">
+    <div [ngClass]="viewEditor?'container':'container disabled'">
+        <div id="map" class="row">
+            <div class="col-sm-12">
+                <app-map-viewer-drownings
+                    [mapHeight]="mapHeightContainer"
+                    [zoom]="mapZoomLevel"
+                    (selectedIncidentId)="receiveIncidentId($event)">
+                </app-map-viewer-drownings>
+            </div>
+        </div>
+    </div>
+</section>
+<!--formulario de incidencias-->
+<section [ngClass]="(!formulario)?'padding-top-70 padding-bottom-30':'padding-bottom-30'"
+         [hidden]="formulario && !incidentId">
     <div class="container">
         <div class="row">
             <div class="col-sm-8">
                 <form [formGroup]="formPrincipal" (ngSubmit)="enviar()">
                     <!-- panel del identificador -->
                     <div class="panel panel-primary">
-                        <div class="panel-heading">ID</div>
+                        <div class="panel-heading">ID {{incidentId}}</div>
                         <div class="panel-body">
-                            <div class="form-group form-group-sm">
-                                <label for="incidente">Incidente</label>
-                                <input type="text" class="form-control" id="incidente" aria-describedby="incidente">
-                                <small id="incidente" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
-                            </div>
                             <div class="form-group form-group-sm">
                                 <label for="expte">Expte.</label>
                                 <input type="text" class="form-control" id="expte">
@@ -503,7 +513,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
@@ -513,17 +522,3 @@
         </div>
     </div>
 </div>
-<!--mapa para visualizar y editar incidentes-->
-<section class="padding-top-10 padding-bottom-30" [hidden]="!formulario">
-    <div [ngClass]="viewEditor?'container':'container disabled'">
-        <div class="row">
-            <div class="col-sm-12">
-                <app-map-viewer-drownings
-                    [mapHeight]="mapHeightContainer"
-                    [zoom]="mapZoomLevel"
-                    (selectedIncidentId)="receiveIncidentId($event)">
-                </app-map-viewer-drownings>
-            </div>
-        </div>
-    </div>
-</section>

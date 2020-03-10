@@ -2,7 +2,6 @@ import {DialogService} from 'primeng/api';
 import {MapPickLocationComponent} from '../map-pick-location/map-pick-location.component';
 import {Component, OnInit} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
-import {Auth} from '../../models/auth';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {PopulationService} from '../../services/population.service';
 import {environment} from '../../../environments/environment';
@@ -11,6 +10,7 @@ import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angul
 import {InputTextModule} from 'primeng/inputtext';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
+import {delay} from 'rxjs/operators';
 
 declare var $: any;
 declare var jQuery: any;
@@ -81,6 +81,37 @@ export class DrowningsComponent implements OnInit {
         }
     }
 
+    getIncident() {
+        // this.spinnerService.show();
+        const filterIncident = 'objectid = \'' + this.incidentId + '\'';
+        this.service.getEsriDataLayer(environment.infoplayas_incidentes + '/query', filterIncident,
+            '*', false, this.authService.getCurrentUser().token, 'objectid', false).subscribe(
+            (result: any) => {
+                if (result && result.features.length > 0) {
+                    console.log(result.features);
+                    this.scrollToSmooth('#map');
+                } else if (result.error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Error ' + result.error.code,
+                        text: result.error.message,
+                        footer: ''
+                    });
+                }
+                // this.spinnerService.hide();
+            },
+            error => {
+                console.log(error.toString());
+                this.spinnerService.hide();
+            });
+    }
+
+    scrollToSmooth(velement) {
+        $('html, body').animate({
+            scrollTop: $(velement).offset().top
+        }, 1000);
+    }
+
     borrarArchivo(archivo) {
         let indice = this.archivos.indexOf(archivo);
         this.archivos.splice(indice, 1);
@@ -109,9 +140,13 @@ export class DrowningsComponent implements OnInit {
 
     enviar() {
         this.showMessage('La incidencia se ha añadido correctamente');
-        this.resetForms();
-        this.formulario = true;
         this.mapa = false;
+        this.scrollToSmooth('#buttonBar');
+        setTimeout(() => {
+            this.incidentId = null;
+            this.resetForms();
+            this.formulario = true;
+        }, 2000);
     }
 
     resetForms() {
@@ -168,6 +203,7 @@ export class DrowningsComponent implements OnInit {
         this.incidentId = $event;
         if ($event) {
             console.log('se ha seleccionado el incidente ' + $event);
+            this.getIncident();
         } else {
             console.log('se ha deseleccionado indidente');
         }

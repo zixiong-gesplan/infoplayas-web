@@ -6,6 +6,7 @@ export const environment = {
     production: false,
     infoplayas_catalogo_edicion_url: 'https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer/0',
     infoplayas_catalogo_edicion_tablas_url: 'https://utility.arcgis.com/usrsvcs/servers/070539cded6d4f5e8aa2ce1566618acd/rest/services/ag17_023_fase_2/playas_catalogo_edicion/FeatureServer',
+    infoplayas_incidentes: 'https://utility.arcgis.com/usrsvcs/servers/4a5a34fad6214cf39c3e96931e65c2c8/rest/services/ag17_023/incidentes_edicion/FeatureServer/0',
     idportalForms: '4df033868833441798c532394806601c',
     idportalView: '81e40ab3616b4b4386058593078eaddf',
     idportalDrownings: '81e2f8adabc04ebb8572bd715696cf54',
