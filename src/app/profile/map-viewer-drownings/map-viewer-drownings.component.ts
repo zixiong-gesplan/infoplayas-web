@@ -168,10 +168,6 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     viewer.on('click', function (event) {
                         // Listen for when the user clicks on the view
                         viewer.hitTest(event).then(function (response) {
-                            if (highlight) {
-                                highlight.remove();
-                                highlight = null;
-                            }
                             if (response.results.length > 0) {
                                 const resultIncident = response.results.find(item => item.graphic.layer.id === incidentesLayerId);
                                 if (resultIncident) {
@@ -203,11 +199,10 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                         }
                     }
 
-                    function standOutIncident(beachLayer, id) {
-                        viewer.whenLayerView(beachLayer).then(function (layerView) {
+                    function standOutIncident(incidentLayer, id) {
+                        viewer.whenLayerView(incidentLayer).then(function (layerView) {
                             if (highlight) {
                                 highlight.remove();
-                                highlight = null;
                             }
                             highlight = layerView.highlight(id);
                         });

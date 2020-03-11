@@ -25,8 +25,9 @@ export class DrowningsComponent implements OnInit {
     public formPersonas: FormGroup;
     public archivos: any[] = [];
     public url: any[] = [];
-    public mapa: boolean = false;
-    public formulario: boolean = true;
+    public mapa: boolean = true;
+    public formulario: boolean = false;
+    public botones: boolean = true;
     public personasArray: any[] = [];
     public mapHeightContainer: string;
     public mapZoomLevel: number;
@@ -140,12 +141,13 @@ export class DrowningsComponent implements OnInit {
 
     enviar() {
         this.showMessage('La incidencia se ha añadido correctamente');
-        this.mapa = false;
+        this.mapa = true;
+        this.botones = true;
         this.scrollToSmooth('#buttonBar');
         setTimeout(() => {
             this.incidentId = null;
             this.resetForms();
-            this.formulario = true;
+            this.formulario = false;
         }, 2000);
     }
 
@@ -168,6 +170,7 @@ export class DrowningsComponent implements OnInit {
         this.viewEditor = false;
         const ref = this.dialogService.open(MapPickLocationComponent, {
             data: {
+                // TODO id codigo muerto
                 id: null,
                 zoom: 12,
                 mapHeight: '69vh'
@@ -182,8 +185,9 @@ export class DrowningsComponent implements OnInit {
                 console.log(incidentPoint.attributes);
                 this.formPrincipal.get('isla').setValue(incidentPoint.attributes.isla);
                 this.formPrincipal.get('playa').setValue(incidentPoint.attributes.nombre_municipio);
-                this.formulario = false;
-                this.mapa = true;
+                this.formulario = true;
+                this.mapa = false;
+                this.botones = false;
             }
         });
     }
@@ -204,7 +208,9 @@ export class DrowningsComponent implements OnInit {
         if ($event) {
             console.log('se ha seleccionado el incidente ' + $event);
             this.getIncident();
+            this.formulario = true;
         } else {
+            this.formulario = false;
             console.log('se ha deseleccionado indidente');
         }
     }

@@ -11,7 +11,7 @@
 </section>
 <!-- Header End -->
 <!-- seccion -->
-<section class="padding-top-70" [hidden]="mapa">
+<section class="padding-top-70" [hidden]="!botones">
     <div class="container">
         <div id="buttonBar" class="row">
             <div class="col-sm text text-center">
@@ -29,22 +29,22 @@
     </div>
 </section>
 <!--mapa para visualizar y editar incidentes-->
-<section class="padding-top-15 padding-bottom-30" [hidden]="mapa">
+<section class="padding-top-15 padding-bottom-30" [hidden]="!mapa">
     <div [ngClass]="viewEditor?'container':'container disabled'">
         <div id="map" class="row">
             <div class="col-sm-12">
                 <app-map-viewer-drownings
-                    [mapHeight]="mapHeightContainer"
-                    [zoom]="mapZoomLevel"
-                    (selectedIncidentId)="receiveIncidentId($event)">
+                        [mapHeight]="mapHeightContainer"
+                        [zoom]="mapZoomLevel"
+                        (selectedIncidentId)="receiveIncidentId($event)">
                 </app-map-viewer-drownings>
             </div>
         </div>
     </div>
 </section>
 <!--formulario de incidencias-->
-<section [ngClass]="(!formulario)?'padding-top-70 padding-bottom-30':'padding-bottom-30'"
-         [hidden]="formulario && !incidentId">
+<section [ngClass]="(!mapa)?'padding-top-70 padding-bottom-30':'padding-bottom-30'"
+         [hidden]="!formulario">
     <div class="container">
         <div class="row">
             <div class="col-sm-8">
@@ -57,19 +57,22 @@
                                 <label for="expte">Expte.</label>
                                 <input type="text" class="form-control" id="expte">
                                 <small id="incidente" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="socorristas">Socorristas</label>
                                 <input type="text" class="form-control" id="socorristas">
                                 <small id="socorristas" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="fuen_datos">Fuente de datos</label>
                                 <input type="text" class="form-control" id="fuen_datos">
                                 <small id="fuen_datos" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -84,7 +87,8 @@
                                             placeholder="Fecha"></p-calendar>
                                 <br>
                                 <small id="hora_deriva" class="form-text text-muted">Seleccione la fecha del
-                                    incidente</small>
+                                    incidente
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="playa">Hora conocimiento</label><br>
@@ -93,7 +97,8 @@
                                             [timeOnly]="true" placeholder="Hora conocimiento"></p-calendar>
                                 <br>
                                 <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la
-                                    derivación</small>
+                                    derivación
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="playa">Hora toma</label><br>
@@ -102,7 +107,8 @@
                                             [timeOnly]="true" placeholder="Hora toma"></p-calendar>
                                 <br>
                                 <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la
-                                    derivación</small>
+                                    derivación
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="playa">Hora derivación</label><br>
@@ -111,7 +117,8 @@
                                             [timeOnly]="true" placeholder="Hora derivación"></p-calendar>
                                 <br>
                                 <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la
-                                    derivación</small>
+                                    derivación
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -144,7 +151,8 @@
                                             [timeOnly]="true" placeholder="Hora derivación"></p-calendar>
                                 <br>
                                 <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la
-                                    derivación</small>
+                                    derivación
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -201,7 +209,8 @@
                                     </label>
                                 </div>
                                 <small id="servicio" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="tipo">Tipo situación</label>
@@ -212,19 +221,22 @@
                                     <option>3</option>
                                 </select>
                                 <small id="tipo" class="form-text text-muted">We'll never share your email with anyone
-                                    else.</small>
+                                    else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="nsocorristas">Número de socorristas de servicio</label>
                                 <input type="number" class="form-control" id="nsocorristas" min="1">
                                 <small id="nsocorristas" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="nintervinietes">Número intervinietes</label>
                                 <input type="number" class="form-control" id="nintervinietes" min="1">
                                 <small id="nintervinietes" class="form-text text-muted">We'll never share your email
-                                    with anyone else.</small>
+                                    with anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="rmovilizados">Recursos movilizados</label>
@@ -234,7 +246,8 @@
                                     <option>Embarcación</option>
                                 </select>
                                 <small id="rmovilizados" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
 
                             <div class="form-group form-group-sm">
@@ -250,7 +263,8 @@
                                     <option>Salvamento Marítimo</option>
                                 </select>
                                 <small id="rescate" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="rtierra">Recursos utilizados en tierra</label>
@@ -259,7 +273,8 @@
                                     <option>Vendas</option>
                                 </select>
                                 <small id="rtierra" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
 
                             <div class="form-group form-group-sm">
@@ -270,7 +285,8 @@
                                     <option>Rcp</option>
                                 </select>
                                 <small id="acciones" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
 
                             <div class="form-group form-group-sm">
@@ -281,7 +297,8 @@
                                     <option>Rcp</option>
                                 </select>
                                 <small id="derivacion" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -299,13 +316,15 @@
                                     <option>Fallecido</option>
                                 </select>
                                 <small id="remergencia" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="observaciones">Observaciones</label>
                                 <textarea class="form-control" rows="10" id="robservaciones"></textarea>
                                 <small id="observaciones" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -318,13 +337,15 @@
                                 <label for="dobservaciones1">Observaciones 1</label>
                                 <textarea class="form-control" rows="10" id="dobservaciones1"></textarea>
                                 <small id="dobservaciones1" class="form-text text-muted">We'll never share your email
-                                    with anyone else.</small>
+                                    with anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="dobservaciones2">Observaciones 2</label>
                                 <textarea class="form-control" rows="10" id="dobservaciones2"></textarea>
                                 <small id="dobservaciones2" class="form-text text-muted">We'll never share your email
-                                    with anyone else.</small>
+                                    with anyone else.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -348,7 +369,8 @@
                                     <option>9</option>
                                 </select>
                                 <small id="emar" class="form-text text-muted">We'll never share your email with anyone
-                                    else.</small>
+                                    else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="eviento">Estado del viento (ESCALA DE BEAUFORT)</label>
@@ -368,7 +390,8 @@
                                     <option>12</option>
                                 </select>
                                 <small id="eviento" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
 
                             <div class="form-group form-group-sm">
@@ -381,7 +404,8 @@
                                     <option>Lluvia intesa</option>
                                 </select>
                                 <small id="tiempo" class="form-text text-muted">We'll never share your email with anyone
-                                    else.</small>
+                                    else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="servicio">Alerta CECOES</label>
@@ -398,13 +422,15 @@
                                     </label>
                                 </div>
                                 <small id="servicio" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="ralerta">Referencia alerta</label>
                                 <input type="text" class="form-control" id="ralerta" aria-describedby="ralerta">
                                 <small id="ralerta" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="situacion">Situación declarada</label>
@@ -414,7 +440,8 @@
                                     <option>Definir</option>
                                 </select>
                                 <small id="situacion" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small>
+                                    anyone else.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -443,7 +470,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="iborrainputfile" width="20"
                                          height="17" viewBox="0 0 20 17">
                                         <path
-                                            d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path>
+                                                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path>
                                     </svg>
                                     <span class="iborrainputfile">Seleccionar archivos</span>
                                 </label>
@@ -490,7 +517,8 @@
                                             placeholder="Fecha nacimiento"></p-calendar>
                                 <br>
                                 <small id="fecha_nacimiento" class="form-text text-muted">Seleccione la fecha de
-                                    nacimiento</small>
+                                    nacimiento
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="playa">Lugar de nacimiento</label>
