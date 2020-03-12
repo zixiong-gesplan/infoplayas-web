@@ -11,6 +11,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import {delay} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 
 declare var $: any;
 declare var jQuery: any;
@@ -33,6 +34,7 @@ export class DrowningsComponent implements OnInit {
     public mapZoomLevel: number;
     public viewEditor: boolean;
     private incidentId: number;
+    eventsSubject: Subject<void> = new Subject<void>();
 
     constructor(private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -80,6 +82,10 @@ export class DrowningsComponent implements OnInit {
         for (var i = 0; i < files.length; i++) {
             this.readUrl(fileInput, i, files);
         }
+    }
+
+    unselectOnMap() {
+        this.eventsSubject.next();
     }
 
     getIncident() {

@@ -11,13 +11,14 @@ import {AppSetting} from '../../models/app-setting';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import Swal from 'sweetalert2';
 import {el} from '@angular/platform-browser/testing/src/browser_util';
+import {Observable, Subscription} from 'rxjs';
 
 declare var $: any;
 declare var jquery: any;
 
 // variables javascript esri maps
 declare let viewer: any;
-declare let highlight: any;
+declare let highlightIncident: any;
 declare const createScaleBar: any;
 declare const createLegend: any;
 declare const createExpand: any;
@@ -40,10 +41,13 @@ declare let featuresViewer: any;
 export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
     @Input() mapHeight: string;
     @Input() zoom: number;
+    @Input() events: Observable<void>;
     @Output() selectedIncidentId = new EventEmitter<number>();
     private currentUser: Auth;
     private subscripcionMunicipality;
+    private eventsSubscription: Subscription;
     private aytos: AppSetting[];
+    private his: [];
 
     constructor(private authService: AuthGuardService, public service: EsriRequestService, private popService: PopulationService,
                 private appSettingsService: AppSettingsService, private spinnerService: Ng4LoadingSpinnerService) {
@@ -60,6 +64,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscripcionMunicipality.unsubscribe();
+        this.eventsSubscription.unsubscribe();
     }
 
     private setMap() {
@@ -132,7 +137,6 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     municipiosLayer = webmap.findLayerById(municipiosLayerId);
                     incidentesLayer = webmap.findLayerById(incidentesLayerId);
                     const ayto = t.popService.getMunicipality().user;
-                    highlight = null;
                     // Filter by changing runtime params
                     filterPlayas = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_minus + '\'';
                     filterPlayas = filterPlayas + ' AND clasificacion IS NOT NULL';
@@ -168,6 +172,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     viewer.on('click', function (event) {
                         // Listen for when the user clicks on the view
                         viewer.hitTest(event).then(function (response) {
+                            t.removeSelection();
                             if (response.results.length > 0) {
                                 const resultIncident = response.results.find(item => item.graphic.layer.id === incidentesLayerId);
                                 if (resultIncident) {
@@ -201,13 +206,16 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
 
                     function standOutIncident(incidentLayer, id) {
                         viewer.whenLayerView(incidentLayer).then(function (layerView) {
-                            if (highlight) {
-                                highlight.remove();
-                            }
-                            highlight = layerView.highlight(id);
+                            highlightIncident = layerView.highlight(id);
                         });
                     }
 
+                });
+
+                this.eventsSubscription = this.events.subscribe(() => {
+                    // const playasLayer = viewer.map.findLayerById(incidentesLayerId);
+                    // playasLayer.refresh();
+                    t.removeSelection();
                 });
 
                 // recargamos el filtro de municipio y de playas cuando se selecciona un nuevo municipio desde un superusuario
@@ -215,7 +223,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     (result: Municipality) => {
                         if (result.user && municipiosLayer) {
                             viewer.zoom = this.zoom;
-                            highlight = null;
+                            t.removeSelection();
                             filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_mayus + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
                             const filter = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_minus + '\''
@@ -251,6 +259,14 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                 // handle any errors
                 console.error(err);
             });
+    }
+
+    removeSelection() {
+        if (highlightIncident) {
+            highlightIncident.remove();
+            // TODO duplicado porque hay algo mal en la api o en la plantilla web que usamos que interfiere con el método de remove
+            highlightIncident.remove();
+        }
     }
 
 }

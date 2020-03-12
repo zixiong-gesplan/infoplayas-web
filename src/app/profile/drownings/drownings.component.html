@@ -17,10 +17,10 @@
             <div class="col-sm text text-center">
                 <ul class="nav nav-pills">
                     <li role="presentation" [ngClass]="{'active': !viewEditor}"><a href="#"
-                                                                                   (click)="$event.preventDefault(); pickAlocation()">Nuevo
+                                                                                   (click)="$event.preventDefault(); unselectOnMap(); pickAlocation()">Nuevo
                         incidente</a></li>
                     <li role="presentation" [ngClass]="{'active': viewEditor}"><a href="#"
-                                                                                  (click)="$event.preventDefault(); viewEditor = true">Editar
+                                                                                  (click)="$event.preventDefault(); viewEditor = true ; unselectOnMap()">Editar
                         incidentes</a></li>
                 </ul>
             </div>
@@ -36,6 +36,7 @@
                 <app-map-viewer-drownings
                         [mapHeight]="mapHeightContainer"
                         [zoom]="mapZoomLevel"
+                        [events]="eventsSubject.asObservable()"
                         (selectedIncidentId)="receiveIncidentId($event)">
                 </app-map-viewer-drownings>
             </div>
