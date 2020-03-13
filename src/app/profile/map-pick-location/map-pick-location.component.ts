@@ -43,6 +43,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
     private lastGraphicLayerId: string;
     selectedMpPoint: any;
     private aytos: AppSetting[];
+    private dataMun: [String, String];
 
     constructor(private authService: AuthGuardService, public service: EsriRequestService, private popService: PopulationService,
                 private appSettingsService: AppSettingsService, public ref: DynamicDialogRef, public config: DynamicDialogConfig,
@@ -73,7 +74,26 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
     }
 
     close() {
-        this.loadCatalogueInfoByid();
+        if (this.selectedBeachId) {
+            this.loadCatalogueInfoByid();
+        } else {
+            Swal.fire({
+                title: 'No ha seleccionado ninguna playa para el incidente',
+                text: '¿Desea continuar?',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Sí, no ha sucedido en una playa',
+                footer: '',
+                type: 'warning'
+            }).then((result) => {
+                if (result.value) {
+                    this.selectedMpPoint.attributes = {isla: this.dataMun[0], municipio: this.dataMun[1]};
+                    this.ref.close(this.selectedMpPoint);
+                }
+            });
+        }
     }
 
     loadCatalogueInfoByid() {
@@ -182,6 +202,8 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                             const longitude = results.features[0].geometry.centroid.longitude;
                             viewer.center = [longitude, latitude];
                         }
+                        // Datos del municipio del incidente para el componente padre en caso de que no seleccione playa
+                        t.dataMun = [results.features[0].attributes.isla, results.features[0].attributes.municipio];
                         // Default Home value is current extent
                         home = createHomeButton(Home, viewer);
                         home.viewpoint = {
@@ -205,20 +227,18 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                             }
                             let layer = null;
                             layer = getLastGraphicLayerForPoint(layer);
-                            if (highlight) {
-                                const mpPoint = viewer.toMap(response.screenPoint);
-                                const pointGraphic = new Graphic({
-                                    geometry: mpPoint,
-                                    symbol: {
-                                        type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
-                                        url: 'https://static.arcgis.com/images/Symbols/Animated/EnlargeRotatingRedMarkerSymbol.png',
-                                        width: '48px',
-                                        height: '48px'
-                                    }
-                                });
-                                layer.graphics.add(pointGraphic);
-                                t.selectedMpPoint = pointGraphic;
-                            }
+                            const mpPoint = viewer.toMap(response.screenPoint);
+                            const pointGraphic = new Graphic({
+                                geometry: mpPoint,
+                                symbol: {
+                                    type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
+                                    url: 'https://static.arcgis.com/images/Symbols/Animated/EnlargeRotatingRedMarkerSymbol.png',
+                                    width: '48px',
+                                    height: '48px'
+                                }
+                            });
+                            layer.graphics.add(pointGraphic);
+                            t.selectedMpPoint = pointGraphic;
                         });
                     });
                     const listID = 'ulPlayaViewer';
@@ -250,19 +270,6 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                         try {
                             viewer.goTo(result.geometry.extent.expand(2));
                             standOutBeach(result.layer, resultBeachId);
-                            let layer = null;
-                            layer = getLastGraphicLayerForPoint(layer);
-                            const pointGraphic = new Graphic({
-                                geometry: result.geometry.centroid,
-                                symbol: {
-                                    type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
-                                    url: 'https://static.arcgis.com/images/Symbols/Animated/EnlargeRotatingRedMarkerSymbol.png',
-                                    width: '48px',
-                                    height: '48px'
-                                }
-                            });
-                            layer.graphics.add(pointGraphic);
-                            t.selectedMpPoint = pointGraphic;
                         } catch (error) {
                         }
                     }
@@ -282,7 +289,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                             layer = new GraphicsLayer({
                                 graphics: []
                             });
-                            layer.minScale = 7000;
+                            layer.minScale = 38000;
                             webmap.add(layer);
                             t.lastGraphicLayerId = layer.id;
                         } else {

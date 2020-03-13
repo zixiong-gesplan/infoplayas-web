@@ -46,7 +46,6 @@ export class DrowningsComponent implements OnInit {
 
     ngOnInit() {
 
-        console.log(this.authService.getCurrentUser());
         this.formPrincipal = this.fb.group({
             incidente: new FormControl(''),
             expte: new FormControl(0, Validators.min(0)),
@@ -188,7 +187,6 @@ export class DrowningsComponent implements OnInit {
 
         ref.onClose.subscribe((incidentPoint) => {
             if (incidentPoint) {
-                console.log(incidentPoint.attributes);
                 this.formPrincipal.get('isla').setValue(incidentPoint.attributes.isla);
                 this.formPrincipal.get('playa').setValue(incidentPoint.attributes.nombre_municipio);
                 this.formulario = true;

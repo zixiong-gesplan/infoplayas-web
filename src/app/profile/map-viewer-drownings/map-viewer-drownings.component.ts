@@ -47,7 +47,6 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
     private subscripcionMunicipality;
     private eventsSubscription: Subscription;
     private aytos: AppSetting[];
-    private his: [];
 
     constructor(private authService: AuthGuardService, public service: EsriRequestService, private popService: PopulationService,
                 private appSettingsService: AppSettingsService, private spinnerService: Ng4LoadingSpinnerService) {
@@ -213,8 +212,6 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                 });
 
                 this.eventsSubscription = this.events.subscribe(() => {
-                    // const playasLayer = viewer.map.findLayerById(incidentesLayerId);
-                    // playasLayer.refresh();
                     t.removeSelection();
                 });
 
