@@ -6,6 +6,7 @@ import {EsriRequestService} from '../../services/esri-request.service';
 import {PopulationService} from '../../services/population.service';
 import {environment} from '../../../environments/environment';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {InputTextModule} from 'primeng/inputtext';
 import Swal from 'sweetalert2';
@@ -35,6 +36,7 @@ export class DrowningsComponent implements OnInit {
     public viewEditor: boolean;
     private incidentId: number;
     eventsSubject: Subject<void> = new Subject<void>();
+    animationProgress: boolean;
 
     constructor(private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -51,7 +53,7 @@ export class DrowningsComponent implements OnInit {
             expte: new FormControl(0, Validators.min(0)),
             socorristas: new FormControl(0),
             fuen_datos: new FormControl(0),
-            municipio: new FormControl(this.populationService.getMunicipality().ayuntamiento.toUpperCase()),
+            municipio: new FormControl(''),
             playa: new FormControl(''),
             hora_derivación: new FormControl(''),
             isla: new FormControl(''),
@@ -94,7 +96,11 @@ export class DrowningsComponent implements OnInit {
             '*', false, this.authService.getCurrentUser().token, 'objectid', false).subscribe(
             (result: any) => {
                 if (result && result.features.length > 0) {
+                    setTimeout(() => {
+                        this.animationProgress = false;
+                    }, 1000);
                     console.log(result.features);
+                    // TODO patch en el formulario de incidente
                     this.scrollToSmooth('#map');
                 } else if (result.error) {
                     Swal.fire({
@@ -159,6 +165,7 @@ export class DrowningsComponent implements OnInit {
     resetForms() {
         this.personasArray = [];
         this.formPersonas.reset();
+        this.formPrincipal.reset();
         this.archivos = [];
     }
 
@@ -187,8 +194,10 @@ export class DrowningsComponent implements OnInit {
 
         ref.onClose.subscribe((incidentPoint) => {
             if (incidentPoint) {
+                this.resetForms();
                 this.formPrincipal.get('isla').setValue(incidentPoint.attributes.isla);
                 this.formPrincipal.get('playa').setValue(incidentPoint.attributes.nombre_municipio);
+                this.formPrincipal.get('municipio').setValue(this.populationService.getMunicipality().ayuntamiento.toUpperCase());
                 this.formulario = true;
                 this.mapa = false;
                 this.botones = false;
@@ -209,13 +218,14 @@ export class DrowningsComponent implements OnInit {
 
     receiveIncidentId($event: number) {
         this.incidentId = $event;
+        console.log($event)
         if ($event) {
-            console.log('se ha seleccionado el incidente ' + $event);
+            this.animationProgress = true;
             this.getIncident();
             this.formulario = true;
         } else {
             this.formulario = false;
-            console.log('se ha deseleccionado indidente');
+            this.animationProgress = false;
         }
     }
 }

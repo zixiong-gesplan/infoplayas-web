@@ -9,8 +9,6 @@ import {Municipality} from '../../models/municipality';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
-import Swal from 'sweetalert2';
-import {el} from '@angular/platform-browser/testing/src/browser_util';
 import {Observable, Subscription} from 'rxjs';
 
 declare var $: any;
@@ -64,6 +62,14 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscripcionMunicipality.unsubscribe();
         this.eventsSubscription.unsubscribe();
+    }
+
+    removeSelection() {
+        if (highlightIncident) {
+            highlightIncident.remove();
+            // TODO duplicado porque hay algo mal en la api o en la plantilla web que usamos que interfiere con el método de remove
+            highlightIncident.remove();
+        }
     }
 
     private setMap() {
@@ -177,6 +183,8 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                                 if (resultIncident) {
                                     standOutIncident(response.results[0].graphic.layer, response.results[0].graphic.attributes.objectid);
                                     t.selectedIncidentId.emit(resultIncident.graphic.attributes.objectid);
+                                } else {
+                                    t.selectedIncidentId.emit(null);
                                 }
                             } else {
                                 t.selectedIncidentId.emit(null);
@@ -256,14 +264,6 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                 // handle any errors
                 console.error(err);
             });
-    }
-
-    removeSelection() {
-        if (highlightIncident) {
-            highlightIncident.remove();
-            // TODO duplicado porque hay algo mal en la api o en la plantilla web que usamos que interfiere con el método de remove
-            highlightIncident.remove();
-        }
     }
 
 }
