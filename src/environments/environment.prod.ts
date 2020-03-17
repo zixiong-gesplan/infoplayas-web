@@ -94,5 +94,5 @@ export const environment = {
     tbPasiva: 9,
     tbRiesgos: 11,
     tbUnitarios: 10,
-    tbVacacional: 12
+    tbPoblacional: 12
 };

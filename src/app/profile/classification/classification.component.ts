@@ -315,7 +315,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         // cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
         this.formVacational.get('on_edit').setValue(true);
         this.editDataLayer(updateObj, this.authService.getCurrentUser(), mode,
-            environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbVacacional + '/applyEdits');
+            environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbPoblacional + '/applyEdits');
         // actualizamos el valor de la carga poblacional
         this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01 + updateObj[0].attributes.plazas
             * updateObj[0].attributes.ocupacion * 0.01)) + this.municipio.population;
@@ -329,7 +329,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     loadVacational(mun: Municipality) {
         // this.spinnerService.show();
-        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbVacacional + '/query',
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbPoblacional + '/query',
             'id_ayuntamiento = \'' + mun.istac_code + '\'', '*', false, this.authService.getCurrentUser().token,
             'id_ayuntamiento', false).subscribe(
             (result: any) => {
