@@ -9,7 +9,9 @@ import {PopulationService} from '../services/population.service';
 import {AppSettingsService} from '../services/app-settings.service';
 import {AppSetting} from '../models/app-setting';
 import {environment} from '../../environments/environment';
+
 declare function init_plugins();
+
 declare function navbar_load();
 
 @Component({
@@ -22,18 +24,10 @@ export class ProfileComponent implements OnInit {
     current_user: Auth;
     isPlanUser: boolean;
     isIncidentsUser: boolean;
+    private aytos: AppSetting[];
 
     constructor(private service: RequestService, private authService: AuthGuardService, private spinnerService: Ng4LoadingSpinnerService,
                 public router: Router, private popService: PopulationService, private appSettingsService: AppSettingsService) {
-        this.municipalities = [];
-        this.appSettingsService.getJSON().subscribe(data => {
-            const aytos: AppSetting[] = data;
-            aytos.map(v => {
-                if (v.istac_code) {
-                    this.municipalities.push({label: v.municipio_minus, value: v.ayto});
-                }
-            });
-        });
     }
 
     ngOnInit() {
@@ -43,14 +37,21 @@ export class ProfileComponent implements OnInit {
         const rol = environment.roles.find(i => i.id === this.current_user.roleId);
         this.isPlanUser = rol.plan_visual;
         this.isIncidentsUser = rol.inc_visual;
-        if (!this.popService.isMunicipalityStore(this.current_user)) {
-            this.popService.updateMunicipality(this.current_user.filter
-                ? this.current_user.filter : 'adeje');
-        }
+        this.municipalities = [];
+        this.appSettingsService.getJSON().subscribe(data => {
+            this.aytos = data;
+            this.aytos.map(v => {
+                if (v.istac_code) {
+                    this.municipalities.push({label: v.municipio_minus, value: v.ayto});
+                }
+            });
+            const filter = this.current_user.filter ? this.current_user.filter : 'adeje';
+            this.popService.updateMunicipality(filter, this.aytos);
+        });
     }
 
     updateFilterUser($event) {
-        this.popService.updateMunicipality($event.value);
+        this.popService.updateMunicipality($event.value, this.aytos);
     }
 
     userLogOut() {

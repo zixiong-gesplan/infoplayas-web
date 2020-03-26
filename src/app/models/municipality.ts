@@ -1,7 +1,7 @@
 export interface Municipality {
+    objectid?: number;
     population?: number;
     user?: string;
-    year?: number;
     istac_code?: string;
     beds?: number;
     beds_vacational?: number;

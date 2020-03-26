@@ -48,9 +48,9 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     fillState: number;
     percentage: number;
     display;
+    isUserEditor: boolean;
     private subscripcionMunicipality;
     private subscripcionFormState;
-    isUserEditor: boolean;
 
     constructor(private gradeService: GradesProtectionService, public authService: AuthGuardService, private service: EsriRequestService,
                 private fb: FormBuilder, private popService: PopulationService, private appSettingsService: AppSettingsService,
@@ -88,10 +88,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         this.formVacational = this.fb.group({
             objectid: new FormControl(''),
             plazas_vacacional: new FormControl('', Validators.required),
-            ocupacion_vacacional: new FormControl('',Validators.compose([Validators.required, Validators.min(0), Validators.max(100),
+            ocupacion_vacacional: new FormControl('', Validators.compose([Validators.required, Validators.min(0), Validators.max(100),
                 Validators.pattern('^[0-9]+')])),
-            id_ayuntamiento: new FormControl(''),
-            on_edit: new FormControl(''),
             editor: new FormControl('', Validators.requiredTrue)
         });
         this.setPopulationByMuncipality(this.popService.getMunicipality());
@@ -297,67 +295,37 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     resetForm() {
         this.formVacational.reset();
+        this.loadVacational(this.municipio);
     }
 
     onSubmitVacational() {
         this.spinnerService.show();
-        const mode = this.formVacational.get('on_edit').value ? 'updates' : 'adds';
         const updateObj = new Array();
         updateObj.push({
             attributes: {
-                objectid: mode === 'updates' ? this.formVacational.get('objectid').value : null,
+                objectid: this.formVacational.get('objectid').value,
                 plazas_vacacional: this.formVacational.get('plazas_vacacional').value,
                 ocupacion_vacacional: this.formVacational.get('ocupacion_vacacional').value,
-                id_ayuntamiento: this.formVacational.get('id_ayuntamiento').value,
                 ultimo_cambio: moment().format('YYYY-MM-DD HH:mm:ss'),
                 ultimo_editor: this.authService.getCurrentUser().username
             }
         });
-        // cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
-        this.formVacational.get('on_edit').setValue(true);
-        this.editDataLayer(updateObj, this.authService.getCurrentUser(), mode,
+        // TODO cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
+        this.editDataLayer(updateObj, this.authService.getCurrentUser(), 'updates',
             environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbPoblacional + '/applyEdits');
-        // actualizamos el valor de la carga poblacional
-        this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01 + updateObj[0].attributes.plazas_vacacional
-            * updateObj[0].attributes.ocupacion_vacacional * 0.01)) + this.municipio.population;
-        this.DangerPopulationLevel = this.getDangerPopulationLevel();
-        // actualizamos la local storage
-        const mun = this.popService.getMunicipality();
-        mun.beds_vacational = updateObj[0].attributes.plazas_vacacional;
-        mun.occupation_vacational = updateObj[0].attributes.ocupacion_vacacional;
-        localStorage.setItem('municipality', JSON.stringify(mun));
     }
 
     loadVacational(mun: Municipality) {
-        // this.spinnerService.show();
-        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbPoblacional + '/query',
-            'id_ayuntamiento = \'' + mun.istac_code + '\'', '*', false, this.authService.getCurrentUser().token,
-            'id_ayuntamiento', false).subscribe(
-            (result: any) => {
-                if (result && result.features.length > 0) {
-                    this.formVacational.patchValue(result.features[0].attributes);
-                    this.formVacational.get('on_edit').setValue(true);
-                    this.formVacational.get('editor').setValue(this.isUserEditor);
-                } else {
-                    this.formVacational.get('on_edit').setValue(false);
-                    this.formVacational.get('editor').setValue(this.isUserEditor);
-                    this.formVacational.get('id_ayuntamiento').setValue(mun.istac_code);
-                }
-                const bedsVacational = this.formVacational.get('plazas_vacacional').value ? this.formVacational.get('plazas_vacacional').value : 0;
-                const ocupationVacational = this.formVacational.get('ocupacion_vacacional').value ? this.formVacational.get('ocupacion_vacacional').value : 0;
-                this.municipio = mun;
-                this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01 + bedsVacational
-                    * ocupationVacational * 0.01)) + this.municipio.population;
-                this.DangerPopulationLevel = this.getDangerPopulationLevel();
-                // actualizamos la local storage
-                mun.beds_vacational = bedsVacational;
-                mun.occupation_vacational = ocupationVacational;
-                localStorage.setItem('municipality', JSON.stringify(mun));
-            },
-            error => {
-                this.spinnerService.hide();
-            }).add(() => {
+        this.formVacational.patchValue({
+            objectid: mun.objectid,
+            plazas_vacacional: mun.beds_vacational,
+            ocupacion_vacacional: mun.occupation_vacational,
+            editor: this.isUserEditor
         });
+        this.municipio = mun;
+        this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01 + mun.beds_vacational
+            * mun.occupation_vacational * 0.01)) + this.municipio.population;
+        this.DangerPopulationLevel = this.getDangerPopulationLevel();
     }
 
     readFormsState() {
@@ -384,6 +352,17 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
+                    // actualizamos el valor de la carga poblacional
+                    this.cargaPoblacional = Math.round((this.municipio.beds * this.municipio.occupation * 0.01 + updateObj[0].attributes.plazas_vacacional
+                        * updateObj[0].attributes.ocupacion_vacacional * 0.01)) + this.municipio.population;
+                    this.DangerPopulationLevel = this.getDangerPopulationLevel();
+                    // actualizamos la local storage
+                    const mun = this.popService.getMunicipality();
+                    mun.beds_vacational = updateObj[0].attributes.plazas_vacacional;
+                    mun.occupation_vacational = updateObj[0].attributes.ocupacion_vacacional;
+                    this.municipio = mun;
+                    localStorage.setItem('municipality', JSON.stringify(mun));
+                    // mensaje de exito
                     Swal.fire({
                         type: 'success',
                         title: 'Éxito',

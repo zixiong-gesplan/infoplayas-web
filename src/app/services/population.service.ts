@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
-import {Auth} from '../models/auth';
 import {Municipality} from '../models/municipality';
-import {RequestService} from './request.service';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {BehaviorSubject} from 'rxjs';
 import {AppSetting} from '../models/app-setting';
 import {AppSettingsService} from './app-settings.service';
 import Swal from 'sweetalert2';
+import {environment} from '../../environments/environment';
+import {EsriRequestService} from './esri-request.service';
+import {AuthGuardService} from './auth-guard.service';
 
 @Injectable({
     providedIn: 'root'
@@ -15,153 +16,55 @@ export class PopulationService {
 
     private sMunicipalitySource = new BehaviorSubject<Municipality>({});
     sMunicipality$ = this.sMunicipalitySource.asObservable();
-    private populationName: string;
-    private aytos: AppSetting[];
 
-    constructor(private service: RequestService, private spinnerService: Ng4LoadingSpinnerService,
-                private appSettingsService: AppSettingsService) {
-        this.appSettingsService.getJSON().subscribe(data => {
-            this.aytos = data;
-        });
+    constructor(private service: EsriRequestService, private spinnerService: Ng4LoadingSpinnerService,
+                private appSettingsService: AppSettingsService, private authService: AuthGuardService) {
     }
 
     getMunicipality(): Municipality {
         return JSON.parse(localStorage.getItem('municipality'));
     }
 
-
-    public isMunicipalityStore(current_user: Auth): boolean {
-        const mun: Municipality = this.getMunicipality();
-        const currentDate = new Date();
-        if (mun && current_user.filter && current_user.filter !== mun.user) {
-            return false;
-        }
-        if (mun && currentDate.getFullYear() - 1 > Number(mun.year)) {
-            return false;
-        } else {
-            return !!mun;
-        }
-    }
-
-    updateMunicipality(name: string) {
-        this.populationName = name;
+    updateMunicipality(name: string, aytos: AppSetting[]) {
         this.spinnerService.show();
-        this.getLastYearIstacData();
-    }
-
-    getLastYearIstacData() {
-        const representation = 'MEASURE[ABSOLUTE]';
-        this.service.getIstacData('POBLACION/data', representation).subscribe(
-            (result: any) => {
-                if (result) {
-                    const index = Object.keys(result.dimension.TIME.representation.index).length - 1;
-                    this.getLastYearIstacData2(Number(Object.keys(result.dimension.TIME.representation.index)[index]));
-                }
-            },
-            error => {
-                console.log(error.toString());
-                this.spinnerService.hide();
-                this.blockEditProteccionData();
-            });
-    }
-
-    /* En caso de error de los servicios del ISTAC ajeno a la pagina, advertimos y solicitamos recargar la página*/
-    blockEditProteccionData() {
-        Swal.fire({
-            type: 'error',
-            title: 'NO se ha podido contactar con el ISTAC',
-            text: 'Los cálculos no serán correctos, trate de recargar la página, si persiste inténtelo más tarde.',
-            footer: ''
-        });
-    }
-
-    getLastYearIstacData2(popYear: number) {
-        const representation = 'MEASURE[ABSOLUTE]';
-        this.service.getIstacData('ALOJATUR_PLAZAS_OCUPACION/data', representation).subscribe(
-            (result: any) => {
-                if (result) {
-                    const index = Object.keys(result.dimension.TIME.representation.index).length - 1;
-                    const tmpyear = Number(Object.keys(result.dimension.TIME.representation.index)[index]);
-                    const lastYear = tmpyear < popYear ? tmpyear : popYear;
-                    const mun: Municipality = this.getMunicipality();
-                    if (mun && lastYear > Number(mun.year)) {
-                        this.setIstacData(lastYear);
-                    } else if (mun && this.populationName !== mun.user) {
-                        this.setIstacData(lastYear);
-                    } else if (!mun) {
-                        this.setIstacData(lastYear);
-                    } else {
-                        this.spinnerService.hide();
-                    }
-                }
-            },
-            error => {
-                console.log(error.toString());
-                this.spinnerService.hide();
-                this.blockEditProteccionData();
-            });
-    }
-
-    setIstacData(year: number) {
         const mun: Municipality = {
-            user: this.populationName,
-            year: year,
-            istac_code: this.aytos.find(i => i.ayto === this.populationName)
+            user: name,
+            istac_code: aytos.find(i => i.ayto === name)
                 .istac_code,
-            ayuntamiento: this.aytos.find(i => i.ayto === this.populationName).municipio_mayus
+            ayuntamiento: aytos.find(i => i.ayto === name).municipio_mayus
         };
 
-        const representation = 'GEOGRAPHICAL[' + mun.istac_code + '],MEASURE[ABSOLUTE],TIME[' + year + ']';
-        this.service.getIstacData('POBLACION/data', representation).subscribe(
+        // llamo a la tabla de cargapoblacional que actualiza el script del jupiter notebook a principios de año carga_poblacional_ISTAC.ipynb
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbPoblacional + '/query',
+            'id_ayuntamiento = \'' + mun.istac_code + '\'', '*', false, this.authService.getCurrentUser().token,
+            'id_ayuntamiento', false).subscribe(
             (result: any) => {
-                if (result) {
-                    mun.population = Number(result.observation[0]);
-                    this.setBeds(mun, representation);
+                if (result && result.features.length > 0) {
+                    const istac = result.features[0].attributes;
+                    mun.objectid = istac.objectid;
+                    mun.population = istac.poblacion;
+                    mun.beds = istac.plazas;
+                    mun.occupation = istac.ocupacion;
+                    mun.beds_vacational = istac.plazas_vacacional;
+                    mun.occupation_vacational = istac.ocupacion_vacacional;
+                    this.sMunicipalitySource.next(mun);
+                    localStorage.setItem('municipality', JSON.stringify(mun));
+                } else {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'La tabla de datos del ISTAC está vacía',
+                        text: 'Los cálculos no serán correctos, contacte con el administrador.',
+                        footer: ''
+                    });
                 }
             },
             error => {
-                console.log(error.toString());
-                this.blockEditProteccionData();
-                this.spinnerService.hide();
-            });
-    }
-
-    /* plazas hoteleras y extrahoteleras (apartamentos) ofertadas por municipio. En caso de que el ISTAC incluya al municipio consultado
-    en las plazas del resto de la isla, la cantidad para el valor de peligrosidad se calculará a razon del 5 por mil que es la media
-    ponderada de la población de ese resto de municipios de la isla en tenerife. Usaremos el mismo valor para el mismo caso de otras islas
-    ya que a esos valores de municipios con poco peso turistico el valor aportado por la población turistica es despreciable respecto a los rangos del valor de
-     peligrosidad por carga poblacional */
-    private setBeds(pop: Municipality, representation: string) {
-        this.service.getIstacData('ALOJATUR_PLAZAS_OFERTADAS/data', representation).subscribe(
-            (result: any) => {
-                if (result) {
-                    pop.beds = result.observation.length > 0 ? Number(result.observation[0]) : Math.trunc(5 * 0.001 * pop.population);
-                    this.setOccupation(pop, representation);
-                }
-            },
-            error => {
-                console.log(error);
-                this.blockEditProteccionData();
-                this.spinnerService.hide();
-            });
-    }
-
-    /* Tasa de ocupación por plazas: se define como la relación expresada en porcentaje entre el total de las pernoctaciones en un mes
-    determinado y el producto de las plazas hoteleras y extrahoteleras, excluyendo las camas supletorias, por el número de días que ese mes
-    tiene. Para los municipios de poco peso turistico se aplicara el 65 % de tasa de ocupacion debido al escaso impacto de la poblacion
-    turistica en el computo total y las escalas en el valor de peligrosidad */
-    private setOccupation(pop: Municipality, representation: string) {
-        this.service.getIstacData('ALOJATUR_PLAZAS_OCUPACION/data', representation).subscribe(
-            (result: any) => {
-                if (result) {
-                    pop.occupation = result.observation.length > 0 ? Number(result.observation[0]) : 65;
-                    localStorage.setItem('municipality', JSON.stringify(pop));
-                    this.sMunicipalitySource.next(pop);
-                }
-            },
-            error => {
-                console.log(error);
-                this.blockEditProteccionData();
+                Swal.fire({
+                    type: 'error',
+                    title: 'NO se ha podido contactar con el servidor',
+                    text: 'Los cálculos no serán correctos, trate de recargar la página, si persiste inténtelo más tarde.',
+                    footer: ''
+                });
             }).add(() => {
             this.spinnerService.hide();
             console.log('end of request');
