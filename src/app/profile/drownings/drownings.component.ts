@@ -34,7 +34,7 @@ export class DrowningsComponent implements OnInit {
     public mapHeightContainer: string;
     public mapZoomLevel: number;
     public viewEditor: boolean;
-    private incidentId: number;
+    public incidentId: number;
     eventsSubject: Subject<void> = new Subject<void>();
     animationProgress: boolean;
 
