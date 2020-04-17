@@ -218,7 +218,6 @@ export class DrowningsComponent implements OnInit {
 
     receiveIncidentId($event: number) {
         this.incidentId = $event;
-        console.log($event)
         if ($event) {
             this.animationProgress = true;
             this.getIncident();

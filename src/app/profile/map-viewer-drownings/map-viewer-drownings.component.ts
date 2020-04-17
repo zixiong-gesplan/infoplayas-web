@@ -10,6 +10,8 @@ import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Observable, Subscription} from 'rxjs';
+import Swal from 'sweetalert2';
+import {Domain} from '../../models/domain';
 
 declare var $: any;
 declare var jquery: any;
@@ -45,6 +47,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
     private subscripcionMunicipality;
     private eventsSubscription: Subscription;
     private aytos: AppSetting[];
+    private aytosEsriDomains: Domain[];
 
     constructor(private authService: AuthGuardService, public service: EsriRequestService, private popService: PopulationService,
                 private appSettingsService: AppSettingsService, private spinnerService: Ng4LoadingSpinnerService) {
@@ -55,7 +58,32 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
             this.currentUser = this.authService.getCurrentUser();
-            this.setMap();
+
+            // buscamos el dominio ESRI para los municipios de la capa de incidentes
+            let endpoint = environment.infoplayas_incidentes.substring(0, environment.infoplayas_incidentes.length - 1) + 'queryDomains';
+            this.service.getValueDomains(endpoint, this.currentUser.token, [0]).subscribe(
+                (result: any) => {
+                    if (result) {
+                        if (result.domains.length > 0) {
+                            let allDomains = [];
+                            allDomains = result.domains;
+                            this.aytosEsriDomains = allDomains.filter(d => d.name === 'Municipios')[0].codedValues;
+
+                            // cargamos el mapa de incidentes de ahogamientos
+                            this.setMap();
+                        }
+                    } else if (result.error) {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Error ' + result.error.code,
+                            text: result.error.message,
+                            footer: ''
+                        });
+                    }
+                },
+                error => {
+                    console.log(error.toString());
+                });
         });
     }
 
@@ -143,12 +171,12 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     incidentesLayer = webmap.findLayerById(incidentesLayerId);
                     const ayto = t.popService.getMunicipality().user;
                     // Filter by changing runtime params
-                    filterPlayas = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_minus + '\'';
+                    let aytoNameMinus = t.aytos.find(i => i.ayto === ayto).municipio_minus;
+                    filterPlayas = 'municipio = \'' + aytoNameMinus + '\'';
                     filterPlayas = filterPlayas + ' AND clasificacion IS NOT NULL';
                     filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_mayus + '\'';
-                    // TODO aclarar con Jose este tema de errores en los valores de municipio
-                    // filterIncidentes = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_minus + '\'';
-                    filterIncidentes = 'municipio = \'47.0\'';
+                    let domainFilter = t.aytosEsriDomains.find(i => i.name === aytoNameMinus).code;
+                    filterIncidentes = 'municipio = \'' + domainFilter + '\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
                     incidentesLayer.definitionExpression = filterIncidentes;
@@ -229,14 +257,15 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                         if (result.user && municipiosLayer) {
                             viewer.zoom = this.zoom;
                             t.removeSelection();
+                            let aytoNameMinus = t.aytos.find(i => i.ayto === result.user).municipio_minus;
                             filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_mayus + '\'';
+                            let domainFilter = t.aytosEsriDomains.find(i => i.name === aytoNameMinus).code;
+                            filterIncidentes = 'municipio = \'' + domainFilter + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
-                            const filter = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_minus + '\''
+                            const filter = 'municipio = \'' + aytoNameMinus + '\''
                                 + ' AND clasificacion IS NOT NULL';
                             playasLayer.definitionExpression = filter;
-                            // TODO arreglar los valores del campo municipio de incidentes
-                            // incidentesLayer.definitionExpression = filterMunicipios;
-                            incidentesLayer.definitionExpression = 'municipio = \'47.0\'';
+                            incidentesLayer.definitionExpression = filterIncidentes;
                             loadList(viewer, playasLayer, ['nombre_municipio', 'objectid'], filter).then(function (Beachs) {
                                 featuresViewer = Beachs;
                             });

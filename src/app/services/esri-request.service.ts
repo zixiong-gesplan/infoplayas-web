@@ -116,6 +116,13 @@ export class EsriRequestService {
         });
     }
 
+    getValueDomains(featureEndPoint: string, token: string, layers: number[]) {
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'application/X-www-form-urlencoded');
+        const params = new HttpParams().set('token', token).append('f', 'json').append('layers', layers.toString());
+        return this.http.post(featureEndPoint, params, {headers: headers});
+    }
+
     clearfeaturesSource() {
         this.featuresSource.next([]);
     }
