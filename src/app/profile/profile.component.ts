@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AuthGuardService} from '../services/auth-guard.service';
 import {Router} from '@angular/router';
 import {Auth} from '../models/auth';
@@ -12,6 +12,8 @@ import {environment} from '../../environments/environment';
 
 declare function init_plugins();
 
+declare var $: any;
+
 declare function navbar_load();
 
 @Component({
@@ -24,6 +26,8 @@ export class ProfileComponent implements OnInit {
     current_user: Auth;
     isPlanUser: boolean;
     isIncidentsUser: boolean;
+    @ViewChild('munSelect') munDropDown;
+    @ViewChild('munDialogselect') munDialogDropDown;
     private aytos: AppSetting[];
 
     constructor(private service: RequestService, private authService: AuthGuardService, private spinnerService: Ng4LoadingSpinnerService,
@@ -33,6 +37,10 @@ export class ProfileComponent implements OnInit {
     ngOnInit() {
         init_plugins();
         navbar_load();
+        $('#myModal').modal({
+            keyboard: false,
+            backdrop: 'static'
+        });
         this.current_user = this.authService.getCurrentUser();
         const rol = environment.roles.find(i => i.id === this.current_user.roleId);
         this.isPlanUser = rol.plan_visual;
@@ -46,6 +54,11 @@ export class ProfileComponent implements OnInit {
                 }
             });
             const filter = this.current_user.filter ? this.current_user.filter : 'adeje';
+            // En caso de ser un usuario de seleccion multiple preguntamos por cual municipio quiere empezar
+            if (filter === 'adeje') {
+                $('#munConfirmation').modal({backdrop: 'static', keyboard: false});
+                $('#munConfirmation').modal('show');
+            }
             this.popService.updateMunicipality(filter, this.aytos);
         });
     }
@@ -57,5 +70,9 @@ export class ProfileComponent implements OnInit {
     userLogOut() {
         this.authService.logOut();
         this.router.navigate(['/home']);
+    }
+
+    setMunBackgroundOption() {
+        this.munDropDown.selectedOption = this.munDialogDropDown.selectedOption;
     }
 }

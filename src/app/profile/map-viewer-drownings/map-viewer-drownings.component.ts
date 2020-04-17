@@ -69,6 +69,11 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                             allDomains = result.domains;
                             this.aytosEsriDomains = allDomains.filter(d => d.name === 'Municipios')[0].codedValues;
 
+                            /* TODO forma parte de una posible batería de test a implementar: comprueba si los valores de los dominios en la capa de incidentes de ESRIcoinciden con nuestro fichero de aytos.json
+                            this.aytos.forEach(ay => {
+                                if ( !this.aytosEsriDomains.find(i => i.name === ay.municipio_minus))console.log(ay.municipio_minus);
+                            }); */
+
                             // cargamos el mapa de incidentes de ahogamientos
                             this.setMap();
                         }

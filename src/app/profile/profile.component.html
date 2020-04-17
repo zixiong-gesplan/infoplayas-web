@@ -42,7 +42,7 @@
                             <a [routerLink]="['informes']" class="font-style-1 nav-item ">Informes</a>
                         </li>
                         <li *ngIf="!current_user.filter" class="navbar-toggle">
-                            <p-dropdown [options]="municipalities" filter="true"
+                            <p-dropdown #munSelect [options]="municipalities" filter="true"
                                         (onChange)="updateFilterUser($event)" placeholder="Seleccione un municipio">
                                 <ng-template let-item pTemplate="selectedItem">
                                     <img src="assets/images/escudos/ayto_{{item.value}}.png"
@@ -67,14 +67,53 @@
                 </div>
             </div>
         </nav>
+        <!--panel para confirmar ayuntamiento inicial a usuarios de multiple seleccion-->
+        <div style="width:800px; height: 400px; margin:500px auto;" id="munConfirmation" class="modal fade"
+             role="dialog" data>
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <b class="modal-title">Seleccione la entidad que desea revisar en primer lugar antes de
+                            continuar, por favor</b>
+                    </div>
+                    <div class="modal-body">
+                        <p-dropdown #munDialogselect [options]="municipalities" filter="true"
+                                    (onChange)="updateFilterUser($event)" placeholder="Seleccione un municipio">
+                            <ng-template let-item pTemplate="selectedItem">
+                                <img src="assets/images/escudos/ayto_{{item.value}}.png"
+                                     onError="this.src='assets/images/escudos/icon_gesplan.png';"
+                                     style="width:16px;vertical-align:middle"/>
+                                <span style="vertical-align:middle; margin-left: .5em">{{item.label}}</span>
+                            </ng-template>
+                            <ng-template let-mun pTemplate="item">
+                                <div class="ui-helper-clearfix" style="position: relative;height: 35px;">
+                                    <img src="assets/images/escudos/ayto_{{mun.value}}.png"
+                                         onError="this.src='assets/images/escudos/icon_gesplan.png';"
+                                         style="max-height:35px;width:30px;position:absolute;top:1px;left:5px"/>
+                                    <div style="font-size:14px;float:right;margin-top:4px">{{mun.label}}</div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                (click)="setMunBackgroundOption();"
+                                [disabled]="!munDialogselect.selectedOption">Continuar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
         <!-- Side-nav starts -->
         <div class="navbar-toggle-visible left">
             <!--side menu open button-->
             <div id="menu_bars" class="left"><span></span> <span></span> <span></span></div>
             <nav class="side-nav side-nav-left slide-nav static-nav">
                 <a class="sidenav-logo" [routerLink]="['bienvenida']"><img
-                    src="assets/images/logos/Gobierno-color-HORIZONTAL.jpg"
-                    alt="logo"></a>
+                        src="assets/images/logos/Gobierno-color-HORIZONTAL.jpg"
+                        alt="logo"></a>
                 <div class="side-nav-inner-setting">
                     <ul class="side-nav-list font-style-1">
                         <li class="nav-item active clearfix">
@@ -90,7 +129,8 @@
                             <a [routerLink]="['seguridad']"><span><i class="fa fa-user-secret"></i></span> seguridad</a>
                         </li>
                         <li *ngIf="isIncidentsUser" class="clearfix">
-                            <a [routerLink]="['incidentes']"><span><i class="fa fa-user-secret"></i></span> incidentes</a>
+                            <a [routerLink]="['incidentes']"><span><i class="fa fa-user-secret"></i></span>
+                                incidentes</a>
                         </li>
                         <li class="clearfix">
                             <a [routerLink]="['planos']"><span><i class="fa fa-sticky-note-o"></i></span> planos</a>
@@ -138,9 +178,9 @@
                     <!--                        <li><a href="javascript:void(0)"><i class="wow slideInUp fa fa-instagram"></i> </a></li>-->
                     <!--                    </ul>-->
                     <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
-                        class="copyrights">© 2019 Gesplan S.A.</span></p>
+                            class="copyrights">© 2019 Gesplan S.A.</span></p>
                     <p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
-                        class="copyrights">Área de Innovación <a href="javascript:void(0)">y Desarrollo</a> </span>
+                            class="copyrights">Área de Innovación <a href="javascript:void(0)">y Desarrollo</a> </span>
                     </p>
                 </div>
             </div>
