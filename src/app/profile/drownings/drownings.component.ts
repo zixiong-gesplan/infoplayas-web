@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import {delay} from 'rxjs/operators';
 import {Subject} from 'rxjs';
+import {AppSettings} from '../../../app-setting';
 
 declare var $: any;
 declare var jQuery: any;
@@ -37,6 +38,8 @@ export class DrowningsComponent implements OnInit {
     public incidentId: number;
     eventsSubject: Subject<void> = new Subject<void>();
     animationProgress: boolean;
+    yearRange: string;
+    es: any;
 
     constructor(private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -47,7 +50,11 @@ export class DrowningsComponent implements OnInit {
     }
 
     ngOnInit() {
-
+        let d = new Date();
+        let n = d.getFullYear();
+        this.yearRange = '1920:'+ n.toString();
+        // establecemos valores en espanol para el calendario
+        this.es = AppSettings.CALENDAR_LOCALE_SP;
         this.formPrincipal = this.fb.group({
             incidente: new FormControl(''),
             expte: new FormControl(0, Validators.min(0)),

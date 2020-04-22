@@ -519,7 +519,8 @@
                                 <label for="playa">Fecha de nacimiento</label><br>
                                 <p-calendar [readonlyInput]="true" formControlName="fecha_nacimiento"
                                             id="fecha_nacimiento" [showIcon]="true"
-                                            placeholder="Fecha nacimiento"></p-calendar>
+                                            placeholder="Fecha nacimiento" [monthNavigator]="true" [yearNavigator]="true"
+                                            [locale]="es" dateFormat="dd/mm/yy" [yearRange]="yearRange"></p-calendar>
                                 <br>
                                 <small id="fecha_nacimiento" class="form-text text-muted">Seleccione la fecha de
                                     nacimiento

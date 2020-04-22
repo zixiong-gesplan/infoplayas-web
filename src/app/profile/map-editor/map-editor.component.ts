@@ -17,6 +17,7 @@ import {AppSetting} from '../../models/app-setting';
 import {AppSettingsService} from '../../services/app-settings.service';
 import Swal from 'sweetalert2';
 import {FormStateService} from '../../services/form-state.service';
+import {AppSettings} from '../../../app-setting';
 
 declare var $: any;
 
@@ -313,17 +314,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         });
         this.onChanges();
         // establecemos valores en espanol para el calendario
-        this.es = {
-            firstDayOfWeek: 1,
-            dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
-            dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
-            monthNames: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre',
-                'diciembre'],
-            monthNamesShort: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
-            today: 'Hoy',
-            clear: 'Borrar'
-        };
+        this.es = AppSettings.CALENDAR_LOCALE_SP;
         this.colsFlow = [
             {subfield: 'fecha_inicio', header: 'De', width: '27%', orderBy: 'attributes.fecha_inicio'},
             {subfield: 'fecha_fin', header: 'Hasta', width: '31%', type: 'year', orderBy: 'attributes.fecha_fin'},
