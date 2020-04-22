@@ -289,7 +289,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                             layer = new GraphicsLayer({
                                 graphics: []
                             });
-                            layer.minScale = 38000;
+                            layer.minScale = 180000;
                             webmap.add(layer);
                             t.lastGraphicLayerId = layer.id;
                         } else {
