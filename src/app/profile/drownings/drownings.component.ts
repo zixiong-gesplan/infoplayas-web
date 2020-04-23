@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import {delay} from 'rxjs/operators';
 import {Subject} from 'rxjs';
-import {AppSettings} from '../../../app-setting';
+import {AppSettings} from '../../../app-settings';
 
 declare var $: any;
 declare var jQuery: any;

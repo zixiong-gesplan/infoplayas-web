@@ -14,6 +14,7 @@ import * as moment from 'moment';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {FormStateService} from '../../services/form-state.service';
 import {MapViewerComponent} from '../map-viewer/map-viewer.component';
+import {AppSettings} from '../../../app-settings';
 
 declare var Swiper: any;
 declare var $: any;
@@ -64,7 +65,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     ngOnInit() {
-        this.isUserEditor = environment.roles.find(i => i.id === this.authService.getCurrentUser().roleId).plan_edit;
+        this.isUserEditor = AppSettings.roles.find(i => i.id === this.authService.getCurrentUser().roleId).plan_edit;
         init_plugins();
         this.readFormsState();
         $('#resultsFilterMenu').show();
@@ -187,8 +188,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
             (result: any) => {
                 if (result) {
                     if (result.features.length > 0) {
-                        this.service.getMultipleRelatedData(result.features, [environment.relAfluencia, environment.relEntorno,
-                            environment.relIncidencias], current_user.token);
+                        this.service.getMultipleRelatedData(result.features, [AppSettings.relAfluencia, AppSettings.relEntorno,
+                            AppSettings.relIncidencias], current_user.token);
                     }
                 } else if (result.error) {
                     Swal.fire({
@@ -312,7 +313,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
         });
         // TODO cambiamos el on_edit a true para que el calculo de progreso getCompleteState del formulario incluya el actual que se modifica.
         this.editDataLayer(updateObj, this.authService.getCurrentUser(), 'updates',
-            environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbPoblacional + '/applyEdits');
+            environment.infoplayas_catalogo_edicion_tablas_url + '/' + AppSettings.tbPoblacional + '/applyEdits');
     }
 
     loadVacational(mun: Municipality) {

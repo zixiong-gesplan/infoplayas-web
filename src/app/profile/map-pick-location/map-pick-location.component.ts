@@ -11,6 +11,7 @@ import {AppSetting} from '../../models/app-setting';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/api';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import Swal from 'sweetalert2';
+import {AppSettings} from '../../../app-settings';
 
 declare var $: any;
 declare var jquery: any;
@@ -150,7 +151,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
 
                 IdentityManager.registerToken({
                     expires: this.currentUser.expires,
-                    server: environment.urlServerRest,
+                    server: AppSettings.urlServerRest,
                     ssl: true,
                     token: this.currentUser.token,
                     userId: this.currentUser.username
@@ -158,7 +159,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                 // then we load a web map from an id
                 const webmap = new WebMap({
                     portalItem: {
-                        id: environment.idportalView
+                        id: AppSettings.idportalView
                     }
                 });
                 // and we show that map in a container w/ id #viewDiv

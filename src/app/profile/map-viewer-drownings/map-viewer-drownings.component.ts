@@ -12,6 +12,7 @@ import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Observable, Subscription} from 'rxjs';
 import Swal from 'sweetalert2';
 import {Domain} from '../../models/domain';
+import {AppSettings} from '../../../app-settings';
 
 declare var $: any;
 declare var jquery: any;
@@ -132,7 +133,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
 
                 IdentityManager.registerToken({
                     expires: this.currentUser.expires,
-                    server: environment.urlServerRest,
+                    server: AppSettings.urlServerRest,
                     ssl: true,
                     token: this.currentUser.token,
                     userId: this.currentUser.username
@@ -140,7 +141,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                 // then we load a web map from an id
                 const webmap = new WebMap({
                     portalItem: {
-                        id: environment.idportalDrownings
+                        id: AppSettings.idportalDrownings
                     }
                 });
                 // and we show that map in a container w/ id #viewDiv

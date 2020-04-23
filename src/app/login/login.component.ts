@@ -8,6 +8,7 @@ import {AppSettingsService} from '../services/app-settings.service';
 import {AppSetting} from '../models/app-setting';
 import {EsriRequestService} from '../services/esri-request.service';
 import {environment} from '../../environments/environment';
+import {AppSettings} from '../../app-settings';
 
 @Component({
     selector: 'app-login',
@@ -51,7 +52,7 @@ export class LoginComponent implements OnInit {
     chekRole(oAuthInfo) {
         this.service.getRole(oAuthInfo.token).subscribe(
             (result: any) => {
-                const roleIndex = environment.roles.findIndex(x => x.id === result.roleId);
+                const roleIndex = AppSettings.roles.findIndex(x => x.id === result.roleId);
                 if (result && roleIndex !== -1) {
                     oAuthInfo.roleId = result.roleId;
                     oAuthInfo.filter = result.description ? result.description.toLowerCase() : null;
@@ -70,7 +71,7 @@ export class LoginComponent implements OnInit {
     setUserContext(oAuthInfo, roleIndex) {
         this.appSettingsService.getJSON().subscribe(data => {
             const aytos: AppSetting[] = data;
-            const rol = environment.roles[roleIndex];
+            const rol = AppSettings.roles[roleIndex];
             if (rol.scope === 'ayto' && !aytos.find(i => i.ayto ===
                 oAuthInfo.filter)) {
                 this.showUserAlert('Su usuario no tiene configurado el identificador de su ayuntamiento, ' +

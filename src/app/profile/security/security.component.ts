@@ -13,6 +13,7 @@ import {Municipality} from '../../models/municipality';
 import {PopulationService} from '../../services/population.service';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
+import {AppSettings} from '../../../app-settings';
 
 declare var $: any;
 declare var jQuery: any;
@@ -72,7 +73,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     totalGAlto:number;
     totalGMedio: number;
     controlHorario: any;
-    urlimageweather =  environment.urlimageweather;
+    urlimageweather =  AppSettings.urlimageweather;
     unitarios = {
       jefe_turno_pvp:'',
       socorrista_pvp:'',
@@ -123,7 +124,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
     ngOnInit() {
         navbar_load();
         this.currentUser = this.authService.getCurrentUser();
-        this.isUserEditor = environment.roles.find(i => i.id === this.currentUser.roleId).plan_edit;
+        this.isUserEditor = AppSettings.roles.find(i => i.id === this.currentUser.roleId).plan_edit;
         this.loadDataForms();
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
@@ -475,7 +476,7 @@ readFeatures() {
     loadUnitPrice(calculadora){
         this.spinnerService.show();
         // inicializamos desactivado el esc y el click fuera de la modal
-        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbUnitarios + '/query',
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + AppSettings.tbUnitarios + '/query',
         'id_ayuntamiento =\'' + this.codMun + '\'', '*', false, this.currentUser.token, 'id_ayuntamiento', false).subscribe(
           (result: any) => {
             if (result.features.length !== 0) {
@@ -714,7 +715,7 @@ public updateMediosHumanos() {
       preciosMediosHumanos.push(preciosMediosCopia);
     });
   });
-    this.updateGenerico(preciosMediosHumanos, environment.tbHumanos ,this.mode);
+    this.updateGenerico(preciosMediosHumanos, AppSettings.tbHumanos ,this.mode);
 }
 public updateMediosMateriales(){
     this.updateBanderas();
@@ -732,7 +733,7 @@ public updateBanderas(){
   this.objetoGenerico.attributes.ultimo_cambio = this.toDateFormat(true);
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   banderasSend.push(this.objetoGenerico);
-  this.updateGenerico(banderasSend, environment.tbInformativo ,this.mode);
+  this.updateGenerico(banderasSend, AppSettings.tbInformativo ,this.mode);
 
 
 }
@@ -745,7 +746,7 @@ public updateBalizamiento(){
   this.objetoGenerico.attributes.ultimo_cambio = this.toDateFormat(true);
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   balizamientoSend.push(this.objetoGenerico);
-  this.updateGenerico(balizamientoSend, environment.tbBalizamiento ,this.mode);
+  this.updateGenerico(balizamientoSend, AppSettings.tbBalizamiento ,this.mode);
 
 
 }
@@ -759,7 +760,7 @@ public updateTorres(){
   this.objetoGenerico.attributes.ultimo_cambio = this.toDateFormat(true);
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   torrresSend.push(this.objetoGenerico);
-  this.updateGenerico(torrresSend, environment.tbPuesto ,this.mode);
+  this.updateGenerico(torrresSend, AppSettings.tbPuesto ,this.mode);
 
 
 }
@@ -771,7 +772,7 @@ public updatePasiva(){
   this.objetoGenerico.attributes.ultimo_cambio = this.toDateFormat(true);
   this.objetoGenerico.attributes.ultimo_editor = this.currentUser.username;
   pasivaSend.push(this.objetoGenerico);
-  this.updateGenerico(pasivaSend, environment.tbPasiva ,this.mode);
+  this.updateGenerico(pasivaSend, AppSettings.tbPasiva ,this.mode);
 }
 
 public updateGenerico(data, tabla, mode){
@@ -827,14 +828,14 @@ public update() {
   preciosUnitarios.attributes.ultimo_editor = this.currentUser.username;
   preciosUnitarios.attributes.id_ayuntamiento = this.codMun;
   preciosUnitariosSend.push(preciosUnitarios);
-  this.updateGenerico(preciosUnitariosSend, environment.tbUnitarios ,this.mode);
+  this.updateGenerico(preciosUnitariosSend, AppSettings.tbUnitarios ,this.mode);
 }
 
 private anhadir_medios(playa, option) {
   let relationIds;
   switch (option) {
     case 'humanos': {
-      relationIds = [environment.relAfluencia, environment.relHumanos, environment.relEntorno, environment.relIncidencias];
+      relationIds = [AppSettings.relAfluencia, AppSettings.relHumanos, AppSettings.relEntorno, AppSettings.relIncidencias];
       break;
     }
     case 'materiales': {
@@ -842,12 +843,12 @@ private anhadir_medios(playa, option) {
       this.formtorres();
       this.formpasiva();
       this.formbalizamiento();
-      relationIds = [environment.relAfluencia, environment.relEntorno, environment.relIncidencias,
-            environment.relBalizamiento, environment.relInformativo, environment.relPuesto, environment.relPasiva];
+      relationIds = [AppSettings.relAfluencia, AppSettings.relEntorno, AppSettings.relIncidencias,
+            AppSettings.relBalizamiento, AppSettings.relInformativo, AppSettings.relPuesto, AppSettings.relPasiva];
       break;
     }
     default: {
-      relationIds = [environment.relAfluencia, environment.relEntorno, environment.relIncidencias];
+      relationIds = [AppSettings.relAfluencia, AppSettings.relEntorno, AppSettings.relIncidencias];
       break;
     }
   }
@@ -886,7 +887,7 @@ public updateHorarios(){
     });
   });
 
-  this.updateGenerico(pHorarios, environment.tbAfluencia ,'updates');
+  this.updateGenerico(pHorarios, AppSettings.tbAfluencia ,'updates');
  }
 
 dateLessThan(from: string, to: string) {

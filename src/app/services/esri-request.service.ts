@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {BehaviorSubject, forkJoin} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {AppSettings} from '../../app-settings';
 
 @Injectable()
 export class EsriRequestService {
@@ -43,7 +44,7 @@ export class EsriRequestService {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
         const params = new HttpParams().set('token', token).append('f', 'json');
-        return this.http.post(environment.urlServerRest + environment.urlSelfinfo, params, {headers: headers});
+        return this.http.post(AppSettings.urlServerRest + AppSettings.urlSelfinfo, params, {headers: headers});
     }
 
     updateEsriData(featureEndPoint: string, data: Object, mode: string, token: string) {
@@ -76,8 +77,8 @@ export class EsriRequestService {
     revokeToken(token: string) {
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
-        const params = new HttpParams().set('auth_token', token).append('client_id', environment.client_id);
-        return this.http.post(environment.urlRevokeToken, params, {headers: headers});
+        const params = new HttpParams().set('auth_token', token).append('client_id', AppSettings.client_id);
+        return this.http.post(AppSettings.urlRevokeToken, params, {headers: headers});
     }
 
     getMultipleRelatedData(beachs: any[], relationsIds: string[][], token: string) {

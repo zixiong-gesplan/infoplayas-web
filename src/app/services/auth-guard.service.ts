@@ -4,6 +4,7 @@ import {Auth} from '../models/auth';
 import {environment} from '../../environments/environment';
 import {ActivatedRouteSnapshot, Router} from '@angular/router';
 import {EsriRequestService} from './esri-request.service';
+import {AppSettings} from '../../app-settings';
 
 declare function init_plugins();
 
@@ -11,7 +12,7 @@ declare function init_plugins();
     providedIn: 'root'
 })
 export class AuthGuardService implements CanActivate {
-    urlAuthorize: string = environment.urlAuthorize + '?client_id=' + environment.client_id + '&response_type=token&redirect_uri='
+    urlAuthorize: string = AppSettings.urlAuthorize + '?client_id=' + AppSettings.client_id + '&response_type=token&redirect_uri='
         + environment.redirectUri;
 
     constructor(public router: Router, private service: EsriRequestService) {
@@ -25,7 +26,7 @@ export class AuthGuardService implements CanActivate {
         }
         if (route.data.permission) {
             const currentUser: Auth = this.getCurrentUser();
-            const rol = environment.roles.find(i => i.id === currentUser.roleId);
+            const rol = AppSettings.roles.find(i => i.id === currentUser.roleId);
             switch (route.data.permission) {
                 case 'plan':
                     if (!rol.plan_visual) {

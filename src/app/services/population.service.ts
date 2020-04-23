@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import {environment} from '../../environments/environment';
 import {EsriRequestService} from './esri-request.service';
 import {AuthGuardService} from './auth-guard.service';
+import {AppSettings} from '../../app-settings';
 
 @Injectable({
     providedIn: 'root'
@@ -35,7 +36,7 @@ export class PopulationService {
         };
 
         // llamo a la tabla de cargapoblacional que actualiza el script del jupiter notebook a principios de año carga_poblacional_ISTAC.ipynb
-        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + environment.tbPoblacional + '/query',
+        this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + AppSettings.tbPoblacional + '/query',
             'id_ayuntamiento = \'' + mun.istac_code + '\'', '*', false, this.authService.getCurrentUser().token,
             'id_ayuntamiento', false).subscribe(
             (result: any) => {

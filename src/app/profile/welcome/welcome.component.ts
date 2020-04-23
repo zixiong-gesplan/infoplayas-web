@@ -3,8 +3,8 @@ import {AuthGuardService} from '../../services/auth-guard.service';
 import {AppSetting} from '../../models/app-setting';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {Auth} from '../../models/auth';
-import {environment} from '../../../environments/environment';
 import {Router} from '@angular/router';
+import {AppSettings} from '../../../app-settings';
 declare function init_plugins();
 
 declare var Swiper: any;
@@ -37,7 +37,7 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
             this.municipalityName = user.filter ? aytos.find(i => i.ayto === user.filter).municipio_minus :
                 user.name;
             // enviamos al usuario que solo tiene que visualizar incidentes a la pantalla correspondiente
-            const rol = environment.roles.find(i => i.id === user.roleId);
+            const rol = AppSettings.roles.find(i => i.id === user.roleId);
             if (!rol.plan_visual && rol.inc_visual) {
                 this.router.navigate(['/tecnicos/incidentes']);
             }

@@ -8,7 +8,7 @@ import {SelectItem} from 'primeng/api';
 import {PopulationService} from '../services/population.service';
 import {AppSettingsService} from '../services/app-settings.service';
 import {AppSetting} from '../models/app-setting';
-import {environment} from '../../environments/environment';
+import {AppSettings} from '../../app-settings';
 
 declare function init_plugins();
 
@@ -42,7 +42,7 @@ export class ProfileComponent implements OnInit {
             backdrop: 'static'
         });
         this.current_user = this.authService.getCurrentUser();
-        const rol = environment.roles.find(i => i.id === this.current_user.roleId);
+        const rol = AppSettings.roles.find(i => i.id === this.current_user.roleId);
         this.isPlanUser = rol.plan_visual;
         this.isIncidentsUser = rol.inc_visual;
         this.municipalities = [];

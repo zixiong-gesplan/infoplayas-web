@@ -16,6 +16,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/api';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
+import {AppSettings} from '../../../app-settings';
 
 declare var $: any;
 declare var jquery: any;
@@ -128,7 +129,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
 
                 IdentityManager.registerToken({
                     expires: this.currentUser.expires,
-                    server: environment.urlServerRest,
+                    server: AppSettings.urlServerRest,
                     ssl: true,
                     token: this.currentUser.token,
                     userId: this.currentUser.username
@@ -136,7 +137,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 // then we load a web map from an id
                 const webmap = new WebMap({
                     portalItem: {
-                        id: environment.idportalView
+                        id: AppSettings.idportalView
                     }
                 });
                 // and we show that map in a container w/ id #viewDiv
@@ -149,21 +150,21 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 // Se crean los simbolos para los marcadores
                 const symbolHigh = {
                     type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
-                    url: environment.dataSvgGradeHigh,
+                    url: AppSettings.dataSvgGradeHigh,
                     width: '32px',
                     height: '32px',
                     yoffset: '-18px'
                 };
                 const symbolMedium = {
                     type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
-                    url: environment.dataSvgGradeMedium,
+                    url: AppSettings.dataSvgGradeMedium,
                     width: '32px',
                     height: '32px',
                     yoffset: '-18px'
                 };
                 const symbolLow = {
                     type: 'picture-marker',  // autocasts as new PictureMarkerSymbol()
-                    url: environment.dataSvgGradeLow,
+                    url: AppSettings.dataSvgGradeLow,
                     width: '32px',
                     height: '32px',
                     yoffset: '-18px'
