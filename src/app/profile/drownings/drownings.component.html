@@ -306,53 +306,6 @@
 
                     <!-- panel resultados -->
                     <div class="panel panel-success">
-                        <div class="panel-heading">Resultados</div>
-                        <div class="panel-body">
-                            <div class="form-group form-group-sm">
-                                <label for="remergencia">Resultado de la emergencia</label>
-                                <select class="form-control" id="remergencia">
-                                    <option>Ileso</option>
-                                    <option>Leve</option>
-                                    <option>Grave</option>
-                                    <option>Fallecido</option>
-                                </select>
-                                <small id="remergencia" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
-                                </small>
-                            </div>
-                            <div class="form-group form-group-sm">
-                                <label for="observaciones">Observaciones</label>
-                                <textarea class="form-control" rows="10" id="robservaciones"></textarea>
-                                <small id="observaciones" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- panel desarrollo-->
-                    <div class="panel panel-warning">
-                        <div class="panel-heading">Desarrollo</div>
-                        <div class="panel-body">
-                            <div class="form-group form-group-sm">
-                                <label for="dobservaciones1">Observaciones 1</label>
-                                <textarea class="form-control" rows="10" id="dobservaciones1"></textarea>
-                                <small id="dobservaciones1" class="form-text text-muted">We'll never share your email
-                                    with anyone else.
-                                </small>
-                            </div>
-                            <div class="form-group form-group-sm">
-                                <label for="dobservaciones2">Observaciones 2</label>
-                                <textarea class="form-control" rows="10" id="dobservaciones2"></textarea>
-                                <small id="dobservaciones2" class="form-text text-muted">We'll never share your email
-                                    with anyone else.
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- panel resultados -->
-                    <div class="panel panel-success">
                         <div class="panel-heading">Observaciones</div>
                         <div class="panel-body">
                             <div class="form-group form-group-sm">
@@ -496,54 +449,126 @@
         <div class="modal-content">
             <form [formGroup]="formPersonas" (ngSubmit)="nuevaPersona()">
                 <div class="modal-body">
-                    <!-- panel lugar -->
-                    <div class="panel panel-info">
-                        <div class="panel-heading">Prsonas afectadas</div>
-                        <div class="panel-body">
-                            <div class="form-group form-group-sm">
-                                <label for="servicio">Sexo</label>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" formControlName="genero" value="hombre">
-                                        Hombre
-                                    </label>
+                    <div class="panel-group" id="accordionPeople" role="tablist" aria-multiselectable="true">
+                        <!-- panel datos personales -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading panel-info" role="tab" id="personalDataPanel">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordionPeople" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Datos personales
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="personalDataPanel">
+                                <div class="panel-body">
+                                    <div class="form-group form-group-sm">
+                                        <label for="servicio">Sexo</label>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" formControlName="genero" value="hombre">
+                                                Hombre
+                                            </label>
+                                        </div>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" formControlName="genero" value="mujer">
+                                                Mujer
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label for="playa">Fecha de nacimiento</label><br>
+                                        <p-calendar [readonlyInput]="true" formControlName="fecha_nacimiento"
+                                                    id="fecha_nacimiento" [showIcon]="true"
+                                                    placeholder="Fecha nacimiento" [monthNavigator]="true"
+                                                    [yearNavigator]="true"
+                                                    [locale]="es" dateFormat="dd/mm/yy" [yearRange]="yearRange"></p-calendar>
+                                        <br>
+                                        <small id="fecha_nacimiento" class="form-text text-muted">Seleccione la fecha de
+                                            nacimiento
+                                        </small>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label for="playa">Lugar de nacimiento</label>
+                                        <input type="text" formControlName="lnacimiento" class="form-control" id="lnacimiento">
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label for="playa">País de nacimiento</label>
+                                        <input type="text" formControlName="pnacimiento" class="form-control" id="pnacimiento">
+
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label for="playa">Lugar de residencia</label>
+                                        <input type="text" formControlName="lresidencia" class="form-control" id="lresidencia">
+
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label for="playa">País de residencia</label>
+                                        <input type="text" formControlName="presidencia" class="form-control" id="presidencia">
+
+                                    </div>
                                 </div>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" formControlName="genero" value="mujer">
-                                        Mujer
-                                    </label>
+                            </div>
+                        </div>
+                        <!-- panel resultados -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="resultsPanel">
+                                <h6 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPeople" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Resultados
+                                    </a>
+                                </h6>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="resultsPanel">
+                                <div class="panel-body">
+                                    <div class="form-group form-group-sm">
+                                        <label for="remergencia">Resultado de la emergencia</label>
+                                        <select class="form-control" id="remergencia" formControlName="remergencia">
+                                            <option>Ileso</option>
+                                            <option>Leve</option>
+                                            <option>Grave</option>
+                                            <option>Fallecido</option>
+                                        </select>
+                                        <small id="remergencia" class="form-text text-muted">We'll never share your email with
+                                            anyone else.
+                                        </small>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label for="observaciones">Observaciones</label>
+                                        <textarea class="form-control" rows="10" id="robservaciones" formControlName="robservaciones"></textarea>
+                                        <small id="observaciones" class="form-text text-muted">We'll never share your email with
+                                            anyone else.
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group form-group-sm">
-                                <label for="playa">Fecha de nacimiento</label><br>
-                                <p-calendar [readonlyInput]="true" formControlName="fecha_nacimiento"
-                                            id="fecha_nacimiento" [showIcon]="true"
-                                            placeholder="Fecha nacimiento" [monthNavigator]="true" [yearNavigator]="true"
-                                            [locale]="es" dateFormat="dd/mm/yy" [yearRange]="yearRange"></p-calendar>
-                                <br>
-                                <small id="fecha_nacimiento" class="form-text text-muted">Seleccione la fecha de
-                                    nacimiento
-                                </small>
+                        </div>
+                        <!-- panel desarrollo-->
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="developmentPanel">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPeople" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        Desarrollo
+                                    </a>
+                                </h4>
                             </div>
-                            <div class="form-group form-group-sm">
-                                <label for="playa">Lugar de nacimiento</label>
-                                <input type="text" formControlName="lnacimiento" class="form-control" id="lnacimiento">
-                            </div>
-                            <div class="form-group form-group-sm">
-                                <label for="playa">País de nacimiento</label>
-                                <input type="text" formControlName="pnacimiento" class="form-control" id="pnacimiento">
-
-                            </div>
-                            <div class="form-group form-group-sm">
-                                <label for="playa">Lugar de residencia</label>
-                                <input type="text" formControlName="lresidencia" class="form-control" id="lresidencia">
-
-                            </div>
-                            <div class="form-group form-group-sm">
-                                <label for="playa">País de residencia</label>
-                                <input type="text" formControlName="presidencia" class="form-control" id="presidencia">
-
+                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="developmentPanel">
+                                <div class="panel-body">
+                                    <div class="form-group form-group-sm">
+                                        <label for="dobservaciones1">Observaciones 1</label>
+                                        <textarea class="form-control" rows="10" id="dobservaciones1" formControlName="dobservaciones1"></textarea>
+                                        <small id="dobservaciones1" class="form-text text-muted">We'll never share your email
+                                            with anyone else.
+                                        </small>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label for="dobservaciones2">Observaciones 2</label>
+                                        <textarea class="form-control" rows="10" id="dobservaciones2" formControlName="dobservaciones2"></textarea>
+                                        <small id="dobservaciones2" class="form-text text-muted">We'll never share your email
+                                            with anyone else.
+                                        </small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

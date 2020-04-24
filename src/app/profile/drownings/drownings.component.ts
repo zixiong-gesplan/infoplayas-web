@@ -52,7 +52,7 @@ export class DrowningsComponent implements OnInit {
     ngOnInit() {
         let d = new Date();
         let n = d.getFullYear();
-        this.yearRange = '1920:'+ n.toString();
+        this.yearRange = '1920:' + n.toString();
         // establecemos valores en espanol para el calendario
         this.es = AppSettings.CALENDAR_LOCALE_SP;
         this.formPrincipal = this.fb.group({
@@ -80,6 +80,10 @@ export class DrowningsComponent implements OnInit {
             pnacimiento: new FormControl(''),
             lresidencia: new FormControl(''),
             presidencia: new FormControl(''),
+            remergencia: new FormControl(''),
+            robservaciones: new FormControl(''),
+            dobservaciones1: new FormControl(''),
+            dobservaciones2: new FormControl(''),
         });
         this.mapHeightContainer = '78vh';
         this.mapZoomLevel = 12;

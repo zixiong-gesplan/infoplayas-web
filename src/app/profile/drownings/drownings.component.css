@@ -45,3 +45,13 @@ input[type="text"].hora_derivacion::-webkit-input-placeholder {
 .textSize{
   font-size: 0.7em;
 }
+
+/*acordeon*/
+
+.panel-heading .panel-title > a {
+    padding: 10px 60px 10px 30px !important;
+}
+
+.panel-heading .panel-title > a:after {
+    line-height: 50px !important;
+}
