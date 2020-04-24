@@ -159,6 +159,9 @@ export class DrowningsComponent implements OnInit {
         this.personasArray.push(this.formPersonas.value);
         this.formPersonas.reset();
         this.showMessage('La persona se ha añadido correctamente');
+        // reseteamos el estado del acordeon
+        $('.collapse').collapse('hide');
+        $('#collapseOne').collapse('show');
     }
 
     enviar() {
