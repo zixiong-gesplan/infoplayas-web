@@ -6,17 +6,14 @@ import {EsriRequestService} from '../../services/esri-request.service';
 import {PopulationService} from '../../services/population.service';
 import {environment} from '../../../environments/environment';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
-import {ProgressSpinnerModule} from 'primeng/progressspinner';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {InputTextModule} from 'primeng/inputtext';
-import Swal from 'sweetalert2';
-import * as moment from 'moment';
-import {delay} from 'rxjs/operators';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {AppSettings} from '../../../app-settings';
+import * as moment from 'moment';
+import {UtilityService} from '../../services/utility.service';
 
-declare var $: any;
-declare var jQuery: any;
+declare let $: any;
+declare let jQuery: any;
 
 @Component({
     selector: 'app-drownings',
@@ -28,9 +25,9 @@ export class DrowningsComponent implements OnInit {
     public formPersonas: FormGroup;
     public archivos: any[] = [];
     public url: any[] = [];
-    public mapa: boolean = true;
-    public formulario: boolean = false;
-    public botones: boolean = true;
+    public mapa = true;
+    public formulario = false;
+    public botones = true;
     public personasArray: any[] = [];
     public mapHeightContainer: string;
     public mapZoomLevel: number;
@@ -49,9 +46,15 @@ export class DrowningsComponent implements OnInit {
                 public populationService: PopulationService) {
     }
 
+    static scrollToSmooth(velement) {
+        $('html, body').animate({
+            scrollTop: $(velement).offset().top
+        }, 1000);
+    }
+
     ngOnInit() {
-        let d = new Date();
-        let n = d.getFullYear();
+        const d = new Date();
+        const n = d.getFullYear();
         this.yearRange = '1920:' + n.toString();
         // establecemos valores en espanol para el calendario
         this.es = AppSettings.CALENDAR_LOCALE_SP;
@@ -62,16 +65,16 @@ export class DrowningsComponent implements OnInit {
             fuen_datos: new FormControl(0),
             municipio: new FormControl(''),
             playa: new FormControl(''),
-            hora_derivación: new FormControl(''),
+            hora_derivacion: new FormControl(''),
             isla: new FormControl(''),
             fecha: new FormControl(''),
             hora_conocimiento: new FormControl(''),
             hora_toma: new FormControl(''),
-            hora_derivación1: new FormControl(''),
+            hora_derivacion1: new FormControl(''),
             alerta: new FormControl(''),
 
-            ultimo_editor: new FormControl(this.authService.getCurrentUser().username),
-            ultimo_cambio: new FormControl(this.toDateFormat(true))
+            ultimo_editor: new FormControl(''),
+            ultimo_cambio: new FormControl('')
         });
         this.formPersonas = this.fb.group({
             genero: new FormControl(''),
@@ -90,8 +93,8 @@ export class DrowningsComponent implements OnInit {
     }
 
     fileChangeEvent(fileInput) {
-        let files = fileInput.target.files;
-        for (var i = 0; i < files.length; i++) {
+        const files = fileInput.target.files;
+        for (let i = 0; i < files.length; i++) {
             this.readUrl(fileInput, i, files);
         }
     }
@@ -112,14 +115,9 @@ export class DrowningsComponent implements OnInit {
                     }, 1000);
                     console.log(result.features);
                     // TODO patch en el formulario de incidente
-                    this.scrollToSmooth('#map');
+                    DrowningsComponent.scrollToSmooth('#map');
                 } else if (result.error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Error ' + result.error.code,
-                        text: result.error.message,
-                        footer: ''
-                    });
+                    UtilityService.showErrorMessage('Error ' + result.error.code, result.error.message);
                 }
                 // this.spinnerService.hide();
             },
@@ -129,27 +127,21 @@ export class DrowningsComponent implements OnInit {
             });
     }
 
-    scrollToSmooth(velement) {
-        $('html, body').animate({
-            scrollTop: $(velement).offset().top
-        }, 1000);
-    }
-
     borrarArchivo(archivo) {
-        let indice = this.archivos.indexOf(archivo);
+        const indice = this.archivos.indexOf(archivo);
         this.archivos.splice(indice, 1);
         this.url.splice(indice, 1);
     }
 
     borrarPersona(persona) {
-        let indice = this.personasArray.indexOf(persona);
+        const indice = this.personasArray.indexOf(persona);
         this.personasArray.splice(indice, 1);
     }
 
     readUrl(event: any, i, files) {
-        var reader: any = new FileReader();
-        reader.onload = (event: any) => {
-            this.url.push(event.target.result);
+        const reader: any = new FileReader();
+        reader.onload = (eventLoad: any) => {
+            this.url.push(eventLoad.target.result);
             this.archivos.push(files[i]);
         };
         reader.readAsDataURL(event.target.files[i]);
@@ -158,17 +150,24 @@ export class DrowningsComponent implements OnInit {
     nuevaPersona() {
         this.personasArray.push(this.formPersonas.value);
         this.formPersonas.reset();
-        this.showMessage('La persona se ha añadido correctamente');
+        UtilityService.showSuccessMessage('La persona se ha añadido correctamente');
         // reseteamos el estado del acordeon
         $('.collapse').collapse('hide');
         $('#collapseOne').collapse('show');
     }
 
     enviar() {
-        this.showMessage('La incidencia se ha añadido correctamente');
+        // TODO enviar al modelo esri
+        this.formPrincipal.patchValue({
+            ultimo_cambio: moment().format('YYYY-MM-DD HH:mm:ss'),
+            ultimo_editor: this.authService.getCurrentUser().username
+        });
+
+        UtilityService.showSuccessMessage('La incidencia se ha añadido correctamente');
         this.mapa = true;
         this.botones = true;
-        this.scrollToSmooth('#buttonBar');
+        console.log(this.formPrincipal.value);
+        DrowningsComponent.scrollToSmooth('#buttonBar');
         setTimeout(() => {
             this.incidentId = null;
             this.resetForms();
@@ -181,15 +180,6 @@ export class DrowningsComponent implements OnInit {
         this.formPersonas.reset();
         this.formPrincipal.reset();
         this.archivos = [];
-    }
-
-    showMessage(mensaje) {
-        Swal.fire({
-            type: 'success',
-            title: 'Exito',
-            text: mensaje,
-            footer: ''
-        });
     }
 
     pickAlocation() {
@@ -217,17 +207,6 @@ export class DrowningsComponent implements OnInit {
                 this.botones = false;
             }
         });
-    }
-
-    public toDateFormat(timePart: boolean): string {
-        const date = new Date();
-        const dd = String(date.getDate()).padStart(2, '0');
-        const mm = String(date.getMonth() + 1).padStart(2, '0');
-        const yyyy = date.getFullYear();
-        const hh = date.getHours();
-        const i = date.getMinutes();
-        const ss = date.getSeconds();
-        return timePart ? yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + i + ':' + ss : yyyy + '-' + mm + '-' + dd;
     }
 
     receiveIncidentId($event: number) {
