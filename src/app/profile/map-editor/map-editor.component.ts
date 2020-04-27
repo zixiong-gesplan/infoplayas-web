@@ -15,9 +15,9 @@ import {PopulationService} from '../../services/population.service';
 import {Municipality} from '../../models/municipality';
 import {AppSetting} from '../../models/app-setting';
 import {AppSettingsService} from '../../services/app-settings.service';
-import Swal from 'sweetalert2';
 import {FormStateService} from '../../services/form-state.service';
 import {AppSettings} from '../../../app-settings';
+import {UtilityService} from '../../services/utility.service';
 
 declare var $: any;
 
@@ -457,13 +457,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
         const tableA = [...this.periods];
         if (this.multipleDateRangeOverlaps(tableA) && this.formFlow.get('dates').value[1]) {
             this.formFlow.get('flowLevelWeekend').setValue(null);
-            Swal.fire({
-                type: 'error',
-                title: 'NO se ha guardado el período',
-                text: 'No puede introducir un período que solape otro anterior.',
-                footer: ''
-            });
-
+            UtilityService.showErrorMessage('NO se ha guardado el período', 'No puede introducir un período que solape otro anterior.');
             return false;
         }
         // incluimos los periodos en la lista
@@ -586,12 +580,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 if (result && result.features.length > 0) {
                     this.beachsCatalogue = result.features;
                 } else if (result.error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Error ' + result.error.code,
-                        text: result.error.message,
-                        footer: ''
-                    });
+                    UtilityService.showErrorMessage('Error ' + result.error.code, result.error.message);
                 }
                 this.spinnerService.hide();
             },
@@ -866,19 +855,9 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 if (this.currentUser && !this.isUserCatalogueEditor) {
                     $('#btnSave')[0].onclick = function () {
                         if (submitForm(playasLayer, form, ['nombre_municipio', 'objectid'], filterPlayas)) {
-                            Swal.fire({
-                                type: 'success',
-                                title: 'Éxito',
-                                text: 'La actualización ha sido correcta.',
-                                footer: ''
-                            });
+                            UtilityService.showUpdateMessage();
                         } else {
-                            Swal.fire({
-                                type: 'error',
-                                title: 'Error',
-                                text: 'No se ha guardado el cambio.',
-                                footer: ''
-                            });
+                            UtilityService.showErrorMessage('Error', 'No se ha guardado el cambio.');
                         }
                     };
                 }
@@ -965,13 +944,8 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                 frm.patchValue({on_edit: false});
                 frm.patchValue({editor: this.isUserEditor});
                 if (relationshipId === Number(AppSettings.relDanger[0]) && output.clasificacion === 'UP') {
-                    Swal.fire({
-                        type: 'warning',
-                        title: 'Clasificación INCOMPLETA.',
-                        // tslint:disable-next-line:max-line-length
-                        text: 'La playa seleccionada está clasificada como de USO PROHIBIDO pero no se ha establecido el motivo en el formulario de clasificación.',
-                        footer: 'Seleccione el motivo en el formulario correspondiente.'
-                    });
+                    UtilityService.showWarningMessage('Clasificación INCOMPLETA.', 'Seleccione el motivo en el formulario correspondiente.',
+                        'La playa seleccionada está clasificada como de USO PROHIBIDO pero no se ha establecido el motivo en el formulario de clasificación.');
                 }
             } else {
                 if (relationshipId === Number(AppSettings.relDanger[0]) && output.clasificacion === 'UP') {
@@ -1074,23 +1048,13 @@ export class MapEditorComponent implements OnInit, OnDestroy {
                             });
                             break;
                         case 'none':
-                            Swal.fire({
-                                type: 'success',
-                                title: 'Éxito',
-                                text: 'La actualización ha sido correcta.',
-                                footer: ''
-                            });
+                            UtilityService.showUpdateMessage();
                             break;
                     }
                 }
             },
             error => {
-                Swal.fire({
-                    type: 'error',
-                    title: 'NO se han guardado los datos',
-                    text: error.toString(),
-                    footer: ''
-                });
+                UtilityService.showErrorMessage('NO se han guardado los datos', error.toString());
                 console.log(error.toString());
             });
     }
@@ -1118,21 +1082,11 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             updateObj, mode, currentUser.token).subscribe(
             (result: any) => {
                 if (result) {
-                    Swal.fire({
-                        type: 'success',
-                        title: 'Éxito',
-                        text: 'La actualización ha sido correcta.',
-                        footer: ''
-                    });
+                    UtilityService.showUpdateMessage();
                 }
             },
             error => {
-                Swal.fire({
-                    type: 'error',
-                    title: 'NO se han guardado los datos',
-                    text: error.toString(),
-                    footer: ''
-                });
+                UtilityService.showErrorMessage('NO se han guardado los datos', error.toString());
                 console.log(error.toString());
                 this.spinnerService.hide();
             }).add(() => {

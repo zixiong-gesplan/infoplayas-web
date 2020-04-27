@@ -3,7 +3,7 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,
 import {Observable, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import Swal from 'sweetalert2';
+import {UtilityService} from './utility.service';
 
 @Injectable({
     providedIn: 'root'
@@ -28,12 +28,8 @@ export class ResponseInterceptorService implements HttpInterceptor {
                 }
             }),
             catchError((error: HttpErrorResponse) => {
-                Swal.fire({
-                    type: 'error',
-                    title: 'Error ' + error.status,
-                    text: error && error.error.reason ? error.error.reason : 'No se puede conectar con el servidor, reinténtelo más tarde por favor.',
-                    footer: ''
-                });
+                UtilityService.showErrorMessage('Error ' + error.status,
+                    error && error.error.reason ? error.error.reason : 'No se puede conectar con el servidor, reinténtelo más tarde por favor.');
                 return throwError(error);
             }));
     }

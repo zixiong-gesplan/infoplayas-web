@@ -4,11 +4,11 @@ import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {BehaviorSubject} from 'rxjs';
 import {AppSetting} from '../models/app-setting';
 import {AppSettingsService} from './app-settings.service';
-import Swal from 'sweetalert2';
 import {environment} from '../../environments/environment';
 import {EsriRequestService} from './esri-request.service';
 import {AuthGuardService} from './auth-guard.service';
 import {AppSettings} from '../../app-settings';
+import {UtilityService} from './utility.service';
 
 @Injectable({
     providedIn: 'root'
@@ -51,21 +51,13 @@ export class PopulationService {
                     this.sMunicipalitySource.next(mun);
                     localStorage.setItem('municipality', JSON.stringify(mun));
                 } else {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'La tabla de datos del ISTAC está vacía',
-                        text: 'Los cálculos no serán correctos, contacte con el administrador.',
-                        footer: ''
-                    });
+                    UtilityService.showErrorMessage('La tabla de datos del ISTAC está vacía',
+                        'Los cálculos no serán correctos, contacte con el administrador.');
                 }
             },
             error => {
-                Swal.fire({
-                    type: 'error',
-                    title: 'NO se ha podido contactar con el servidor',
-                    text: 'Los cálculos no serán correctos, trate de recargar la página, si persiste inténtelo más tarde.',
-                    footer: ''
-                });
+                UtilityService.showErrorMessage('NO se ha podido contactar con el servidor',
+                    'Los cálculos no serán correctos, trate de recargar la página, si persiste inténtelo más tarde.')
             }).add(() => {
             this.spinnerService.hide();
             console.log('end of request');

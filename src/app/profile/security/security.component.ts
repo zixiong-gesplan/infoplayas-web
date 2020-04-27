@@ -7,13 +7,13 @@ import {GradesProtectionService} from '../../services/grades-protection.service'
 import {environment} from '../../../environments/environment';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import {Municipality} from '../../models/municipality';
 import {PopulationService} from '../../services/population.service';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
 import {AppSettings} from '../../../app-settings';
+import {UtilityService} from '../../services/utility.service';
 
 declare var $: any;
 declare var jQuery: any;
@@ -393,12 +393,7 @@ readFeatures() {
               this.dinamicFormHorarios(beach.relatedAfluencia);
 
             } else {
-              Swal.fire({
-                type: 'error',
-                title: 'Error',
-                text: 'No existen grados de protección para esta playa     debe determinar el grado de protección en clasificación',
-                footer: ''
-              });
+            UtilityService.showErrorMessage('Error', 'No existen grados de protección para esta playa     debe determinar el grado de protección en clasificación');
             }
           }
         },
@@ -689,12 +684,7 @@ codMunicipio(datosPlaya) {
                 }
             },
             error => {
-                Swal.fire({
-                    type: 'error',
-                    title: '',
-                    text: 'Se ha producido un error inesperado',
-                    footer: ''
-                });
+                UtilityService.showErrorMessage('Error', 'Se ha producido un error inesperado');
         });
     }
 
@@ -781,35 +771,20 @@ public updateGenerico(data, tabla, mode){
       (result: any) => {
         if (!result.error) {
           this.spinnerService.hide();
-            Swal.fire({
-              type: 'success',
-              title: 'Exito',
-              text: 'la actualización ha sido correcta',
-              footer: ''
-            });
-          //bajamos todas las ventanas modales abiertas
+          UtilityService.showSuccessMessage('la actualización ha sido correcta')
+          // bajamos todas las ventanas modales abiertas
         //  $('#' + this.options).modal('hide');
           $('#configuracion').modal('hide');
           $('#horarios').modal('hide');
         } else {
           this.spinnerService.hide();
-          Swal.fire({
-            type: 'error',
-            title: '',
-            text: 'Se ha producido un error inesperado',
-            footer: ''
-          });
+          UtilityService.showErrorMessage('Error', 'Se ha producido un error inesperado');
         }
     },
     error => {
       this.spinnerService.hide();
-      Swal.fire({
-        type: 'error',
-        title: '',
-        text: 'Se ha producido un error inesperado',
-        footer: ''
-      });
-    })
+      UtilityService.showErrorMessage('Error', 'Se ha producido un error inesperado');
+    });
 }
 
 public update() {

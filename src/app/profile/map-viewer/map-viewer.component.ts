@@ -11,12 +11,12 @@ import {PopulationService} from '../../services/population.service';
 import {Municipality} from '../../models/municipality';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
-import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/api';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {AppSettings} from '../../../app-settings';
+import {UtilityService} from '../../services/utility.service';
 
 declare var $: any;
 declare var jquery: any;
@@ -397,12 +397,7 @@ export class MapViewerComponent implements OnInit, OnDestroy {
                 if (result ) {
                     this.printPdf(result.features[0]);
                 } else if (result.error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Error ' + result.error.code,
-                        text: result.error.message,
-                        footer: ''
-                    });
+                    UtilityService.showErrorMessage('Error ' + result.error.code, result.error.message);
                 }
             },
             error => {

@@ -6,7 +6,6 @@ import {AuthGuardService} from '../../services/auth-guard.service';
 import {EsriRequestService} from '../../services/esri-request.service';
 import {environment} from '../../../environments/environment';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import Swal from 'sweetalert2';
 import {PopulationService} from '../../services/population.service';
 import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
@@ -15,6 +14,7 @@ import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {FormStateService} from '../../services/form-state.service';
 import {MapViewerComponent} from '../map-viewer/map-viewer.component';
 import {AppSettings} from '../../../app-settings';
+import {UtilityService} from '../../services/utility.service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -168,12 +168,8 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
 
     setPopulationByMuncipality(mun: Municipality) {
         if (!mun) {
-            Swal.fire({
-                type: 'error',
-                title: 'NO se ha podido contactar con el ISTAC',
-                text: 'Los cálculos no serán correctos, trate de recargar la página, si persiste inténtelo más tarde.',
-                footer: ''
-            });
+            UtilityService.showErrorMessage('NO se ha podido contactar con el servidor',
+                'Los cálculos no serán correctos, trate de recargar la página, si persiste inténtelo más tarde.');
         } else {
             this.loadVacational(mun);
         }
@@ -192,12 +188,7 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                             AppSettings.relIncidencias], current_user.token);
                     }
                 } else if (result.error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Error ' + result.error.code,
-                        text: result.error.message,
-                        footer: ''
-                    });
+                    UtilityService.showErrorMessage('Error ' + result.error.code, result.error.message);
                 }
             },
             error => {
@@ -364,21 +355,11 @@ export class ClassificationComponent implements OnInit, AfterViewInit, OnDestroy
                     this.municipio = mun;
                     localStorage.setItem('municipality', JSON.stringify(mun));
                     // mensaje de exito
-                    Swal.fire({
-                        type: 'success',
-                        title: 'Éxito',
-                        text: 'La actualización ha sido correcta.',
-                        footer: ''
-                    });
+                    UtilityService.showUpdateMessage();
                 }
             },
             error => {
-                Swal.fire({
-                    type: 'error',
-                    title: 'NO se han guardado los datos',
-                    text: error.toString(),
-                    footer: ''
-                });
+                UtilityService.showErrorMessage('NO se han guardado los datos', error.toString());
                 console.log(error.toString());
                 this.spinnerService.hide();
             }).add(() => {

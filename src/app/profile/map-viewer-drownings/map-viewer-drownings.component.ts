@@ -10,9 +10,9 @@ import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Observable, Subscription} from 'rxjs';
-import Swal from 'sweetalert2';
 import {Domain} from '../../models/domain';
 import {AppSettings} from '../../../app-settings';
+import {UtilityService} from '../../services/utility.service';
 
 declare var $: any;
 declare var jquery: any;
@@ -79,12 +79,7 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                             this.setMap();
                         }
                     } else if (result.error) {
-                        Swal.fire({
-                            type: 'error',
-                            title: 'Error ' + result.error.code,
-                            text: result.error.message,
-                            footer: ''
-                        });
+                        UtilityService.showErrorMessage('Error ' + result.error.code, result.error.message);
                     }
                 },
                 error => {

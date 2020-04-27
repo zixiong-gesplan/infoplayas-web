@@ -12,6 +12,7 @@ import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/api';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import Swal from 'sweetalert2';
 import {AppSettings} from '../../../app-settings';
+import {UtilityService} from '../../services/utility.service';
 
 declare var $: any;
 declare var jquery: any;
@@ -107,12 +108,7 @@ export class MapPickLocationComponent implements OnInit, OnDestroy {
                     this.selectedMpPoint.attributes = result.features[0].attributes;
                     this.ref.close(this.selectedMpPoint);
                 } else if (result.error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Error ' + result.error.code,
-                        text: result.error.message,
-                        footer: ''
-                    });
+                    UtilityService.showErrorMessage('Error ' + result.error.code, result.error.message);
                 }
                 this.spinnerService.hide();
             },

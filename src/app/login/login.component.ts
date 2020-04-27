@@ -2,13 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {Auth} from '../models/auth';
 import {ActivatedRoute, Router} from '@angular/router';
 
-import Swal from 'sweetalert2';
 import {AuthGuardService} from '../services/auth-guard.service';
 import {AppSettingsService} from '../services/app-settings.service';
 import {AppSetting} from '../models/app-setting';
 import {EsriRequestService} from '../services/esri-request.service';
 import {environment} from '../../environments/environment';
 import {AppSettings} from '../../app-settings';
+import {UtilityService} from '../services/utility.service';
 
 @Component({
     selector: 'app-login',
@@ -111,12 +111,7 @@ export class LoginComponent implements OnInit {
     }
 
     showUserAlert(message: string) {
-        Swal.fire({
-            type: 'error',
-            title: 'Usuario no permitido',
-            text: message,
-            footer: ''
-        });
+        UtilityService.showErrorMessage('Usuario no permitido', message)
         this.router.navigate(['home']);
     }
 

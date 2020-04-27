@@ -17,17 +17,17 @@ export class ContactUsComponent implements OnInit {
 
     Swal.fire({
       title: 'Esta seccioón no esta activa en este momento',
-      text: "Haga click en volver para salir de la sección",
+      text: 'Haga click en volver para salir de la sección',
       type: 'error',
       showCancelButton: false,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Volver'
-    }).then((isConfirm) =>{
+    }).then((isConfirm) => {
       if (isConfirm) {
         this.location.back();
       }
-    })
+    });
   }
 
 }

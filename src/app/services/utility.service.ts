@@ -18,12 +18,25 @@ export class UtilityService {
         });
     }
 
+    static showUpdateMessage() {
+        UtilityService.showUpdateMessage();
+    }
+
     static showErrorMessage(title, mensaje) {
         Swal.fire({
             type: 'error',
             title: title,
             text: mensaje,
             footer: ''
+        });
+    }
+
+    static showWarningMessage(title, footer, mensaje) {
+        Swal.fire({
+            type: 'warning',
+            title: title,
+            text: mensaje,
+            footer: footer
         });
     }
 }
