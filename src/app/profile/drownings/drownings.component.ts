@@ -37,6 +37,8 @@ export class DrowningsComponent implements OnInit {
     animationProgress: boolean;
     yearRange: string;
     es: any;
+    dDate: Date;
+    expand: boolean;
 
     constructor(private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -53,8 +55,10 @@ export class DrowningsComponent implements OnInit {
     }
 
     ngOnInit() {
-        const d = new Date();
-        const n = d.getFullYear();
+        this.dDate = new Date();
+        this.dDate.setHours(9, 0, 0);
+        this.dDate.setMonth(1);
+        const n = this.dDate.getFullYear();
         this.yearRange = '1920:' + n.toString();
         // establecemos valores en espanol para el calendario
         this.es = AppSettings.CALENDAR_LOCALE_SP;
@@ -158,10 +162,25 @@ export class DrowningsComponent implements OnInit {
 
     enviar() {
         // TODO enviar al modelo esri
+        const refDate = moment(this.formPrincipal.get('fecha').value);
         this.formPrincipal.patchValue({
             ultimo_cambio: moment().format('YYYY-MM-DD HH:mm:ss'),
             ultimo_editor: this.authService.getCurrentUser().username
         });
+
+        this.formPrincipal.get('fecha').value.toJSON = function () {
+            return moment(this).format('YYYY-MM-DD HH:mm:ss');
+        };
+        const timeFields = ['hora_derivacion', 'hora_conocimiento', 'hora_toma', 'hora_derivacion1'];
+        timeFields.forEach(f => {
+            this.formPrincipal.get(f).value.toJSON = function () {
+                const refField = moment(this);
+                return refDate.set({h: refField.hours(), m: refField.minutes()}).format('YYYY-MM-DD HH:mm:ss');
+            };
+        });
+        const addvalues = {attributes: []};
+        addvalues.attributes = JSON.parse(JSON.stringify(this.formPrincipal.value));
+        console.log(addvalues);
 
         UtilityService.showSuccessMessage('La incidencia se ha añadido correctamente');
         this.mapa = true;
