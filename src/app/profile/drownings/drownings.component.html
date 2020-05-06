@@ -55,25 +55,27 @@
                         <div class="panel-heading">ID {{incidentId}}</div>
                         <div class="panel-body">
                             <div class="form-group form-group-sm">
-                                <label for="expte">Expte.</label>
-                                <input type="text" class="form-control" id="expte">
-                                <small id="incidente" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <label for="incidente">Identifcador del CECOES</label>
+                                <input type="text" formControlName="incidente" class="form-control" id="incidente">
+                                <small class="form-text text-muted">Número de registro del CECOES
+                                </small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="expte">Expediente</label>
+                                <input type="text" formControlName="expte" class="form-control" id="expte">
+                                <small class="form-text text-muted">Número de expediente, relativo al decreto 116/2018
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="socorristas">Socorristas</label>
-                                <input type="text" class="form-control" id="socorristas">
-                                <small id="socorristas" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <input type="text" formControlName="socorristas" class="form-control" id="socorristas">
+                                <small class="form-text text-muted">NIP de los socorristas intervinientes separados por comas
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="fuen_datos">Fuente de datos</label>
-                                <input type="text" class="form-control" id="fuen_datos">
-                                <small id="fuen_datos" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
-                                </small>
+                                <input type="text" formControlName="fuen_datos" class="form-control" id="fuen_datos">
+                                <small class="form-text text-muted">Determinar quién facilita el testimonio: nombre, puesto</small>
                             </div>
                         </div>
                     </div>
@@ -86,44 +88,38 @@
                                 <label for="fecha">Fecha</label><br>
                                 <p-calendar formControlName="fecha" id="fecha" [showIcon]="true"
                                             [locale]="es" dateFormat="dd/mm/yy"
-                                            placeholder="Fecha"></p-calendar>
+                                            placeholder="Fecha"
+                                            (onClose)="expand = 0"></p-calendar>
                                 <br>
-                                <small id="hora_deriva" class="form-text text-muted">Seleccione la fecha del
-                                    incidente
-                                </small>
+                                <small class="form-text text-muted">Seleccione la fecha de la intervención</small>
                             </div>
-                            <div class="form-group form-group-sm">
+                            <div [style.padding-top.px]="expand === 1 ? '1190' : '0'" class="form-group form-group-sm">
                                 <label for="playa">Hora conocimiento</label><br>
                                 <p-calendar [defaultDate]="dDate" [readonlyInput]="true" dateFormat="HH/mm"
                                             formControlName="hora_conocimiento" id="hora_conocimiento" [showIcon]="true"
                                             [timeOnly]="true" placeholder="Hora conocimiento"
-                                            (mouseenter)="expand = true" (mouseleave)="expand = false"></p-calendar>
+                                            (onClose)="expand = 0" (click)="expand = 2" (onSelect)="expand = 2"></p-calendar>
                                 <br>
-                                <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la
-                                    derivación
-                                </small>
+                                <small class="form-text text-muted">Seleccione la hora en la que se tiene conocimiento por parte del alertante</small>
                             </div>
-                            <div [style.padding-top.px]="op1.visible ? '115' : '0'" class="form-group form-group-sm">
-                                <label for="playa">Hora toma</label><br>
+                            <div [style.padding-top.px]="expand === 2 ? '90' : '0'" class="form-group form-group-sm">
+                                <label for="playa">Hora toma tierra</label><br>
                                 <p-calendar [defaultDate]="dDate" class="custom" [readonlyInput]="true"
                                             dateFormat="HH/mm"
                                             formControlName="hora_toma" id="hora_toma" [showIcon]="true"
-                                            [timeOnly]="true" placeholder="Hora toma"></p-calendar>
+                                            [timeOnly]="true" placeholder="Hora toma tierra"
+                                            (onClose)="expand = 0" (click)="expand = 3" (onSelect)="expand = 3"></p-calendar>
                                 <br>
-                                <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la
-                                    derivación
-                                </small>
+                                <small class="form-text text-muted">Seleccione la hora en que se saca del agua</small>
                             </div>
-                            <div class="form-group form-group-sm">
+                            <div [style.padding-top.px]="expand === 3 ? '90' : '0'" class="form-group form-group-sm">
                                 <label for="playa">Hora derivación</label><br>
                                 <p-calendar [defaultDate]="dDate" class="custom" [readonlyInput]="true"
                                             dateFormat="HH/mm"
                                             formControlName="hora_derivacion" id="hora_derivacion" [showIcon]="true"
                                             [timeOnly]="true" placeholder="Hora derivación"></p-calendar>
                                 <br>
-                                <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la
-                                    derivación
-                                </small>
+                                <small class="form-text text-muted">Seleccione la hora en que se traslada según protocolo</small>
                             </div>
                         </div>
                     </div>
@@ -136,28 +132,37 @@
                                 <label for="isla">Isla</label>
                                 <input type="text" formControlName="isla" class="form-control" id="isla"
                                        aria-describedby="isla" readonly>
-                                <small id="isla" class="form-text text-muted">Isla seleccionada</small>
+                                <small class="form-text text-muted">Isla donde ocurre el incidente</small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="municipio">Municipio</label>
                                 <input type="text" formControlName="municipio" class="form-control" id="municipio"
                                        readonly>
-                                <small id="municipio" class="form-text text-muted">Municipio seleccionado</small>
+                                <small class="form-text text-muted">Municipio en el que ocurre la incidencia
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
-                                <label for="playa">Playa</label>
-                                <input type="text" formControlName="playa" class="form-control" id="playa" readonly>
-                                <small id="playa" class="form-text text-muted">Playa seleccionada</small>
+                                <label for="codigo_dgse">ID DGSE</label>
+                                <input type="text" formControlName="codigo_dgse" class="form-control" id="codigo_dgse" readonly>
+                                <small class="form-text text-muted">Código de la playa /ZBM de la DGSE
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
-                                <label for="playa">Hora derivación</label><br>
-                                <p-calendar [defaultDate]="dDate" class="custom" [readonlyInput]="true"
-                                            dateFormat="HH/mm"
-                                            formControlName="hora_derivacion1" id="hora_derivacion1" [showIcon]="true"
-                                            [timeOnly]="true" placeholder="Hora derivación"></p-calendar>
-                                <br>
-                                <small id="hora_deriva" class="form-text text-muted">Seleccione la hora de la
-                                    derivación
+                                <label for="playa">ZONA</label>
+                                <input type="text" formControlName="complemento_directo" class="form-control" id="playa" readonly>
+                                <small class="form-text text-muted">Zona indicada, playa, como lugar de la intervención
+                                </small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="playa_zbm">ZBM</label>
+                                <input type="text" formControlName="playa_zbm" class="form-control" id="playa_zbm" readonly>
+                                <small class="form-text text-muted">Denominación según decreto 116/2018
+                                </small>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="bandera">BANDERA IZADA</label>
+                                <input type="text" formControlName="bandera" class="form-control" id="bandera" readonly>
+                                <small class="form-text text-muted">Indicar color de la bandera, si procede
                                 </small>
                             </div>
                         </div>
@@ -186,7 +191,7 @@
                                     <td>{{persona.fecha_nacimiento | date: 'dd/MM/yyyy'}}</td>
                                     <td>{{persona.lnacimiento}}</td>
                                     <td>{{persona.pnacimiento}}</td>
-                                    <td>{{persona.lresidencia}}</td>
+                                    <td>{{persona.municipio_estancia}}</td>
                                     <td>{{persona.presidencia}}</td>
                                     <td class="text text-center"><span (click)="borrarPersona(persona)"
                                                                        class="glyphicon glyphicon-trash pointer"></span>
@@ -214,8 +219,7 @@
                                         Servicio desactivado
                                     </label>
                                 </div>
-                                <small id="servicio" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <small id="servicio" class="form-text text-muted">¿El incidente ocurrió con servicio de socorrismo en activo?
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
@@ -226,84 +230,110 @@
                                     <option>2</option>
                                     <option>3</option>
                                 </select>
-                                <small id="tipo" class="form-text text-muted">We'll never share your email with anyone
-                                    else.
+                                <small class="form-text text-muted">Indicar nivel según legislación
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="nsocorristas">Número de socorristas de servicio</label>
                                 <input type="number" class="form-control" id="nsocorristas" min="1">
-                                <small id="nsocorristas" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <small class="form-text text-muted">Indicar el número de socorristas de servicio en el momento de detectar la emergencia
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="nintervinietes">Número intervinietes</label>
                                 <input type="number" class="form-control" id="nintervinietes" min="1">
-                                <small id="nintervinietes" class="form-text text-muted">We'll never share your email
-                                    with anyone else.
+                                <small class="form-text text-muted">Inidicar el número de socorristas que intervienen directamente en rescatar
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="rmovilizados">Recursos movilizados</label>
                                 <select multiple class="form-control" id="rmovilizados">
-                                    <option>Lancha</option>
-                                    <option>Moto</option>
-                                    <option>Embarcación</option>
+                                    <option>SUC</option>
+                                    <option>PL</option>
+                                    <option>GC</option>
+                                    <option>GES</option>
+                                    <option>SUC</option>
+                                    <option>SM</option>
+                                    <option>CEI</option>
+                                    <option>GEAS</option>
+                                    <option>PCIVIL</option>
+                                    <option>CNP</option>
+                                    <option>SOC</option>
+                                    <option>PL </option>
+                                    <option>SASEMAR</option>
+                                    <option>FORENSE</option>
+                                    <option>PORT</option>
+                                    <option>MCS</option>
+                                    <option>PPORT</option>
+                                    <option>JUEZ</option>
                                 </select>
-                                <small id="rmovilizados" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <small class="form-text text-muted">Indicar, conforme a la clasificación legal (0,1,2,3), los recursos movilizados (varias respuestas)
                                 </small>
                             </div>
 
                             <div class="form-group form-group-sm">
                                 <label for="rescate">Recursos utilizados en rescate</label>
                                 <select multiple class="form-control" id="rescate">
-                                    <option>Helicóptero</option>
+                                    <option>Helicoptero</option>
+                                    <option>A pulso</option>
+                                    <option>Se desconoce</option>
+                                    <option>Moto acuática</option>
                                     <option>Embarcación</option>
-                                    <option>Policía Nacional</option>
-                                    <option>Policía Local</option>
-                                    <option>Guardia civil</option>
-                                    <option>Bomberos</option>
-                                    <option>Protección Civil</option>
-                                    <option>Salvamento Marítimo</option>
+                                    <option>Tubo de rescate</option>
+                                    <option>Colchón de vacío</option>
+                                    <option>Tabla</option>
+                                    <option>Helicóptero</option>
+                                    <option>Zodiac</option>
+                                    <option>Por su propio pie</option>
+                                    <option>Flotador</option>
                                 </select>
-                                <small id="rescate" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
-                                </small>
+                                <small class="form-text text-muted">Indicar recursos empleados en rescate (varias respuestas)</small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="rtierra">Recursos utilizados en tierra</label>
                                 <select multiple class="form-control" id="rtierra">
-                                    <option>DESA</option>
-                                    <option>Vendas</option>
+                                    <option>Desa</option>
+                                    <option>Se desconoce</option>
+                                    <option>Vendaje</option>
+                                    <option>Ambulancia</option>
+                                    <option>Ninguno</option>
+                                    <option>Oxígeno</option>
+                                    <option></option>
                                 </select>
-                                <small id="rtierra" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
-                                </small>
+                                <small class="form-text text-muted">Indicar recursos empleados una vez en tierra (varias respuestas)</small>
                             </div>
 
                             <div class="form-group form-group-sm">
                                 <label for="acciones">Acciones realizadas</label>
                                 <select multiple class="form-control" id="acciones">
-                                    <option>DESA</option>
                                     <option>Rescate</option>
                                     <option>Rcp</option>
+                                    <option>Provocación de vómito</option>
+                                    <option>Oxígeno</option>
+                                    <option>Desa</option>
+                                    <option>Estabilización</option>
+                                    <option>Traslado</option>
+                                    <option>Exploración</option>
+                                    <option>Inmovilización</option>
+                                    <option>Sop. vital avanzado</option>
                                 </select>
-                                <small id="acciones" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
-                                </small>
+                                <small class="form-text text-muted">Indicar las acciones realizada (varias respuestas)</small>
                             </div>
 
                             <div class="form-group form-group-sm">
                                 <label for="derivacion">Derivación victima</label>
                                 <select class="form-control" id="derivacion">
-                                    <option>DESA</option>
-                                    <option>Rescate</option>
-                                    <option>Rcp</option>
+                                    <option>Se retira por su propio pie</option>
+                                    <option>Ambulancia</option>
+                                    <option>Ambulancia medicalizada</option>
+                                    <option>Helicóptero</option>
+                                    <option>Embarcación</option>
+                                    <option>Furgón de traslados</option>
+                                    <option>Se desconoce</option>
+                                    <option>Traslado forense</option>
+                                    <option>Ambulancia y helicóptero</option>
                                 </select>
-                                <small id="derivacion" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <small  class="form-text text-muted">Indicar derivación de la vícitma
                                 </small>
                             </div>
                         </div>
@@ -314,7 +344,7 @@
                         <div class="panel-heading">Observaciones</div>
                         <div class="panel-body">
                             <div class="form-group form-group-sm">
-                                <label for="emar">Estado de la mar (ESCALA DE DOUGLAS)</label>
+                                <label for="emar">Estado de la mar</label>
                                 <select class="form-control" id="emar">
                                     <option>0</option>
                                     <option>1</option>
@@ -327,12 +357,10 @@
                                     <option>8</option>
                                     <option>9</option>
                                 </select>
-                                <small id="emar" class="form-text text-muted">We'll never share your email with anyone
-                                    else.
-                                </small>
+                                <small class="form-text text-muted">ESCALA DE DOUGLAS</small>
                             </div>
                             <div class="form-group form-group-sm">
-                                <label for="eviento">Estado del viento (ESCALA DE BEAUFORT)</label>
+                                <label for="eviento">Estado del viento</label>
                                 <select class="form-control" id="eviento">
                                     <option>0</option>
                                     <option>1</option>
@@ -348,11 +376,9 @@
                                     <option>11</option>
                                     <option>12</option>
                                 </select>
-                                <small id="eviento" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <small class="form-text text-muted">ESCALA DE BEAUFORT
                                 </small>
                             </div>
-
                             <div class="form-group form-group-sm">
                                 <label for="tiempo">Tiempo atmosférico</label>
                                 <select class="form-control" id="tiempo">
@@ -362,9 +388,6 @@
                                     <option>Llovizna</option>
                                     <option>Lluvia intesa</option>
                                 </select>
-                                <small id="tiempo" class="form-text text-muted">We'll never share your email with anyone
-                                    else.
-                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="servicio">Alerta CECOES</label>
@@ -380,15 +403,13 @@
                                         No existe alerta
                                     </label>
                                 </div>
-                                <small id="servicio" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <small class="form-text text-muted">Indicar si existe algún tipo de Alerta o prealerta activa del Cecoes
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="ralerta">Referencia alerta</label>
                                 <input type="text" class="form-control" id="ralerta" aria-describedby="ralerta">
-                                <small id="ralerta" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <small class="form-text text-muted">En caso de alerta o prealerta activa, indicar referencia, fecha o número de la misma
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
@@ -396,10 +417,9 @@
                                 <select class="form-control" id="situacion">
                                     <option>Alerta</option>
                                     <option>Prealerta</option>
-                                    <option>Definir</option>
+                                    <option>NO</option>
                                 </select>
-                                <small id="situacion" class="form-text text-muted">We'll never share your email with
-                                    anyone else.
+                                <small class="form-text text-muted">Seleccione la opción
                                 </small>
                             </div>
                         </div>
@@ -469,7 +489,7 @@
                                  aria-labelledby="personalDataPanel">
                                 <div class="panel-body">
                                     <div class="form-group form-group-sm">
-                                        <label for="servicio">Sexo</label>
+                                        <label>Sexo</label>
                                         <div class="radio">
                                             <label>
                                                 <input type="radio" formControlName="genero" value="hombre">
@@ -484,7 +504,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        <label for="playa">Fecha de nacimiento</label><br>
+                                        <label for="fecha_nacimiento">Fecha de nacimiento</label><br>
                                         <p-calendar [readonlyInput]="true" formControlName="fecha_nacimiento"
                                                     id="fecha_nacimiento" [showIcon]="true"
                                                     placeholder="Fecha nacimiento" [monthNavigator]="true"
@@ -492,29 +512,29 @@
                                                     [locale]="es" dateFormat="dd/mm/yy"
                                                     [yearRange]="yearRange"></p-calendar>
                                         <br>
-                                        <small id="fecha_nacimiento" class="form-text text-muted">Seleccione la fecha de
+                                        <small class="form-text text-muted">Seleccione la fecha de
                                             nacimiento
                                         </small>
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        <label for="playa">Lugar de nacimiento</label>
+                                        <label for="lnacimiento">Lugar de nacimiento</label>
                                         <input type="text" formControlName="lnacimiento" class="form-control"
                                                id="lnacimiento">
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        <label for="playa">País de nacimiento</label>
+                                        <label for="pnacimiento">País de nacimiento</label>
                                         <input type="text" formControlName="pnacimiento" class="form-control"
                                                id="pnacimiento">
 
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        <label for="playa">Lugar de residencia</label>
-                                        <input type="text" formControlName="lresidencia" class="form-control"
-                                               id="lresidencia">
+                                        <label for="municipio_estancia">Municipio durante la estancia</label>
+                                        <input type="text" formControlName="municipio_estancia" class="form-control"
+                                               id="municipio_estancia">
 
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        <label for="playa">País de residencia</label>
+                                        <label for="presidencia">País de residencia</label>
                                         <input type="text" formControlName="presidencia" class="form-control"
                                                id="presidencia">
 
@@ -544,18 +564,14 @@
                                             <option>Grave</option>
                                             <option>Fallecido</option>
                                         </select>
-                                        <small id="remergencia" class="form-text text-muted">We'll never share your
-                                            email with
-                                            anyone else.
+                                        <small class="form-text text-muted">Indicar grado de lesividad o morbilidad bajo las etiquetas mostradas
                                         </small>
                                     </div>
                                     <div class="form-group form-group-sm">
                                         <label for="observaciones">Observaciones</label>
                                         <textarea class="form-control" rows="10" id="robservaciones"
                                                   formControlName="robservaciones"></textarea>
-                                        <small id="observaciones" class="form-text text-muted">We'll never share your
-                                            email with
-                                            anyone else.
+                                        <small id="observaciones" class="form-text text-muted">Indicar observaciones sobre el resultado final
                                         </small>
                                     </div>
                                 </div>
@@ -579,18 +595,14 @@
                                         <label for="dobservaciones1">Observaciones 1</label>
                                         <textarea class="form-control" rows="10" id="dobservaciones1"
                                                   formControlName="dobservaciones1"></textarea>
-                                        <small id="dobservaciones1" class="form-text text-muted">We'll never share your
-                                            email
-                                            with anyone else.
+                                        <small class="form-text text-muted">Descripción Cecoes intervención 1
                                         </small>
                                     </div>
                                     <div class="form-group form-group-sm">
                                         <label for="dobservaciones2">Observaciones 2</label>
                                         <textarea class="form-control" rows="10" id="dobservaciones2"
                                                   formControlName="dobservaciones2"></textarea>
-                                        <small id="dobservaciones2" class="form-text text-muted">We'll never share your
-                                            email
-                                            with anyone else.
+                                        <small class="form-text text-muted">Descripción Cecoes intervención 2
                                         </small>
                                     </div>
                                 </div>

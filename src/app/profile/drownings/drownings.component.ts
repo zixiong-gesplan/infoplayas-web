@@ -38,7 +38,7 @@ export class DrowningsComponent implements OnInit {
     yearRange: string;
     es: any;
     dDate: Date;
-    expand: boolean;
+    expand: number;
 
     constructor(private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -63,18 +63,21 @@ export class DrowningsComponent implements OnInit {
         // establecemos valores en espanol para el calendario
         this.es = AppSettings.CALENDAR_LOCALE_SP;
         this.formPrincipal = this.fb.group({
+            // TODO hay que arreglar en la capa el nombre del campo nº_incidente por incidente
             incidente: new FormControl(''),
             expte: new FormControl(0, Validators.min(0)),
             socorristas: new FormControl(0),
             fuen_datos: new FormControl(0),
             municipio: new FormControl(''),
-            playa: new FormControl(''),
-            hora_derivacion: new FormControl(''),
-            isla: new FormControl(''),
+            complemento_directo: new FormControl(''),
+            playa_zbm: new FormControl(''),
+            codigo_dgse: new FormControl(''),
+            bandera: new FormControl(''),
             fecha: new FormControl(''),
             hora_conocimiento: new FormControl(''),
             hora_toma: new FormControl(''),
-            hora_derivacion1: new FormControl(''),
+            hora_derivacion: new FormControl(''),
+            isla: new FormControl(''),
             alerta: new FormControl(''),
 
             ultimo_editor: new FormControl(''),
@@ -85,7 +88,7 @@ export class DrowningsComponent implements OnInit {
             fecha_nacimiento: new FormControl(''),
             lnacimiento: new FormControl(''),
             pnacimiento: new FormControl(''),
-            lresidencia: new FormControl(''),
+            municipio_estancia: new FormControl(''),
             presidencia: new FormControl(''),
             remergencia: new FormControl(''),
             robservaciones: new FormControl(''),
@@ -168,19 +171,24 @@ export class DrowningsComponent implements OnInit {
             ultimo_editor: this.authService.getCurrentUser().username
         });
 
-        this.formPrincipal.get('fecha').value.toJSON = function () {
+        const addvalues = [{attributes: this.formPrincipal.value}];
+
+        addvalues[0].attributes.fecha.toJSON = function () {
             return moment(this).format('YYYY-MM-DD HH:mm:ss');
         };
-        const timeFields = ['hora_derivacion', 'hora_conocimiento', 'hora_toma', 'hora_derivacion1'];
+        const timeFields = ['hora_derivacion', 'hora_conocimiento', 'hora_toma'];
         timeFields.forEach(f => {
-            this.formPrincipal.get(f).value.toJSON = function () {
+            if (!addvalues[0].attributes[f] || addvalues[0].attributes[f] === '') {
+                return;
+            }
+            addvalues[0].attributes[f].toJSON = function () {
                 const refField = moment(this);
                 return refDate.set({h: refField.hours(), m: refField.minutes()}).format('YYYY-MM-DD HH:mm:ss');
             };
         });
-        const addvalues = {attributes: []};
-        addvalues.attributes = JSON.parse(JSON.stringify(this.formPrincipal.value));
-        console.log(addvalues);
+        // const addvalues = {attributes: []};
+        console.log(JSON.parse(JSON.stringify(addvalues)));
+        // console.log(addvalues);
 
         UtilityService.showSuccessMessage('La incidencia se ha añadido correctamente');
         this.mapa = true;
@@ -219,7 +227,10 @@ export class DrowningsComponent implements OnInit {
             if (incidentPoint) {
                 this.resetForms();
                 this.formPrincipal.get('isla').setValue(incidentPoint.attributes.isla);
-                this.formPrincipal.get('playa').setValue(incidentPoint.attributes.nombre_municipio);
+                this.formPrincipal.get('complemento_directo').setValue(incidentPoint.attributes.nombre_municipio);
+                this.formPrincipal.get('codigo_dgse').setValue(incidentPoint.attributes.id_dgse);
+                this.formPrincipal.get('playa_zbm').setValue(incidentPoint.attributes.playa_zbm);
+                // TODO establecer los valores del dominio para mostrar al usuario y para el valor del campo
                 this.formPrincipal.get('municipio').setValue(this.populationService.getMunicipality().ayuntamiento.toUpperCase());
                 this.formulario = true;
                 this.mapa = false;
