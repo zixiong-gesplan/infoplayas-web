@@ -10,9 +10,9 @@ import {AppSettingsService} from '../../services/app-settings.service';
 import {AppSetting} from '../../models/app-setting';
 import {Ng4LoadingSpinnerService} from 'ng4-loading-spinner';
 import {Observable, Subscription} from 'rxjs';
-import {Domain} from '../../models/domain';
 import {AppSettings} from '../../../app-settings';
 import {UtilityService} from '../../services/utility.service';
+import {SelectItem} from 'primeng/api';
 
 declare var $: any;
 declare var jquery: any;
@@ -43,12 +43,12 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
     @Input() mapHeight: string;
     @Input() zoom: number;
     @Input() events: Observable<void>;
+    @Input() aytosEsriDomain: SelectItem[];
     @Output() selectedIncidentId = new EventEmitter<number>();
     private currentUser: Auth;
     private subscripcionMunicipality;
     private eventsSubscription: Subscription;
     private aytos: AppSetting[];
-    private aytosEsriDomains: Domain[];
 
     constructor(private authService: AuthGuardService, public service: EsriRequestService, private popService: PopulationService,
                 private appSettingsService: AppSettingsService, private spinnerService: Ng4LoadingSpinnerService) {
@@ -59,33 +59,8 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
         this.appSettingsService.getJSON().subscribe(data => {
             this.aytos = data;
             this.currentUser = this.authService.getCurrentUser();
-
-            // buscamos el dominio ESRI para los municipios de la capa de incidentes
-            let endpoint = environment.infoplayas_incidentes.substring(0, environment.infoplayas_incidentes.length - 1) + 'queryDomains';
-            this.service.getValueDomains(endpoint, this.currentUser.token, [0]).subscribe(
-                (result: any) => {
-                    if (result) {
-                        if (result.domains.length > 0) {
-                            let allDomains = [];
-                            allDomains = result.domains;
-                            this.aytosEsriDomains = allDomains.filter(d => d.name === 'Municipios')[0].codedValues;
-
-                            /* TODO forma parte de una posible batería de test a implementar: comprueba si los valores de los dominios en
-                            la capa de incidentes de ESRIcoinciden con nuestro fichero de aytos.json
-                            this.aytos.forEach(ay => {
-                                if ( !this.aytosEsriDomains.find(i => i.name === ay.municipio_minus))console.log(ay.municipio_minus);
-                            }); */
-
-                            // cargamos el mapa de incidentes de ahogamientos
-                            this.setMap();
-                        }
-                    } else if (result.error) {
-                        UtilityService.showErrorMessage('Error ' + result.error.code, result.error.message);
-                    }
-                },
-                error => {
-                    console.log(error.toString());
-                });
+            // cargamos el mapa de incidentes de ahogamientos
+            this.setMap();
         });
     }
 
@@ -173,11 +148,11 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                     incidentesLayer = webmap.findLayerById(incidentesLayerId);
                     const ayto = t.popService.getMunicipality().user;
                     // Filter by changing runtime params
-                    let aytoNameMinus = t.aytos.find(i => i.ayto === ayto).municipio_minus;
+                    const aytoNameMinus = t.aytos.find(i => i.ayto === ayto).municipio_minus;
                     filterPlayas = 'municipio = \'' + aytoNameMinus + '\'';
                     filterPlayas = filterPlayas + ' AND clasificacion IS NOT NULL';
                     filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === ayto).municipio_mayus + '\'';
-                    let domainFilter = t.aytosEsriDomains.find(i => i.name === aytoNameMinus).code;
+                    const domainFilter = t.aytosEsriDomain.find(i => i.label === aytoNameMinus).value;
                     filterIncidentes = 'municipio = \'' + domainFilter + '\'';
                     playasLayer.definitionExpression = filterPlayas;
                     municipiosLayer.definitionExpression = filterMunicipios;
@@ -259,9 +234,9 @@ export class MapViewerDrowningsComponent implements OnInit, OnDestroy {
                         if (result.user && municipiosLayer) {
                             viewer.zoom = this.zoom;
                             t.removeSelection();
-                            let aytoNameMinus = t.aytos.find(i => i.ayto === result.user).municipio_minus;
+                            const aytoNameMinus = t.aytos.find(i => i.ayto === result.user).municipio_minus;
                             filterMunicipios = 'municipio = \'' + t.aytos.find(i => i.ayto === result.user).municipio_mayus + '\'';
-                            let domainFilter = t.aytosEsriDomains.find(i => i.name === aytoNameMinus).code;
+                            const domainFilter = t.aytosEsriDomain.find(i => i.label === aytoNameMinus).value;
                             filterIncidentes = 'municipio = \'' + domainFilter + '\'';
                             municipiosLayer.definitionExpression = filterMunicipios;
                             const filter = 'municipio = \'' + aytoNameMinus + '\''

@@ -37,7 +37,8 @@
                         [mapHeight]="mapHeightContainer"
                         [zoom]="mapZoomLevel"
                         [events]="eventsSubject.asObservable()"
-                        (selectedIncidentId)="receiveIncidentId($event)">
+                        (selectedIncidentId)="receiveIncidentId($event)"
+                        [aytosEsriDomain]="aytosEsriDomain">
                 </app-map-viewer-drownings>
             </div>
         </div>
@@ -69,13 +70,16 @@
                             <div class="form-group form-group-sm">
                                 <label for="socorristas">Socorristas</label>
                                 <input type="text" formControlName="socorristas" class="form-control" id="socorristas">
-                                <small class="form-text text-muted">NIP de los socorristas intervinientes separados por comas
+                                <small class="form-text text-muted">NIP de los socorristas intervinientes separados por
+                                    comas
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="fuen_datos">Fuente de datos</label>
                                 <input type="text" formControlName="fuen_datos" class="form-control" id="fuen_datos">
-                                <small class="form-text text-muted">Determinar quién facilita el testimonio: nombre, puesto</small>
+                                <small class="form-text text-muted">Determinar quién facilita el testimonio: nombre,
+                                    puesto
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -88,7 +92,7 @@
                                 <label for="fecha">Fecha</label><br>
                                 <p-calendar formControlName="fecha" id="fecha" [showIcon]="true"
                                             [locale]="es" dateFormat="dd/mm/yy"
-                                            placeholder="Fecha"
+                                            placeholder="Requerido *"
                                             (onClose)="expand = 0"></p-calendar>
                                 <br>
                                 <small class="form-text text-muted">Seleccione la fecha de la intervención</small>
@@ -97,18 +101,22 @@
                                 <label for="playa">Hora conocimiento</label><br>
                                 <p-calendar [defaultDate]="dDate" [readonlyInput]="true" dateFormat="HH/mm"
                                             formControlName="hora_conocimiento" id="hora_conocimiento" [showIcon]="true"
-                                            [timeOnly]="true" placeholder="Hora conocimiento"
-                                            (onClose)="expand = 0" (click)="expand = 2" (onSelect)="expand = 2"></p-calendar>
+                                            [timeOnly]="true" placeholder="Requerido *"
+                                            (onClose)="expand = 0" (click)="expand = 2"
+                                            (onSelect)="expand = 2"></p-calendar>
                                 <br>
-                                <small class="form-text text-muted">Seleccione la hora en la que se tiene conocimiento por parte del alertante</small>
+                                <small class="form-text text-muted">Seleccione la hora en la que se tiene conocimiento
+                                    por parte del alertante
+                                </small>
                             </div>
                             <div [style.padding-top.px]="expand === 2 ? '90' : '0'" class="form-group form-group-sm">
                                 <label for="playa">Hora toma tierra</label><br>
                                 <p-calendar [defaultDate]="dDate" class="custom" [readonlyInput]="true"
                                             dateFormat="HH/mm"
                                             formControlName="hora_toma" id="hora_toma" [showIcon]="true"
-                                            [timeOnly]="true" placeholder="Hora toma tierra"
-                                            (onClose)="expand = 0" (click)="expand = 3" (onSelect)="expand = 3"></p-calendar>
+                                            [timeOnly]="true" placeholder="Requerido *"
+                                            (onClose)="expand = 0" (click)="expand = 3"
+                                            (onSelect)="expand = 3"></p-calendar>
                                 <br>
                                 <small class="form-text text-muted">Seleccione la hora en que se saca del agua</small>
                             </div>
@@ -117,9 +125,11 @@
                                 <p-calendar [defaultDate]="dDate" class="custom" [readonlyInput]="true"
                                             dateFormat="HH/mm"
                                             formControlName="hora_derivacion" id="hora_derivacion" [showIcon]="true"
-                                            [timeOnly]="true" placeholder="Hora derivación"></p-calendar>
+                                            [timeOnly]="true" placeholder="Requerido *"></p-calendar>
                                 <br>
-                                <small class="form-text text-muted">Seleccione la hora en que se traslada según protocolo</small>
+                                <small class="form-text text-muted">Seleccione la hora en que se traslada según
+                                    protocolo
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -143,25 +153,33 @@
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="codigo_dgse">ID DGSE</label>
-                                <input type="text" formControlName="codigo_dgse" class="form-control" id="codigo_dgse" readonly>
+                                <input type="text" formControlName="codigo_dgse" class="form-control" id="codigo_dgse"
+                                       readonly>
                                 <small class="form-text text-muted">Código de la playa /ZBM de la DGSE
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="playa">ZONA</label>
-                                <input type="text" formControlName="complemento_directo" class="form-control" id="playa" readonly>
+                                <input type="text" formControlName="complemento_directo" class="form-control" id="playa"
+                                       readonly>
                                 <small class="form-text text-muted">Zona indicada, playa, como lugar de la intervención
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="playa_zbm">ZBM</label>
-                                <input type="text" formControlName="playa_zbm" class="form-control" id="playa_zbm" readonly>
+                                <input type="text" formControlName="playa_zbm" class="form-control" id="playa_zbm"
+                                       readonly>
                                 <small class="form-text text-muted">Denominación según decreto 116/2018
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="bandera">BANDERA IZADA</label>
-                                <input type="text" formControlName="bandera" class="form-control" id="bandera" readonly>
+                                <select formControlName="bandera" class="form-control" id="bandera">
+                                    <option>Verde</option>
+                                    <option>Amarilla</option>
+                                    <option>Roja</option>
+                                    <option>No procede</option>
+                                </select>
                                 <small class="form-text text-muted">Indicar color de la bandera, si procede
                                 </small>
                             </div>
@@ -219,7 +237,8 @@
                                         Servicio desactivado
                                     </label>
                                 </div>
-                                <small id="servicio" class="form-text text-muted">¿El incidente ocurrió con servicio de socorrismo en activo?
+                                <small id="servicio" class="form-text text-muted">¿El incidente ocurrió con servicio de
+                                    socorrismo en activo?
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
@@ -236,18 +255,20 @@
                             <div class="form-group form-group-sm">
                                 <label for="nsocorristas">Número de socorristas de servicio</label>
                                 <input type="number" class="form-control" id="nsocorristas" min="1">
-                                <small class="form-text text-muted">Indicar el número de socorristas de servicio en el momento de detectar la emergencia
+                                <small class="form-text text-muted">Indicar el número de socorristas de servicio en el
+                                    momento de detectar la emergencia
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="nintervinietes">Número intervinietes</label>
                                 <input type="number" class="form-control" id="nintervinietes" min="1">
-                                <small class="form-text text-muted">Inidicar el número de socorristas que intervienen directamente en rescatar
+                                <small class="form-text text-muted">Inidicar el número de socorristas que intervienen
+                                    directamente en rescatar
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="rmovilizados">Recursos movilizados</label>
-                                <select multiple class="form-control" id="rmovilizados">
+                                <select size="9" multiple class="form-control" id="rmovilizados">
                                     <option>SUC</option>
                                     <option>PL</option>
                                     <option>GC</option>
@@ -259,7 +280,7 @@
                                     <option>PCIVIL</option>
                                     <option>CNP</option>
                                     <option>SOC</option>
-                                    <option>PL </option>
+                                    <option>PL</option>
                                     <option>SASEMAR</option>
                                     <option>FORENSE</option>
                                     <option>PORT</option>
@@ -267,13 +288,14 @@
                                     <option>PPORT</option>
                                     <option>JUEZ</option>
                                 </select>
-                                <small class="form-text text-muted">Indicar, conforme a la clasificación legal (0,1,2,3), los recursos movilizados (varias respuestas)
+                                <small class="form-text text-muted">Indicar, conforme a la clasificación legal
+                                    (0,1,2,3), los recursos movilizados (varias respuestas usar teclas ctrl y/o mayus)
                                 </small>
                             </div>
 
                             <div class="form-group form-group-sm">
                                 <label for="rescate">Recursos utilizados en rescate</label>
-                                <select multiple class="form-control" id="rescate">
+                                <select size="6" multiple class="form-control" id="rescate">
                                     <option>Helicoptero</option>
                                     <option>A pulso</option>
                                     <option>Se desconoce</option>
@@ -287,7 +309,9 @@
                                     <option>Por su propio pie</option>
                                     <option>Flotador</option>
                                 </select>
-                                <small class="form-text text-muted">Indicar recursos empleados en rescate (varias respuestas)</small>
+                                <small class="form-text text-muted">Indicar recursos empleados en rescate (varias
+                                    respuestas usar teclas ctrl y/o mayus)
+                                </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="rtierra">Recursos utilizados en tierra</label>
@@ -300,40 +324,8 @@
                                     <option>Oxígeno</option>
                                     <option></option>
                                 </select>
-                                <small class="form-text text-muted">Indicar recursos empleados una vez en tierra (varias respuestas)</small>
-                            </div>
-
-                            <div class="form-group form-group-sm">
-                                <label for="acciones">Acciones realizadas</label>
-                                <select multiple class="form-control" id="acciones">
-                                    <option>Rescate</option>
-                                    <option>Rcp</option>
-                                    <option>Provocación de vómito</option>
-                                    <option>Oxígeno</option>
-                                    <option>Desa</option>
-                                    <option>Estabilización</option>
-                                    <option>Traslado</option>
-                                    <option>Exploración</option>
-                                    <option>Inmovilización</option>
-                                    <option>Sop. vital avanzado</option>
-                                </select>
-                                <small class="form-text text-muted">Indicar las acciones realizada (varias respuestas)</small>
-                            </div>
-
-                            <div class="form-group form-group-sm">
-                                <label for="derivacion">Derivación victima</label>
-                                <select class="form-control" id="derivacion">
-                                    <option>Se retira por su propio pie</option>
-                                    <option>Ambulancia</option>
-                                    <option>Ambulancia medicalizada</option>
-                                    <option>Helicóptero</option>
-                                    <option>Embarcación</option>
-                                    <option>Furgón de traslados</option>
-                                    <option>Se desconoce</option>
-                                    <option>Traslado forense</option>
-                                    <option>Ambulancia y helicóptero</option>
-                                </select>
-                                <small  class="form-text text-muted">Indicar derivación de la vícitma
+                                <small class="form-text text-muted">Indicar recursos empleados una vez en tierra (varias
+                                    respuestas usar teclas ctrl y/o mayus)
                                 </small>
                             </div>
                         </div>
@@ -403,21 +395,23 @@
                                         No existe alerta
                                     </label>
                                 </div>
-                                <small class="form-text text-muted">Indicar si existe algún tipo de Alerta o prealerta activa del Cecoes
+                                <small class="form-text text-muted">Indicar si existe algún tipo de Alerta o prealerta
+                                    activa del Cecoes
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="ralerta">Referencia alerta</label>
                                 <input type="text" class="form-control" id="ralerta" aria-describedby="ralerta">
-                                <small class="form-text text-muted">En caso de alerta o prealerta activa, indicar referencia, fecha o número de la misma
+                                <small class="form-text text-muted">En caso de alerta o prealerta activa, indicar
+                                    referencia, fecha o número de la misma
                                 </small>
                             </div>
                             <div class="form-group form-group-sm">
                                 <label for="situacion">Situación declarada</label>
                                 <select class="form-control" id="situacion">
+                                    <option>NO</option>
                                     <option>Alerta</option>
                                     <option>Prealerta</option>
-                                    <option>NO</option>
                                 </select>
                                 <small class="form-text text-muted">Seleccione la opción
                                 </small>
@@ -425,7 +419,7 @@
                         </div>
                     </div>
 
-                    <!-- panel del identificador -->
+                    <!-- panel de los adjuntos -->
                     <div class="panel panel-danger">
                         <div class="panel-heading">Anexo</div>
                         <div class="panel-body">
@@ -456,8 +450,15 @@
                             </div>
                         </div>
                     </div>
-
-                    <button type="submit" class="btn btn-primary">Enviar</button>
+                    <div class="col-md-8 text-left">
+                        <button type="submit" class="btn btn-primary" [disabled]="!formPrincipal.valid">Enviar</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-secondary" (click)="close()">Cerrar</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn text-danger" (click)="delete()">Eliminar</button>
+                    </div>
                 </form>
             </div>
             <div class="col-sm-4">
@@ -529,9 +530,10 @@
                                     </div>
                                     <div class="form-group form-group-sm">
                                         <label for="municipio_estancia">Municipio durante la estancia</label>
-                                        <input type="text" formControlName="municipio_estancia" class="form-control"
-                                               id="municipio_estancia">
-
+                                        <p-dropdown id="municipio_estancia"
+                                                    [options]="aytosEsriDomain"
+                                                    [style]="{'width':'100%'}"
+                                                    formControlName="municipio_estancia"></p-dropdown>
                                     </div>
                                     <div class="form-group form-group-sm">
                                         <label for="presidencia">País de residencia</label>
@@ -542,36 +544,52 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- panel resultados -->
+                        <!-- panel recursos persona -->
                         <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="resultsPanel">
-                                <h6 class="panel-title">
+                            <div class="panel-heading" role="tab" id="resourcesPanel">
+                                <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse"
                                        data-parent="#accordionPeople" href="#collapseTwo" aria-expanded="false"
                                        aria-controls="collapseTwo">
-                                        Resultados
+                                        Recursos
                                     </a>
-                                </h6>
+                                </h4>
                             </div>
                             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
-                                 aria-labelledby="resultsPanel">
+                                 aria-labelledby="resourcesPanel">
                                 <div class="panel-body">
                                     <div class="form-group form-group-sm">
-                                        <label for="remergencia">Resultado de la emergencia</label>
-                                        <select class="form-control" id="remergencia" formControlName="remergencia">
-                                            <option>Ileso</option>
-                                            <option>Leve</option>
-                                            <option>Grave</option>
-                                            <option>Fallecido</option>
+                                        <label for="acciones">Acciones realizadas</label>
+                                        <select size="5" multiple class="form-control" id="acciones">
+                                            <option>Rescate</option>
+                                            <option>Rcp</option>
+                                            <option>Provocación de vómito</option>
+                                            <option>Oxígeno</option>
+                                            <option>Desa</option>
+                                            <option>Estabilización</option>
+                                            <option>Traslado</option>
+                                            <option>Exploración</option>
+                                            <option>Inmovilización</option>
+                                            <option>Sop. vital avanzado</option>
                                         </select>
-                                        <small class="form-text text-muted">Indicar grado de lesividad o morbilidad bajo las etiquetas mostradas
+                                        <small class="form-text text-muted">Indicar las acciones realizada (varias
+                                            respuestas usar teclas ctrl y/o mayus)
                                         </small>
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        <label for="observaciones">Observaciones</label>
-                                        <textarea class="form-control" rows="10" id="robservaciones"
-                                                  formControlName="robservaciones"></textarea>
-                                        <small id="observaciones" class="form-text text-muted">Indicar observaciones sobre el resultado final
+                                        <label for="derivacion">Derivación victima</label>
+                                        <select class="form-control" id="derivacion">
+                                            <option>Se retira por su propio pie</option>
+                                            <option>Ambulancia</option>
+                                            <option>Ambulancia medicalizada</option>
+                                            <option>Helicóptero</option>
+                                            <option>Embarcación</option>
+                                            <option>Furgón de traslados</option>
+                                            <option>Se desconoce</option>
+                                            <option>Traslado forense</option>
+                                            <option>Ambulancia y helicóptero</option>
+                                        </select>
+                                        <small class="form-text text-muted">Indicar derivación de la vícitma
                                         </small>
                                     </div>
                                 </div>
@@ -603,6 +621,43 @@
                                         <textarea class="form-control" rows="10" id="dobservaciones2"
                                                   formControlName="dobservaciones2"></textarea>
                                         <small class="form-text text-muted">Descripción Cecoes intervención 2
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- panel resultados -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="resultsPanel">
+                                <h6 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse"
+                                       data-parent="#accordionPeople" href="#collapseFour" aria-expanded="false"
+                                       aria-controls="collapseTwo">
+                                        Resultados
+                                    </a>
+                                </h6>
+                            </div>
+                            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel"
+                                 aria-labelledby="resultsPanel">
+                                <div class="panel-body">
+                                    <div class="form-group form-group-sm">
+                                        <label for="remergencia">Resultado de la emergencia</label>
+                                        <select class="form-control" id="remergencia" formControlName="remergencia">
+                                            <option>Ileso</option>
+                                            <option>Leve</option>
+                                            <option>Grave</option>
+                                            <option>Fallecido</option>
+                                        </select>
+                                        <small class="form-text text-muted">Indicar grado de lesividad o morbilidad bajo
+                                            las etiquetas mostradas
+                                        </small>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label for="observaciones">Observaciones</label>
+                                        <textarea class="form-control" rows="10" id="robservaciones"
+                                                  formControlName="robservaciones"></textarea>
+                                        <small id="observaciones" class="form-text text-muted">Indicar observaciones
+                                            sobre el resultado final
                                         </small>
                                     </div>
                                 </div>

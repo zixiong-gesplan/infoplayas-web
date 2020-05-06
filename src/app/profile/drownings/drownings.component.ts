@@ -1,4 +1,4 @@
-import {DialogService} from 'primeng/api';
+import {DialogService, SelectItem} from 'primeng/api';
 import {MapPickLocationComponent} from '../map-pick-location/map-pick-location.component';
 import {Component, OnInit} from '@angular/core';
 import {AuthGuardService} from '../../services/auth-guard.service';
@@ -11,6 +11,7 @@ import {Subject} from 'rxjs';
 import {AppSettings} from '../../../app-settings';
 import * as moment from 'moment';
 import {UtilityService} from '../../services/utility.service';
+import Swal from 'sweetalert2';
 
 declare let $: any;
 declare let jQuery: any;
@@ -39,6 +40,7 @@ export class DrowningsComponent implements OnInit {
     es: any;
     dDate: Date;
     expand: number;
+    private aytosEsriDomain: SelectItem[];
 
     constructor(private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -55,6 +57,8 @@ export class DrowningsComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.getDomains();
+
         this.dDate = new Date();
         this.dDate.setHours(9, 0, 0);
         this.dDate.setMonth(1);
@@ -73,10 +77,10 @@ export class DrowningsComponent implements OnInit {
             playa_zbm: new FormControl(''),
             codigo_dgse: new FormControl(''),
             bandera: new FormControl(''),
-            fecha: new FormControl(''),
-            hora_conocimiento: new FormControl(''),
-            hora_toma: new FormControl(''),
-            hora_derivacion: new FormControl(''),
+            fecha: new FormControl('', Validators.required),
+            hora_conocimiento: new FormControl('', Validators.required),
+            hora_toma: new FormControl('', Validators.required),
+            hora_derivacion: new FormControl('', Validators.required),
             isla: new FormControl(''),
             alerta: new FormControl(''),
 
@@ -97,6 +101,34 @@ export class DrowningsComponent implements OnInit {
         });
         this.mapHeightContainer = '78vh';
         this.mapZoomLevel = 12;
+    }
+
+    getDomains() {
+        // buscamos los dominios de ESRI que se van a usar en formularios e hijos de este componente
+        const endpoint = environment.infoplayas_incidentes.substring(0, environment.infoplayas_incidentes.length - 1) + 'queryDomains';
+        this.service.getValueDomains(endpoint, this.authService.getCurrentUser().token, [0]).subscribe(
+            (result: any) => {
+                if (result) {
+                    if (result.domains.length > 0) {
+                        let allDomains = [];
+                        allDomains = result.domains;
+                        console.log(allDomains);
+                        this.aytosEsriDomain = allDomains.filter(d => d.name === 'Municipios')[0].codedValues.map(domain => {
+                            return {label: domain.name, value: domain.code};
+                        });
+                        /* TODO forma parte de una posible batería de test a implementar: comprueba si los valores de los dominios en
+                        la capa de incidentes de ESRIcoinciden con nuestro fichero de aytos.json
+                        this.aytos.forEach(ay => {
+                            if ( !this.aytosEsriDomain.find(i => i.name === ay.municipio_minus))console.log(ay.municipio_minus);
+                        }); */
+                    }
+                } else if (result.error) {
+                    UtilityService.showErrorMessage('Error ' + result.error.code, result.error.message);
+                }
+            },
+            error => {
+                console.log(error.toString());
+            });
     }
 
     fileChangeEvent(fileInput) {
@@ -156,15 +188,20 @@ export class DrowningsComponent implements OnInit {
 
     nuevaPersona() {
         this.personasArray.push(this.formPersonas.value);
+        console.log(this.personasArray);
         this.formPersonas.reset();
         UtilityService.showSuccessMessage('La persona se ha añadido correctamente');
         // reseteamos el estado del acordeon
         $('.collapse').collapse('hide');
-        $('#collapseOne').collapse('show');
+        setTimeout(() => {
+            $('#collapseOne').collapse('show');
+        }, 300);
     }
 
     enviar() {
         // TODO enviar al modelo esri
+        alert('EN PRUEBAS: sin modelo enganchado, los cambios en la base de datos no surtirán efectos');
+
         const refDate = moment(this.formPrincipal.get('fecha').value);
         this.formPrincipal.patchValue({
             ultimo_cambio: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -186,11 +223,18 @@ export class DrowningsComponent implements OnInit {
                 return refDate.set({h: refField.hours(), m: refField.minutes()}).format('YYYY-MM-DD HH:mm:ss');
             };
         });
+
         // const addvalues = {attributes: []};
         console.log(JSON.parse(JSON.stringify(addvalues)));
         // console.log(addvalues);
 
+        // TODO revisar el personasArray para preparar para la relatedQuery ojo con la fecha de nacimiento formatear como arriba
+
         UtilityService.showSuccessMessage('La incidencia se ha añadido correctamente');
+        this.setCleanState();
+    }
+
+    setCleanState() {
         this.mapa = true;
         this.botones = true;
         console.log(this.formPrincipal.value);
@@ -207,6 +251,17 @@ export class DrowningsComponent implements OnInit {
         this.formPersonas.reset();
         this.formPrincipal.reset();
         this.archivos = [];
+    }
+
+    close() {
+        this.mapa = true;
+        this.botones = true;
+        this.formulario = false;
+        this.incidentId = null;
+        this.resetForms();
+        $('html, body').animate({
+            scrollTop: $('#buttonBar').offset().top
+        }, 100);
     }
 
     pickAlocation() {
@@ -250,4 +305,26 @@ export class DrowningsComponent implements OnInit {
             this.animationProgress = false;
         }
     }
+
+    delete() {
+        // TODO implementar para borrar el incidente
+        alert('EN PRUEBAS: sin modelo enganchado, los cambios en la base de datos no surtirán efectos');
+        Swal.fire({
+            title: 'Eliminar el incidente',
+            text: '¿Está segur@ de eliminar el registro de la base de datos?',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Sí',
+            footer: '',
+            type: 'warning'
+        }).then((result) => {
+            if (result.value) {
+                UtilityService.showSuccessMessage('El registro ' + this.incidentId + ' se ha eliminnado satisfactoriamente');
+                this.setCleanState();
+            }
+        });
+    }
+
 }
