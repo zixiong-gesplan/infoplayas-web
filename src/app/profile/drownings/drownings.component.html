@@ -209,7 +209,7 @@
                                     <td>{{persona.fecha_nacimiento | date: 'dd/MM/yyyy'}}</td>
                                     <td>{{persona.lnacimiento}}</td>
                                     <td>{{persona.pnacimiento}}</td>
-                                    <td>{{persona.municipio_estancia}}</td>
+                                    <td>{{findAyto(persona.municipio_estancia)}}</td>
                                     <td>{{persona.presidencia}}</td>
                                     <td class="text text-center"><span (click)="borrarPersona(persona)"
                                                                        class="glyphicon glyphicon-trash pointer"></span>
@@ -533,7 +533,7 @@
                                         <p-dropdown id="municipio_estancia"
                                                     [options]="aytosEsriDomain"
                                                     [style]="{'width':'100%'}"
-                                                    formControlName="municipio_estancia"></p-dropdown>
+                                                    formControlName="municipio_estancia" placeholder="Selecciona un municipio"></p-dropdown>
                                     </div>
                                     <div class="form-group form-group-sm">
                                         <label for="presidencia">País de residencia</label>
@@ -667,7 +667,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
-                    <button type="submit" class="btn btn-primary">Añadir</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="!formPersonas.valid">Añadir</button>
                 </div>
             </form>
         </div>

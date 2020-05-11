@@ -88,13 +88,13 @@ export class DrowningsComponent implements OnInit {
             ultimo_cambio: new FormControl('')
         });
         this.formPersonas = this.fb.group({
-            genero: new FormControl(''),
+            genero: new FormControl('', Validators.required),
             fecha_nacimiento: new FormControl(''),
             lnacimiento: new FormControl(''),
             pnacimiento: new FormControl(''),
-            municipio_estancia: new FormControl(''),
-            presidencia: new FormControl(''),
-            remergencia: new FormControl(''),
+            municipio_estancia: new FormControl('', Validators.required),
+            presidencia: new FormControl('', Validators.required),
+            remergencia: new FormControl('', Validators.required),
             robservaciones: new FormControl(''),
             dobservaciones1: new FormControl(''),
             dobservaciones2: new FormControl(''),
@@ -307,7 +307,7 @@ export class DrowningsComponent implements OnInit {
     }
 
     delete() {
-        // TODO implementar para borrar el incidente
+        // TODO implementar para borrar el incidente, la relacion entre incidentes y personas debe ser compuesta para eliminar ambas de golpe
         alert('EN PRUEBAS: sin modelo enganchado, los cambios en la base de datos no surtirán efectos');
         Swal.fire({
             title: 'Eliminar el incidente',
@@ -327,4 +327,7 @@ export class DrowningsComponent implements OnInit {
         });
     }
 
+    findAyto(value) {
+        return this.aytosEsriDomain.find(v => v.value === value).label;
+    }
 }
