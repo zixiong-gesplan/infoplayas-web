@@ -55,3 +55,19 @@ input[type="text"].hora_derivacion::-webkit-input-placeholder {
 .panel-heading .panel-title > a:after {
     line-height: 50px !important;
 }
+
+.tokenMultiselect {
+    background: #007ad9;
+    color: #ffffff;
+    padding: 2px 4px;
+    margin: 0 0.586em 0 0;
+    width: 33px
+}
+
+.tokenMultiselectNone {
+    background: #d95f00;
+    color: #ffffff;
+    padding: 2px 4px;
+    margin: 0 0.586em 0 0;
+    width: 33px
+}

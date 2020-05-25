@@ -12,6 +12,7 @@ import {AppSettings} from '../../../app-settings';
 import * as moment from 'moment';
 import {UtilityService} from '../../services/utility.service';
 import Swal from 'sweetalert2';
+import {Factor} from '../../models/factor';
 
 declare let $: any;
 declare let jQuery: any;
@@ -40,7 +41,11 @@ export class DrowningsComponent implements OnInit {
     es: any;
     dDate: Date;
     expand: number;
-    private aytosEsriDomain: SelectItem[];
+    factorsArray: Factor[];
+    selectedFactors: Number[];
+    cols: any[];
+    aytosEsriDomain: SelectItem[];
+    factoresDomain: SelectItem[];
 
     constructor(private authService: AuthGuardService,
                 private spinnerService: Ng4LoadingSpinnerService,
@@ -58,6 +63,26 @@ export class DrowningsComponent implements OnInit {
 
     ngOnInit() {
         this.getDomains();
+        this.cols = [
+            {field: 'codigo', header: 'Código', width: '25%'},
+            {field: 'descripcion', header: 'Descripción', width: '60%'},
+            {field: 'probable', header: '¿P/S?', width: '15%'}
+        ];
+        this.factorsArray = [];
+        // TODO rellenarlo cuando pueda con los dominios de esri
+        this.factoresDomain = [
+            {label: 'Caída desde tierra firme', value: 101},
+            {label: 'Caída desde objeto', value: 102},
+            {label: 'Golpe por objeto', value: 103},
+            {label: 'Mordedura pez', value: 104},
+            {label: 'Caída en embarcación', value: 105},
+            {label: 'Distancia excesiva costa', value: 201},
+            {label: 'Apnea', value: 202},
+            {label: 'Ignora Bandera Roja', value: 203},
+            {label: 'Ignora advertencia', value: 204},
+            {label: 'Intoxicación etílica', value: 205}
+        ];
+
 
         this.dDate = new Date();
         this.dDate.setHours(9, 0, 0);
@@ -68,10 +93,10 @@ export class DrowningsComponent implements OnInit {
         this.es = AppSettings.CALENDAR_LOCALE_SP;
         this.formPrincipal = this.fb.group({
             // TODO hay que arreglar en la capa el nombre del campo nº_incidente por incidente
-            incidente: new FormControl(''),
-            expte: new FormControl(0, Validators.min(0)),
-            socorristas: new FormControl(0),
-            fuen_datos: new FormControl(0),
+            incidente: new FormControl('', Validators.required),
+            expte: new FormControl(''),
+            socorristas: new FormControl(''),
+            fuen_datos: new FormControl(''),
             municipio: new FormControl(''),
             complemento_directo: new FormControl(''),
             playa_zbm: new FormControl(''),
@@ -83,6 +108,7 @@ export class DrowningsComponent implements OnInit {
             hora_derivacion: new FormControl('', Validators.required),
             isla: new FormControl(''),
             alerta: new FormControl(''),
+            // 0, Validators.min(0) para numeros
 
             ultimo_editor: new FormControl(''),
             ultimo_cambio: new FormControl('')
@@ -98,6 +124,7 @@ export class DrowningsComponent implements OnInit {
             robservaciones: new FormControl(''),
             dobservaciones1: new FormControl(''),
             dobservaciones2: new FormControl(''),
+            factors: new FormControl([])
         });
         this.mapHeightContainer = '78vh';
         this.mapZoomLevel = 12;
@@ -153,7 +180,7 @@ export class DrowningsComponent implements OnInit {
                         this.animationProgress = false;
                     }, 1000);
                     console.log(result.features);
-                    // TODO patch en el formulario de incidente
+                    // TODO patch en el formulario de incidente con las personas relacionadas y sus factores relacionados de cada una
                     DrowningsComponent.scrollToSmooth('#map');
                 } else if (result.error) {
                     UtilityService.showErrorMessage('Error ' + result.error.code, result.error.message);
@@ -187,9 +214,12 @@ export class DrowningsComponent implements OnInit {
     }
 
     nuevaPersona() {
+        this.formPersonas.get('factors').setValue(this.factorsArray);
         this.personasArray.push(this.formPersonas.value);
         console.log(this.personasArray);
         this.formPersonas.reset();
+        this.factorsArray = [];
+        this.selectedFactors = [];
         UtilityService.showSuccessMessage('La persona se ha añadido correctamente');
         // reseteamos el estado del acordeon
         $('.collapse').collapse('hide');
@@ -329,5 +359,28 @@ export class DrowningsComponent implements OnInit {
 
     findAyto(value) {
         return this.aytosEsriDomain.find(v => v.value === value).label;
+    }
+
+    addFactor() {
+        this.factorsArray.push({});
+    }
+
+    updateTable() {
+        this.factorsArray = [];
+        this.selectedFactors.forEach(f => {
+            this.factorsArray.push({
+                codigo: f,
+                descripcion: this.factoresDomain.find(fd => fd.value === f).label,
+                probable: false
+            });
+        });
+    }
+
+    getStatistics() {
+        const casosProbables = this.factorsArray.filter(value => value.probable).length;
+        const caProbableTxt = casosProbables > 1 || casosProbables === 0 ? ' causas probables.' : ' causa probable.';
+        const diferencia = this.factorsArray.length - casosProbables;
+        const caSeguraTxt = diferencia > 1 || diferencia === 0 ? ' causas seguras y ' : ' causa segura y ';
+        return diferencia + caSeguraTxt + casosProbables + caProbableTxt;
     }
 }

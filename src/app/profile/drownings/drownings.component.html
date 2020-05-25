@@ -533,7 +533,8 @@
                                         <p-dropdown id="municipio_estancia"
                                                     [options]="aytosEsriDomain"
                                                     [style]="{'width':'100%'}"
-                                                    formControlName="municipio_estancia" placeholder="Selecciona un municipio"></p-dropdown>
+                                                    formControlName="municipio_estancia"
+                                                    placeholder="Selecciona un municipio"></p-dropdown>
                                     </div>
                                     <div class="form-group form-group-sm">
                                         <label for="presidencia">País de residencia</label>
@@ -632,7 +633,7 @@
                                 <h6 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse"
                                        data-parent="#accordionPeople" href="#collapseFour" aria-expanded="false"
-                                       aria-controls="collapseTwo">
+                                       aria-controls="collapseFour">
                                         Resultados
                                     </a>
                                 </h6>
@@ -659,6 +660,89 @@
                                         <small id="observaciones" class="form-text text-muted">Indicar observaciones
                                             sobre el resultado final
                                         </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- panel factores-->
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="factorPanel">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse"
+                                       data-parent="#accordionPeople" href="#collapseFive" aria-expanded="false"
+                                       aria-controls="collapseFive">
+                                        Factores concurrentes
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseFive" class="panel-collapse collapse" role="tabpanel"
+                                 aria-labelledby="factorPanel">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <p-multiSelect filterBy="label,value" [options]="factoresDomain"
+                                                       [(ngModel)]="selectedFactors"
+                                                       [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                                                       (onPanelHide)="updateTable()">
+                                            <ng-template let-value pTemplate="selectedItems">
+                                                <div *ngFor="let val of value">
+                                                    <div class="col-md-1 tokenMultiselect">{{val}}</div>
+                                                </div>
+                                                <span class="tokenMultiselectNone"
+                                                      *ngIf="!value || value.length === 0">Selecciona causas</span>
+                                            </ng-template>
+                                            <ng-template let-fc pTemplate="item">
+                                                <div style="float: right" class="col-md-10">{{fc.label}}</div>
+                                                <div style="float: right" class="col-md-1">{{fc.value}}</div>
+                                            </ng-template>
+                                        </p-multiSelect>
+                                    </div>
+                                    <div *ngIf="factorsArray.length > 0" style="background-color: #cdcdcd;padding: 7px 6px 6px 7px;"
+                                         class="row text-info margin-top7px"><span>* Indique si no se tiene la certeza del factor concurrente, es decir que es probable y no seguro en la columna P/S</span>
+                                    </div>
+                                    <div class="row margin-top7px">
+                                        <p-table *ngIf="factorsArray.length > 0" [columns]="cols"
+                                                 [value]="factorsArray">
+                                            <ng-template pTemplate="caption">
+                                                Factores concurrentes seleccionados
+                                            </ng-template>
+                                            <ng-template pTemplate="header" let-columns>
+                                                <tr>
+                                                    <th *ngFor="let col of columns" [width]="col.width"
+                                                        [pSortableColumn]="col.field">
+                                                        {{col.header}}
+                                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                                    </th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-rowData>
+                                                <tr>
+                                                    <td>
+                                                        {{rowData.codigo}}
+                                                    </td>
+                                                    <td>
+                                                        {{rowData.descripcion}}
+                                                    </td>
+                                                    <td id="chkCssError" pEditableColumn>
+                                                        <p-cellEditor>
+                                                            <ng-template pTemplate="input">
+                                                                <p-checkbox [(ngModel)]="rowData.probable" binary="true"
+                                                                            [ngModelOptions]="{standalone: true}"></p-checkbox>
+                                                            </ng-template>
+                                                            <ng-template pTemplate="output">
+                                                                <p-checkbox [(ngModel)]="rowData.probable"
+                                                                            [ngModelOptions]="{standalone: true}"
+                                                                            binary="true"></p-checkbox>
+                                                            </ng-template>
+                                                        </p-cellEditor>
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="summary" let-rowData>
+                                                <div style="text-align:left">
+                                                    {{getStatistics()}}
+                                                </div>
+                                            </ng-template>
+                                        </p-table>
                                     </div>
                                 </div>
                             </div>

@@ -4081,4 +4081,8 @@ svg polygon {
     }
 }
 
-
+/*para solucionar un error del primeng con esta plantilla que
+al seleccionar el checkbox dentro de un td que elimina el padding*/
+#chkCssError.ui-editing-cell {
+    padding: 0.571em 0.857em!important;
+}

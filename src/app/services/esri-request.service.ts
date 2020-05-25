@@ -99,15 +99,16 @@ export class EsriRequestService {
         forkJoin(httpRequests).subscribe(results => {
             const features = [];
             if (results) {
-
+                let tResults = {};
+                tResults = results;
                 beachs.forEach(f => {
                     const ob = {
                         objectId: f.attributes.objectid,
                         centroid: f.centroid ? f.centroid : null, clasificacion: f.attributes.clasificacion
                     };
                     for (let i = 0; i < httpRequests.length; i++) {
-                        ob['related' + relationsIds[i][1]] = results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid)
-                            ? results[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid).relatedRecords : [];
+                        ob['related' + relationsIds[i][1]] = tResults[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid)
+                            ? tResults[i].relatedRecordGroups.find(r => r.objectId === f.attributes.objectid).relatedRecords : [];
                         delete ob['related' + relationsIds[i][1]].objectId;
                     }
                     features.push(ob);
