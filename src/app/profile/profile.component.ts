@@ -37,10 +37,6 @@ export class ProfileComponent implements OnInit {
     ngOnInit() {
         init_plugins();
         navbar_load();
-        $('#myModal').modal({
-            keyboard: false,
-            backdrop: 'static'
-        });
         this.current_user = this.authService.getCurrentUser();
         const rol = AppSettings.roles.find(i => i.id === this.current_user.roleId);
         this.isPlanUser = rol.plan_visual;
