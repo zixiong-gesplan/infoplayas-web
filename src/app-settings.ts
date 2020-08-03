@@ -100,6 +100,6 @@ export class AppSettings {
     public static tbPasiva = 9;
     public static tbRiesgos = 11;
     public static tbUnitarios = 10;
-    public static tbPoblacional = 12
+    public static tbPoblacional = 12;
 
 }

@@ -34,8 +34,8 @@ export class PopulationService {
                 .istac_code,
             ayuntamiento: aytos.find(i => i.ayto === name).municipio_mayus
         };
-
-        // llamo a la tabla de cargapoblacional que actualiza el script del jupiter notebook a principios de año carga_poblacional_ISTAC.ipynb
+// {"error":{"code":498,"message":"Invalid token.","details":[]}}
+        // llamo a la tabla de cargapoblacional que es actualizada por un script del jupiter notebook a principios de año carga_poblacional_ISTAC.ipynb
         this.service.getEsriDataLayer(environment.infoplayas_catalogo_edicion_tablas_url + '/' + AppSettings.tbPoblacional + '/query',
             'id_ayuntamiento = \'' + mun.istac_code + '\'', '*', false, this.authService.getCurrentUser().token,
             'id_ayuntamiento', false).subscribe(
