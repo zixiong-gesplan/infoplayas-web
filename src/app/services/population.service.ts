@@ -48,8 +48,8 @@ export class PopulationService {
                     mun.occupation = istac.ocupacion;
                     mun.beds_vacational = istac.plazas_vacacional;
                     mun.occupation_vacational = istac.ocupacion_vacacional;
-                    this.sMunicipalitySource.next(mun);
                     localStorage.setItem('municipality', JSON.stringify(mun));
+                    this.sMunicipalitySource.next(mun);
                 } else {
                     UtilityService.showErrorMessage('La tabla de datos del ISTAC está vacía',
                         'Los cálculos no serán correctos, contacte con el administrador.');
