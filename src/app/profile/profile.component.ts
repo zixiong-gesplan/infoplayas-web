@@ -27,7 +27,6 @@ export class ProfileComponent implements OnInit {
     isPlanUser: boolean;
     isIncidentsUser: boolean;
     @ViewChild('munSelect') munDropDown;
-    @ViewChild('munDialogselect') munDialogDropDown;
     private aytos: AppSetting[];
 
     constructor(private service: RequestService, private authService: AuthGuardService, private spinnerService: Ng4LoadingSpinnerService,
@@ -50,10 +49,9 @@ export class ProfileComponent implements OnInit {
                 }
             });
             const filter = this.current_user.filter ? this.current_user.filter : 'adeje';
-            // En caso de ser un usuario de seleccion multiple preguntamos por cual municipio quiere empezar
+            // En caso de ser un usuario de seleccion multiple establecemos adeje como municipio inicial de consulta
             if (filter === 'adeje') {
-                $('#munConfirmation').modal({backdrop: 'static', keyboard: false});
-                $('#munConfirmation').modal('show');
+                this.munDropDown.selectedOption = this.municipalities[0];
             }
             this.popService.updateMunicipality(filter, this.aytos);
         });
@@ -66,9 +64,5 @@ export class ProfileComponent implements OnInit {
     userLogOut() {
         this.authService.logOut();
         this.router.navigate(['/home']);
-    }
-
-    setMunBackgroundOption() {
-        this.munDropDown.selectedOption = this.munDialogDropDown.selectedOption;
     }
 }
