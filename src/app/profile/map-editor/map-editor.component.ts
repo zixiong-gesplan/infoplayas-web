@@ -341,7 +341,7 @@ export class MapEditorComponent implements OnInit, OnDestroy {
             }
         } else {
             for (let i = this.tEnv.length; i >= numberOfDangers; i--) {
-                if (this.tEnv.value[i]) {
+                if (this.deleteAddtionalDangers && this.tEnv.value[i]) {
                     this.deleteAddtionalDangers.push(this.tEnv.value[i].objectid);
                 }
                 this.tEnv.removeAt(i);
