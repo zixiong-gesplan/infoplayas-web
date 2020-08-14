@@ -19,7 +19,12 @@ export class UtilityService {
     }
 
     static showUpdateMessage() {
-        UtilityService.showUpdateMessage();
+        Swal.fire({
+            type: 'success',
+            title: 'Éxito',
+            text: 'La actualización ha sido correcta.',
+            footer: ''
+        });
     }
 
     static showErrorMessage(title, mensaje) {
