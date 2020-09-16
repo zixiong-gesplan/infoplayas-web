@@ -68,6 +68,16 @@ export class AppSettings {
             plan_edit: false,
             scope: 'todos',
             catalogue_edit: false
+        },
+        {
+            id: '9Q7zAEELuBrdpzju',
+            name: 'infoplayas_visor_mun',
+            inc_visual: true,
+            inc_edit: false,
+            plan_visual: true,
+            plan_edit: false,
+            scope: 'ayto',
+            catalogue_edit: false
         }
     ];
     public static client_id = 'RNiCC2e9tgwl1mCV';
