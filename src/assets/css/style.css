@@ -64,7 +64,7 @@ Google Font
 /* ===================================
     Google font
 ====================================== */
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
+/* @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'); */
 
 /* ===================================
     Other font
@@ -103,7 +103,7 @@ Google Font
 }
 /* ------- Main-Section ------- */
 .main-img {
-    background: url("../images/main-bg.jpg") no-repeat 50% 50%;
+    background: url("/assets/images/main-bg.jpg") no-repeat 50% 50%;
     width: 100%;
     height: 100vh;
     background-size:cover;
@@ -1257,10 +1257,10 @@ ul.team-social-icon >li a:hover .google,
     display: none !important;
 }
 .rs-addon-beforeafter-before{
-    background: url("../images/banner-26.jpg");
+    background: url("/assets/images/banner-26.jpg");
 }
 .rs-addon-beforeafter-horizontal .rs-addon-beforeafter-after{
-   background: url("../images/banner-25.jpg");
+   background: url("/assets/images/banner-25.jpg");
 }
 button.mfp-close, button.mfp-arrow{
     margin: 5px 5px;
@@ -1558,35 +1558,35 @@ button.mfp-close, button.mfp-arrow{
 /* ===================================
     Some facts
 ====================================== */
-.stats-with-parallax {
-    background: url("../images/features-bg.jpg");
+ .stats-with-parallax {
+    background: url("/assets/images/features-bg.jpg");
     background-size: initial !important;
     padding: 8%;
 }
 .stats-with-parallax2 {
-    background: url("../images/features-bg2.jpg");
+    background: url("/assets/images/features-bg2.jpg");
     background-size: cover;
     background-position: center center !important;
     padding: 8%;
 }
 .stats-with-parallax3 {
-    background: url("../images/features-bg3.jpg");
+    background: url("/assets/images/features-bg3.jpg");
     background-size: cover;
     background-position: center center !important;
     padding: 8%;
 }
 .stats-with-parallax4 {
-    background: url("../images/construction-features-bg.jpg");
+    background: url("/assets/images/construction-features-bg.jpg");
     background-size: cover;
     background-position: center center !important;
     padding: 10%;
 }
 .parallax-bg {
-    background: url("../images/video-bg.jpg");
+    background: url("/assets/images/video-bg.jpg");
     background-size: cover;
     background-position: center center !important;
     padding: 10%;
-}
+} 
 .parallax-number {
     font-size: 100px;
     line-height: 1.3;
@@ -2064,7 +2064,7 @@ blockquote.ultra-light{
     margin: 0 auto;
 }
 .cbp-popup-lightbox .cbp-popup-prev {
-    background: url("../images/cbp-sprite.png") no-repeat scroll 0 0 transparent;
+    background: url("/assets/images/cbp-sprite.png") no-repeat scroll 0 0 transparent;
 }
 .cbp-l-loadMore-bgbutton .cbp-l-loadMore-link {
     padding: 11px;
@@ -2114,11 +2114,11 @@ blockquote.ultra-light{
     height: 400px;
 }
 .packages-bg {
-    background: url("../images/packages-bg.jpg");
+    background: url("/assets/images/packages-bg.jpg");
     background-size: initial !important;
 }
 .packages-bg2 {
-    background: url("../images/packages-bg2.jpg");
+    background: url("/assets/images/packages-bg2.jpg");
     background-position: center center !important;
 }
 .packages-info h2, .packages-info p {
@@ -3248,7 +3248,7 @@ form.findus .select:after {
     404 Starts
 ====================================== */
 .error-bg {
-    background: url("../images/banner-4.jpg") no-repeat 50% 50%;
+    background: url("/assets/images/banner-4.jpg") no-repeat 50% 50%;
     width: 100%;
     height: 100vh;
     background-size:cover;
@@ -4086,3 +4086,11 @@ al seleccionar el checkbox dentro de un td que elimina el padding*/
 #chkCssError.ui-editing-cell {
     padding: 0.571em 0.857em!important;
 }
+
+.code{
+    float: right;
+    background-color: #ffffff;
+    border:black 1px solid;
+    border-radius: 2px;
+}
+.lt{color: #8CBB28; padding-bottom: 10px;}

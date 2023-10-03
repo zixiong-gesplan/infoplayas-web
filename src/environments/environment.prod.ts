@@ -6,5 +6,14 @@ export const environment = {
     urlPlanos: 'https://www.infoplayascanarias.es/planos/',
 
     // TODO sustituir para alojamiento definitivo 'https://infoplayascanarias.es/login' , sustituir tambien en la sentence npm build run que esta preparada para un subdirectorio
-    redirectUri: 'https://infoplayascanarias.es/playas/login'
+    //redirectUri: 'https://infoplayascanarias.es/playas/login'
+    redirectUri: 'https://infoplayascanarias.es/login',
+    //app_movil_url: "https://informes.infoplayascanarias.es",
+    //app_movil_url: "http://localhost:5000",
+    // SERVER_URL:'https://gestion.infoplayascanarias.es/',
+    SERVER_URL:'https://www3-pre.gobiernodecanarias.org/aplicaciones/infoplayas/gestion/',
+    recaptchaKey:{
+        siteKey:"6LeKAmUjAAAAAJhAZkzBBEvF7vAp8_Z1RyiJGNEG"
+    }
+
 };

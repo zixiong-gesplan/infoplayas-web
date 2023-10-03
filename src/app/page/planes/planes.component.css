@@ -1,0 +1,25 @@
+.icon-pdf{
+    width: 40px;
+    height: 40px;
+    margin-left: 2%;
+}
+
+.pdf-list{
+    list-style-type: circle;
+}
+.pdf-item{
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    margin-left: 2%;
+}
+
+.description{
+    text-align: justify;
+    text-justify: inter-word;
+    font-size: 16px;
+}
+
+h4{
+    text-align: center;
+}

@@ -1,0 +1,77 @@
+<app-navbar></app-navbar>
+
+<section class="blog-header blog-page-padding-top" data-parallax="scroll"
+         data-image-src="assets/images/play.jpg"
+         style="background-image: url('assets/images/play.jpg'); background-size: cover; background-position: center center;">
+    <div class="container">
+        <div class="padding-top-30 padding-bottom-70">
+            <h2 class="font-size-72px top20 bottom10 text-color-white text-center text-capitalize">Cuadros de mando</h2>
+        </div>
+    </div>
+</section>
+<!-- dashboard Body -->
+<div id="portfolio" class="padding-top-20 padding-bottom-30"
+>
+  <div>
+
+      <div class="col-md-12 col-sm-12 text-justify padding-bottom-10">
+        <p>
+          <!-- <strong>
+            Herramienta para visualizar estadísticamente datos relativos a los incidentes graves o muy graves registrados
+            por CECOES desde el a&ntilde;o 2018.    
+          </strong> -->
+          <strong>
+            Herramienta para visualizar estadísticamente datos relativos a los Planes de Seguridad y Salvamento de las diferentes Playas y Zonas de Baño Maritimas
+          </strong>
+        </p>                        
+      </div>
+      <div class="col-md-12">
+        <iframe width="100%" height="850" title="Accesos, riesgos, instalaciones y equipamientos"
+          src="https://gesplangis.es/arcgis/apps/dashboards/ce89c3a6cb6a4f87b47b94a9b74b2162">
+        </iframe>
+        <div>
+          <a 
+            href="https://gesplangis.es/arcgis/apps/dashboards/ce89c3a6cb6a4f87b47b94a9b74b2162" 
+            class=""
+            target="_blank"  
+          >
+          Ver en ventana completa
+          </a>
+
+          <button class="code" (click)="copyText(1)">
+            <b>
+                <span class="lt">&lt;</span>
+                <span> / </span>
+                <span style="color:#FE7A1C; padding-top: 10px;">&gt;</span>
+            </b>
+          </button>
+        </div>
+      </div>
+
+      <div class="col-md-12 col-sm-12 text-justify padding-bottom-10">
+        <p>
+          <strong>
+            Herramienta para visualizar estadísticamente datos relativos a accesos, riesgos, instalaciones y equipamientos
+            de las playas y zonas de ba&ntilde;o mar&iacute;tima, as&iacute; como los incidentes graves o muy graves registrados
+            por CECOES desde el a&ntilde;o 2018.    
+          </strong>
+        </p>                        
+      </div>
+      <div class="margin-top-30"></div>
+      <div class="col-md-12 margin-top0" >
+        <!--- height >=1200  para que el cuadro de mandos de incidencias graves y fallecidos en medio actuativo en Canarias se vea bien-->
+        <iframe width="100%" height="750" title="Incidencias graves y fallecidos en medio acuático en Canarias"
+                src="https://gesplangis.es/arcgis/apps/opsdashboard/index.html#/483b5ad30ce247b698f1dd4e97e60192">
+        </iframe>
+      </div>
+      <button class="code" (click)="copyText(2)">
+        <b>
+            <span class="lt">&lt;</span>
+            <span> / </span>
+            <span style="color:#FE7A1C; padding-top: 10px;">&gt;</span>
+        </b>
+    </button>
+  </div>
+</div>
+<!-- dashboard Body End -->
+

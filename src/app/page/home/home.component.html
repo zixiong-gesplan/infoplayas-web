@@ -1,0 +1,332 @@
+<!-- 
+<div class="loader center-block" id="loader-fade">
+	<svg width="100px" height="100px" viewBox="-3 -4 39 39">
+		<polygon fill="#ffffff" stroke="#00bcd4" stroke-width="1" points="16,0 32,32 0,32"></polygon>
+	</svg>
+</div> -->
+<!-- Preloader ends-->
+
+<div class="wrapper" id="wrapper">
+	<!-- Header Starts -->
+    <app-navbar></app-navbar>
+	<!-- Header Ends -->
+
+	<!-- Main Section Starts -->
+	<section id="home" class="main-section z-index100">
+		<h2 class="displaynone">heading</h2>
+
+		<!--Main Slider-->
+		<div id="revo_main_wrapper" class="rev_slider_wrapper fullwidthbanner-container">
+			<div id="video-bg" class="rev_slider fullwidthabanner" style="display:none;" data-version="5.4.1">
+				<ul>
+					<!-- SLIDE -->
+					<li data-index="rs-01" data-transition="fade" data-slotamount="default"
+						data-easein="Power3.easeInOut" data-easeout="Power3.easeInOut" data-masterspeed="2000"
+						data-fsmasterspeed="1500" class="banner-overlay">
+						<!-- MAIN IMAGE -->
+						<img src="assets/video/thumbplaya.png" alt="" data-bgposition="center center" data-bgfit="cover"
+							data-bgrepeat="no-repeat" class="rev-slidebg" data-bgparallax="7" data-no-retina>
+						<div class="rs-background-video-layer" data-forcerewind="on" data-volume="mute"
+							data-videowidth="100%" data-videoheight="100%" data-videowebm="assets/video/intro1.mov"
+							data-videomp4="assets/video/intro1.mov" data-videopreload="auto"
+							data-videoloop="loopandnoslidestop" data-forceCover="1" data-aspectratio="16:9"
+							data-autoplay="true" data-autoplayonlyfirsttime="false"></div>
+
+						<div class="tp-caption tp-resizeme" data-x="['center','center','center','center']"
+							data-hoffset="['0','0','0','0']" data-y="['middle','middle','middle','middle']"
+							data-voffset="['-80','-80','-80','-80']" data-whitespace="nowrap"
+							data-responsive_offset="on" data-width="['none','none','none','none']" data-type="text"
+							data-textalign="['center','center','center','center']" data-transform_idle="o:1;"
+							data-transform_in="x:-50px;opacity:0;s:2000;e:Power3.easeOut;"
+							data-transform_out="s:1000;e:Power3.easeInOut;s:1000;e:Power3.easeInOut;" data-start="1400"
+							data-splitin="none" data-splitout="none">
+							<h1 class="font-style-2 text-color-white text-capitalize"> infoplayas canarias </h1>
+						</div>
+						<div class="tp-caption tp-resizeme" data-x="['center','center','center','center']"
+							data-hoffset="['0','0','0','0']" data-y="['middle','middle','middle','middle']"
+							data-voffset="['100','100','90','90']"
+							data-textalign="['center','center','center','center']" data-whitespace="nowrap"
+							data-transform_idle="o:1;"
+							data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:1500;e:Power4.easeInOut;"
+							data-transform_out="s:900;e:Power2.easeInOut;s:900;e:Power2.easeInOut;" data-start="180"
+							data-splitin="none" data-splitout="none" data-responsive_offset="on">
+						
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!--Main Slider ends -->
+		
+	</section>
+	<!--Main Slider video fasesplayas-->
+	
+	<!--Main Slider ends -->
+	<!-- Coffee Section Starts  -->
+	
+	<!--  Coffee Section ends -->
+	<div class="sm-transform" id="contact"></div>
+	<!-- Contact Us Starts -->
+	<!--	<section class="team-bg paddingtopbottom50px">
+		<div class="information-data paddingtopbottom50px">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 col-sm-12 col-xs-12 sm-margin50pxbottom wow fadeInUp" data-wow-delay="400ms">
+						<div class="contact-written-data wow fadeIn">
+							<h2
+								class="border-color-blue-7 text-color-grey paddingleft25px text-capitalize margin-top0 bottom0">
+								<span class="green-color">Contacte </span> <br> con<span class="font-style-1">
+									Nosotros</span></h2>
+							<p class="line-height-30px font-weight-100 text-color-grey-acacac">
+								Infoplayas Canarias es el portal de acceso que facilita el registro de los miembros de entidades locales que
+								participar&aacute;n en la asistencia t&eacute;cnica para la clasificaci&oacute;n de playas y/o zonas de ba&ntilde;o
+								mar&iacute;timas y para la elaboraci&oacute;n de los Planes de Seguridad y Salvamento. </p>
+							<div class="contact-detail-list">
+								<ul>
+									<li>619 26th Street</li>
+									<li class="padding-top-12">Norfolk, USA</li>
+									<li class="padding-top-12">+1 (757) 2 847 911</li>
+									<li class="padding-top-12"><a href="javascript:void(0)">infoplayascanarias@gesplan.es</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 col-sm-12 col-xs-12 wow fadeInUp" data-wow-delay="400ms">
+						<div class="company-contact-form">
+							<h2 class="font-style-1 text-color-grey no-margin text-capitalize"> escr&iacute;banos </h2>
+							<form class="contact-form-outer" [formGroup]="ContactForm"
+								(ngSubmit)="onSubmit(ContactForm)">
+								<div class="col-sm-12" id="result"></div>
+								<div class="col-md-6">
+									<div class="contact-form-textfield padding-bottom-30">
+										<input type="text" placeholder="First Name:" class="form-control "
+											formControlName="first_name">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="contact-form-textfield padding-bottom-30">
+										<input type="text" placeholder="Last Name:" class="form-control "
+											formControlName="last_name">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="contact-form-textfield padding-bottom-30">
+										<input type="email" placeholder="Email:" class="form-control "
+											formControlName="email">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="contact-form-textfield padding-bottom-30">
+										<input type="tel" placeholder="Phone:" class="form-control "
+											formControlName="phone">
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="contact-form-textfield padding-bottom-30">
+										<textarea placeholder="Message" class="form-control "
+											formControlName="message"></textarea>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<button type="submit" class="button blue active text-center width-100">Enviar
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>-->
+	<div>
+		<section>
+			<!-- 4 boxes Starts  -->
+			<div class="features-bg section">
+				<div class="container width-80">
+					<div class="row" id="basic-information">
+						<div class="col-3 center">
+							<header>
+								Nº de Playas
+							</header>
+							<p>758</p>
+						</div>
+						<div class="col-3 center">
+							<header>
+								Nº de Municpios Costeros
+							</header>
+							<p>78</p>
+						</div>
+						<div class="col-6" id="decreto">
+							<p>
+								DECRETO 116/2018, de 30 de julio, por el que se regulan medidas para la aplicación
+								de las normas e instrucciones para la seguridad humana y para la coordinación de
+								las emergencias ordinarias y de protección civil en playas y otras zonas de baño
+								marítimas de la Comunidad Autónoma de Canarias....
+							</p>
+							<a href="#">Más información del decreto</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 4 boxes ends -->
+		</section>
+	</div>
+	<!-- Contact Us ends -->
+
+	<!-- 4 boxes Starts  -->
+	<div class="features-bg">
+		<div class="container width-80">
+			<div class="row">
+				<div class="four-boxes max-width">
+					<div class="information-icon">
+						<div class="wordpress">
+							<i class="fa fa-map-o"></i>
+							<h5 class="font-style-1 font-weight-300 text-capitalize"><strong>catálogo</strong></h5>
+							<p class="font-weight-100 bottom0">
+								Acceso al Catálago General de Playas y Zonas de Ba&ntilde;o Mar&iacute;timas de Canarias
+								en el que se representan cartogr&aacute;ficamente las zonas catalogadas y se muestra informaci&oacute;n
+								asociada a cada elemento: Clasificaci&oacute;n, grado de protecci&oacute;n, servicios, forma de acceso,
+								horario de socorrismo, etc.
+							</p>
+							<a [routerLink]="['/catalogo']"
+							 class="btn" 
+							 id="btn-catalogo">Catálogo de Playas</a>
+
+						</div>
+						<div class="joomla">
+							<i class="fa fa-bars"></i>
+							<h5 class="font-style-1 font-weight-300  text-capitalize"><strong>Visor de Playas y Zonas de Baño Marítimas de Canarias</strong></h5>                                   
+							
+							<!-- <p class="font-weight-100">
+								Herramienta para visualizar estadísticamente datos relativos a accesos, riesgos, instalaciones y equipamientos
+								de las playas y zonas de ba&ntilde;o mar&iacute;tima, as&iacute; como los incidentes graves o muy graves registrados
+								por CECOES desde el a&ntilde;o 2018.    
+							</p>
+							<a href="/dashboards" class="btn odd">Cuadros de Mando</a> -->
+							<p class="font-weight-100">
+								Visor del estado de las playas y zonas de baño maritimas de Canarias, para la ciudadania.
+							</p>
+							<a                     
+							href="https://www3-pre.gobiernodecanarias.org/aplicaciones/infoplayas/visor/"
+							class="btn odd" target="_blank">Visor</a>
+						</div>
+						<div class="drupal">
+							<i class="fa fa-tablet"></i>
+							<h5 class="font-style-1 font-weight-300 "><strong>PSS y Planos</strong></h5>
+							<p class="font-weight-100" >
+								Documentación de ayuda a la redacci&oacute;n de los Planos de Seguridad y Salvamento de las playas y ZBM catalogadas como libres 
+								o peligrosas con Grado de Protecci&oacute;n moderado o alto.
+								Herramienta de asistencia a los ayuntamientos para la generaci&oacute;n de cartograf&iacute;a que sirva de base para la realizaci&oacute;n 
+								de los planos que deben figurar en los Planes de Seguridad y Salvamento.
+							</p>
+							<a [routerLink]="['/planos']" class="btn" id="btn-planos"> Seguimiento de los PSS</a>
+
+						</div>
+						<div class="css3">
+							<i class="fa  fa-qrcode"></i>
+							<h5 class="font-style-1 font-weight-300 text-capitalize"><strong>
+								App Infoplayas
+							</strong></h5>
+							<p class="font-weight-100">
+								Aplicación móvil para el control de las incidencias y estado de las playas. 
+							</p>
+							<p class="font-weight-100">
+								¡¡Descárgala para conocer el estado de las playas!!
+							</p>
+							<div class="qrs">
+								<figure>
+									<img src="assets/images/qr_android.png" alt="QR Android" srcset="" width="250px">
+									<figcaption>
+										Android
+									</figcaption>
+								</figure>
+								<figure>
+									<img src="assets/images/qr_ios.png" alt="QR iOS" srcset="" width="250px">
+									<figcaption>
+										iOS
+									</figcaption>
+								</figure>
+							</div>
+							<!-- <a href="/tecnicos" class="btn odd">Solo para Ayuntamientos</a> -->
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 4 boxes ends -->
+	<footer id="site-footer" class="padding_half footer-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-3"></div>
+				<div class="col-3">
+					<h6>
+						Contacto
+					</h6>
+					<ul>
+						<li>
+							Calle León y Castillo, 54 Bajo
+							<br>
+							<strong>
+								Las Palmas de Gran Canaria
+							</strong>
+						</li>
+						<li>
+							Residencial Amarca, Avd. Tres de Mayo 71, local bajo A
+							<br>
+							<strong>
+								Santa Cruz de Tenerife
+							</strong>
+						</li>
+						<li>
+							infoplayascanarias@gesplan.es
+						</li>
+					</ul>
+				</div>
+				<div class="col-3">
+					<h6>Enlaces de Interes</h6>
+					<ul>
+						<li>
+							<a href="https://www.gobiernodecanarias.org/emergencias/" target="_blank">Dirección de Seguridad y Emergencias</a>
+						</li>
+						<li>
+							<a href="https://www.gesplan.es/" target="_blank">Gesplan</a>
+						</li>
+						<li>
+							<a href="https://webmap.infoplayascanarias.es" target="_blank">Visor de la playas y ZBM</a>
+						</li>
+						<li>
+							<a href="https://gesplangis.es/arcgis/apps/webappviewer/index.html?id=1de5084df09c4dffb8f5f260503cea60" target="_blank">Catálogo</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-3"></div>
+
+			</div>
+
+
+			<!-- <div class="row">
+				<div class="col-md-12 col-sm-12 text-center">
+					<p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
+							class="copyrights">© 2019 Gesplan S.A.</span></p>
+					<p class="font-style-1 paragraph-18 wow fadeInUp font-weight-100 margintop10px bottom10"><span
+							class="copyrights">&Aacute;rea de Innovaci&oacute;n <a href="javascript:void(0)">y
+								Desarrollo</a>
+						</span>
+					</p>
+	
+				</div>
+			</div> -->
+		</div>
+		<div>
+			<p class="text-center">
+				© 2022 Gesplan S.A.
+			</p>
+		</div>
+	</footer>
+	<!--Footer ends-->
+</div>
+<!-- Wrapper ends -->

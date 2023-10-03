@@ -1,0 +1,143 @@
+<app-navbar></app-navbar>
+
+<section class="blog-header blog-page-padding-top"  data-image-src="assets/images/contact-bg.jpg">
+  <div class="container">
+    <div class="padding-top-30 padding-bottom-70">
+      <h2 class="font-size-72px top20 bottom10 text-center text-capitalize">Generador de Informes</h2>
+    </div>
+  </div>
+</section>  
+<section class="position-relative paddingtopbottom100px">
+
+  <div class="row" id="yearPicker">
+    <select name="year" id="years" style="float: right; 
+                                          margin-left: auto;
+                                          margin-right: 100px;
+                                          margin-bottom: 10px;
+                                          font-size: 35px;"
+             (change)="setYear($event)"
+    >
+        <option value="{{year_id}}"  *ngFor="let year_id of yearRange" >{{year_id}}</option>
+    </select>
+  </div>
+  <div class="container">
+    <div class="row" width='100%' height='100%' id="quarters">
+      <button class="centrar col3 quarter" (click)="setQuarter('PRIMER CUATRIMESTRE')">Primer Cuatrimestre <br></button>
+      <button class="centrar col3 quarter" (click)="setQuarter('SEGUNDO CUATRIMESTRE')">Segundo Cuatrimestre <br></button>
+      <button class="centrar col3 quarter" (click)="setQuarter('TERCER CUATRIMESTRE')"> Tercer Cuatrimestre <br></button>
+    </div>
+    <div id="report">
+        <h2><b>Municipio:</b>{{municipality}}</h2>
+        <h2><b>Cuatrimestre:</b>{{quarter}}</h2>
+        <h2><b>A&ntilde;o:</b>{{year}}</h2>
+        <div *ngFor="let beach of beachs;let i = index">
+            <h4><b> {{beach.DGSE}} - {{beach.name}} </b></h4> 
+            <ng-container *ngIf="beach.incidents.length > 0 ; else NoIncidents">
+              <table>
+                <tr>
+                  <th>Nº REGISTRO</th>
+                  <th>LATITUD</th>
+                  <th>LONGITUD</th>
+                  <!-- <th>BANDERA</th> -->
+                  <th>ORIGEN</th>
+                  <th>FECHA</th>
+                  <th>TIPO DE SITUACI&Oacute;N</th>
+                  <th>N&Uacute;MERO DE SOCORRISTAS</th>
+                  <th>PERSONAS AFECTADAS</th>
+                  <th>HORA DE NOTIFICACI&Oacute;N</th>
+                  <th>Nº INCIDENCIA CECOES</th>
+                  <th>TIEMPO DE LLEGADA</th>
+                </tr>
+                <tr *ngFor="let incident of beach.incidents" >
+                  <td>{{incident.id}}</td>
+                  <td>{{incident.latitud | number: '2.1-4'}}</td>
+                  <td>{{incident.longitud | number: '2.1-4'}}</td>
+                  <!-- <td>{{incident.bandera}}</td> -->
+                  <td>{{incident.alarmSender}}</td>
+                  <td>{{incident.date}}</td>
+                  <td>{{incident.type}}</td>
+                  <td>{{incident.numberLifeGuard || 0}}</td>
+                  <td>{{incident.affectedPeopleNumber}}</td>
+                  <td>{{incident.hourCall112}}</td>
+                  <td>{{incident.cecoes}}</td>
+                  <td>{{incident.delay_arrive_external_resources}}</td>
+                </tr>
+              </table>
+
+              <div class="row" id="image{{i}}">
+                <div id="map{{i}}" style="width: 50%; height: 300px;" class="map"></div>
+              </div>
+
+              <table>
+                <tr>
+                  <th *ngFor="let item of ['Nº REGISTRO','HORA','DÍA DE LA SEMANA','TIPO DE INTERVENCIÓN','GÉNERO','NACIONALIDAD','EDAD', 'MUNICIPIO','SUSTANCIAS LIMITANTES','PERFIL','GRADO DE EMERGENCIA', 'CENTRO DE TRASLADO','PRIMEROS AUXILIOS','ALTA VOLUNTARIA','DESFIBRILADOR']"> {{" " + item+ " "}} </th>
+                </tr>
+                <tr *ngFor="let person of beach.affectedPeople">
+                    <td>{{person.idIncident}}</td>
+                    <td>{{i.dateIni | date:'h:mm:ss'}}</td>
+                    <td>{{i.dateIni}}</td>
+                    <td>{{person.typeIntervention}}</td>
+                    <td>{{person.gender == "male" ? "Hombre": "Mujer"}}</td>
+                    <td>{{person.country}}</td>
+                    <td>{{person.age}}</td>
+                    <td>{{person.municpality}}</td>
+                    <td>
+                      <ul *ngFor="let substance of person.substance">
+                        <li>{{substance.name}}</li>
+                      </ul>
+                    </td>                    
+                    <td>{{person.profile}}</td>
+                    <td>{{person.emergencyGrade}}</td>
+                    <td>{{person.translationCenter}}</td>
+                    <td>{{person.requireFirstAid ? 'Sí':'No'}}</td>
+                    <td>{{person.highVolunteer  ? 'Sí':'No'}}</td>
+                    <td>{{person.usedDesa  ? 'Sí':'No'}}</td>
+                </tr>
+              </table>
+            </ng-container>
+            <ng-template #NoIncidents>
+    
+              <p>Playa sin incidentes</p>
+            </ng-template>
+            <div class="page-breaker"></div>
+
+        </div>
+        <div>
+          <section style="padding-top: 10px;">
+            Conclusiones
+          </section>
+        </div>
+
+        <textarea name="" id="" cols="30" rows="10" (input)="onSearchChange($event)"></textarea>
+
+        <div id="printer">
+          <p id="message">ESTA OPERACION PUEDE TARDAR UN POCO</p>
+    
+    
+          <button (click)="getPDF()"> Descargar PDF</button>
+        </div>
+        <ng-container *ngIf="uploadFile">
+          <h5>
+            <b>
+              Una vez descargardo el PDF se tiene que firmar, preferiblemente con firma digital.
+            </b>
+          </h5>
+          <form style="margin-top: 40px;">
+            <fieldset>
+              <legend> PDF Firmado </legend>
+              <p>
+              </p>
+              <input type="file" name="attachment" id="attachment"  (change)="onFileChange($event)" accept=".pdf">
+      
+              <button type="submit" (click) = sendFile() style="margin-top: 20px;">Subir archivo</button>
+            </fieldset>
+          </form>
+        </ng-container>
+    </div>
+  </div>
+</section> 
+<div class="chart-container" ng-show="graph.visible" [ngStyle]="{'display': 'hidden'}">
+  <canvas id="myChart" width="400" height="400"></canvas>
+</div>
+<div id="map"></div>
+  

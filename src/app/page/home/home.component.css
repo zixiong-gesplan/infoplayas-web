@@ -1,0 +1,213 @@
+*{
+    box-sizing: border-box;
+    text-align: justify;
+}
+nav{
+    overflow: hidden;
+}
+.navbar.fixed-menu{
+    overflow: hidden !important;
+}
+
+.row{
+    display: flex;
+    margin-top: 10px;
+}
+
+.center{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.col-3{
+    width: 25%;
+    margin-right: 2em;
+
+}
+
+.col-3 > header{
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    margin: auto;
+    font-size: 20px;
+}
+
+.col-3:nth-child(1) > header{
+    background-color: #8CBB28;
+    padding: 10px;
+
+}
+.col-3:nth-child(2) > header{
+    background-color: #00BCD4;
+    padding: 10px;
+}
+.col-3 > p{
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 52px;
+    color: grey;
+}
+
+
+
+
+.col-6{
+    width: 50%;
+    text-align: justify;
+}
+#decreto{
+    font-size: 18px;
+    color: grey;
+    font-weight: bold;
+}
+
+#decreto > p::before{
+    content: "\201C";
+    font-size: 40px;
+    font-weight: bold;
+    color:rgb(211, 210, 210);
+}
+
+#decreto > p {
+    font-size: 24px;
+}
+#basic-information{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.btn{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid white;
+    color:white;
+    border-radius: 5px;
+    text-align: center;
+}
+.odd{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #797380;
+    color:#797380;
+    border-radius: 5px;
+}
+
+#btn-catalogo:hover{
+    cursor: pointer;
+    background-color: white;
+    color: #8CBB28;
+}
+
+#btn-planos:hover{
+    cursor: pointer;
+    background-color: white;
+    color: #00BCD4;
+}
+
+.odd:hover{
+    cursor: pointer;
+    background-color: #c8c8c8;
+    color: white;
+    border: 1px solid #c8c8c8;
+
+}
+.section{
+    background-color: white;
+    /* height: 240px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 25px;
+}
+.apps > h4{
+    text-align: center;
+}
+
+.qrs{
+    display: flex;
+    justify-content: space-evenly;
+}
+figure > img{
+    max-height: 250px;
+}
+figcaption{
+    text-align: center;
+}
+.copyrights{
+    text-align: center;
+}
+
+.collabs{
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom: 1px solid #ddd;
+}
+
+.collab{  
+    height: 100px;
+}
+
+.collab > img{
+    height: 75px;
+}
+
+.text-center{
+    text-align: center;
+}
+
+#cards{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+}
+
+#cards > .row{
+    display: flex;    
+    background: #ffffff;;
+    color: #797380;
+    padding: 1em;
+}
+
+#cards > .row:nth-child(1){
+    display: flex;    
+    background: #8cbb28;
+    color: #fff;
+    padding: 1em;
+}
+#cards > .row:nth-child(3){
+    display: flex;    
+    background: #00bcd4;
+    color: #fff;
+    padding: 1em;
+}
+
+#cards > .row:nth-child(even) > .img-wrapper{
+    width: 100%;
+    max-width: 200px;
+    border: 1px solid #797380;
+    margin-right: 1em;
+}
+
+#cards > .row:nth-child(odd) > .img-wrapper{
+    width: 100%;
+    max-width: 200px;
+    border: 1px solid #ffffff;
+    margin-right: 1em;
+}
+
+#cards > .row > div{
+    display: flex;
+    flex-direction: column;
+}
+#cards > .row > div > p{
+    text-overflow: ellipsis;
+}
+#cards > .row > div > .btn{
+    align-self: flex-end;
+}
+

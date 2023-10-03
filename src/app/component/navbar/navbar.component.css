@@ -1,0 +1,37 @@
+.logo-nav{
+    height: 50px;
+    width: auto;
+    margin: 10px;
+}
+
+nav{
+    top:0;
+    width: 80%;
+    overflow: -moz-hidden-unscrollable;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fixed-menu> ul{
+    padding-left: 1em;
+}
+
+ul#smallmenu{
+    justify-content: space-between;
+}
+.login{
+    color:#00BCD4 !important;
+}
+.visor{
+    color: #07d434 !important;
+}
+
+@media (max-width:995px) {
+    nav{
+        display: flex;
+        flex-direction: column;
+    }
+}
+

@@ -1,63 +1,35 @@
-import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-import {ProfileComponent} from './profile/profile.component';
-import {AuthGuardService} from './services/auth-guard.service';
-import {HomeComponent} from './home/home.component';
-import {CatalogueComponent} from './profile/catalogue/catalogue.component';
-import {ClassificationComponent} from './profile/classification/classification.component';
-import {SecurityComponent} from './profile/security/security.component';
-import {ReportComponent} from './profile/report/report.component';
-import {ContactUsComponent} from './profile/contact-us/contact-us.component';
-import {LoginComponent} from './login/login.component';
-import {WelcomeComponent} from './profile/welcome/welcome.component';
-import {DrowningsComponent} from './profile/drownings/drownings.component';
-import { ReportBeachComponent } from './report-beach/report-beach.component';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { CatalogueComponent } from './page/catalogue/catalogue.component';
+import { HomeComponent } from './page/home/home.component';
+import { LoginComponent } from './page/login/login.component';
+import { PlanesComponent } from './page/planes/planes.component';
+import { ProfileComponent } from './page/profile/profile.component';
+
+import {UserGuardGuard} from './guards/user-guard.guard';
+import { DashboardsComponent } from './page/dashboards/dashboards.component';
+import { ReportsComponent } from './page/reports/reports.component';
+import { IncidentsComponent } from './page/incidents/incidents.component';
+import {DownloadReportComponent} from './page/download-report/download-report.component'
+import { CecoesComponent } from './page/cecoes/cecoes.component';
+
 
 const routes: Routes = [
-    {path: '', redirectTo: '/home', pathMatch: 'full'},
-    {path: 'home', component: HomeComponent},
-    {path: 'login', component: LoginComponent},
-    {
-        path: 'tecnicos',
-        component: ProfileComponent,
-        children: [
-            {path: '', redirectTo: 'bienvenida', pathMatch: 'full'},
-            {path: 'tecnicos', redirectTo: 'bienvenida', pathMatch: 'full'},
-            {
-                path: 'bienvenida', component: WelcomeComponent, canActivate: [AuthGuardService]
-            },
-            {
-                path: 'catalogo', component: CatalogueComponent, canActivate: [AuthGuardService]
-            },
-            {
-                path: 'clasificacion', component: ClassificationComponent, canActivate: [AuthGuardService],
-                data: {permission: 'plan'}
-            },
-            {
-                path: 'seguridad', component: SecurityComponent, canActivate: [AuthGuardService],
-                data: {permission: 'plan'}
-            },
-            {
-                path: 'planos', component: ReportComponent, canActivate: [AuthGuardService]
-            },
-            /*{
-                path: 'informes', component: ContactUsComponent, canActivate: [AuthGuardService]
-            },*/
-            {
-                path:'informes', component: ReportBeachComponent,canActivate:[AuthGuardService]
-            },
-            {
-                path: 'incidentes', component: DrowningsComponent, canActivate: [AuthGuardService],
-                data: {permission: 'incidentes'}
-            }
-        ]
-    },
-    {path: '**', redirectTo: '/home'}
+  {path:'', component:HomeComponent},
+  {path:'catalogo', component:CatalogueComponent},
+  {path:'planos', component:PlanesComponent},
+  {path:'cecoes',component:CecoesComponent},
+  {path:'login', component:LoginComponent},
+  {path:'dashboards', component:DashboardsComponent},
+  {path:'tecnicos', component:ProfileComponent, canActivate:[UserGuardGuard]},
+  {path:'reports', component:ReportsComponent, canActivate:[UserGuardGuard]},
+  {path:'incidents', component:IncidentsComponent, canActivate: [UserGuardGuard]},
+  {path:'downloads', component:DownloadReportComponent, canActivate: [UserGuardGuard]}
+
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule { }

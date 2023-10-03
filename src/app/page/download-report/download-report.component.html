@@ -1,0 +1,56 @@
+<app-navbar></app-navbar>
+<!-- catalogo Header -->
+<section class="blog-header blog-page-padding-top" data-parallax="scroll"
+         data-image-src="assets/images/play.jpg"
+         style="background-image: url('assets/images/play.jpg'); background-size: cover; background-position: center center;">
+    <div class="container">
+        <div class="padding-top-30 padding-bottom-70">
+            <h2 class="font-size-72px top20 bottom10 text-color-white text-center text-capitalize">Descarga de Informes</h2>
+        </div>
+    </div>
+</section>
+
+
+<section class="position-relative paddingtopbottom100px">
+
+  <select name="year" id="years" style="float: right; 
+                                        margin-left: auto;
+                                        margin-right: 100px;
+                                        margin-bottom: 10px;
+                                        font-size: 35px;"
+                                  (change)="setYear($event.target.value)"
+  >
+      <option value="{{year_id}}"  *ngFor="let year_id of range" >{{year_id}}</option>
+  </select>
+
+  
+  <table style="margin-left: 20%;">
+    <!-- <tr>
+      <th>Municipio</th>
+      <th>Informe Primer Cuatrimestre</th>
+      <th>Informe Segundo Cuatrimestre</th>
+      <th>Informe Tercer Cuatrimestre</th>
+    </tr>
+    <tr *ngFor="let ayto of files">
+      <td>{{ ayto.name }}</td>
+      <td (click)="getFile(ayto.url1)"> 
+        {{ (ayto.url1 != null) ? "Descargar": "--"}}
+      </td>
+      <td (click)="getFile(ayto.url2)"> 
+        {{ (ayto.url2 != null) ?  "Descargar": "--"}}
+      </td>
+      <td (click)="getFile(ayto.url3)"> 
+        {{ (ayto.url3 != null) ?  "Descargar": "--"}}
+      </td> -->
+    <tr>
+      <th>Municipio</th>
+      <th>Informe</th>
+      <!-- <th>Informe Segundo Cuatrimestre</th>
+      <th>Informe Tercer Cuatrimestre</th> -->
+    </tr>
+    <tr *ngFor="let pdf of files">
+      <td>{{ pdf.ayto }}</td>
+      <td (click)="getFile(pdf.report)">{{ pdf.report }}</td>
+    </tr>
+  </table>
+</section> 

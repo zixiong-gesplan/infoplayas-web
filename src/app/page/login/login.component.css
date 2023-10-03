@@ -1,0 +1,43 @@
+form,
+form>*{
+    box-sizing: border-box;
+}
+
+h1{
+    color: #a4daa4;
+}
+
+#form{
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    text-align: center;
+    margin-top: 35vh;
+    margin-left: 33%;
+    width: 33%;
+    padding: 10px;
+    border: 2px solid #a4daa4;
+    border-radius: 8px;
+    min-width: 350px;
+}
+
+#msgError{
+    color: crimson;
+}
+form{
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+}
+
+label{
+    text-align: left;
+}
+
+input{
+    margin-bottom: 10px;
+}
+re-captcha.is-invalid > div {
+    border: 1px solid #dc3545 !important;
+    border-radius: 0.2rem;
+  }

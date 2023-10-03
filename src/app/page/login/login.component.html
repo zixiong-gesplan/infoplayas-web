@@ -1,0 +1,101 @@
+<app-navbar></app-navbar>
+<div 
+    id="form"
+    class="company-contact-form"
+>
+    <h4>Inciar Sesión</h4>
+    <form
+        class="contact-form-outer"
+    >
+        <div class="col-md-12">
+            <div class="contact-form-textfield padding-bottom-30">
+                <!-- <label for="username" >Usuario</label> -->
+                <input
+                    type="text" 
+                    name="username" 
+                    [(ngModel)]="username"
+                    id="username"
+                    placeholder="USUARIO"
+                    required
+                >
+            </div>
+        </div>
+
+        <!-- <label for="pwd">Contraseña</label> -->
+        <div class="col-md-12">
+            <div class="contact-form-textfield padding-bottom-30">
+                <input 
+                    type="password"
+                    name="pwd"
+                    [(ngModel)]="password"
+                    placeholder="*********"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+        </div>
+
+        <div>
+            <re-captcha 
+                id="recaptcha" 
+                name="recaptcha" 
+                #recaptcha="ngModel" 
+                [(ngModel)]="captcha" 
+                required 
+                [class.is-invalid]="recaptcha.invalid && (recaptcha.dirty || recaptcha.touched)">
+            </re-captcha>
+
+        </div>
+
+        <p id="msgError"></p>
+        <button 
+            class="button blue active text-center width-100"
+            (click)="login()"
+        >
+            Entrar
+        </button>
+        <div class="row padding-top -30">
+            <div class="col-md-6">
+                <input 
+                    type="checkbox" 
+                    name="remember"
+                    [(ngModel)]="remember"
+                >
+                <label for="remember">Recuérdame</label>
+            </div>
+            <div class="col-md-6">
+                <a href="http://gestion.infoplayascanarias.es">
+                    ¿Necesitas ayuda?
+                </a>
+            </div>
+
+        </div>
+
+    </form>
+</div>
+
+<section class="team-bg paddingtopbottom50px">
+    <div class="information-data paddingtopbottom50px">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 sm-margin50pxbottom wow fadeInUp" data-wow-delay="400ms">
+                    <div class="contact-written-data wow fadeIn">
+                        <h2
+                            class="border-color-blue-7 text-color-grey paddingleft25px text-capitalize margin-top0 bottom0">
+                            <span class="green-color">Contacte </span> <br> con<span class="font-style-1">
+                                Nosotros</span></h2>
+                        <p class="line-height-30px font-weight-100 text-color-grey-acacac">
+                            Infoplayas Canarias es el portal de acceso que facilita el registro de los miembros de entidades locales que
+                            participar&aacute;n en la asistencia t&eacute;cnica para la clasificaci&oacute;n de playas y/o zonas de ba&ntilde;o
+                            mar&iacute;timas y para la elaboraci&oacute;n de los Planes de Seguridad y Salvamento. </p>
+                        <div class="contact-detail-list">
+                            <ul>
+                                <li class="padding-top-12"><a href="javascript:void(0)">infoplayascanarias@gesplan.es</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

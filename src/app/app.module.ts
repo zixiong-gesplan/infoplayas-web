@@ -1,109 +1,78 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {LOCALE_ID, NgModule} from '@angular/core';
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {ProfileComponent} from './profile/profile.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { HomeComponent } from './home/home.component';
-import {CatalogueComponent} from './profile/catalogue/catalogue.component';
-import { ClassificationComponent } from './profile/classification/classification.component';
-import { SecurityComponent } from './profile/security/security.component';
-import { ReportComponent } from './profile/report/report.component';
-import { ContactUsComponent } from './profile/contact-us/contact-us.component';
-import {LoginComponent} from './login/login.component';
-import { MapEditorComponent } from './profile/map-editor/map-editor.component';
-import {
-    CheckboxModule, ConfirmationService, ConfirmDialogModule, DropdownModule,
-    InputTextareaModule,
-    InputTextModule, MessageService, OverlayPanelModule, ProgressBarModule, RadioButtonModule, SelectButtonModule,
-    TabMenuModule,
-    TabViewModule,
-    ToggleButtonModule,
-    TooltipModule,
-    AccordionModule, DialogModule, LightboxModule, SidebarModule, DialogService, ProgressSpinnerModule, MultiSelectModule
-} from 'primeng/primeng';
-import {TableModule} from 'primeng/table';
-import {EsriRequestService} from './services/esri-request.service';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {CalendarModule} from 'primeng/calendar';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { WelcomeComponent } from './profile/welcome/welcome.component';
-import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
-import {registerLocaleData} from '@angular/common';
-import localeEs from '@angular/common/locales/es';
-import {ToastModule} from 'primeng/toast';
-import { MapViewerComponent } from './profile/map-viewer/map-viewer.component';
-import {ResponseInterceptorService} from './services/response-interceptor.service';
-import {DynamicDialogComponent, DynamicDialogModule} from 'primeng/dynamicdialog';
-import { DrowningsComponent } from './profile/drownings/drownings.component';
-import { MapPickLocationComponent } from './profile/map-pick-location/map-pick-location.component';
-import { MapViewerDrowningsComponent } from './profile/map-viewer-drownings/map-viewer-drownings.component';
-import { ReportBeachComponent } from './report-beach/report-beach.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
-registerLocaleData(localeEs, 'es');
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { NavbarComponent } from './component/navbar/navbar.component';
+import { HomeComponent } from './page/home/home.component';
+import { CatalogueComponent } from './page/catalogue/catalogue.component';
+import { LoginComponent } from './page/login/login.component';
+import { PlanesComponent } from './page/planes/planes.component';
+import { ProfileComponent } from './page/profile/profile.component';
+import { DashboardsComponent } from './page/dashboards/dashboards.component';
+import { ReportsComponent } from './page/reports/reports.component';
+import { DownloadReportComponent } from './page/download-report/download-report.component';
+
+import { UserProvider } from './provider/user';
+
+import { BeachProvider } from './provider/beach';
+import { IncidentProvider } from './provider/incident';
+import { IncidentsComponent } from './page/incidents/incidents.component';
+import { ReportProvider } from './provider/report';
+import { ConfigProvider} from './provider/config';
+import { PdfProvider } from './provider/pdf';
+import { DatePipe } from '@angular/common';
+
+import { PdfService } from './service/pdf.service';
+import { ModalAddIncidentComponent } from './component/modal-add-incident/modal-add-incident.component';
+
+import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
+
+import { environment } from '../environments/environment';
+import { CecoesComponent } from './page/cecoes/cecoes.component';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        LoginComponent,
-        CatalogueComponent,
-        ProfileComponent,
-        HomeComponent,
-        ClassificationComponent,
-        SecurityComponent,
-        ReportComponent,
-        ContactUsComponent,
-        MapEditorComponent,
-        WelcomeComponent,
-        MapViewerComponent,
-        DrowningsComponent,
-        MapPickLocationComponent,
-        MapViewerDrowningsComponent,
-        ReportBeachComponent
-    ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TabMenuModule,
-        TabViewModule,
-        TableModule,
-        HttpClientModule,
-        ToggleButtonModule,
-        InputTextareaModule,
-        InputTextModule,
-        CalendarModule,
-        BrowserAnimationsModule,
-        Ng4LoadingSpinnerModule.forRoot(),
-        CheckboxModule,
-        TooltipModule,
-        OverlayPanelModule,
-        DropdownModule,
-        RadioButtonModule,
-        SelectButtonModule,
-        ToastModule,
-        ConfirmDialogModule,
-        ProgressBarModule,
-        AccordionModule,
-        DialogModule,
-        LightboxModule,
-        SidebarModule,
-        DynamicDialogModule,
-        ProgressSpinnerModule,
-        MultiSelectModule
-    ],
-    providers: [DialogService, EsriRequestService, MessageService, ConfirmationService, {
-        provide: LOCALE_ID,
-        useValue: 'es'
-    },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: ResponseInterceptorService,
-            multi: true
-        }],
-    entryComponents: [DynamicDialogComponent, MapViewerComponent, MapPickLocationComponent],
-    bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    HomeComponent,
+    CatalogueComponent,
+    LoginComponent,
+    PlanesComponent,
+    ProfileComponent,
+    DashboardsComponent,
+    ReportsComponent,
+    IncidentsComponent,
+    ModalAddIncidentComponent,
+    DownloadReportComponent,
+    CecoesComponent,
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    RecaptchaModule,
+    RecaptchaFormsModule, 
+  ],
+  providers: [
+    UserProvider,
+    BeachProvider,
+    IncidentProvider,
+    ReportProvider,
+    ConfigProvider,
+    PdfProvider,
+    DatePipe,
+    PdfService,
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: {
+        siteKey: environment.recaptchaKey.siteKey,
+      } as RecaptchaSettings,
+    }
+  ],
+  bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule { }

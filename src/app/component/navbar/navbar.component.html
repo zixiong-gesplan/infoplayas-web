@@ -1,0 +1,109 @@
+<header class="top-menu">
+    <!-- Navigation Starts -->
+    <nav class="navbar top40px white-background static-nav box-nav">
+        <div style="display: flex;">
+            <img class="logo-nav" src="assets/images/logos/logo_bueno2.png">
+
+            <div class="navbar-header">
+                <button id="menu_bars" type="button" class="toggle-right navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#smallmenu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        <ul class="nav navbar-nav navbar-right navlinks-outer toggle collapse navbar-collapse"
+            id="smallmenu">
+            <li class="nav-tab"
+                *ngIf="!this.logged"
+            >
+                <a class="font-style-1 nav-item scroll"
+                    [routerLink]="['/']" 
+                >Inicio</a>
+            </li>
+
+            <li class="nav-tab">
+                <a class="font-style-1" 
+                    [routerLink]="['/catalogo']"
+                >Catálogo</a>
+            </li> 
+            <li class="nav-tab">
+                <a class="font-style-1" 
+                    [routerLink]="['/planos']"
+                >PSS</a>
+            </li> 
+            <li class="nav-tab">
+                <a class="font-style-1" 
+                    [routerLink]="['/cecoes']"
+                >Incidentes</a>
+            </li> 
+            <!-- <li class="nav-tab">
+                <a  class="font-stile-1"
+                    [routerLink]="['/dashboards']"
+                >Cuadros de Mando</a>
+            </li> -->
+            <li class="nav-tab">
+                <a class="font-style-1 visor" 
+                    href="https://www3-pre.gobiernodecanarias.org/aplicaciones/infoplayas/visor/"
+                    target="_blank"
+                >Visor</a>
+            </li> 
+            <ng-template [ngIf]="this.isMunicipality || this.isAdmin">
+
+                <li class="nav-tab">
+                    <a 
+                        class="font-stile-1"
+                        [routerLink]="['/reports']"
+                    >
+                        Informes Cuatrimestrales
+                    </a>
+                </li>
+                <li class="nav-tab">
+                    <a 
+                        class="font-stile-1"
+                        [routerLink]="['/incidents']"
+                    >
+                        Añadir Incidencia
+                    </a>
+                </li>
+
+            </ng-template>
+            
+            <ng-template [ngIf]="this.isAdmin">
+                <li class="nav-tab">
+                    <a 
+                        class="font-stile-1"
+                        [routerLink]="['/downloads']"
+                    >
+                        Descargar Informes
+                    </a>
+                </li>
+            </ng-template>
+
+            <li class="nav-tab"
+                *ngIf="!this.logged; else logout"
+            >
+                <a class="font-style-1 login" 
+                    [routerLink]="['/login']"
+                >Iniciar sesión</a>
+            </li>
+            <ng-template #logout>
+                <li class="nav-tab"
+
+                >
+                    <a class="font-style-1" 
+                        (click)="log_out()"
+                    >Cerrar sesión
+                    </a>
+
+                </li>
+
+            </ng-template>
+            
+            <!--						<li class="nav-tab">-->
+            <!--							<a href="#contact" class="font-style-1 nav-item scroll">contáctanos</a>-->
+            <!--						</li>-->
+        </ul>
+    </nav>
+</header>
