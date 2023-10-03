@@ -62,8 +62,7 @@
               "src/assets/js/revolution/extensions/revolution.extension.parallax.min.js",
               "src/assets/js/revolution/extensions/revolution.extension.slideanims.min.js",
               "src/assets/js/revolution/extensions/revolution.extension.video.min.js",
-              "src/assets/js/jquery.cubeportfolio.min.js",
-              "src/assets/js/esri-custom/aytos.json"
+              "src/assets/js/jquery.cubeportfolio.min.js"
             ]
           },
           "configurations": {
@@ -77,7 +76,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -170,7 +168,6 @@
       }
     }
   },
-  "defaultProject": "infoplayascanarias",
   "cli": {
     "analytics": false
   }
