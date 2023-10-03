@@ -38,6 +38,7 @@ import {DynamicDialogComponent, DynamicDialogModule} from 'primeng/dynamicdialog
 import { DrowningsComponent } from './profile/drownings/drownings.component';
 import { MapPickLocationComponent } from './profile/map-pick-location/map-pick-location.component';
 import { MapViewerDrowningsComponent } from './profile/map-viewer-drownings/map-viewer-drownings.component';
+import { ReportBeachComponent } from './report-beach/report-beach.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -57,7 +58,8 @@ registerLocaleData(localeEs, 'es');
         MapViewerComponent,
         DrowningsComponent,
         MapPickLocationComponent,
-        MapViewerDrowningsComponent
+        MapViewerDrowningsComponent,
+        ReportBeachComponent
     ],
     imports: [
         BrowserModule,

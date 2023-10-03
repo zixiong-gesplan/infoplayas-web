@@ -170,5 +170,8 @@
       }
     }
   },
-  "defaultProject": "infoplayascanarias"
+  "defaultProject": "infoplayascanarias",
+  "cli": {
+    "analytics": false
+  }
 }

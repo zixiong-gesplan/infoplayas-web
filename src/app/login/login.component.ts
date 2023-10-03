@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
                     oAuthInfo.name = result.firstName;
                     this.setUserContext(oAuthInfo, roleIndex);
                 } else {
-                    this.showUserAlert('El usuario que itenta acceder no está registrado para el uso de esta aplicación. ' +
+                    this.showUserAlert('El usuario que intenta acceder no está registrado para el uso de esta aplicación. ' +
                         'Contacte con el administrador.');
                 }
             },
