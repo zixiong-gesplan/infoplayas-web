@@ -16,7 +16,6 @@ export class DownloadReportComponent implements OnInit {
   range = [this.year , this.year -1, this.year -2, this.year -3, this.year -4]
   async ngOnInit() {
     await this.pdfProvider.getReports()
-    console.log(this.pdfProvider.pdfs)
     this.files =  this.pdfProvider.pdfs.sort( ( a,b )=>{
       if(a.ayto < b.ayto){
         return 1;
@@ -33,7 +32,6 @@ export class DownloadReportComponent implements OnInit {
   }
 
   async getFile(pdfName){
-    console.log(pdfName)
 
     await this.pdfProvider.download(pdfName);
 

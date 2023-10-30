@@ -62,17 +62,22 @@ export class LoginComponent implements OnInit {
     try {
       await this.userProvider.login(request)
       let user = await this.userProvider.getUser()
-      if(!user ){
+      if(user == null ){
         document.getElementById('msgError').innerHTML="Hubo un error en el login."
         return 
       }
-      if(user.isMunicipality || user.isGesplan || user.isDGSE){
+      // if(user.isMunicipality || user.isGesplan || user.isDGSE){
+      //   this.router.navigateByUrl('/tecnicos');
+      //   return;
+      // }
+      if(this.userProvider.isMunicipalityOrAdmin()){
         this.router.navigateByUrl('/tecnicos');
         return;
       }
       document.getElementById('msgError').innerHTML="Usuario sin permisos"
       return
     } catch (error) {
+      console.log(error)
       document.getElementById('msgError').innerHTML="Hubo un error en el login."
     }
 

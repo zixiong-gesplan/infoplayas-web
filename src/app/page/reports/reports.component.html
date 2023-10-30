@@ -50,8 +50,8 @@
                 </tr>
                 <tr *ngFor="let incident of beach.incidents" >
                   <td>{{incident.id}}</td>
-                  <td>{{incident.latitud | number: '2.1-4'}}</td>
-                  <td>{{incident.longitud | number: '2.1-4'}}</td>
+                  <td>{{incident.latitude | number: '2.1-4'}}</td>
+                  <td>{{incident.longitude | number: '2.1-4'}}</td>
                   <!-- <td>{{incident.bandera}}</td> -->
                   <td>{{incident.alarmSender}}</td>
                   <td>{{incident.date}}</td>

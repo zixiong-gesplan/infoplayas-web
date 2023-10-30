@@ -32,6 +32,10 @@ import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSet
 
 import { environment } from '../environments/environment';
 import { CecoesComponent } from './page/cecoes/cecoes.component';
+import { RouterModule } from '@angular/router';
+import { WorkfieldComponent } from './page/workfield/workfield.component';
+import { DocumentsComponent } from './page/documents/documents.component';
+import { DashboardPssComponent } from './page/dashboard-pss/dashboard-pss.component';
 
 @NgModule({
   declarations: [
@@ -48,11 +52,15 @@ import { CecoesComponent } from './page/cecoes/cecoes.component';
     ModalAddIncidentComponent,
     DownloadReportComponent,
     CecoesComponent,
+    WorkfieldComponent,
+    DocumentsComponent,
+    DashboardPssComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
+    RouterModule,
     HttpClientModule,
     RecaptchaModule,
     RecaptchaFormsModule, 

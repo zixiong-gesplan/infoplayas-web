@@ -12,9 +12,9 @@ export const environment = {
     app_movil_url: "http://localhost:5000",
     //app_movil_url: "https://informes.infoplayascanarias.es",
     redirectUri: 'http://localhost:4200/login',
-    // SERVER_URL:'https://gestion.infoplayascanarias.es/',
+    SERVER_URL:'https://gestion.infoplayascanarias.es/',
     // SERVER_URL: 'http://zlinyan-virtualbox:8000/',
-    SERVER_URL: 'https://www3-pre.gobiernodecanarias.org/aplicaciones/infoplayas/gestion',
+    // SERVER_URL: 'https://www3-pre.gobiernodecanarias.org/aplicaciones/infoplayas/gestion',
     recaptchaKey:{
         siteKey:"6LeKAmUjAAAAAJhAZkzBBEvF7vAp8_Z1RyiJGNEG"
     }

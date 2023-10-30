@@ -99,12 +99,15 @@ export class ReportsComponent implements OnInit,AfterViewChecked {
         tiles.addTo(map)
 
         beach.incidents.map( incident =>{
+          //pointLocation => "POINT(28.977176 -13.52271)"
           let {pointLocation} = incident;
-
+          let [longitude,latitude] = pointLocation.replace("POINT(","").replace(")","").split(" ")
           let icon = this.getIcon(incident.type)
 
-          //var mark = L.marker(pointLocation,{ icon: icon})
-          //mark.addTo(map)         
+          var mark = L.marker([
+            longitude,latitude
+          ],{ icon: icon})
+          mark.addTo(map)         
         })
         setTimeout(() => {
           leafletImage( map,(error, canvas)=>{

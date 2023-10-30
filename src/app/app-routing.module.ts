@@ -12,6 +12,9 @@ import { ReportsComponent } from './page/reports/reports.component';
 import { IncidentsComponent } from './page/incidents/incidents.component';
 import {DownloadReportComponent} from './page/download-report/download-report.component'
 import { CecoesComponent } from './page/cecoes/cecoes.component';
+import { WorkfieldComponent } from './page/workfield/workfield.component';
+import { DocumentsComponent } from './page/documents/documents.component';
+import { DashboardPssComponent } from './page/dashboard-pss/dashboard-pss.component';
 
 
 const routes: Routes = [
@@ -20,7 +23,10 @@ const routes: Routes = [
   {path:'planos', component:PlanesComponent},
   {path:'cecoes',component:CecoesComponent},
   {path:'login', component:LoginComponent},
+  {path:'trabajo-campo', component:WorkfieldComponent},
   {path:'dashboards', component:DashboardsComponent},
+  {path:'documents', component:DocumentsComponent},
+  {path:'dashboard-pss', component:DashboardPssComponent},
   {path:'tecnicos', component:ProfileComponent, canActivate:[UserGuardGuard]},
   {path:'reports', component:ReportsComponent, canActivate:[UserGuardGuard]},
   {path:'incidents', component:IncidentsComponent, canActivate: [UserGuardGuard]},

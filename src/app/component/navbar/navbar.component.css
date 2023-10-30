@@ -8,7 +8,6 @@ nav{
     top:0;
     width: 80%;
     overflow: -moz-hidden-unscrollable;
-    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -20,12 +19,45 @@ nav{
 
 ul#smallmenu{
     justify-content: space-between;
+    overflow: hidden;
 }
 .login{
     color:#00BCD4 !important;
 }
-.visor{
-    color: #07d434 !important;
+
+.dropdown{
+    cursor: pointer;
+}
+
+.dropdown > div{
+    font-size: 15px;
+    font-weight: 300;
+    text-transform: capitalize;
+    padding: 24px 15px;
+    margin: 0 5px;
+    position: relative;
+    z-index: 10;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    z-index: 100;
+    padding: 8px;
+    min-width: 250px;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content li{
+    font-size: medium;
+}
+
+.dropdown-content li:not(:last-child){
+    padding-bottom: 8px;
 }
 
 @media (max-width:995px) {

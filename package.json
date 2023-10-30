@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
-    "build": "ng build --base-href /playas/",
+    "build": "ng build --base-href /",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -28,6 +28,9 @@
     "jquery": "^3.7.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "3.6.0",
+    "leaflet": "^1.9.4",
+    "leaflet-image": "^0.4.0",
+    "ng-recaptcha": "^12.0.2",
     "ng2-charts": "5.0.3",
     "primeicons": "6.0.1",
     "primeng": "16.4.1",
@@ -37,7 +40,7 @@
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "16.2.4",
+    "@angular-devkit/build-angular": "^16.2.6",
     "@angular/cli": "16.2.4",
     "@angular/compiler-cli": "16.2.7",
     "@angular/language-service": "16.2.7",
@@ -51,7 +54,7 @@
     "@types/node": "~8.9.4",
     "angular-ide": "^0.9.63",
     "canvas": "^2.11.2",
-    "codelyzer": "^6.0.2",
+    "codelyzer": "^0.0.28",
     "diff": "^5.1.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -65,6 +68,7 @@
     "ng-packagr": "^16.2.3",
     "node-notifier": "^10.0.1",
     "tailwindcss": "^3.3.3",
+    "tar-fs": "^3.0.4",
     "ts-node": "~7.0.0",
     "typescript": "4.9.3"
   }
