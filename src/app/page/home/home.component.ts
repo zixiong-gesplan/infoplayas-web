@@ -18,9 +18,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
     init_plugins();
   }
   ngAfterViewInit() {
-    setTimeout( () =>{
-        (document.querySelector('#loader-fade')as HTMLElement).style.display='none';
-    }, 8000);
+    // try {
+    //   setTimeout( () =>{
+    //     (document.querySelector('#loader-fade')as HTMLElement).style.display='none';
+    //   }, 8000);
+    // } catch (error) {
+      
+    // }
+
 }
 
 }

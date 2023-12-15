@@ -1,20 +1,18 @@
-import { Component,OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-cecoes',
-  templateUrl: './cecoes.component.html',
-  styleUrls: ['./cecoes.component.css']
+  selector: 'app-cecoes-fallecidos-acumulativos',
+  templateUrl: './cecoes-fallecidos-acumulativos.component.html',
+  styleUrls: ['./cecoes-fallecidos-acumulativos.component.css']
 })
-export class CecoesComponent  implements OnInit {
-
-  dashboardUrl ="https://gesplangis.es/arcgis/apps/dashboards/c6468317461847ef82deae01cf4072e5"
+export class CecoesFallecidosAcumulativosComponent {
+  dashboardUrl ="https://gesplangis.es/arcgis/apps/dashboards/5d209f5c8e8d49388c5b08a073975740"
 
   constructor() { }
 
   ngOnInit(): void {
     
   }
-
   copyClipBoard(){
     let selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';

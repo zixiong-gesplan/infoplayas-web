@@ -25,7 +25,9 @@
             </li>
             <li class="nav-tab dropdown"
             >
-                <div class="font-style-1">
+                <div class="font-style-1"
+                    id="tab-maps"
+                >
                     Visores
                 </div>
                 <ul class="dropdown-content">
@@ -53,26 +55,50 @@
             </li>
 
             <li class="nav-tab dropdown">
-                <div class="font-style-1">
+                <!-- <div 
+                    class="font-style-1"
+                    id="tab-dashboards"
+                >
                     Cuadros de Mando
-                </div>
+                </div> -->
+                <div 
+                    class="font-style-1"
+                    id="tab-dashboards"
+                >
+                    Estadísticas
+                </div> 
                 <ul class="dropdown-content">
-                    <li class="nav-tab">
-                        <a class="font-style-1" 
-                            [routerLink]="['/dashboard-pss']"
-                        >
-                            Seguimiento de los Planes de Seguridad y Salvamento Registrados
-                        </a>
-                    </li>
+<!-- 
                     <li>
                         <a class="font-style-1" 
                             [routerLink]="['/cecoes']"
                         >Control de Incdencias/Incdentes en Medio acuatico</a>
+                    </li> -->
+
+                    <li>
+                        <a class="font-style-1" 
+                            [routerLink]="['/cecoes']"
+                        >Personas fallecidas en el mar</a>
+                    </li>
+                    <li>
+                        <a class="font-style-1" 
+                            [routerLink]="['/cecoes-fallecias-acumulativos']"
+                        >Personas fallecidas en el mar (acumulado)</a>
+                    </li>
+                    <li class="nav-tab">
+                        <a class="font-style-1" 
+                            [routerLink]="['/dashboard-pss']"
+                        >
+                            Planes de seguridad y salvamento
+                        </a>
                     </li>
                 </ul>
             </li> 
             <li class="nav-tab dropdown">
-                <div class="font-style-1">
+                <div 
+                    class="font-style-1"
+                    id="tab-assistant"
+                >
                     Apoyo Técnico
                 </div>
                 <ul class="dropdown-content">
@@ -135,7 +161,7 @@
                     id="tab-reports"
                 >
                     <a 
-                        class="font-stile-1"
+                        class="font-style-1"
                         [routerLink]="['/reports']"
                     >
                         Informes Cuatrimestrales
@@ -162,15 +188,36 @@
                     </a>
                 </li>
             </ng-template> -->
-
-            <li class="nav-tab"
+            <li 
+                class="nav-tab dropdown"
                 *ngIf="!this.logged; else logout"
-                id="tab-login"
             >
-                <a class="font-style-1 login"
-                    [routerLink]="['/login']"
-                >Acceso Ayuntamientos</a>
-            </li>
+                <div 
+                    class="font-style-1"
+                    id="tab-login"
+                    title="Ayuntamientos y Empresas de socorrismo"
+                >
+                    <a href="http://socorrismo.infoplayascanarias.es" target="_blank" rel="noopener noreferrer">
+                        Acceso Privado
+                    </a>
+                    
+                </div>
+                <!-- <ul class="dropdown-content">
+                    <li class="nav-tab">
+                        <a class="font-style-1"
+                            [routerLink]="['/login']"
+                        >Acceso Ayuntamientos</a>
+                    </li>
+                    <li>
+                        <a class="font-style-1" 
+                            href="https://socorrismo.infoplayascanarias.es/"
+                            target="_blank"
+                        >
+                            Acceso Introducción De Banderas
+                        </a>
+                    </li>
+                </ul> -->
+            </li> 
             <ng-template #logout>
                 <li class="nav-tab"
 
@@ -183,7 +230,12 @@
                 </li>
 
             </ng-template>
-            
+            <li class="nav-tab"
+                id="tab-login"
+                *ngIf="!this.logged"
+            >
+
+            </li>
             <!--						<li class="nav-tab">-->
             <!--							<a href="#contact" class="font-style-1 nav-item scroll">contáctanos</a>-->
             <!--						</li>-->

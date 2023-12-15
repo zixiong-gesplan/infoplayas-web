@@ -33,19 +33,18 @@ export class NavbarComponent implements OnInit,AfterViewInit {
   ngAfterViewInit(){
     let tab:HTMLElement;
     if(this.router.url==='/'){
-      console.log("works")
-      console.log(document.querySelector('#tab-home'));
-      console.log(document.querySelector('#tab-catalogo'));
       tab = document.querySelector('#tab-home');
+      (tab.children[0] as HTMLElement).style.fontWeight='bolder'
+      return;
     }
-    if(this.router.url==='/catalogo'){
-      tab = document.querySelector('#tab-catalogo');
+    if(this.router.url==='/catalogo' || this.router.url==='/trabajo-campo'){
+      tab = document.querySelector('#tab-maps');
     }
-    if(this.router.url==='/planos'){
-      tab = document.querySelector('#tab-planos');
+    if(this.router.url==='/dashboard-pss' || this.router.url ==='/cecoes'){
+      tab = document.querySelector('#tab-dashboards');
     }
-    if(this.router.url==='/cecoes'){
-      tab = document.querySelector('#tab-cecoes');
+    if(this.router.url==='/planos' || this.router.url ==='/documents'){
+      tab = document.querySelector('#tab-assistant');
     }
     if(this.router.url==='/reports'){
       tab = document.querySelector('#tab-reports');
@@ -53,11 +52,8 @@ export class NavbarComponent implements OnInit,AfterViewInit {
     if(this.router.url==='/login'){
       tab = document.querySelector('#tab-login');
     }
-    if(this.router.url==='/trabajo-campo'){
-      tab = document.querySelector('#tab-trabajo-campo');
-    }
-    // console.log(tab);
-    (tab.children[0] as HTMLElement).style.fontWeight = 'bolder';
+
+    (tab as HTMLElement).style.fontWeight = 'bolder';
   }
   log_out():void{
     this.userProvider.logout()

@@ -9,14 +9,14 @@ import { environment } from 'src/environments/environment';
 })
 export class DashboardPssComponent {
   urlMap: SafeResourceUrl;
-  dashboardUrl ="https://gesplangis.es/arcgis/apps/dashboards/ce89c3a6cb6a4f87b47b94a9b74b2162"
+  dashboardUrl ="https://gesplangis.es/arcgis/apps/dashboards/88126077dbd64972b14e890d0afd73cd"
   constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     if(environment.production){
-      this.urlMap = this.sanitizer.bypassSecurityTrustResourceUrl('https://www3-pre.gobiernodecanarias.org/aplicaciones/infoplayas/planos')
+      this.urlMap = this.sanitizer.bypassSecurityTrustResourceUrl('https://gesplangis.es/arcgis/apps/dashboards/88126077dbd64972b14e890d0afd73cd')
     }else{
-      this.urlMap = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.infoplayascanarias.es/planos/')
+      this.urlMap = this.sanitizer.bypassSecurityTrustResourceUrl('https://gesplangis.es/arcgis/apps/dashboards/88126077dbd64972b14e890d0afd73cd')
     }
   }
   copyClipBoard(){

@@ -15,6 +15,7 @@ import { CecoesComponent } from './page/cecoes/cecoes.component';
 import { WorkfieldComponent } from './page/workfield/workfield.component';
 import { DocumentsComponent } from './page/documents/documents.component';
 import { DashboardPssComponent } from './page/dashboard-pss/dashboard-pss.component';
+import { CecoesFallecidosAcumulativosComponent } from './page/cecoes-fallecidos-acumulativos/cecoes-fallecidos-acumulativos.component';
 
 
 const routes: Routes = [
@@ -22,15 +23,16 @@ const routes: Routes = [
   {path:'catalogo', component:CatalogueComponent},
   {path:'planos', component:PlanesComponent},
   {path:'cecoes',component:CecoesComponent},
-  {path:'login', component:LoginComponent},
+  {path:'cecoes-fallecias-acumulativos',component:CecoesFallecidosAcumulativosComponent},
+  // {path:'login', component:LoginComponent},
   {path:'trabajo-campo', component:WorkfieldComponent},
   {path:'dashboards', component:DashboardsComponent},
   {path:'documents', component:DocumentsComponent},
   {path:'dashboard-pss', component:DashboardPssComponent},
-  {path:'tecnicos', component:ProfileComponent, canActivate:[UserGuardGuard]},
-  {path:'reports', component:ReportsComponent, canActivate:[UserGuardGuard]},
-  {path:'incidents', component:IncidentsComponent, canActivate: [UserGuardGuard]},
-  {path:'downloads', component:DownloadReportComponent, canActivate: [UserGuardGuard]}
+  // {path:'tecnicos', component:ProfileComponent, canActivate:[UserGuardGuard]},
+  // {path:'reports', component:ReportsComponent, canActivate:[UserGuardGuard]},
+  // {path:'incidents', component:IncidentsComponent, canActivate: [UserGuardGuard]},
+  // {path:'downloads', component:DownloadReportComponent, canActivate: [UserGuardGuard]}
 
 ];
 

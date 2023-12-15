@@ -12,7 +12,13 @@ nav{
     align-items: center;
     justify-content: space-between;
 }
-
+a{
+    color: black;
+}
+a.font-style-1{
+    font-size: 15px;
+    color: #337ab7;
+}
 .fixed-menu> ul{
     padding-left: 1em;
 }
@@ -21,9 +27,9 @@ ul#smallmenu{
     justify-content: space-between;
     overflow: hidden;
 }
-.login{
+/* .login{
     color:#00BCD4 !important;
-}
+} */
 
 .dropdown{
     cursor: pointer;

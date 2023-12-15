@@ -36,6 +36,7 @@ import { RouterModule } from '@angular/router';
 import { WorkfieldComponent } from './page/workfield/workfield.component';
 import { DocumentsComponent } from './page/documents/documents.component';
 import { DashboardPssComponent } from './page/dashboard-pss/dashboard-pss.component';
+import { CecoesFallecidosAcumulativosComponent } from './page/cecoes-fallecidos-acumulativos/cecoes-fallecidos-acumulativos.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { DashboardPssComponent } from './page/dashboard-pss/dashboard-pss.compon
     WorkfieldComponent,
     DocumentsComponent,
     DashboardPssComponent,
+    CecoesFallecidosAcumulativosComponent,
   ],
   imports: [
     BrowserModule,

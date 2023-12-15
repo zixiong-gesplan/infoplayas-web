@@ -20,13 +20,13 @@ nav{
     text-align: center;
 }
 
-.col-3{
+.col-6{
     width: 25%;
     margin-right: 2em;
 
 }
 
-.col-3 > header{
+.col-6 > header{
     text-align: center;
     font-weight: bold;
     color: white;
@@ -34,16 +34,16 @@ nav{
     font-size: 20px;
 }
 
-.col-3:nth-child(1) > header{
+.col-6:nth-child(1) > header{
     background-color: #8CBB28;
     padding: 10px;
 
 }
-.col-3:nth-child(2) > header{
+.col-6:nth-child(2) > header{
     background-color: #00BCD4;
     padding: 10px;
 }
-.col-3 > p{
+.col-6 > p{
     padding: 10px;
     text-align: center;
     font-weight: bold;
@@ -51,29 +51,6 @@ nav{
     color: grey;
 }
 
-
-
-
-.col-6{
-    width: 50%;
-    text-align: justify;
-}
-#decreto{
-    font-size: 18px;
-    color: grey;
-    font-weight: bold;
-}
-
-#decreto > p::before{
-    content: "\201C";
-    font-size: 40px;
-    font-weight: bold;
-    color:rgb(211, 210, 210);
-}
-
-#decreto > p {
-    font-size: 24px;
-}
 #basic-information{
     display: flex;
     justify-content: center;
@@ -210,4 +187,9 @@ figcaption{
 #cards > .row > div > .btn{
     align-self: flex-end;
 }
-
+section#home{
+    height: 668px !important;
+}
+#video-bg{
+    height: 668px !important;
+}
