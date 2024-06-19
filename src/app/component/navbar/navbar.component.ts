@@ -60,5 +60,10 @@ export class NavbarComponent implements OnInit,AfterViewInit {
     this.logged = false;
     this.router.navigate(['/'])
   }
+  handleNav(){
+
+    let navLinks = document.querySelector('#smallmenu');
+    navLinks.classList.toggle('collapse');
+  }
 
 }

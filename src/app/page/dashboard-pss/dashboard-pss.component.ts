@@ -9,14 +9,14 @@ import { environment } from 'src/environments/environment';
 })
 export class DashboardPssComponent {
   urlMap: SafeResourceUrl;
-  dashboardUrl ="https://gesplangis.es/arcgis/apps/dashboards/88126077dbd64972b14e890d0afd73cd"
+  dashboardUrl ="https://gesplangis.es/arcgis/apps/dashboards/0a9863d284c749fcb2555becd92a1d19"
   constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     if(environment.production){
-      this.urlMap = this.sanitizer.bypassSecurityTrustResourceUrl('https://gesplangis.es/arcgis/apps/dashboards/88126077dbd64972b14e890d0afd73cd')
+      this.urlMap = this.sanitizer.bypassSecurityTrustResourceUrl('https://gesplangis.es/arcgis/apps/dashboards/0a9863d284c749fcb2555becd92a1d19')
     }else{
-      this.urlMap = this.sanitizer.bypassSecurityTrustResourceUrl('https://gesplangis.es/arcgis/apps/dashboards/88126077dbd64972b14e890d0afd73cd')
+      this.urlMap = this.sanitizer.bypassSecurityTrustResourceUrl('https://gesplangis.es/arcgis/apps/dashboards/0a9863d284c749fcb2555becd92a1d19')
     }
   }
   copyClipBoard(){
