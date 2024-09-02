@@ -1,20 +1,49 @@
 # infoplayas
+Proyecto desarrollado en Angular con Typescript.
 
-Proyecto de migración de la web https://www.infoplayascanarias.es/ del wordpress a tecnología angular + contenido de la plataforma arcgis online
+Para instalar las dependencias:
+```
+    npm run install
+```
 
-AYUDA: 
-El fichero ayto.json en assets define las características para el portal de cada ayuntamiento de canarias con playas, como pueden ser el código del istac o las propiedades del filtro de municipio en las capas. 
-IMPORTANTE!!! Al crear un usuario para el portal además de asignarle un rol personalizado de Esri de los listados a continuación se debe añadir en la biografía el valor correspondiente al ayuntamiento del usuario del fichero ayto.json - propiedad ayto. Esto último no es necesario para los roles de ámbito "todos".
+Para ejecutar el código:
+```
+    npm run start
+```
 
-ROLES ESRI->            ámbito          Visualizar Planes     Editar Planes     Visualizar Incidencias      Editar Incidencias      valorArray (roles) ***
-InfoPlayas              Municipio       si                    si                si                          si                      infoplayas
-InfoPlayas GEST*        todos           si                    si                si                          si                      infoplayas_gest
-InfoPlayas INC          Municipio       no                    no                si                          si                      infoplayas_inc
-InfoPlayas GOB          todos           si                    no                si                          si                      infoplayas_gob
-InfoPlayas VISOR**      todos           si                    no                si                          no                      infoplayas_visor
-InfoPlayas MUN****      Municipio       si                    no                si                          no                      infoplayas_visor_mun
+Para el buildeo:
+```
+    npm run build
+```
 
-* Adicionalmente permite editar todos los campos de la capa de playas en el formulario de inventario en el apartado de clasificación. Gestión interna Gesplán.
-** este rol está dirigido para usuarios de esri de tipo viewer, mientras que los otros son de tipo creator (o editores).
-*** El array se encuentra en \infoplayas\src\app-settings.ts
-**** Se añade este rol para usuarios de ayuntamiento que al contrario que el primero sólo se les permita visualizar
+Se emplea un diseño atómico para los componentes y las páginas:
+
+* La carpeta *component*, incluye los componetes webs
+* La carpeta *page*, incluye las páginas webs, con rutas
+
+Las carpetas especiales por la nomenclatura Angular:
+* La carpeta *guards*, tiene los guards
+* La carpeta *providers*, contiene las conexiones al servidor. El enpoint de de este servidor se encuentra en la carpeta de enviroments
+
+* La carpeta *service*, contiene los servicios - funcionalidades pesadas-.
+
+El objetivo de esta web es la informacion del proyecto para la seguridad en las playas
+
+Por como han evolucionado el proyecto, hay paginas ocultas para que no puedan acceder. Se debe de revisar el fichero *app-routing.module.ts*, en el cual se encuentran tanto las rutas webs como la pagina correspondiente.
+
+Las rutas actuales para el uso de la web:
+ * /, el home, corresponde a la carpeta *page/home*
+ * /catalogo, corresponde a la carpeta *page/catalogue*, 
+ * /trabajo-campo, corresponde a la carpeta *page/workfield*
+ * /cecoes, corresponde a la carpeta *page/cecoes*
+ * /cecoes-fallecias-acumulativos,  corresponde a la carpeta *page/cecoes-fallecidos-acumulativos*
+ * /dashboards,  corresponde a la carpeta *page/dashboards*
+ * /documents,  corresponde a la carpeta *page/documents*
+ * /dashboard-pss,  corresponde a la carpeta *page/dashboard-pss*
+
+ ```
+ El enlace del visor de tiempo real, es una herramienta externa a esta web. Se describe en su propio código y README.md
+
+ El enlace de login, es una herramienta externa a esta web. Se describe en su propio código y README.md
+ ```
+
