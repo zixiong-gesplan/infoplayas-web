@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { NavbarComponent } from '../../component/navbar/navbar.component';
 
 @Component({
-  selector: 'app-catalogue',
-  templateUrl: './catalogue.component.html',
-  styleUrls: ['./catalogue.component.css']
+    selector: 'app-catalogue',
+    templateUrl: './catalogue.component.html',
+    styleUrls: ['./catalogue.component.css'],
+    standalone: true,
+    imports: [NavbarComponent]
 })
 export class CatalogueComponent implements OnInit {
 

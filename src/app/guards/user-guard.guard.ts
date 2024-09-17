@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserProvider } from '../provider/user';
@@ -7,7 +7,9 @@ import { UserProvider } from '../provider/user';
   providedIn: 'root'
 })
 export class UserGuardGuard implements CanActivate {
-  constructor(private userProvider:UserProvider, private router: Router){}
+  private userProvider = inject(UserProvider);
+  private router = inject(Router);
+
 
   canActivate(
     route: ActivatedRouteSnapshot,

@@ -1,16 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import { NavbarComponent } from '../../component/navbar/navbar.component';
 
 @Component({
-  selector: 'app-planes',
-  templateUrl: './planes.component.html',
-  styleUrls: ['./planes.component.css']
+    selector: 'app-planes',
+    templateUrl: './planes.component.html',
+    styleUrls: ['./planes.component.css'],
+    standalone: true,
+    imports: [NavbarComponent]
 })
 export class PlanesComponent implements OnInit {
+  private sanitizer = inject(DomSanitizer);
+
   urlMap: SafeResourceUrl;
   dashboardUrl ="https://gesplangis.es/arcgis/apps/dashboards/ce89c3a6cb6a4f87b47b94a9b74b2162"
-  constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     if(environment.production){

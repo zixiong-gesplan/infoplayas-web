@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 // import 'rxjs/Rx';
 import { Beach } from './beach';
 import {environment} from '../../environments/environment'
@@ -42,10 +42,10 @@ export class Municipality{
     providedIn: 'root',
 })
 export class UserProvider{
+    private http = inject(HttpClient);
+
     // loading:any;
     user: User;
-    
-    constructor( private http:HttpClient){}
 
 
     // getUser() {

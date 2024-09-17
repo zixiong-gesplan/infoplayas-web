@@ -6,7 +6,7 @@
       <h2 class="font-size-72px top20 bottom10 text-center text-capitalize">Generador de Informes</h2>
     </div>
   </div>
-</section>  
+</section>
 <section class="position-relative paddingtopbottom100px">
 
   <div class="row" id="yearPicker">
@@ -15,9 +15,11 @@
                                           margin-right: 100px;
                                           margin-bottom: 10px;
                                           font-size: 35px;"
-             (change)="setYear($event)"
-    >
-        <option value="{{year_id}}"  *ngFor="let year_id of yearRange" >{{year_id}}</option>
+      (change)="setYear($event)"
+      >
+      @for (year_id of yearRange; track year_id) {
+        <option value="{{year_id}}"  >{{year_id}}</option>
+      }
     </select>
   </div>
   <div class="container">
@@ -27,28 +29,30 @@
       <button class="centrar col3 quarter" (click)="setQuarter('TERCER CUATRIMESTRE')"> Tercer Cuatrimestre <br></button>
     </div>
     <div id="report">
-        <h2><b>Municipio:</b>{{municipality}}</h2>
-        <h2><b>Cuatrimestre:</b>{{quarter}}</h2>
-        <h2><b>A&ntilde;o:</b>{{year}}</h2>
-        <div *ngFor="let beach of beachs;let i = index">
-            <h4><b> {{beach.DGSE}} - {{beach.name}} </b></h4> 
-            <ng-container *ngIf="beach.incidents.length > 0 ; else NoIncidents">
-              <table>
-                <tr>
-                  <th>Nº REGISTRO</th>
-                  <th>LATITUD</th>
-                  <th>LONGITUD</th>
-                  <!-- <th>BANDERA</th> -->
-                  <th>ORIGEN</th>
-                  <th>FECHA</th>
-                  <th>TIPO DE SITUACI&Oacute;N</th>
-                  <th>N&Uacute;MERO DE SOCORRISTAS</th>
-                  <th>PERSONAS AFECTADAS</th>
-                  <th>HORA DE NOTIFICACI&Oacute;N</th>
-                  <th>Nº INCIDENCIA CECOES</th>
-                  <th>TIEMPO DE LLEGADA</th>
-                </tr>
-                <tr *ngFor="let incident of beach.incidents" >
+      <h2><b>Municipio:</b>{{municipality}}</h2>
+      <h2><b>Cuatrimestre:</b>{{quarter}}</h2>
+      <h2><b>A&ntilde;o:</b>{{year}}</h2>
+      @for (beach of beachs; track beach; let i = $index) {
+        <div>
+          <h4><b> {{beach.DGSE}} - {{beach.name}} </b></h4>
+          @if (beach.incidents.length > 0 ) {
+            <table>
+              <tr>
+                <th>Nº REGISTRO</th>
+                <th>LATITUD</th>
+                <th>LONGITUD</th>
+                <!-- <th>BANDERA</th> -->
+                <th>ORIGEN</th>
+                <th>FECHA</th>
+                <th>TIPO DE SITUACI&Oacute;N</th>
+                <th>N&Uacute;MERO DE SOCORRISTAS</th>
+                <th>PERSONAS AFECTADAS</th>
+                <th>HORA DE NOTIFICACI&Oacute;N</th>
+                <th>Nº INCIDENCIA CECOES</th>
+                <th>TIEMPO DE LLEGADA</th>
+              </tr>
+              @for (incident of beach.incidents; track incident) {
+                <tr >
                   <td>{{incident.id}}</td>
                   <td>{{incident.latitude | number: '2.1-4'}}</td>
                   <td>{{incident.longitude | number: '2.1-4'}}</td>
@@ -62,82 +66,83 @@
                   <td>{{incident.cecoes}}</td>
                   <td>{{incident.delay_arrive_external_resources}}</td>
                 </tr>
-              </table>
-
-              <div class="row" id="image{{i}}">
-                <div id="map{{i}}" style="width: 50%; height: 300px;" class="map"></div>
-              </div>
-
-              <table>
+              }
+            </table>
+            <div class="row" id="image{{i}}">
+              <div id="map{{i}}" style="width: 50%; height: 300px;" class="map"></div>
+            </div>
+            <table>
+              <tr>
+                @for (item of ['Nº REGISTRO','HORA','DÍA DE LA SEMANA','TIPO DE INTERVENCIÓN','GÉNERO','NACIONALIDAD','EDAD', 'MUNICIPIO','SUSTANCIAS LIMITANTES','PERFIL','GRADO DE EMERGENCIA', 'CENTRO DE TRASLADO','PRIMEROS AUXILIOS','ALTA VOLUNTARIA','DESFIBRILADOR']; track item) {
+                  <th> {{" " + item+ " "}} </th>
+                }
+              </tr>
+              @for (person of beach.affectedPeople; track person) {
                 <tr>
-                  <th *ngFor="let item of ['Nº REGISTRO','HORA','DÍA DE LA SEMANA','TIPO DE INTERVENCIÓN','GÉNERO','NACIONALIDAD','EDAD', 'MUNICIPIO','SUSTANCIAS LIMITANTES','PERFIL','GRADO DE EMERGENCIA', 'CENTRO DE TRASLADO','PRIMEROS AUXILIOS','ALTA VOLUNTARIA','DESFIBRILADOR']"> {{" " + item+ " "}} </th>
-                </tr>
-                <tr *ngFor="let person of beach.affectedPeople">
-                    <td>{{person.idIncident}}</td>
-                    <td>{{i.dateIni | date:'h:mm:ss'}}</td>
-                    <td>{{i.dateIni}}</td>
-                    <td>{{person.typeIntervention}}</td>
-                    <td>{{person.gender == "male" ? "Hombre": "Mujer"}}</td>
-                    <td>{{person.country}}</td>
-                    <td>{{person.age}}</td>
-                    <td>{{person.municpality}}</td>
-                    <td>
-                      <ul *ngFor="let substance of person.substance">
+                  <td>{{person.idIncident}}</td>
+                  <td>{{i.dateIni | date:'h:mm:ss'}}</td>
+                  <td>{{i.dateIni}}</td>
+                  <td>{{person.typeIntervention}}</td>
+                  <td>{{person.gender == "male" ? "Hombre": "Mujer"}}</td>
+                  <td>{{person.country}}</td>
+                  <td>{{person.age}}</td>
+                  <td>{{person.municpality}}</td>
+                  <td>
+                    @for (substance of person.substance; track substance) {
+                      <ul>
                         <li>{{substance.name}}</li>
                       </ul>
-                    </td>                    
-                    <td>{{person.profile}}</td>
-                    <td>{{person.emergencyGrade}}</td>
-                    <td>{{person.translationCenter}}</td>
-                    <td>{{person.requireFirstAid ? 'Sí':'No'}}</td>
-                    <td>{{person.highVolunteer  ? 'Sí':'No'}}</td>
-                    <td>{{person.usedDesa  ? 'Sí':'No'}}</td>
+                    }
+                  </td>
+                  <td>{{person.profile}}</td>
+                  <td>{{person.emergencyGrade}}</td>
+                  <td>{{person.translationCenter}}</td>
+                  <td>{{person.requireFirstAid ? 'Sí':'No'}}</td>
+                  <td>{{person.highVolunteer  ? 'Sí':'No'}}</td>
+                  <td>{{person.usedDesa  ? 'Sí':'No'}}</td>
                 </tr>
-              </table>
-            </ng-container>
-            <ng-template #NoIncidents>
-    
-              <p>Playa sin incidentes</p>
-            </ng-template>
-            <div class="page-breaker"></div>
-
+              }
+            </table>
+          } @else {
+            <p>Playa sin incidentes</p>
+          }
+          <div class="page-breaker"></div>
         </div>
-        <div>
-          <section style="padding-top: 10px;">
-            Conclusiones
-          </section>
-        </div>
+      }
+      <div>
+        <section style="padding-top: 10px;">
+          Conclusiones
+        </section>
+      </div>
 
-        <textarea name="" id="" cols="30" rows="10" (input)="onSearchChange($event)"></textarea>
+      <textarea name="" id="" cols="30" rows="10" (input)="onSearchChange($event)"></textarea>
 
-        <div id="printer">
-          <p id="message">ESTA OPERACION PUEDE TARDAR UN POCO</p>
-    
-    
-          <button (click)="getPDF()"> Descargar PDF</button>
-        </div>
-        <ng-container *ngIf="uploadFile">
-          <h5>
-            <b>
-              Una vez descargardo el PDF se tiene que firmar, preferiblemente con firma digital.
-            </b>
-          </h5>
-          <form style="margin-top: 40px;">
-            <fieldset>
-              <legend> PDF Firmado </legend>
-              <p>
-              </p>
-              <input type="file" name="attachment" id="attachment"  (change)="onFileChange($event)" accept=".pdf">
-      
-              <button type="submit" (click) = sendFile() style="margin-top: 20px;">Subir archivo</button>
-            </fieldset>
-          </form>
-        </ng-container>
+      <div id="printer">
+        <p id="message">ESTA OPERACION PUEDE TARDAR UN POCO</p>
+
+
+        <button (click)="getPDF()"> Descargar PDF</button>
+      </div>
+      @if (uploadFile) {
+        <h5>
+          <b>
+            Una vez descargardo el PDF se tiene que firmar, preferiblemente con firma digital.
+          </b>
+        </h5>
+        <form style="margin-top: 40px;">
+          <fieldset>
+            <legend> PDF Firmado </legend>
+            <p>
+            </p>
+            <input type="file" name="attachment" id="attachment"  (change)="onFileChange($event)" accept=".pdf">
+            <button type="submit" (click) = sendFile() style="margin-top: 20px;">Subir archivo</button>
+          </fieldset>
+        </form>
+      }
     </div>
   </div>
-</section> 
+</section>
 <div class="chart-container" ng-show="graph.visible" [ngStyle]="{'display': 'hidden'}">
   <canvas id="myChart" width="400" height="400"></canvas>
 </div>
 <div id="map"></div>
-  

@@ -4,12 +4,15 @@ import * as L from 'leaflet';
 import leafletImage from 'leaflet-image';
 import { Incident } from "../../provider/incident";
 import { Affected } from "../../provider/affected";
-import { UntypedFormGroup,FormControl,  FormBuilder,  Validators } from '@angular/forms';
+import { UntypedFormGroup, FormControl, FormBuilder, Validators, FormsModule } from '@angular/forms';
+import { NgStyle, NgClass, DecimalPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-modal-add-incident',
-  templateUrl: './modal-add-incident.component.html',
-  styleUrls: ['./modal-add-incident.component.css']
+    selector: 'app-modal-add-incident',
+    templateUrl: './modal-add-incident.component.html',
+    styleUrls: ['./modal-add-incident.component.css'],
+    standalone: true,
+    imports: [FormsModule, NgStyle, NgClass, DecimalPipe]
 })
 export class ModalAddIncidentComponent implements OnInit {
 

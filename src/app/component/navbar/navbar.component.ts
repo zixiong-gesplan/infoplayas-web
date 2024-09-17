@@ -1,22 +1,22 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { UserProvider } from 'src/app/provider/user';
 
+
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+    selector: 'app-navbar',
+    templateUrl: './navbar.component.html',
+    styleUrls: ['./navbar.component.css'],
+    standalone: true,
+    imports: [RouterLink]
 })
 export class NavbarComponent implements OnInit,AfterViewInit {
+  userProvider = inject(UserProvider);
+  private router = inject(Router);
+
   logged:boolean = false;
   isAdmin:boolean;
   isMunicipality:boolean;
-  constructor(
-    public userProvider:UserProvider,
-    private router: Router
-  ) { 
-
-  }
 
   ngOnInit(): void {
 

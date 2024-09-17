@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnChanges, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnChanges, OnInit, inject } from '@angular/core';
 import { Beach, BeachProvider } from 'src/app/provider/beach';
 import { IncidentProvider } from 'src/app/provider/incident';
 import { UserProvider } from 'src/app/provider/user';
@@ -12,13 +12,24 @@ import * as L from 'leaflet';
 import leafletImage from 'leaflet-image';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { NavbarComponent } from '../../component/navbar/navbar.component';
+import { NgStyle, DecimalPipe, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-reports',
-  templateUrl: './reports.component.html',
-  styleUrls: ['./reports.component.css']
+    selector: 'app-reports',
+    templateUrl: './reports.component.html',
+    styleUrls: ['./reports.component.css'],
+    standalone: true,
+    imports: [NavbarComponent, FormsModule, NgStyle, DecimalPipe, DatePipe]
 })
 export class ReportsComponent implements OnInit,AfterViewChecked {
+  private userProvider = inject(UserProvider);
+  private beachProvider = inject(BeachProvider);
+  private incidentProvider = inject(IncidentProvider);
+  private reportProvider = inject(ReportProvider);
+  private pdfService = inject(PdfService);
+
   quarter:string;
   year: number;
   yearRange:number[];
@@ -46,14 +57,6 @@ export class ReportsComponent implements OnInit,AfterViewChecked {
     quarter:0,
     conclutions:"",
     name:""
-  }
-  constructor(
-    private userProvider:UserProvider,
-    private beachProvider:BeachProvider,
-    private incidentProvider:IncidentProvider,
-    private reportProvider : ReportProvider,
-    private pdfService: PdfService
-  ) { 
   }
 
   async ngOnInit(): Promise<void> {

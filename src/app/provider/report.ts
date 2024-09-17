@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {environment} from '../../environments/environment'
 import { UserProvider } from './user';
@@ -22,15 +22,11 @@ export class Report{
 
 @Injectable()
 export class ReportProvider {
+  private http = inject(HttpClient);
+  private userProvider = inject(UserProvider);
+
 
   report:Report;
-
-  constructor(
-    private http:HttpClient,
-    private userProvider:UserProvider
-  ){
-
-  }
   private formData(myFormData){
     return Object.keys(myFormData).map(function(key){
         return encodeURIComponent(key) + '=' + encodeURIComponent(myFormData[key]);

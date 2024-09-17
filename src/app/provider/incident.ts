@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { DatePipe } from '@angular/common';
 
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Affected } from "./affected";
 
 import { environment } from "src/environments/environment";
@@ -47,6 +47,10 @@ export class Incident {
     providedIn: 'root',
 })
 export class IncidentProvider{
+    private http = inject(HttpClient);
+    private datePipe = inject(DatePipe);
+    private userProvider = inject(UserProvider);
+
     incidents: Incident[]
     
     emergencyGrade = {
@@ -60,12 +64,6 @@ export class IncidentProvider{
         0: 'Primeros Auxilios',
         1: 'Rescate Acuático'
     }
-
-    constructor(
-        private http:HttpClient,
-        private datePipe:DatePipe,
-        private userProvider:UserProvider
-    ){}
 
     async getAll(municipality:string){
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });

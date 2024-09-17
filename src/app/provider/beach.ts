@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import {environment} from '../../environments/environment'
 import { Incident } from './incident';
@@ -38,6 +38,8 @@ export class Municipality{
     providedIn: 'root',
 })
 export class BeachProvider {
+    private http = inject(HttpClient);
+
 
     loading: any;
 
@@ -46,10 +48,6 @@ export class BeachProvider {
     islas: any[] = [];
     municipios: any[] = [];
     municipiosName: any[] = [];
-
-    constructor (
-        private http: HttpClient,
-    ) {}
     
     async getAll(){        
         let beachs = await this.http.get(`${playasURL}`).toPromise() as Beach[];

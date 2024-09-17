@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Affected } from "./affected";
 
 import { environment } from "../../environments/environment";
@@ -20,14 +20,10 @@ export class Pdf {
   providedIn: 'root',
 })
 export class PdfProvider{
+  private http = inject(HttpClient);
+  private userProvider = inject(UserProvider);
+
   pdfs: Pdf[];
-
-  constructor(
-    private http:HttpClient,
-    private userProvider: UserProvider
-  ){
-
-  }
 
   async getReports(){
     let response = await this.http.get(`${reportUrl}?access_token=${this.userProvider.user.access_token}`).toPromise()

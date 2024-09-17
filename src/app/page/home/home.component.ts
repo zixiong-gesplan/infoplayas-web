@@ -1,18 +1,19 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import {Router} from '@angular/router';
 declare var jQuery: any;
 
 declare function init_plugins();
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css'],
+    standalone: true
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  title = 'infoplayascanarias';
+  router = inject(Router);
 
-  constructor( public router: Router) { }
+  title = 'infoplayascanarias';
 
   ngOnInit(): void {
     init_plugins();

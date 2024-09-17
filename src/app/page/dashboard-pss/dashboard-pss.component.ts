@@ -1,16 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { NavbarComponent } from '../../component/navbar/navbar.component';
 
 @Component({
-  selector: 'app-dashboard-pss',
-  templateUrl: './dashboard-pss.component.html',
-  styleUrls: ['./dashboard-pss.component.css']
+    selector: 'app-dashboard-pss',
+    templateUrl: './dashboard-pss.component.html',
+    styleUrls: ['./dashboard-pss.component.css'],
+    standalone: true,
+    imports: [NavbarComponent]
 })
 export class DashboardPssComponent {
+  private sanitizer = inject(DomSanitizer);
+
   urlMap: SafeResourceUrl;
   dashboardUrl ="https://gesplangis.es/arcgis/apps/dashboards/0a9863d284c749fcb2555becd92a1d19"
-  constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     if(environment.production){

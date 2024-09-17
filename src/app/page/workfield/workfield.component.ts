@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { NavbarComponent } from '../../component/navbar/navbar.component';
 
 @Component({
-  selector: 'app-workfield',
-  templateUrl: './workfield.component.html',
-  styleUrls: ['./workfield.component.css']
+    selector: 'app-workfield',
+    templateUrl: './workfield.component.html',
+    styleUrls: ['./workfield.component.css'],
+    standalone: true,
+    imports: [NavbarComponent]
 })
 export class WorkfieldComponent {
 

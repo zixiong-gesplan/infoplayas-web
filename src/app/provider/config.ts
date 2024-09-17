@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from "src/environments/environment";
 
@@ -26,6 +26,9 @@ let getGeneralConfigURL = environment.SERVER_URL+"api/core/generalconfig";
     providedIn: 'root',
 })
 export class ConfigProvider {
+    private HttpClient = inject(HttpClient);
+    private userProvider = inject(UserProvider);
+
 
     motivos: any[] = [];
     peligros: any[] = [];
@@ -60,10 +63,7 @@ export class ConfigProvider {
 
     user: User;
 
-    constructor (
-        private HttpClient:HttpClient,
-        private userProvider: UserProvider,
-    ) {
+    constructor () {
         this.user = this.userProvider.user;
     }
 

@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit, inject } from '@angular/core';
 import { Beach, BeachProvider } from 'src/app/provider/beach';
 import { Incident, IncidentProvider } from 'src/app/provider/incident';
 import { UserProvider } from 'src/app/provider/user';
@@ -6,15 +6,24 @@ import { UserProvider } from 'src/app/provider/user';
 import { ConfigProvider } from 'src/app/provider/config';
 import * as L from 'leaflet';
 import leafletImage from 'leaflet-image';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { Affected } from 'src/app/provider/affected';
+import { NavbarComponent } from '../../component/navbar/navbar.component';
+import { NgClass, NgStyle, DecimalPipe, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-incidents',
-  templateUrl: './incidents.component.html',
-  styleUrls: ['./incidents.component.css']
+    selector: 'app-incidents',
+    templateUrl: './incidents.component.html',
+    styleUrls: ['./incidents.component.css'],
+    standalone: true,
+    imports: [NavbarComponent, FormsModule, NgClass, NgStyle, DecimalPipe, DatePipe]
 })
 export class IncidentsComponent implements OnInit,AfterViewChecked {
+  private userProvider = inject(UserProvider);
+  private beachProvider = inject(BeachProvider);
+  private incidentProvider = inject(IncidentProvider);
+  private configProvider = inject(ConfigProvider);
+
   quarter:string;
   year: number = new Date().getFullYear();
   yearRange:number[] = [this.year -4, this.year -3, this.year -2, this.year -1, this.year].reverse(); 
@@ -24,13 +33,6 @@ export class IncidentsComponent implements OnInit,AfterViewChecked {
   affected: Affected = new Affected();
   showPerson = false;
   indexPerson:number = 0;
-
-  constructor(
-    private userProvider:UserProvider,
-    private beachProvider:BeachProvider,
-    private incidentProvider:IncidentProvider,
-    private configProvider: ConfigProvider
-    ) {}
 
   async ngOnInit(): Promise<void> {
     try {

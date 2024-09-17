@@ -1,9 +1,12 @@
 import { Component,OnInit } from '@angular/core';
+import { NavbarComponent } from '../../component/navbar/navbar.component';
 
 @Component({
-  selector: 'app-cecoes',
-  templateUrl: './cecoes.component.html',
-  styleUrls: ['./cecoes.component.css']
+    selector: 'app-cecoes',
+    templateUrl: './cecoes.component.html',
+    styleUrls: ['./cecoes.component.css'],
+    standalone: true,
+    imports: [NavbarComponent]
 })
 export class CecoesComponent  implements OnInit {
 

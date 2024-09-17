@@ -1,10 +1,10 @@
 <app-navbar></app-navbar>
 <section class="blog-header blog-page-padding-top" data-image-src="assets/images/contact-bg.jpg">
-    <div class="container">
-      <div class="padding-top-30 padding-bottom-70">
-        <h2 class="font-size-72px top20 bottom10 text-center text-capitalize">Añadir Incidencias</h2>
-      </div>
+  <div class="container">
+    <div class="padding-top-30 padding-bottom-70">
+      <h2 class="font-size-72px top20 bottom10 text-center text-capitalize">Añadir Incidencias</h2>
     </div>
+  </div>
 </section>
 
 <section class="position-relative paddingtopbottom100px">
@@ -14,9 +14,11 @@
                                           margin-right: 100px;
                                           margin-bottom: 10px;
                                           font-size: 35px;"
-             (change)="setYear($event)"
-    >
-        <option value="{{year_id}}"  *ngFor="let year_id of yearRange" >{{year_id}}</option>
+      (change)="setYear($event)"
+      >
+      @for (year_id of yearRange; track year_id) {
+        <option value="{{year_id}}"  >{{year_id}}</option>
+      }
     </select>
   </div>
   <div class="container">
@@ -32,14 +34,15 @@
       <legend>
         <h5>
           <b>EN ESTE LISTADO SOL APARECEN LAS INCIDENCIAS <i>GRAVES</i> Y <i>MUY GRAVES</i>. <br>
-            LAS INCIDENCIAS DONDE LA VÍCTIMA TERMINÓ <i>ILESA</i> O <i>LEVE</i>, NO APARECEN.
-          </b>
-        </h5>
-      </legend>
-      <div *ngFor="let beach of beachs; let i=index">
-        <h4><b> {{beach.DGSE}} - {{beach.name}} </b></h4> 
+          LAS INCIDENCIAS DONDE LA VÍCTIMA TERMINÓ <i>ILESA</i> O <i>LEVE</i>, NO APARECEN.
+        </b>
+      </h5>
+    </legend>
+    @for (beach of beachs; track beach; let i = $index) {
+      <div>
+        <h4><b> {{beach.DGSE}} - {{beach.name}} </b></h4>
         <button (click)="createIncident(beach.id,beach.latitude,beach.longitude)" >Añadir Incidencia</button>
-        <ng-container *ngIf="beach.incidents.length >0;else message">
+        @if (beach.incidents.length >0) {
           <table style="text-align: center;">
             <tr>
               <th>Nº REGISTRO</th>
@@ -55,65 +58,73 @@
               <th> Nº INCIDENCIA CECOES </th>
               <th> TIEMPO DE LLEGADA (minutos) </th>
             </tr>
-              <tr *ngFor="let incident of beach.incidents" >
-              <td>{{incident.id}}</td>
-              <td>{{incident.latitud | number: '2.1-4'}}</td>
-              <td>{{incident.longitud | number: '2.1-4'}}</td>
-              <td></td>
-              <td>{{incident.alarmSender}}</td>
-              <td>{{incident.date}}</td>
-              <td>{{incident.type}}</td>
-              <td>{{incident.numberLifeGuard || 0}}</td>
-              <td>{{incident.affectedPeopleNumber}}</td>
-              <td>{{incident.hourCall112}}</td>
-              <td>{{incident.cecoes}}</td>
-              <td>{{incident.delay_arrive_external_resources}}</td>
-            </tr>
+            @for (incident of beach.incidents; track incident) {
+              <tr >
+                <td>{{incident.id}}</td>
+                <td>{{incident.latitud | number: '2.1-4'}}</td>
+                <td>{{incident.longitud | number: '2.1-4'}}</td>
+                <td></td>
+                <td>{{incident.alarmSender}}</td>
+                <td>{{incident.date}}</td>
+                <td>{{incident.type}}</td>
+                <td>{{incident.numberLifeGuard || 0}}</td>
+                <td>{{incident.affectedPeopleNumber}}</td>
+                <td>{{incident.hourCall112}}</td>
+                <td>{{incident.cecoes}}</td>
+                <td>{{incident.delay_arrive_external_resources}}</td>
+              </tr>
+            }
           </table>
           <div class="row" id="imagen{{i}}">
             <div id="map{{i}}" style="width: 600px; height: 300px;"></div>
           </div>
           <table>
             <tr>
-              <th *ngFor="let item of ['Nº REGISTRO','HORA','DÍA DE LA SEMANA','TIPO DE INTERVENCIÓN','GÉNERO','NACIONALIDAD','EDAD', 'MUNICIPIO','SUSTANCIAS LIMITANTES','PERFIL','GRADO DE EMERGENCIA', 'CENTRO DE TRASLADO','PRIMEROS AUXILIOS','ALTA VOLUNTARIA','DESFIBRILADOR']"> {{" " + item+ " "}} </th>
+              @for (item of ['Nº REGISTRO','HORA','DÍA DE LA SEMANA','TIPO DE INTERVENCIÓN','GÉNERO','NACIONALIDAD','EDAD', 'MUNICIPIO','SUSTANCIAS LIMITANTES','PERFIL','GRADO DE EMERGENCIA', 'CENTRO DE TRASLADO','PRIMEROS AUXILIOS','ALTA VOLUNTARIA','DESFIBRILADOR']; track item) {
+                <th> {{" " + item+ " "}} </th>
+              }
             </tr>
-            <tr *ngFor="let person of beach.affectedPeople" >
-              <td>{{person.idIncident}}</td>
-              <td>{{i.dateIni | date:'h:mm:ss'}}</td>
-              <td>{{i.dateIni}}</td>
-              <td>{{person.typeIntervention}}</td>
-              <td>{{person.gender == "male" ? "Hombre": "Mujer"}}</td>
-              <td>{{person.country}}</td>
-              <td>{{person.age}}</td>
-              <td>{{person.municpality}}</td>
-              <td>
-                <ul *ngFor="let substance of person.substance">
-                  <li>{{substance.name}}</li>
-                </ul>
-              </td>                    
-              <td>{{person.profile}}</td>
-              <td>{{person.emergencyGrade}}</td>
-              <td>{{person.translationCenter}}</td>
-              <td>{{person.requireFirstAid ? 'Sí':'No'}}</td>
-              <td>{{person.highVolunteer  ? 'Sí':'No'}}</td>
-              <td>{{person.usedDesa  ? 'Sí':'No'}}</td>
-            </tr>
+            @for (person of beach.affectedPeople; track person) {
+              <tr >
+                <td>{{person.idIncident}}</td>
+                <td>{{i.dateIni | date:'h:mm:ss'}}</td>
+                <td>{{i.dateIni}}</td>
+                <td>{{person.typeIntervention}}</td>
+                <td>{{person.gender == "male" ? "Hombre": "Mujer"}}</td>
+                <td>{{person.country}}</td>
+                <td>{{person.age}}</td>
+                <td>{{person.municpality}}</td>
+                <td>
+                  @for (substance of person.substance; track substance) {
+                    <ul>
+                      <li>{{substance.name}}</li>
+                    </ul>
+                  }
+                </td>
+                <td>{{person.profile}}</td>
+                <td>{{person.emergencyGrade}}</td>
+                <td>{{person.translationCenter}}</td>
+                <td>{{person.requireFirstAid ? 'Sí':'No'}}</td>
+                <td>{{person.highVolunteer  ? 'Sí':'No'}}</td>
+                <td>{{person.usedDesa  ? 'Sí':'No'}}</td>
+              </tr>
+            }
           </table>
-        </ng-container>
-        <ng-template #message>
+        } @else {
           <p>SIN INCIDENCIAS</p>
-        </ng-template>
+        }
       </div>
-    </div>    
+    }
   </div>
-</section> 
+</div>
+</section>
 
 <!-- <div id="wrapper-modal">
-  <app-modal-add-incident></app-modal-add-incident>
+<app-modal-add-incident></app-modal-add-incident>
 </div> -->
 
 <div id="modal">
-  
+
   <div class="modal-container">
     <button (click)="close()" style="float: right;">X</button>
     <div id="msgError"></div>
@@ -127,37 +138,37 @@
           <span (click)="setSituacion(2)" class="btn" [ngClass]="{'mark': incident.type ==2}">Situación 2</span>
           <span (click)="setSituacion(3)" class="btn" [ngClass]="{'mark': incident.type ==3}">Situación 3</span>
         </div>
-        <ng-container *ngIf="incident.type >= 0 ; else selectSituacion">
-
+        @if (incident.type >= 0 ) {
           <h4>INCIDENCIA DE SITUACIÓN {{incident.type}}</h4>
           <b>LOCALIZACIÓN Y FECHA <span style="color:red">*</span></b>
           <div class="box">
             <label>LATITUD: </label>
-
             <input type="number" min="27" name="Latitud"  required [(ngModel)]="incident.lat">
             <label>LONGITUD: </label>
             <input type="number" max="-15" name="Longitud" required [(ngModel)]="incident.lng">
             <small>La longitud en negativo</small>
-
             <label name="date_init">HORA INICIO: </label>
             <input type="time" id="dateInit" required [(ngModel)]="incident.dateIni">
-            <ng-container *ngIf="incident.type > 0">
+            @if (incident.type > 0) {
               <label name="date_end">HORA FINAL: </label>
-              <input type="time" id="dateEnd" required [(ngModel)]="incident.dateEnd">  
-            </ng-container>            
+              <input type="time" id="dateEnd" required [(ngModel)]="incident.dateEnd">
+            }
             <label name=day>DIA DE LA INCIDENCIA</label>
             <input type="date" name="day" id="day" required [(ngModel)]="incident.day">
             <div class="box">
-              <ng-container *ngIf="incident.type == 3">
+              @if (incident.type == 3) {
                 <p>EVACUACIÓN</p>
                 <select id="evacuation" [(ngModel)]="incident.evacuation">
-                  <option [value]="item.id" *ngFor="let item of this.configProvider.motivosEvacuacion">{{item.name}}</option>
+                  @for (item of this.configProvider.motivosEvacuacion; track item) {
+                    <option [value]="item.id">{{item.name}}</option>
+                  }
                 </select>
-              </ng-container>
-              
+              }
               <p name="alarm_sender">ALARMA DADA POR</p>
               <select id="alarmSender" [(ngModel)]="incident.alarmSender">
-                <option [value]="item.name" *ngFor="let item of this.configProvider.alarmantes">{{item.name}}</option>
+                @for (item of this.configProvider.alarmantes; track item) {
+                  <option [value]="item.name">{{item.name}}</option>
+                }
               </select>
             </div>
           </div>
@@ -165,79 +176,79 @@
           <div class="box">
             <p name="resources">MEDIOS EMPLEADOS</p>
             <select name="" id="resources" [(ngModel)]="incident.resourcesUsed" multiple>
-              <option [value]="item.id" *ngFor="let item of this.configProvider.medios">{{item.name}}</option>
+              @for (item of this.configProvider.medios; track item) {
+                <option [value]="item.id">{{item.name}}</option>
+              }
             </select>
-            <ng-container *ngIf="incident.type == 0 || incident.type == 2">
+            @if (incident.type == 0 || incident.type == 2) {
               <p name="numberLifeGuard">SOCORRISTAS MOVILIZADOS</p>
               <input type="number" name="numberLifeGuard" id="numberLifeGuard" required min="0" [(ngModel)]="incident.numberLifeGuard" [ngModelOptions]="{standalone: true}">
-            </ng-container>
-            <ng-container *ngIf="incident.type == 1 || incident.type == 2">
+            }
+            @if (incident.type == 1 || incident.type == 2) {
               <p name="external">MEDIOS EXTERNOS EMPLEADOS</p>
               <select name="" id="externalResources" [(ngModel)]="incident.externalResourcesUsed" multiple>
-                <option [value]="item.id" *ngFor="let item of this.configProvider.externos">{{item.name}}</option>
+                @for (item of this.configProvider.externos; track item) {
+                  <option [value]="item.id">{{item.name}}</option>
+                }
               </select>
-            </ng-container>
-            <ng-container *ngIf="incident.type == 3">
+            }
+            @if (incident.type == 3) {
               <p name="mobilizedAgents">CUERPOS MOVILIZADOS</p>
               <select name="" id="mobilizedAgents" [(ngModel)]="incident.mobilizedAgents" multiple>
-                <option [value]="item.id" *ngFor="let item of this.configProvider.cuerpos">{{item.name}}</option>
+                @for (item of this.configProvider.cuerpos; track item) {
+                  <option [value]="item.id">{{item.name}}</option>
+                }
               </select>
-            </ng-container>
+            }
           </div>
-
-          <ng-container *ngIf="incident.type != 0">
+          @if (incident.type != 0) {
             <b>DATOS CECOES <span style="color:red">*</span></b>
             <div class="box">
-  
-                <p name="isLifeGuardCall">¿QUIÉN LLAMÓ A QUIÉN?</p>
-                <select name="isLifeGuardCall" [(ngModel)]="incident.isLifeGuardCall" >
-                  <option [value]="0" >El 112 al Socorrista</option>
-                  <option [value]="1"> El Socorrista al 112</option>
-                </select>
-                
-                <p name="hourCall112">HORA DE LLAMADA 112</p>
-                <input type="time" name="112call" id="112call" [(ngModel)]="incident.hourCall112">
-      
-                <p >Nº DE INCIDENCIA CECOES</p>
-                <input type="number" name="cecoes" id="cecoes" min="0" [(ngModel)]="incident.cecoes">
-      
-                <p name="delay">TIEMPO DE LLEGADA MEDIOS EXTERNOS (mins.)</p>
-                <input type="number" name="delay" id="delay" min="0" [(ngModel)]="incident.delayArriveExternalResources">
+              <p name="isLifeGuardCall">¿QUIÉN LLAMÓ A QUIÉN?</p>
+              <select name="isLifeGuardCall" [(ngModel)]="incident.isLifeGuardCall" >
+                <option [value]="0" >El 112 al Socorrista</option>
+                <option [value]="1"> El Socorrista al 112</option>
+              </select>
+              <p name="hourCall112">HORA DE LLAMADA 112</p>
+              <input type="time" name="112call" id="112call" [(ngModel)]="incident.hourCall112">
+              <p >Nº DE INCIDENCIA CECOES</p>
+              <input type="number" name="cecoes" id="cecoes" min="0" [(ngModel)]="incident.cecoes">
+              <p name="delay">TIEMPO DE LLEGADA MEDIOS EXTERNOS (mins.)</p>
+              <input type="number" name="delay" id="delay" min="0" [(ngModel)]="incident.delayArriveExternalResources">
             </div>
-          </ng-container>
-                  
+          }
           <p>PERSONAS AFECTADAS (Indique 0 si es Falsa Alarma)</p>
-          <input 
-            type="number" 
+          <input
+            type="number"
             name="affectedPeople"
-            id="affectedPeople" 
+            id="affectedPeople"
             min="0"
-            (change)="updateAffectedPeople($event)"  
+            (change)="updateAffectedPeople($event)"
             (input)="updateAffectedPeople($event)"
             [(ngModel)]="incident.affectedPeopleNumber"
-          >
-
+            >
           <p>OBSERVACIONES Y/O DEFICIENCIAS // PROBLEMAS DE COORDINACIÓN DETECTADOS CON EL CECOES 1-1-2</p>
           <input type="text" name="observation" id="observation" [(ngModel)]="incident.observation">
           <button type="submit">Enviar</button>
-        </ng-container>
+        } @else {
+          Selecciona una situacion.
+        }
 
-        <ng-template #selectSituacion>Selecciona una situacion.</ng-template>
       </form>
-      <ng-container 
-        *ngIf="incident.affectedPeopleNumber >0 && incident.type != 3"
-      >
+      @if (incident.affectedPeopleNumber >0 && incident.type != 3) {
         <div class="col2">
           <div class="carousel">
-            <div *ngFor="let item of incident.affectedPeople; index as i" 
-              (click)="editPerson(i)"
-              class="box btn"
-              [ngStyle]="item.valid ? {'background-color': '#65F473'}: null"
-            >
-              Persona {{i + 1}}
-            </div>
+            @for (item of incident.affectedPeople; track item; let i = $index) {
+              <div
+                (click)="editPerson(i)"
+                class="box btn"
+                [ngStyle]="item.valid ? {'background-color': '#65F473'}: null"
+                >
+                Persona {{i + 1}}
+              </div>
+            }
           </div>
-          <ng-container *ngIf="showPerson">
+          @if (showPerson) {
             <b>PERSONA <span style="color:red">{{indexPerson +1}}</span></b>
             <div class="box">
               <p name="gender">G&Eacute;NERO</p>
@@ -246,193 +257,188 @@
                 <span (click)="updateAffected({gender: 'female'})" class="affected btn" [ngClass]="{'mark': affected.gender == 'female'}">FEMENINO</span>
               </div>
               <label for="age">EDAD</label>
-              <input 
-                type="number" 
-                name="Age" 
+              <input
+                type="number"
+                name="Age"
                 min="0"
                 [(ngModel)]="affected.age"
-              >
+                >
               <label for="country"  name="country">NACIONALIDAD</label>
               <select name="country" id="country" [(ngModel)]="affected.country">
-                <option value="{{item}}" *ngFor="let item of this.configProvider.paises" >
-                  {{item}}
-                </option>
+                @for (item of this.configProvider.paises; track item) {
+                  <option value="{{item}}" >
+                    {{item}}
+                  </option>
+                }
               </select>
             </div>
-
             <div class="box">
               <div style="display:flex; padding-bottom: 2px;">
-                <small > 
-                  <input 
-                    type="checkbox" 
-                    name="isResident" 
-                    id="isResident" 
+                <small >
+                  <input
+                    type="checkbox"
+                    name="isResident"
+                    id="isResident"
                     (change)="$event.target.checked ? affected.municipality ='' : affected.municipality= 'No Residente' "
                     [checked]="affected.municipality != 'No Residente' "
                     [(ngModel)]="name"
-                  >  ES RESIDENTE 
-                </small> 
-              </div>
-
-              <ng-container *ngIf="affected.municipality !='No Residente'">
-                <p>MUNICIPIO DE RESIDENCIA</p>
-                <select name="municipality" [(ngModel)]="affected.municipality">
-                  <option [value]="item.name" *ngFor="let item of this.configProvider.municipios">{{item.name}}</option>
-                </select>
-              </ng-container>
-              <p name="susbtances">SUSTANCIAS LIMITANTES</p>
-              <ng-container>
-                <!-- <div *ngFor="let item of this.configProvider.sustancias">
+                    >  ES RESIDENTE
+                  </small>
+                </div>
+                @if (affected.municipality !='No Residente') {
+                  <p>MUNICIPIO DE RESIDENCIA</p>
+                  <select name="municipality" [(ngModel)]="affected.municipality">
+                    @for (item of this.configProvider.municipios; track item) {
+                      <option [value]="item.name">{{item.name}}</option>
+                    }
+                  </select>
+                }
+                <p name="susbtances">SUSTANCIAS LIMITANTES</p>
+                <ng-container>
+                  <!-- <div *ngFor="let item of this.configProvider.sustancias">
                   <span type="checkbox"  (click)=updateSubstances(item.id) name="item.name" class="affected btn" [ngClass]="{'mark': affected.substance.includes(item.id)}">  {{item.name}}</span>
                 </div> -->
                 <select name="substances" [(ngModel)]="affected.substance" multiple>
-                  <option [value]="item.id" *ngFor="let item of this.configProvider.sustancias">{{item.name}}</option>
+                  @for (item of this.configProvider.sustancias; track item) {
+                    <option [value]="item.id">{{item.name}}</option>
+                  }
                 </select>
               </ng-container>
-
               <p name="profile">PERFIL</p>
               <select name="Profile" [(ngModel)]="affected.profile">
-                <option [value]="item.name" *ngFor="let item of this.configProvider.perfiles">{{item.name}}</option>
+                @for (item of this.configProvider.perfiles; track item) {
+                  <option [value]="item.name">{{item.name}}</option>
+                }
               </select>
             </div>
-
             <b>INTERVENCIÓN <span style="color:red">*</span></b>
             <div class="box">
               <div class="row-buttons">
                 <span (click)="updateAffected({requireFirstAid:true, typeIntervention: 'Primeros Auxilios',rescueReason:[],firstAidReason:[],firstAidCauses:[]}); 
                                  "
-                                class="affected btn"
-                                [ngClass]="{'mark': affected.typeIntervention == 'Primeros Auxilios'}"
-                                >
-                                  PRIMEROS AUXILIOS
-                  </span>
-                
+                  class="affected btn"
+                  [ngClass]="{'mark': affected.typeIntervention == 'Primeros Auxilios'}"
+                  >
+                PRIMEROS AUXILIOS
+              </span>
                 <span (click)="requireRescue = true ; 
                                 updateAffected({requireFirstAid:false, typeIntervention: 'Rescate Acuático',firstAidReason:[],firstAidCauses:[]});
                                 " 
-                                class="affected btn"
-                                [ngClass]="{'mark': affected.typeIntervention == 'Rescate Acuático'}"
-
-                                >
-                              RESCATE ACU&Aacute;TICO
-                </span>
-                
-              </div>
-              <ng-container *ngIf="requireRescue || affected.typeIntervention == 'Rescate Acuático' ">
-                <p name="rescue">MOTIVOS RESCATE ACUÁTIVO</p>
-                <select name="substances" [(ngModel)]="affected.rescueReason" multiple>
-                  <option [value]="item.id" *ngFor="let item of this.configProvider.motivosRescate">{{item.name}}</option>
-                </select>
-
-                <p>REQUIERE PRIMEROS AUXILIOS</p>
-                <div class="row-buttons">
-                  <span (click)="updateAffected({requireFirstAid:true})" class="btn" [ngClass]="{'mark': affected.requireFirstAid}">SÍ</span>
-                  <span (click)="updateAffected({requireFirstAid:false})" class="btn" [ngClass]="{'mark': !affected.requireFirstAid}">NO</span>
-                </div>
-              </ng-container>
-
-              <ng-container *ngIf="affected.requireFirstAid">
-                <p name="reasons">MOTIVOS PRIMEROS AUXILIOS</p>
-                <select name="substances" [(ngModel)]="affected.firstAidReason" multiple>
-                  <option [value]="item.id" *ngFor="let item of this.configProvider.motivosAuxilio">{{item.name}}</option>
-                </select>
-
-                <!-- <div *ngFor="let item of first_aid">
-                  <span  (click)=updateFirstAidReason(item.id) name="item.name" class="affected btn" [ngClass]="{'mark': affected.firstAidReason.includes(item.id)}">  {{item.name}}</span>
-                </div> -->
-                
-                <p name="causes">CAUSAS</p>
-                <select name="substances" [(ngModel)]="affected.firstAidCauses" multiple>
-                  <option [value]="item.id" *ngFor="let item of this.configProvider.causasAuxilio">{{item.name}}</option>
-                </select>  
-              </ng-container>
-
-              <p name="desa">USO DESA</p>
-              <div class="row-buttons">
-                <span 
-                  (click)="updateAffected({usedDesa:true})"
-                  class="affected btn"
-                  [ngClass]="{'mark': affected.usedDesa==true}"
-                >
-                  SÍ
-                </span>
-                <span 
-                  (click)="updateAffected({usedDesa:false})"
-                  class="affected btn"
-                  [ngClass]="{'mark': affected.usedDesa==false}"
-
-                >
-                  NO
-                </span>
-
-              </div>
-            </div>
-
-            <div class="box">
-              <p name="emergency_grade">NIVEL DE GRAVEDAD</p>
-              <div class="row-buttons" >
-                <span 
-                  (click)="updateAffected({emergencyGrade: 0})"
-                  class="affected btn"
-                  [ngClass]="{'mark': affected.emergencyGrade===0}"
-                >
-                  ILESO
-                </span>
-                <span 
-                  (click)="updateAffected({emergencyGrade: 1})"
-                  class="affected btn"
-                  [ngClass]="{'mark': affected.emergencyGrade==1}"
-                >
-                  LEVE
-                </span>
-                <span 
-                  (click)="updateAffected({emergencyGrade: 2})"
-                  class="affected btn"
-                  [ngClass]="{'mark': affected.emergencyGrade==2}"
-                >
-                  GRAVE
-                </span>
-                <span 
-                  (click)="updateAffected({emergencyGrade: 3})"
-                  class="affected btn"
-                  [ngClass]="{'mark': affected.emergencyGrade==3}"
-                >
-                  ÉXITUS
-                </span>
-
-              </div>
-
-              <p name="translation">TRANSLADO A</p>
-              <select name="translationCenter" id="translationCenter" [(ngModel)]="affected.translationCenter">
-                <option [value]="item.name" *ngFor="let item of this.configProvider.traslados">{{item.name}}</option>
-              </select>
-              
-              <p name="high_volunteer">ALTA VOLUNTARIA</p>
-              <div class="row-buttons" >
-                <span
-                (click)="updateAffected({highVolunteer: true})"
                 class="affected btn"
-                [ngClass]="{'mark': affected.highVolunteer==true}"
-
-                >SÍ</span>
-                <span 
-                  (click)="updateAffected({highVolunteer: false})"
-                  class="affected btn"
-                  [ngClass]="{'mark': affected.highVolunteer==false}"
-                >NO
+                [ngClass]="{'mark': affected.typeIntervention == 'Rescate Acuático'}"
+                >
+                RESCATE ACU&Aacute;TICO
               </span>
-              </div>
             </div>
-            <span (click)="saveAffected()" class="btn " >GUARDAR</span>
-
-          </ng-container>
-
+            @if (requireRescue || affected.typeIntervention == 'Rescate Acuático' ) {
+              <p name="rescue">MOTIVOS RESCATE ACUÁTIVO</p>
+              <select name="substances" [(ngModel)]="affected.rescueReason" multiple>
+                @for (item of this.configProvider.motivosRescate; track item) {
+                  <option [value]="item.id">{{item.name}}</option>
+                }
+              </select>
+              <p>REQUIERE PRIMEROS AUXILIOS</p>
+              <div class="row-buttons">
+                <span (click)="updateAffected({requireFirstAid:true})" class="btn" [ngClass]="{'mark': affected.requireFirstAid}">SÍ</span>
+                <span (click)="updateAffected({requireFirstAid:false})" class="btn" [ngClass]="{'mark': !affected.requireFirstAid}">NO</span>
+              </div>
+            }
+            @if (affected.requireFirstAid) {
+              <p name="reasons">MOTIVOS PRIMEROS AUXILIOS</p>
+              <select name="substances" [(ngModel)]="affected.firstAidReason" multiple>
+                @for (item of this.configProvider.motivosAuxilio; track item) {
+                  <option [value]="item.id">{{item.name}}</option>
+                }
+              </select>
+              <!-- <div *ngFor="let item of first_aid">
+              <span  (click)=updateFirstAidReason(item.id) name="item.name" class="affected btn" [ngClass]="{'mark': affected.firstAidReason.includes(item.id)}">  {{item.name}}</span>
+            </div> -->
+            <p name="causes">CAUSAS</p>
+            <select name="substances" [(ngModel)]="affected.firstAidCauses" multiple>
+              @for (item of this.configProvider.causasAuxilio; track item) {
+                <option [value]="item.id">{{item.name}}</option>
+              }
+            </select>
+          }
+          <p name="desa">USO DESA</p>
+          <div class="row-buttons">
+            <span
+              (click)="updateAffected({usedDesa:true})"
+              class="affected btn"
+              [ngClass]="{'mark': affected.usedDesa==true}"
+              >
+              SÍ
+            </span>
+            <span
+              (click)="updateAffected({usedDesa:false})"
+              class="affected btn"
+              [ngClass]="{'mark': affected.usedDesa==false}"
+              >
+              NO
+            </span>
+          </div>
         </div>
-      </ng-container>
-  </div>
+        <div class="box">
+          <p name="emergency_grade">NIVEL DE GRAVEDAD</p>
+          <div class="row-buttons" >
+            <span
+              (click)="updateAffected({emergencyGrade: 0})"
+              class="affected btn"
+              [ngClass]="{'mark': affected.emergencyGrade===0}"
+              >
+              ILESO
+            </span>
+            <span
+              (click)="updateAffected({emergencyGrade: 1})"
+              class="affected btn"
+              [ngClass]="{'mark': affected.emergencyGrade==1}"
+              >
+              LEVE
+            </span>
+            <span
+              (click)="updateAffected({emergencyGrade: 2})"
+              class="affected btn"
+              [ngClass]="{'mark': affected.emergencyGrade==2}"
+              >
+              GRAVE
+            </span>
+            <span
+              (click)="updateAffected({emergencyGrade: 3})"
+              class="affected btn"
+              [ngClass]="{'mark': affected.emergencyGrade==3}"
+              >
+              ÉXITUS
+            </span>
+          </div>
+          <p name="translation">TRANSLADO A</p>
+          <select name="translationCenter" id="translationCenter" [(ngModel)]="affected.translationCenter">
+            @for (item of this.configProvider.traslados; track item) {
+              <option [value]="item.name">{{item.name}}</option>
+            }
+          </select>
+          <p name="high_volunteer">ALTA VOLUNTARIA</p>
+          <div class="row-buttons" >
+            <span
+              (click)="updateAffected({highVolunteer: true})"
+              class="affected btn"
+              [ngClass]="{'mark': affected.highVolunteer==true}"
+            >SÍ</span>
+            <span
+              (click)="updateAffected({highVolunteer: false})"
+              class="affected btn"
+              [ngClass]="{'mark': affected.highVolunteer==false}"
+              >NO
+            </span>
+          </div>
+        </div>
+        <span (click)="saveAffected()" class="btn " >GUARDAR</span>
+      }
+    </div>
+  }
+</div>
 </div>
 
- <script
+<script
   src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiU\TtC0TjtGOmxa1AJPuV0CPthew=="
   crossorigin="">

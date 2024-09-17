@@ -1,15 +1,19 @@
 import { ReturnStatement } from '@angular/compiler';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 // import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {User, UserProvider} from '../../provider/user';
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    standalone: true
 })
 export class LoginComponent implements OnInit {
+  private userProvider = inject(UserProvider);
+  private router = inject(Router);
+
 
   r_username: string;
   r_password: string;
@@ -20,11 +24,7 @@ export class LoginComponent implements OnInit {
   password: string;
   remember: boolean;
   captcha: any
-  constructor(
-    // private formBuilder: FormBuilder,
-    private userProvider: UserProvider,
-    private router:Router
-  ) {
+  constructor() {
     this.r_username = localStorage.getItem('username');
     this.r_password = localStorage.getItem('password');
     this.r_remember = localStorage.getItem('remember');

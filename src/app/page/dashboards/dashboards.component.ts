@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { NavbarComponent } from '../../component/navbar/navbar.component';
 declare function init_plugins();
 
 @Component({
-  selector: 'app-dashboards',
-  templateUrl: './dashboards.component.html',
-  styleUrls: ['./dashboards.component.css']
+    selector: 'app-dashboards',
+    templateUrl: './dashboards.component.html',
+    styleUrls: ['./dashboards.component.css'],
+    standalone: true,
+    imports: [NavbarComponent]
 })
 export class DashboardsComponent implements OnInit {
 
